@@ -63,8 +63,8 @@ export default function Login() {
                 localStorage.setItem('userAvatar', user.photoURL || '');
                 showToast('Login com Google realizado com sucesso!', 'success');
                 setTimeout(() => {
-                  router.replace('/dashboard');
-                  window.location.href = '/dashboard'; // Força redirecionamento
+                  router.replace('/');
+                  window.location.href = '/'; // Força redirecionamento para home
                 }, 500);
               } catch (error) {
                 showToast('Erro ao fazer login com Google', 'error');
