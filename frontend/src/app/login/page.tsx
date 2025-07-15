@@ -58,10 +58,14 @@ export default function Login() {
                 if (!response.ok) throw new Error('Erro ao autenticar com backend');
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
+                // Salvar nome e avatar do usuário Google
+                localStorage.setItem('userName', user.displayName || '');
+                localStorage.setItem('userAvatar', user.photoURL || '');
                 showToast('Login com Google realizado com sucesso!', 'success');
                 setTimeout(() => {
                   router.replace('/dashboard');
-                }, 500); // Fallback para garantir redirecionamento
+                  window.location.href = '/dashboard'; // Força redirecionamento
+                }, 500);
               } catch (error) {
                 showToast('Erro ao fazer login com Google', 'error');
               } finally {
