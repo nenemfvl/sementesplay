@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { login } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { auth } from '../../firebaseConfig';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -38,6 +40,29 @@ export default function Login() {
             <h1 className="text-3xl font-bold text-white mb-2">Bem-vindo de volta!</h1>
             <p className="text-gray-300">Entre na sua conta SementesPLAY</p>
           </div>
+
+          <button
+            onClick={async () => {
+              const provider = new GoogleAuthProvider();
+              setLoading(true);
+              try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                showToast('Login com Google realizado com sucesso!', 'success');
+                // Aqui você pode salvar o usuário ou redirecionar
+                router.replace('/dashboard');
+              } catch (error) {
+                showToast('Erro ao fazer login com Google', 'error');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+            className="w-full py-3 px-4 mb-4 bg-white text-gray-800 font-semibold rounded-lg border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+            Entrar com Google
+          </button>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
