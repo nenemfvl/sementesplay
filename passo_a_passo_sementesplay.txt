@@ -1,0 +1,53 @@
+PASSO A PASSO PARA DESENVOLVIMENTO DO SISTEMA SEMENTESPLAY
+
+1. Estruturação do Projeto
+- Organizar frontend (Next.js) e backend (NestJS) conforme rotas e páginas principais.
+- Criar pastas e arquivos necessários para cada página e funcionalidade.
+
+2. Páginas Principais
+- Home: Banner, slider, cards de destaque, notícias, eventos, promoções, registro rápido.
+- Status de Patrocínio: Notícias, ranking, níveis de patrocínio, benefícios.
+- Salão (Hall): Galeria de streamers/influenciadores, filtros, busca, favoritos, doações.
+- FAQ: Perguntas frequentes organizadas por categorias.
+- Cadastro/Registro: Páginas de cadastro para streamer, influenciador e apoiador, login social e formulário completo.
+
+3. Dashboards
+- Streamer/Influenciador: Perfil público, estatísticas, histórico de doações, notificações, agradecimentos.
+- Apoiador: Busca de streamers, doações, cashback, histórico, favoritos, notificações.
+- Dono de Cidade FiveM: Painel de cupons, pagamentos, configurações, estatísticas, integração Discord.
+
+4. Sistemas Principais
+- Autenticação (login, registro, recuperação de senha, verificação de email).
+- Pagamentos e cashback (gateways, cupons Discord).
+- Favoritos, doações, XP, conquistas/badges, notificações.
+- Convites, compartilhamento, promoções, gamificação.
+
+5. Funcionalidades Adicionais
+- Rankings, estatísticas, relatórios detalhados.
+- Filtros avançados por plataforma, tags, horários, popularidade.
+- Links dinâmicos para redes sociais e plataformas de stream.
+- Design responsivo, componentes modernos, animações suaves.
+
+6. Segurança e Performance
+- Autenticação JWT, proteção de dados, privacidade (GDPR).
+- Otimizações: lazy loading, code splitting, image optimization, caching.
+- Monitoramento: analytics, error tracking, métricas em tempo real.
+
+7. Funcionalidades Mobile
+- PWA, notificações push, gestos, experiência app-like.
+
+8. Integração Backend
+- APIs para todas as funcionalidades (streamers, eventos, doações, rankings, etc.).
+- Comunicação segura entre frontend e backend.
+
+9. Testes e Validação
+- Testar todas as páginas e funcionalidades.
+- Validar formulários, autenticação, pagamentos, notificações.
+
+10. Deploy e Monitoramento
+- Preparar para deploy em produção.
+- Configurar monitoramento e analytics.
+
+---
+
+Este roteiro segue toda a especificação detalhada do sistema SementesPLAY e pode ser expandido conforme o desenvolvimento avança.

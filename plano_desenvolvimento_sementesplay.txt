@@ -1,0 +1,66 @@
+PLANO DE DESENVOLVIMENTO - SementesPLAY
+========================================
+
+1. PLANEJAMENTO E ESTRUTURA INICIAL
+- Definir stack tecnológico (frontend, backend, banco de dados, integrações)
+- Estruturar repositório e diretórios do projeto
+- Criar arquivos de configuração, dependências e versionamento
+
+2. SISTEMA DE AUTENTICAÇÃO E CADASTRO
+- Implementar autenticação segura (login, registro, recuperação de senha)
+- Formulário de registro rápido em 3 etapas, com validações e diferenciação de tipos de usuário (influenciador, apoiador, dono de cidade)
+- Gerenciar permissões e perfis de usuário
+
+3. BANCO DE DADOS E MODELAGEM
+- Modelar entidades principais: Usuário, Cidade, Cupom, Doação, Badge, Evento, Notificação, Ranking, Estatísticas, etc.
+- Criar migrations e seeders iniciais
+
+4. DASHBOARD E NAVEGAÇÃO PRINCIPAL
+- Implementar navegação principal do site
+- Criar dashboards específicos para cada tipo de usuário
+- Estruturar páginas públicas e privadas
+
+5. SISTEMA DE CUPONS E CASHBACK
+- Integrar com bot do Discord para geração de cupons
+- Implementar fluxo de resgate, pendência e aprovação de cupons
+- Gerenciar split de 10% manutenção e 90% doação
+
+6. GAMIFICAÇÃO E SISTEMA DE XP
+- Implementar sistema de XP com curva exponencial e limites diários
+- Criar sistema de badges, conquistas e recompensas
+- Adicionar sistema de favoritos, doações, rankings e estatísticas
+
+7. EVENTOS E COLABORAÇÕES
+- Ferramentas para criação, gestão e destaque de eventos
+- Sistema de colaborações entre criadores, com badges de parceiro
+- Integração de eventos com recompensas e destaques
+
+8. NOTIFICAÇÕES E COMUNICAÇÃO
+- Sistema de notificações em tempo real (web e e-mail)
+- Integração com Discord e outras redes sociais para alertas
+
+9. PAGAMENTOS E DOAÇÕES
+- Implementar gateways de pagamento
+- Gerenciar histórico de doações, extratos e relatórios
+
+10. APRIMORAMENTOS E RECURSOS AVANÇADOS
+- Analytics e estatísticas avançadas
+- Ferramentas de networking, promoções e marketing
+- Recursos exclusivos para usuários VIP
+
+11. TESTES, SEGURANÇA E DEPLOY
+- Testes automatizados (unitários, integração, e2e)
+- Revisão de segurança (proteção de dados, rate limit, etc)
+- Deploy em ambiente de produção
+
+Sugestão de ordem para começar:
+1. Planejamento e stack
+2. Banco de dados/modelagem
+3. Autenticação e cadastro
+4. Dashboard e navegação
+5. Sistema de cupons/cashback
+6. Gamificação/XP
+7. Eventos/colaborações
+8. Notificações
+9. Pagamentos
+10. Aprimoramentos/testes/deploy 

@@ -1,0 +1,2480 @@
+================================================================================
+                    ESPECIFICAÇÃO DETALHADA - SISTEMA SSS
+                    (Plataforma que conecta streamers/influenciadores a jogadores e cidades de FiveM)
+================================================================================
+
+📋 PÁGINAS PRINCIPAIS - DETALHAMENTO
+================================================================================
+
+1. PÁGINA PRINCIPAL (HOME)
+   ├── Banner principal
+   │   ├── Slider com imagens de destaque
+   │   ├── Título principal "SementesPLAY"
+   │   ├── Subtítulo: "Conectando streamers e influenciadores a jogadores e cidades de FiveM"
+   │   └── Botões de call-to-action (Registrar/Login)
+   ├── Destaques de streamers e influenciadores
+   │   ├── Cards dos top 6 streamers e influenciadores
+   │   ├── Foto, nome, plataforma escolhida, visualizações/seguidores
+   │   ├── Status "AO VIVO", "OFFLINE" ou "ATIVO"
+   │   ├── Botão dinâmico baseado na plataforma escolhida
+   │   └── Botão "Favoritar"
+   ├── Notícias e eventos
+   │   ├── Últimas 3 notícias importantes
+   │   │   ├── Critérios de importância:
+   │   │   │   ├── Novos streamers/influenciadores parceiros
+   │   │   │   ├── Eventos especiais da plataforma
+   │   │   │   ├── Promoções de doação/bonificação
+   │   │   │   ├── Atualizações de cidades FiveM
+   │   │   │   ├── Competições e torneios
+   │   │   │   └── Anúncios de novos recursos
+   │   │   ├── Ordenação por relevância e data
+   │   │   └── Preview com título e resumo
+   │   ├── Próximos eventos
+   │   ├── Promoções ativas
+   │   ├── Promoções de engajamento:
+   │   │   ├── "Compartilhe e ganhe badge exclusivo"
+   │   │   ├── "Convide amigos e desbloqueie emojis especiais"
+   │   │   ├── "Participe de eventos e ganhe XP extra"
+   │   │   │   ├── MECANISMO DE PARTICIPAÇÃO:
+   │   │   │   │   ├── Botão "Participar" em cada evento
+   │   │   │   │   ├── Check-in obrigatório no evento
+   │   │   │   │   ├── Presença mínima de 30 minutos
+   │   │   │   │   └── Interação durante o evento
+   │   │   │   ├── XP POR TIPO DE EVENTO:
+   │   │   │   │   ├── Evento pequeno (1-2h): +50 XP
+   │   │   │   │   ├── Evento médio (3-5h): +100 XP
+   │   │   │   │   ├── Evento grande (6-8h): +200 XP
+   │   │   │   │   ├── Maratona (12h+): +500 XP
+   │   │   │   │   ├── Evento especial: +300 XP
+   │   │   │   │   ├── Competição: +400 XP
+   │   │   │   │   ├── Festival: +600 XP
+   │   │   │   │   └── Evento lendário: +1000 XP
+   │   │   │   ├── BÔNUS DE PARTICIPAÇÃO:
+   │   │   │   │   ├── Primeira participação: +50 XP bônus
+   │   │   │   │   ├── Participação consecutiva: +25 XP por evento
+   │   │   │   │   ├── Participação completa: +100 XP bônus
+   │   │   │   │   └── Participação ativa: +75 XP bônus
+   │   │   │   ├── NOTIFICAÇÕES:
+   │   │   │   │   ├── "Você ganhou +100 XP por participar!"
+   │   │   │   │   ├── "Bônus de participação consecutiva: +25 XP"
+   │   │   │   │   ├── "Parabéns! Você completou o evento!"
+   │   │   │   │   └── "XP total ganho: 250 XP"
+   │   │   │   └── BENEFÍCIOS:
+   │   │   │       ├── Subir de nível mais rápido
+   │   │   │       ├── Desbloquear recursos especiais
+   │   │   │       ├── Acesso a eventos exclusivos
+   │   │   │       └── Status de "Participante Ativo"
+   │   │   └── "Complete desafios e ganhe títulos únicos"
+   │   ├── Promoções de comunidade:
+   │   │   └── "Organize eventos e ganhe destaque na plataforma"
+   │   ├── Promoções de conteúdo:
+   │   │   ├── "Crie conteúdo e ganhe destaque na página principal"
+   │   │   ├── "Faça lives especiais e ganhe badge de streamer"
+   │   │   ├── "Poste regularmente e ganhe status de ativo"
+   │   │   └── "Colabore com outros e ganhe badge de parceiro"
+   │   └── Promoções de gamificação:
+   │       ├── "Complete missões diárias e ganhe pontos"
+   │       ├── "Suba de nível e desbloqueie recursos especiais"
+   │       ├── "Conquiste achievements e ganhe títulos únicos"
+   │       └── "Participe de rankings e ganhe destaque"
+   │   └── Links para notícias completas
+   ├── Call-to-action para registro
+   │   ├── FORMULÁRIO DE REGISTRO RÁPIDO
+   │   │   ├── CAMPOS OBRIGATÓRIOS
+   │   │   │   ├── Nome completo
+   │   │   │   ├── Email (com validação)
+   │   │   │   ├── Senha (mín. 8 caracteres)
+   │   │   │   ├── Confirmação de senha
+   │   │   │   ├── Tipo de conta (Streamer/Influenciador/Apoiador)
+   │   │   │   └── Aceitar termos e condições
+   │   │   ├── CAMPOS CONDICIONAIS
+   │   │   │   ├── Se Streamer/Influenciador:
+   │   │   │   │   ├── Nome artístico
+   │   │   │   │   ├── Plataforma principal (Twitch/TikTok/YouTube/Instagram)
+   │   │   │   │   ├── Link da plataforma
+   │   │   │   │   └── Descrição breve
+   │   │   │   └── Se Apoiador:
+   │   │   │       ├── Nome de exibição
+   │   │   │       └── Interesses (opcional)
+   │   │   ├── VALIDAÇÕES EM TEMPO REAL
+   │   │   │   ├── Email válido e único
+   │   │   │   ├── Senha forte (letra, número, caractere especial)
+   │   │   │   ├── Senhas coincidem
+   │   │   │   ├── Nome mínimo 3 caracteres
+   │   │   │   └── Link da plataforma válido (se aplicável)
+   │   │   ├── BENEFÍCIOS POR TIPO
+   │   │   │   ├── STREAMER
+   │   │   │   │   ├── Receba doações em tempo real
+   │   │   │   │   ├── Dashboard completo de estatísticas
+   │   │   │   │   ├── Sistema de alertas personalizáveis
+   │   │   │   │   └── Integração com Twitch/TikTok/YouTube
+   │   │   │   ├── INFLUENCIADOR
+   │   │   │   │   ├── Receba bonificações da comunidade
+   │   │   │   │   ├── Estatísticas de engajamento
+   │   │   │   │   ├── Sistema de cashback via cupons
+   │   │   │   │   └── Integração com Instagram/TikTok/YouTube
+   │   │   │   └── APOIADOR
+   │   │   │       ├── Acesso a cashback via cupons Discord
+   │   │   │       ├── Sistema de favoritos e notificações
+   │   │   │       ├── Histórico completo de doações
+   │   │   │       └── Participação em eventos e ganhe XP
+   │   │   ├── DESIGN E UX
+   │   │   │   ├── Formulário em etapas (3 passos)
+   │   │   │   ├── Progress bar visual
+   │   │   │   ├── Validação instantânea
+   │   │   │   ├── Mensagens de erro claras
+   │   │   │   ├── Botões de navegação (Anterior/Próximo)
+   │   │   │   └── Responsivo para mobile
+   │   │   ├── ETAPA 1: INFORMAÇÕES BÁSICAS
+   │   │   │   ├── Nome completo
+   │   │   │   ├── Email
+   │   │   │   ├── Senha
+   │   │   │   ├── Confirmação de senha
+   │   │   │   └── Botão "Próximo"
+   │   │   ├── ETAPA 2: TIPO DE CONTA
+   │   │   │   ├── Seleção visual (cards clicáveis)
+   │   │   │   ├── STREAMER (ícone de câmera)
+   │   │   │   ├── INFLUENCIADOR (ícone de estrela)
+   │   │   │   ├── APOIADOR (ícone de coração)
+   │   │   │   ├── Descrição de cada tipo
+   │   │   │   └── Botões "Anterior" e "Próximo"
+   │   │   ├── ETAPA 3: DETALHES ESPECÍFICOS
+   │   │   │   ├── Se Streamer/Influenciador:
+   │   │   │   │   ├── Nome artístico
+   │   │   │   │   ├── Plataforma principal (dropdown)
+   │   │   │   │   ├── Link da plataforma
+   │   │   │   │   └── Descrição breve (textarea)
+   │   │   │   ├── Se Apoiador:
+   │   │   │   │   ├── Nome de exibição
+   │   │   │   │   └── Interesses (múltipla escolha)
+   │   │   │   ├── Aceitar termos e condições (checkbox)
+   │   │   │   └── Botão "Criar Conta"
+   │   │   ├── CONFIRMAÇÃO E REDIRECIONAMENTO
+   │   │   │   ├── Mensagem de sucesso
+   │   │   │   ├── Email de verificação enviado
+   │   │   │   ├── Redirecionamento para dashboard
+   │   │   │   └── Opção de verificar email
+   │   │   ├── RECUPERAÇÃO DE ERROS
+   │   │   │   ├── Email já cadastrado
+   │   │   │   ├── Senha muito fraca
+   │   │   │   ├── Link inválido da plataforma
+   │   │   │   ├── Campos obrigatórios não preenchidos
+   │   │   │   └── Termos não aceitos
+   │   │   └── INTEGRAÇÃO COM SISTEMAS
+   │   │       ├── Verificação de email automática
+   │   │       ├── Criação de perfil automática
+   │   │       ├── Configuração inicial de XP
+   │   │       ├── Geração de ID único
+   │   │       └── Logs de registro para analytics
+   │   ├── Opção Streamer/Influenciador ou Apoiador
+   │   └── Benefícios de cada tipo
+   └── Seção de streamers e influenciadores em destaque
+       ├── Grid de streamers e influenciadores populares
+       ├── Filtro por plataforma
+       ├── Botão dinâmico baseado na plataforma escolhida
+       └── Botão "Ver mais"
+
+2. STATUS DE PATROCÍNIO
+   ├── SEÇÃO DE NOTÍCIAS
+   │   ├── Últimas notícias sobre cidades de FiveM
+   │   │   ├── Novos servidores
+   │   │   ├── Atualizações de cidades
+   │   │   ├── Eventos especiais
+   │   │   └── Parcerias anunciadas
+   │   ├── Anúncios de novos parceiros
+   │   │   ├── Novos streamers parceiros
+   │   │   ├── Empresas parceiras
+   │   │   ├── Benefícios exclusivos
+   │   │   └── Datas de início
+   │   ├── Eventos e promoções
+   │   │   ├── Eventos especiais
+   │   │   ├── Promoções de doação
+   │   │   ├── Competições
+   │   │   └── Calendário de eventos
+   │   └── Blog/artigos sobre o mundo dos streamers
+   │       ├── Dicas para streamers
+   │       ├── Histórias de sucesso
+   │       ├── Tutoriais
+   │       └── Notícias da comunidade
+   ├── Rankings e estatísticas
+   │   ├── Top 10 streamers da semana
+   │   ├── Top 10 apoiadores da semana
+   │   ├── Maiores doações do mês
+   │   ├── Streamers com mais visualizações
+   │   └── Gráficos de crescimento
+   ├── Sistema de níveis de patrocínio
+   │   ├── Bronze (0-100 doações)
+   │   ├── Prata (101-500 doações)
+   │   ├── Ouro (501-1000 doações)
+   │   ├── Platina (1001-5000 doações)
+   │   └── Diamante (5000+ doações)
+   └── Benefícios por nível
+       ├── Badges especiais
+       ├── Acesso a conteúdo exclusivo
+       ├── Prioridade em suporte
+       ├── Descontos especiais
+       └── Eventos exclusivos
+
+3. SALÃO (HALL)
+   ├── Galeria de streamers e influenciadores
+   │   ├── Grid responsivo de streamers e influenciadores
+   │   ├── Cards com foto, nome, plataforma (jogo/Instagram)
+   │   ├── Status online/offline/ativo
+   │   ├── Número de visualizações/seguidores
+   │   ├── Botão de favoritar
+   │   └── Botão de doar/bonificar
+   ├── Filtros por plataforma
+   │   ├── Plataformas: Twitch, TikTok, YouTube, Instagram
+   │   ├── Status: Online, Offline, Ativo, Todos
+   │   ├── Ordenação: Popularidade, Visualizações/Seguidores, Doações
+   │   └── Busca por nome
+   ├── Sistema de busca
+   │   ├── Busca por nome do streamer/influenciador
+   │   ├── Busca por plataforma
+   │   ├── Busca por cidade (FiveM)
+   │   └── Filtros avançados
+   ├── Perfis detalhados dos streamers e influenciadores
+   │   ├── Foto de perfil grande
+   │   ├── Nome e descrição
+   │   ├── Plataforma principal
+   │   ├── Estatísticas (visualizações/seguidores, doações)
+   │   ├── Links para redes sociais
+   │   ├── Horários de stream / Frequência de posts
+   │   ├── Links de stream/redes (Twitch/TikTok/YouTube/Instagram)
+   │   └── Botão dinâmico baseado na plataforma escolhida ou "Favoritar"
+   ├── Sistema de favoritos
+   │   ├── Botão de favoritar/desfavoritar
+   │   ├── Lista de favoritos
+   │   ├── Notificações de favoritos online
+   │   └── Acesso rápido aos favoritos
+   └── Sistema de doações/bonificações
+       ├── Botão de doar (streamers)
+       ├── Botão de bonificar (influenciadores)
+       ├── Valores pré-definidos
+       ├── Campo para mensagem
+       ├── Opção anônima
+       └── Histórico de doações/bonificações
+
+================================================================================
+📊 DASHBOARDS - DETALHAMENTO
+================================================================================
+
+4. DASHBOARD STREAMER/INFLUENCIADOR
+   ├── Perfil público
+   │   ├── Foto de perfil
+   │   ├── Nome artístico
+   │   ├── Descrição
+   │   ├── Plataforma principal
+   │   ├── Links para redes sociais
+   │   └── Configurações de privacidade
+   ├── Estatísticas de doações recebidas
+   │   ├── Total de doações recebidas
+   │   ├── Doações hoje
+   │   ├── Doações esta semana
+   │   ├── Doações este mês
+   │   ├── Gráficos de crescimento
+   │   └── Comparação com períodos anteriores
+   ├── Sistema de doações/bonificações
+   │   ├── Doações recebidas hoje
+   │   ├── Doações recebidas esta semana
+   │   ├── Doações recebidas este mês
+   │   ├── Total de doações recebidas
+   │   ├── Lista das últimas doações
+   │   └── Configurações de perfil
+   ├── Configurações de perfil
+   │   ├── Foto de perfil
+   │   ├── Nome e descrição
+   │   ├── Jogos que joga
+   │   ├── Links para redes sociais
+   │   ├── Horários de stream
+   │   └── Configurações de privacidade
+   ├── Gestão de favoritos
+   │   ├── Lista de apoiadores que favoritaram
+   │   ├── Estatísticas de favoritos
+   │   ├── Interação com favoritos
+   │   └── Notificações de novos favoritos
+   ├── Histórico de doações recebidas
+   │   ├── Data e hora
+   │   ├── Nome do apoiador (ou anônimo)
+   │   ├── Valor da doação
+   │   ├── Mensagem (se houver)
+   │   └── Status da doação
+   ├── Notificações de doações
+   │   ├── Notificação pop-up
+   │   ├── Som de alerta
+   │   ├── Nome do doador
+   │   ├── Valor da doação
+   │   └── Mensagem
+   └── Sistema de agradecimentos
+       ├── Lista de doadores para agradecer
+       ├── Mensagem automática de agradecimento
+       ├── Configurações de agradecimento
+       └── Histórico de agradecimentos
+
+5. DASHBOARD APOIADOR
+   ├── Busca de streamers
+   │   ├── Campo de busca
+   │   ├── Filtros por jogo
+   │   ├── Filtros por status
+   │   ├── Ordenação por popularidade
+   │   └── Resultados em tempo real
+   ├── Sistema de doações com sementes
+   │   ├── Sementes disponíveis
+   │   ├── Histórico de doações
+   │   ├── Doações favoritas
+   │   ├── Configurações de doação
+   │   └── Resgate de cupons
+   ├── Sistema de cashback
+   │   ├── Sementes pendentes
+   │   ├── Sementes disponíveis
+   │   ├── Total resgatado
+   │   ├── Histórico de cupons
+   │   ├── Resgate de cupons
+   │   └── Doações com sementes
+   ├── Histórico de transações
+   │   ├── Data e hora
+   │   ├── Tipo de transação (doação/recarga)
+   │   ├── Valor
+   │   ├── Streamer (se for doação)
+   │   ├── Status da transação
+   │   └── Comprovante
+   ├── Lista de favoritos
+   │   ├── Streamers favoritados
+   │   ├── Status online/offline
+   │   ├── Última stream
+   │   ├── Botão dinâmico baseado na plataforma escolhida
+   │   └── Botão "Doar"
+   ├── Notificações de streamers favoritos
+   │   ├── Notificação quando favorito vai ao ar
+   │   ├── Notificação de nova stream
+   │   ├── Notificação de evento especial
+   │   └── Configurações de notificação
+   ├── Acesso rápido aos favoritos
+   │   ├── Lista compacta de favoritos
+   │   ├── Status online destacado
+   │   ├── Botão de acesso direto
+   │   └── Contador de favoritos online
+   └── Histórico de doações feitas
+       ├── Data e hora
+       ├── Streamer
+       ├── Valor
+       ├── Mensagem (se houver)
+       ├── Status da doação
+       └── Comprovante
+
+6. DASHBOARD DONO DE CIDADE FIVEM
+   ├── Painel de cupons pendentes
+   │   ├── Total de cupons pendentes
+   │   ├── Valor total pendente
+   │   ├── Lista detalhada de cupons
+   │   ├── Status de cada cupom
+   │   ├── Data de geração
+   │   └── Valor individual de cada cupom
+   ├── Sistema de pagamentos
+   │   ├── Marcar cupons como pagos
+   │   ├── Histórico de pagamentos
+   │   ├── Relatórios financeiros
+   │   ├── Exportar dados
+   │   └── Configurações de pagamento
+   ├── Configurações da cidade
+   │   ├── Nome da cidade
+   │   ├── Percentual de cashback
+   │   ├── Validade dos cupons
+   │   ├── Limites de cashback
+   │   └── Configurações do bot Discord
+   ├── Estatísticas da cidade
+   │   ├── Total de cupons gerados
+   │   ├── Total de cupons resgatados
+   │   ├── Total de cupons pagos
+   │   ├── Valor total em cashback
+   │   ├── Gráficos de crescimento
+   │   └── Relatórios por período
+   ├── Integração com Discord
+   │   ├── Status do bot Discord
+   │   ├── Configurações do bot
+   │   ├── Logs de comandos
+   │   ├── Permissões de usuários
+   │   └── Backup de dados
+   └── Suporte e ajuda
+       ├── Documentação
+       ├── Tutoriais
+       ├── Contato com suporte
+       ├── FAQ
+       └── Status do sistema
+
+================================================================================
+⚙️ SISTEMAS PRINCIPAIS - DETALHAMENTO
+================================================================================
+
+TIPOS DE USUÁRIOS:
+   ├── Streamer
+   │   ├── Tem canal em plataformas de streaming
+   │   ├── Plataformas: Twitch, TikTok, YouTube
+   │   ├── Recebe doações via SementesPLAY
+   │   ├── Estatísticas de doações recebidas
+   │   └── Perfil público na plataforma
+   ├── Influenciador
+   │   ├── Cria conteúdo para redes sociais
+   │   ├── Plataformas: Instagram, TikTok, YouTube
+   │   ├── Recebe bonificações via SementesPLAY
+   │   ├── Estatísticas de engajamento
+   │   └── Perfil público na plataforma
+   ├── Apoiador
+   │   ├── Joga em cidades de FiveM
+   │   ├── Faz compras nas cidades
+   │   ├── Recebe cupons de cashback via Discord
+   │   ├── Resgata cashback em sementes
+   │   └── Doa sementes para streamers/influenciadores
+   └── Dono de Cidade FiveM
+       ├── Administra cidade de FiveM
+       ├── Gera cupons de cashback via bot Discord
+       ├── Paga cashback para apoiadores
+       ├── Gerencia painel de pagamentos
+       └── Relatórios de transações
+
+6. SISTEMA DE AUTENTICAÇÃO
+   ├── Login/Registro de usuários
+   │   ├── FORMULÁRIO DE REGISTRO COMPLETO
+   │   │   ├── CAMPOS OBRIGATÓRIOS
+   │   │   │   ├── Nome completo
+   │   │   │   ├── Email (com validação)
+   │   │   │   ├── Senha (mín. 8 caracteres)
+   │   │   │   ├── Confirmação de senha
+   │   │   │   ├── Tipo de conta (Streamer/Influenciador/Apoiador)
+   │   │   │   └── Aceitar termos e condições
+   │   │   ├── CAMPOS CONDICIONAIS
+   │   │   │   ├── Se Streamer/Influenciador:
+   │   │   │   │   ├── Nome artístico
+   │   │   │   │   ├── Plataforma principal (Twitch/TikTok/YouTube/Instagram)
+   │   │   │   │   ├── Link da plataforma
+   │   │   │   │   └── Descrição breve
+   │   │   │   └── Se Apoiador:
+   │   │   │       ├── Nome de exibição
+   │   │   │       └── Interesses (opcional)
+   │   │   ├── VALIDAÇÕES EM TEMPO REAL
+   │   │   │   ├── Email válido e único
+   │   │   │   ├── Senha forte (letra, número, caractere especial)
+   │   │   │   ├── Senhas coincidem
+   │   │   │   ├── Nome mínimo 3 caracteres
+   │   │   │   └── Link da plataforma válido (se aplicável)
+   │   │   ├── DESIGN E UX
+   │   │   │   ├── Formulário em etapas (3 passos)
+   │   │   │   ├── Progress bar visual
+   │   │   │   ├── Validação instantânea
+   │   │   │   ├── Mensagens de erro claras
+   │   │   │   ├── Botões de navegação (Anterior/Próximo)
+   │   │   │   └── Responsivo para mobile
+   │   │   ├── ETAPA 1: INFORMAÇÕES BÁSICAS
+   │   │   │   ├── Nome completo
+   │   │   │   ├── Email
+   │   │   │   ├── Senha
+   │   │   │   ├── Confirmação de senha
+   │   │   │   └── Botão "Próximo"
+   │   │   ├── ETAPA 2: TIPO DE CONTA
+   │   │   │   ├── Seleção visual (cards clicáveis)
+   │   │   │   ├── STREAMER (ícone de câmera)
+   │   │   │   ├── INFLUENCIADOR (ícone de estrela)
+   │   │   │   ├── APOIADOR (ícone de coração)
+   │   │   │   ├── Descrição de cada tipo
+   │   │   │   └── Botões "Anterior" e "Próximo"
+   │   │   ├── ETAPA 3: DETALHES ESPECÍFICOS
+   │   │   │   ├── Se Streamer/Influenciador:
+   │   │   │   │   ├── Nome artístico
+   │   │   │   │   ├── Plataforma principal (dropdown)
+   │   │   │   │   ├── Link da plataforma
+   │   │   │   │   └── Descrição breve (textarea)
+   │   │   │   ├── Se Apoiador:
+   │   │   │   │   ├── Nome de exibição
+   │   │   │   │   └── Interesses (múltipla escolha)
+   │   │   │   ├── Aceitar termos e condições (checkbox)
+   │   │   │   └── Botão "Criar Conta"
+   │   │   ├── CONFIRMAÇÃO E REDIRECIONAMENTO
+   │   │   │   ├── Mensagem de sucesso
+   │   │   │   ├── Email de verificação enviado
+   │   │   │   ├── Redirecionamento para dashboard
+   │   │   │   └── Opção de verificar email
+   │   │   ├── RECUPERAÇÃO DE ERROS
+   │   │   │   ├── Email já cadastrado
+   │   │   │   ├── Senha muito fraca
+   │   │   │   ├── Link inválido da plataforma
+   │   │   │   ├── Campos obrigatórios não preenchidos
+   │   │   │   └── Termos não aceitos
+   │   │   └── INTEGRAÇÃO COM SISTEMAS
+   │   │       ├── Verificação de email automática
+   │   │       ├── Criação de perfil automática
+   │   │       ├── Configuração inicial de XP
+   │   │       ├── Geração de ID único
+   │   │       └── Logs de registro para analytics
+   │   ├── Formulário de login
+   │   │   ├── Email
+   │   │   ├── Senha
+   │   │   ├── Lembrar de mim
+   │   │   └── Esqueci minha senha
+   │   └── Validação de dados
+   ├── Perfis de Streamer, Influenciador e Apoiador
+   │   ├── Perfil Streamer
+   │   │   ├── Foto de perfil
+   │   │   ├── Nome artístico
+   │   │   ├── Descrição
+   │   │   ├── Plataforma principal
+   │   │   ├── Links para redes sociais
+   │   │   ├── Links de stream (Twitch/TikTok/YouTube)
+   │   │   ├── Horários de stream
+   │   │   └── Configurações de privacidade
+   │   ├── Perfil Influenciador
+   │   │   ├── Foto de perfil
+   │   │   ├── Nome artístico
+   │   │   ├── Descrição
+   │   │   ├── Plataforma principal
+   │   │   ├── Links para redes sociais
+   │   │   ├── Links de redes (Instagram/TikTok/YouTube)
+   │   │   ├── Frequência de posts
+   │   │   └── Configurações de privacidade
+   │   └── Perfil Apoiador
+   │       ├── Foto de perfil
+   │       ├── Nome de exibição
+   │       ├── Descrição
+   │       ├── Streamers/Influenciadores favoritos
+   │       ├── Histórico de doações/bonificações
+   │       └── Configurações de privacidade
+   ├── Recuperação de senha
+   │   ├── Formulário de recuperação
+   │   ├── Envio de email
+   │   ├── Link de recuperação
+   │   └── Redefinição de senha
+   └── Verificação de email
+       ├── Envio de email de verificação
+       ├── Link de verificação
+       ├── Status de verificação
+       └── Reenvio de verificação
+
+7. SISTEMA DE PAGAMENTOS E CASHBACK
+   ├── Integração com gateway de pagamento
+   │   ├── Stripe
+   │   ├── PayPal
+   │   ├── PIX (Brasil)
+   │   ├── Cartão de crédito
+   │   └── Boleto bancário
+   ├── Sistema de pontos/moedas virtuais
+   │   ├── Moeda virtual "Sementes"
+   │   ├── Conversão: R$ 1 = 0,90 Sementes
+   │   ├── Saldo em tempo real
+   │   ├── Histórico de transações
+   │   └── Extrato detalhado
+   ├── Sistema de cashback via cupons Discord
+   │   ├── Cupons únicos gerados por bot Discord
+   │   ├── Resgate no site SementesPLAY
+   │   ├── Sementes pendentes até pagamento
+   │   ├── 10% para manutenção do site
+   │   └── 90% disponível para doações
+   ├── Histórico de transações
+   │   ├── Data e hora
+   │   ├── Tipo (recarga/doação)
+   │   ├── Valor
+   │   ├── Status
+   │   ├── Comprovante
+   │   └── Detalhes
+   ├── Carteira digital
+   │   ├── Saldo atual
+   │   ├── Últimas transações
+   │   ├── Recarga rápida
+   │   ├── Configurações
+   │   └── Segurança
+   └── Recarga de saldo
+       ├── Valores pré-definidos
+       ├── Valor personalizado
+       ├── Método de pagamento
+       ├── Confirmação
+       └── Comprovante
+
+8. SISTEMA DE FAVORITOS
+   ├── Favoritar/desfavoritar streamers
+   │   ├── Botão de favoritar
+   │   ├── Botão de desfavoritar
+   │   ├── Confirmação
+   │   ├── Animação de feedback
+   │   └── Contador de favoritos
+   ├── Lista de favoritos no perfil
+   │   ├── Grid de favoritos
+   │   ├── Status online/offline
+   │   ├── Última stream
+   │   ├── Botão dinâmico baseado na plataforma escolhida
+   │   ├── Botão "Doar"
+   │   └── Botão "Remover"
+   ├── Notificações push
+   │   ├── Favorito vai ao ar
+   │   ├── Nova stream de favorito
+   │   ├── Evento especial de favorito
+   │   ├── Configurações de notificação
+   │   └── Histórico de notificações
+   ├── Filtros por favoritos
+   │   ├── Apenas favoritos
+   │   ├── Favoritos online
+   │   ├── Favoritos offline
+   │   └── Ordenação
+   └── Estatísticas de favoritos
+       ├── Total de favoritos
+       ├── Favoritos online
+       ├── Favoritos offline
+       ├── Favoritos mais assistidos
+       └── Gráficos de atividade
+
+9. SISTEMA DE DOAÇÕES
+   ├── Doações em tempo real
+   │   ├── Notificação instantânea
+   │   ├── Som de alerta
+   │   ├── Pop-up na tela
+   │   ├── Nome do doador
+   │   ├── Valor da doação
+   │   └── Mensagem (se houver)
+   ├── Sistema de alertas
+   │   ├── Configurações de alerta
+   │   ├── Sons personalizados
+   │   ├── Duração do alerta
+   │   ├── Posição na tela
+   │   └── Opções de exibição
+   ├── Histórico completo
+   │   ├── Data e hora
+   │   ├── Doador
+   │   ├── Valor
+   │   ├── Mensagem
+   │   ├── Status
+   │   └── Comprovante
+   ├── Estatísticas detalhadas
+   │   ├── Total de doações
+   │   ├── Média de doações
+   │   ├── Maior doação
+   │   ├── Doações por período
+   │   ├── Gráficos
+   │   └── Relatórios
+   ├── Configurações personalizadas
+   │   ├── Valores mínimos
+   │   ├── Valores máximos
+   │   ├── Mensagens padrão
+   │   ├── Alertas personalizados
+   │   └── Privacidade
+   ├── Doações anônimas ou com nome
+   │   ├── Opção anônima
+   │   ├── Nome de exibição
+   │   ├── Configuração padrão
+   │   └── Alteração por doação
+   ├── Sistema de mensagens com doações
+   │   ├── Campo de mensagem
+   │   ├── Limite de caracteres
+   │   ├── Filtros de conteúdo
+   │   ├── Mensagens proibidas
+   │   └── Moderação
+   └── Diferentes valores de doação
+       ├── Valores pré-definidos
+       ├── Valor personalizado
+       ├── Valores sugeridos
+       ├── Valores populares
+       └── Valores especiais
+
+================================================================================
+🎮 SISTEMA DE XP E PARTICIPAÇÃO EM EVENTOS
+================================================================================
+
+COMO FUNCIONA O SISTEMA DE XP:
+
+SISTEMA DE PONTOS XP:
+   ├── XP BASE
+   │   ├── Login diário: +5 XP
+   │   ├── Comentário: +1 XP (máx. 10 por dia)
+   │   ├── Like: +1 XP (máx. 10 por dia)
+   │   ├── Compartilhamento: +5 XP (máx. 5 por dia)
+   │   └── Doação: +10 XP (máx. 10 por dia)
+   ├── XP DE EVENTOS
+   │   ├── Participação mínima: +25 XP
+   │   ├── Participação completa: +100 XP
+   │   ├── Interação ativa: +50 XP
+   │   └── Organização: +200 XP
+   └── XP ESPECIAL
+       ├── Primeira vez: +100 XP bônus
+       ├── Consecutivo: +25 XP por evento
+       ├── Especial: +300 XP
+       └── Lendário: +1000 XP
+
+TIPOS DE EVENTOS E XP:
+
+EVENTOS PEQUENOS (1-2h): +50 XP
+   ├── Lives especiais
+   ├── Q&A com streamers
+   ├── Workshops rápidos
+   └── Encontros da comunidade
+
+EVENTOS MÉDIOS (3-5h): +100 XP
+   ├── Maratonas de stream
+   ├── Competições pequenas
+   ├── Festivais de conteúdo
+   └── Workshops completos
+
+EVENTOS GRANDES (6-8h): +200 XP
+   ├── Maratonas longas
+   ├── Competições grandes
+   ├── Festivais especiais
+   └── Eventos temáticos
+
+MARATONAS (12h+): +500 XP
+   ├── Maratonas de 24h
+   ├── Festivais de fim de semana
+   ├── Competições especiais
+   └── Eventos lendários
+
+EVENTOS ESPECIAIS: +300 XP
+   ├── Lançamentos
+   ├── Anúncios importantes
+   ├── Parcerias especiais
+   └── Eventos únicos
+
+COMPETIÇÕES: +400 XP
+   ├── Torneios
+   ├── Desafios
+   ├── Rankings especiais
+   └── Competições criativas
+
+FESTIVAIS: +600 XP
+   ├── Festivais de conteúdo
+   ├── Festivais de comunidade
+   ├── Festivais sazonais
+   └── Festivais especiais
+
+EVENTOS LENDÁRIOS: +1000 XP
+   ├── Eventos únicos
+   ├── Maratonas especiais
+   ├── Competições lendárias
+   └── Festivais épicos
+
+BÔNUS DE PARTICIPAÇÃO:
+
+PRIMEIRA PARTICIPAÇÃO: +50 XP bônus
+   ├── Primeiro evento do usuário
+   ├── Bônus único por tipo de evento
+   ├── Notificação especial
+   └── Badge de "Primeira Participação"
+
+PARTICIPAÇÃO CONSECUTIVA: +25 XP por evento
+   ├── Participar em 2 eventos seguidos
+   ├── Participar em 5 eventos seguidos
+   ├── Participar em 10 eventos seguidos
+   └── Participar em 20 eventos seguidos
+
+PARTICIPAÇÃO COMPLETA: +100 XP bônus
+   ├── Ficar até o final do evento
+   ├── Participar de todas as atividades
+   ├── Interagir ativamente
+   └── Completar desafios do evento
+
+PARTICIPAÇÃO ATIVA: +75 XP bônus
+   ├── Comentar durante o evento
+   ├── Fazer perguntas
+   ├── Compartilhar o evento
+   └── Interagir com outros participantes
+
+NOTIFICAÇÕES E FEEDBACK:
+
+NOTIFICAÇÕES INSTANTÂNEAS:
+   ├── "Você ganhou +100 XP por participar!"
+   ├── "Bônus de participação consecutiva: +25 XP"
+   ├── "Parabéns! Você completou o evento!"
+   ├── "XP total ganho: 250 XP"
+   └── "Novo nível alcançado!"
+
+PROGRESSO VISUAL:
+   ├── Barra de progresso de XP
+   ├── Contador de eventos participados
+   ├── Lista de eventos completados
+   ├── Ranking de participantes
+   └── Histórico de XP ganho
+
+BENEFÍCIOS DO XP:
+
+SUBIÇÃO DE NÍVEL:
+   ├── Nível 1-10: +100 XP por nível
+   ├── Nível 11-25: +200 XP por nível
+   ├── Nível 26-50: +300 XP por nível
+   ├── Nível 51-75: +400 XP por nível
+   └── Nível 76-100: +500 XP por nível
+
+SISTEMA DE RANKING:
+   ├── Ranking por XP total
+   ├── Ranking por eventos participados
+   ├── Ranking por participação ativa
+   └── Destaque na comunidade
+
+RECONHECIMENTO:
+   ├── Badge de nível no perfil
+   ├── Contador de XP visível
+   ├── Histórico de participação
+   └── Conquistas por eventos
+
+================================================================================
+💰 SISTEMA DE CASHBACK VIA CUPONS DISCORD
+================================================================================
+
+FLUXO DO SISTEMA:
+   ├── Usuário compra em cidade FiveM
+   ├── Recebe cupom único via bot Discord
+   ├── Resgata cupom no site SementesPLAY
+   ├── Sementes ficam pendentes
+   ├── Dono da cidade paga o cashback
+   ├── 10% vai para manutenção do site
+   └── 90% fica disponível para doações
+
+SISTEMA DE CUPONS DISCORD:
+
+GERAÇÃO DE CUPONS:
+   ├── BOT DISCORD
+   │   ├── Comando: !cashback [valor] [%] [@usuario]
+   │   ├── Exemplo: !cashback 100 10 @usuario
+   │   ├── Geração automática de cupom único
+   │   └── Notificação instantânea no Discord
+   ├── FORMATO DO CUPOM
+   │   ├── Padrão: SEMENTES-XXXX-XXXX-XXXX
+   │   ├── Exemplo: SEMENTES-A1B2-C3D4-E5F6
+   │   ├── Código alfanumérico único
+   │   └── Válido por 30 dias
+   ├── INFORMAÇÕES DO CUPOM
+   │   ├── Código único
+   │   ├── Valor da compra original
+   │   ├── Percentual de cashback (5%, 10%, 15%)
+   │   ├── Valor do cashback em reais
+   │   ├── Data de geração
+   │   ├── Data de validade
+   │   ├── Cidade FiveM de origem
+   │   └── Status (pendente/resgatado/expirado)
+   └── COMANDOS DO BOT
+       ├── !cashback [valor] [%] [@usuario] - Gerar cupom
+       ├── !cupons [@usuario] - Ver cupons do usuário
+       └── !status [cupom] - Verificar status do cupom
+
+SISTEMA DE RESGATE NO SITE:
+
+PÁGINA DE RESGATE:
+   ├── URL: sementesplay.com/cashback
+   ├── Campo para digitar cupom
+   ├── Botão "Resgatar Cashback"
+   ├── Validação em tempo real
+   └── Feedback visual do processo
+
+VALIDAÇÃO DO CUPOM:
+   ├── Verificar se cupom existe no banco
+   ├── Verificar se não foi resgatado
+   ├── Verificar se não expirou
+   ├── Verificar se usuário é o dono
+   ├── Calcular valor em sementes (1 real = 100 sementes)
+   └── Aplicar regras de cashback
+
+PROCESSO DE RESGATE:
+   ├── Usuário digita cupom
+   ├── Sistema valida cupom
+   ├── Sistema calcula sementes
+   ├── Sementes ficam com status "PENDENTE"
+   ├── Sistema notifica dono da cidade
+   └── Usuário vê confirmação de resgate
+
+EXEMPLO DE RESGATE:
+   ├── Compra: R$ 100,00
+   ├── Cashback: 10% (R$ 10,00)
+   ├── Sementes: 1.000 sementes
+   ├── Status: Pendente
+   ├── Manutenção (10%): 100 sementes
+   └── Disponível para doação: 900 sementes
+
+SISTEMA DE PAGAMENTO DOS DONOS DE CIDADES:
+
+PAINEL DO DONO DA CIDADE:
+   ├── URL: sementesplay.com/admin/cidades
+   ├── Login específico para donos de cidades
+   ├── Dashboard com cupons pendentes
+   ├── Valor total pendente
+   ├── Lista de cupons com status
+   └── Botão para marcar como pagos
+
+INFORMAÇÕES DO PAINEL:
+   ├── Cupons Pendentes: [número]
+   ├── Valor Total Pendente: R$ [valor]
+   ├── Lista detalhada de cupons
+   ├── Status de cada cupom
+   ├── Data de geração
+   └── Valor individual de cada cupom
+
+PROCESSO DE PAGAMENTO:
+   ├── Dono acessa painel
+   ├── Vê todos os cupons pendentes
+   ├── Faz pagamento via PIX/transferência
+   ├── Marca cupons como "PAGOS"
+   ├── Sistema libera sementes para usuários
+   └── Notificação automática para usuários
+
+SISTEMA DE DISTRIBUIÇÃO DE SEMENTES:
+
+APÓS PAGAMENTO CONFIRMADO:
+   ├── 10% vai para manutenção do site
+   ├── 90% fica disponível para doações
+   ├── Sementes são liberadas automaticamente
+   ├── Usuário recebe notificação
+   └── Status muda para "DISPONÍVEL"
+
+EXEMPLO DE DISTRIBUIÇÃO:
+   ├── Cashback: R$ 100,00
+   ├── Sementes totais: 10.000
+   ├── Manutenção (10%): 1.000 sementes
+   ├── Disponível para doação: 9.000 sementes
+   ├── Status: Disponível
+   └── Notificação: "Cashback liberado! 9.000 sementes disponíveis."
+
+SISTEMA DE DOAÇÕES COM SEMENTES:
+
+PÁGINA DE DOAÇÃO:
+   ├── Seção "Doar Sementes" no dashboard
+   ├── Lista de influenciadores disponíveis
+   ├── Campo para quantidade de sementes
+   ├── Campo para mensagem (opcional)
+   ├── Valores sugeridos: 100, 250, 500, 1000, 2500, 5000
+   └── Botão "Doar Sementes"
+
+VALORES DE DOAÇÃO:
+   ├── Mínimo: 100 sementes
+   ├── Máximo: 5.000 sementes por doação
+   ├── Valores pré-definidos
+   ├── Campo para valor personalizado
+   └── Validação de saldo disponível
+
+INTEGRAÇÃO COM SISTEMA EXISTENTE:
+
+DASHBOARD DO USUÁRIO:
+   ├── Seção "Meu Cashback"
+   ├── Sementes Pendentes
+   ├── Sementes Disponíveis
+   ├── Total Resgatado
+   ├── Histórico de cupons
+   └── Status de cada cupom
+
+HISTÓRICO DE CUPONS:
+   ├── Código do cupom
+   ├── Data de geração
+   ├── Valor da compra
+   ├── Percentual de cashback
+   ├── Valor do cashback
+   ├── Status (Pendente/Pago/Expirado)
+   └── Data de pagamento (se pago)
+
+NOTIFICAÇÕES AUTOMÁTICAS:
+   ├── "Cupom gerado! Resgate em sementesplay.com"
+   ├── "Cashback resgatado! Aguardando pagamento."
+   ├── "Pagamento confirmado! Sementes liberadas!"
+   ├── "Doação realizada com sucesso!"
+   └── "Cupom expirou! Resgate novamente."
+
+SEGURANÇA E VALIDAÇÃO:
+
+PROTEÇÕES:
+   ├── Cupons únicos e não reutilizáveis
+   ├── Validação de IP para evitar fraudes
+   ├── Rate limiting para resgates
+   ├── Logs detalhados de todas as transações
+   ├── Sistema anti-fraude para detectar padrões suspeitos
+   └── Verificação de autenticidade dos donos de cidades
+
+VALIDAÇÕES:
+   ├── Cupom existe no banco
+   ├── Cupom não foi resgatado
+   ├── Cupom não expirou
+   ├── Usuário é o dono do cupom
+   ├── Valor do cashback é válido
+   └── Dono da cidade é autêntico
+
+SISTEMA DE RELATÓRIOS:
+
+RELATÓRIOS PARA DONOS DE CIDADES:
+   ├── Total de cupons gerados
+   ├── Total de cupons resgatados
+   ├── Total de cupons pagos
+   ├── Valor total em cashback
+   ├── Histórico de pagamentos
+   └── Estatísticas por período
+
+RELATÓRIOS PARA ADMINISTRADORES:
+   ├── Total de cupons no sistema
+   ├── Total de cashback processado
+   ├── Receita de manutenção (10%)
+   ├── Cupons expirados
+   ├── Fraudes detectadas
+   └── Performance do sistema
+
+INTEGRAÇÃO COM DISCORD:
+
+BOT DISCORD DETALHADO:
+   ├── COMANDOS PRINCIPAIS
+   │   ├── !cashback [valor] [%] [@usuario]
+   │   ├── !cupons [@usuario]
+   │   ├── !status [cupom]
+   │   └── !ajuda
+   ├── RESPOSTA DO BOT
+   │   ├── 🎮 CASHBACK GERADO!
+   │   ├── 💰 Valor da compra: R$ [valor]
+   │   ├── 🎯 Cashback: [%]% (R$ [valor])
+   │   ├── 🎫 Cupom: [código]
+   │   ├── ⏰ Válido até: [data]
+   │   └── 🌐 Resgate em: sementesplay.com/cashback
+   ├── CONFIGURAÇÕES
+   │   ├── Percentuais de cashback configuráveis
+   │   ├── Validade dos cupons ajustável
+   │   ├── Limites por usuário
+   │   └── Logs de todas as operações
+   └── SEGURANÇA
+       ├── Verificação de permissões
+       ├── Rate limiting por usuário
+       ├── Logs de auditoria
+       └── Proteção contra spam
+
+================================================================================
+🎯 SISTEMA DE CONVITES E EMOJIS ESPECIAIS
+================================================================================
+
+COMO FUNCIONA O SISTEMA DE CONVITES:
+
+LINK DE CONVITE PERSONALIZADO:
+   ├── FORMATO DO LINK
+   │   ├── sementesplay.com/convite/USER123
+   │   ├── sementesplay.com/convite/ABC123
+   │   ├── Link único para cada usuário
+   │   └── Rastreamento automático
+   ├── CÓDIGO DE CONVITE
+   │   ├── Código alfanumérico único
+   │   ├── 6 caracteres (ex: ABC123)
+   │   ├── Fácil de compartilhar
+   │   └── Válido por tempo indeterminado
+   ├── QR CODE
+   │   ├── QR Code personalizado
+   │   ├── Escaneável por celular
+   │   ├── Compartilhamento rápido
+   │   └── Disponível no perfil do usuário
+   └── RASTREAMENTO
+       ├── Contador de convites enviados
+       ├── Contador de convites aceitos
+       ├── Lista de amigos convidados
+       └── Status de cada convite
+
+EMOJIS ESPECIAIS DETALHADOS:
+
+🌱 SEMENTINHA (1 convite aceito)
+   ├── Descrição: "Primeira semente plantada!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Pulsante
+   └── Cor: Verde claro
+
+🌿 BROTO (3 convites aceitos)
+   ├── Descrição: "Crescendo junto com a comunidade!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Crescimento
+   └── Cor: Verde médio
+
+🌺 FLOR (5 convites aceitos)
+   ├── Descrição: "Florescendo conexões!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Florescendo
+   └── Cor: Rosa/Verde
+
+🌾 TRIGO (10 convites aceitos)
+   ├── Descrição: "Colhendo os frutos!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Ondulante
+   └── Cor: Dourado
+
+🚜 TRATOR (15 convites aceitos)
+   ├── Descrição: "Trabalhando pela comunidade!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Movimento
+   └── Cor: Laranja
+
+👑 COROA (25 convites aceitos)
+   ├── Descrição: "Rei dos convites!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Brilhante
+   └── Cor: Dourado
+
+✨ BRILHO (50 convites aceitos)
+   ├── Descrição: "Brilhando na comunidade!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Piscante
+   └── Cor: Dourado brilhante
+
+🏆 TROFÉU (100 convites aceitos)
+   ├── Descrição: "Campeão dos convites!"
+   ├── Uso: Chat, comentários, perfil
+   ├── Animação: Rotativo
+   └── Cor: Dourado com brilhos
+
+NOTIFICAÇÕES E FEEDBACK:
+   ├── CONVITE ACEITO
+   │   ├── "Seu convite foi aceito por [nome]!"
+   │   ├── "Novo emoji desbloqueado: [emoji]"
+   │   ├── "Faltam X convites para o próximo emoji"
+   │   └── "Parabéns! Você desbloqueou todos os emojis!"
+   ├── PROGRESSO VISUAL
+   │   ├── Barra de progresso para próximo emoji
+   │   ├── Contador de convites aceitos
+   │   ├── Lista de emojis desbloqueados
+   │   └── Ranking de convidadores
+   └── COMPARTILHAMENTO
+       ├── Botão "Convidar Amigos"
+       ├── Compartilhar link via WhatsApp
+       ├── Compartilhar código via Instagram
+       └── Compartilhar QR Code
+
+BENEFÍCIOS ESPECIAIS:
+   ├── EMOJIS EXCLUSIVOS
+   │   ├── Emojis únicos no chat
+   │   ├── Emojis especiais nos comentários
+   │   ├── Emojis únicos no perfil
+   │   └── Emojis animados
+   ├── STATUS ESPECIAL
+   │   ├── Status "Convidador Ativo"
+   │   ├── Destaque na comunidade
+   │   ├── Acesso antecipado a recursos
+   │   └── Badge especial de convidador
+   └── PRIVILÉGIOS
+       ├── Emojis exclusivos em eventos
+       ├── Emojis especiais em lives
+       ├── Emojis únicos em promoções
+       └── Emojis lendários em competições
+
+================================================================================
+🔄 SISTEMA DE COMPARTILHAMENTO E BADGES
+================================================================================
+
+COMO FUNCIONA O COMPARTILHAMENTO:
+
+BOTÃO DE COMPARTILHAMENTO:
+   ├── LOCALIZAÇÃO
+   │   ├── Botão "Compartilhar" em cada post
+   │   ├── Botão "Compartilhar" em cada notícia
+   │   ├── Botão "Compartilhar" em cada evento
+   │   └── Botão "Compartilhar" em cada promoção
+   ├── OPÇÕES DE COMPARTILHAMENTO
+   │   ├── WhatsApp (link direto)
+   │   ├── Instagram Stories
+   │   ├── Twitter/X
+   │   ├── Facebook
+   │   ├── Telegram
+   │   └── Copiar link
+   ├── LINK PERSONALIZADO
+   │   ├── URL única para cada usuário
+   │   ├── Rastreamento automático
+   │   ├── Contador de cliques
+   │   └── Analytics de compartilhamento
+
+RASTREAMENTO AUTOMÁTICO:
+   ├── SISTEMA DE VERIFICAÇÃO
+   │   ├── Verificação de cliques no link
+   │   ├── Verificação de compartilhamentos nas redes
+   │   ├── Verificação de novos usuários via link
+   │   └── Sistema anti-fraude
+   ├── CONTADORES
+   │   ├── Total de compartilhamentos por usuário
+   │   ├── Compartilhamentos por rede social
+   │   ├── Compartilhamentos por tipo de conteúdo
+   │   └── Compartilhamentos por período
+
+NOTIFICAÇÕES E FEEDBACK:
+   ├── NOTIFICAÇÕES INSTANTÂNEAS
+   │   ├── "Compartilhamento realizado com sucesso!"
+   │   ├── "Você ganhou o badge Sementinha!"
+   │   ├── "Faltam 3 compartilhamentos para o próximo badge"
+   │   └── "Parabéns! Você é agora um Germinador!"
+   ├── PROGRESSO VISUAL
+   │   ├── Barra de progresso para próximo badge
+   │   ├── Contador de compartilhamentos
+   │   ├── Lista de badges conquistados
+   │   └── Ranking de compartilhadores
+
+BENEFÍCIOS DOS BADGES:
+   ├── VISIBILIDADE
+   │   ├── Badge visível no perfil do usuário
+   │   ├── Badge visível nos comentários
+   │   ├── Badge visível nas listas de ranking
+   │   └── Badge visível em eventos especiais
+   ├── PRIVILÉGIOS
+   │   ├── Acesso antecipado a novos recursos
+   │   ├── Recursos exclusivos de perfil
+   │   ├── Emojis especiais no chat
+   │   └── Temas personalizados
+   ├── DESTAQUES
+   │   ├── Destaque na página principal
+   │   ├── Destaque na seção de comunidade
+   │   ├── Destaque em eventos especiais
+   │   └── Status especial na plataforma
+
+================================================================================
+🎁 SISTEMA DE PROMOÇÕES ATIVAS (SEM DINHEIRO)
+================================================================================
+
+PROMOÇÕES DE ENGAJAMENTO:
+   ├── COMPARTILHAMENTO
+   │   ├── "Compartilhe e ganhe badge exclusivo"
+   │   │   ├── MECANISMO DE COMPARTILHAMENTO:
+   │   │   │   ├── Botão "Compartilhar" em cada post
+   │   │   │   ├── Opções: WhatsApp, Instagram, Twitter, Facebook
+   │   │   │   ├── Link personalizado com ID do usuário
+   │   │   │   └── Rastreamento automático de compartilhamentos
+   │   │   ├── BADGES PROGRESSIVOS:
+   │   │   │   ├── BADGE "SEMENTINHA" 🌱
+   │   │   │   │   ├── Requisito: Primeiro compartilhamento
+   │   │   │   │   ├── Descrição: "A primeira semente foi plantada!"
+   │   │   │   │   ├── Cor: Verde claro
+   │   │   │   │   └── Benefício: Acesso a emojis básicos
+   │   │   │   ├── BADGE "GERMINADOR" 🌿
+   │   │   │   │   ├── Requisito: Compartilhe 5 posts
+   │   │   │   │   ├── Descrição: "As sementes começam a brotar!"
+   │   │   │   │   ├── Cor: Verde médio
+   │   │   │   │   └── Benefício: Emojis especiais + tema verde
+   │   │   │   ├── BADGE "CULTIVADOR" 🌱
+   │   │   │   │   ├── Requisito: Compartilhe 25 posts
+   │   │   │   │   ├── Descrição: "Cultivando conhecimento e comunidade!"
+   │   │   │   │   ├── Cor: Verde escuro
+   │   │   │   │   └── Benefício: Badge animado + destaque em comentários
+   │   │   │   ├── BADGE "JARDINEIRO" 🌺
+   │   │   │   │   ├── Requisito: Compartilhe 50 posts
+   │   │   │   │   ├── Descrição: "Criando jardins de conexões!"
+   │   │   │   │   ├── Cor: Rosa/Verde
+   │   │   │   │   └── Benefício: Tema personalizado + emojis exclusivos
+   │   │   │   ├── BADGE "AGRICULTOR" 🌾
+   │   │   │   │   ├── Requisito: Compartilhe 100 posts
+   │   │   │   │   ├── Descrição: "Colhendo os frutos da comunidade!"
+   │   │   │   │   ├── Cor: Dourado
+   │   │   │   │   └── Benefício: Status VIP + acesso antecipado
+   │   │   │   ├── BADGE "FAZENDEIRO" 🚜
+   │   │   │   │   ├── Requisito: Compartilhe 250 posts
+   │   │   │   │   ├── Descrição: "Administrando uma fazenda de conexões!"
+   │   │   │   │   ├── Cor: Prata
+   │   │   │   │   └── Benefício: Badge brilhante + destaque especial
+   │   │   │   ├── BADGE "SEMENTES MASTER" 👑
+   │   │   │   │   ├── Requisito: Compartilhe 500 posts
+   │   │   │   │   ├── Descrição: "Mestre das sementes e conexões!"
+   │   │   │   │   ├── Cor: Roxo/Royal
+   │   │   │   │   └── Benefício: Coroa animada + recursos exclusivos
+   │   │   │   └── BADGE "LORDE DAS SEMENTES" 👑✨
+   │   │   │       ├── Requisito: Compartilhe 1000 posts
+   │   │   │       ├── Descrição: "Lorde supremo da comunidade SementesPLAY!"
+   │   │   │       ├── Cor: Dourado brilhante
+   │   │   │       └── Benefício: Badge lendário + todos os privilégios
+   │   │   ├── NOTIFICAÇÕES:
+   │   │   │   ├── Notificação instantânea ao compartilhar
+   │   │   │   ├── Parabéns ao ganhar novo badge
+   │   │   │   ├── Progresso para próximo badge
+   │   │   │   └── Compartilhamento no perfil do usuário
+   │   │   └── BENEFÍCIOS:
+   │   │       ├── Badge visível no perfil
+   │   │       ├── Destaque na comunidade
+   │   │       ├── Acesso a recursos exclusivos
+   │   │       └── Status especial na plataforma
+   │   ├── "Convide amigos e desbloqueie emojis especiais"
+   │   │   ├── MECANISMO DE CONVITE:
+   │   │   │   ├── Link de convite personalizado
+   │   │   │   ├── Código de convite único
+   │   │   │   ├── QR Code para compartilhamento
+   │   │   │   └── Rastreamento de convites aceitos
+   │   │   ├── EMOJIS ESPECIAIS POR CONVITES:
+   │   │   │   ├── 1 convite aceito: 🌱 (sementinha)
+   │   │   │   ├── 3 convites aceitos: 🌿 (broto)
+   │   │   │   ├── 5 convites aceitos: 🌺 (flor)
+   │   │   │   ├── 10 convites aceitos: 🌾 (trigo)
+   │   │   │   ├── 15 convites aceitos: 🚜 (trator)
+   │   │   │   ├── 25 convites aceitos: 👑 (coroa)
+   │   │   │   ├── 50 convites aceitos: ✨ (brilho)
+   │   │   │   └── 100 convites aceitos: 🏆 (troféu)
+   │   │   ├── NOTIFICAÇÕES:
+   │   │   │   ├── "Seu convite foi aceito!"
+   │   │   │   ├── "Novo emoji desbloqueado!"
+   │   │   │   ├── "Faltam X convites para o próximo emoji"
+   │   │   │   └── "Parabéns! Você desbloqueou todos os emojis!"
+   │   │   └── BENEFÍCIOS:
+   │   │       ├── Emojis exclusivos no chat
+   │   │       ├── Emojis especiais nos comentários
+   │   │       ├── Emojis únicos no perfil
+   │   │       └── Status de "Convidador Ativo"
+   │   ├── "Compartilhe nas redes sociais e ganhe XP extra"
+   │   └── "Viralize um post e ganhe destaque por 24h"
+   ├── PARTICIPAÇÃO EM EVENTOS
+   │   ├── "Participe de eventos e ganhe XP extra"
+   │   ├── "Complete desafios e ganhe títulos únicos"
+   │   └── "Assista lives especiais e ganhe badges"
+   └── INTERAÇÃO COMUNIDADE
+       ├── "Comente em 10 posts e ganhe status ativo"
+       ├── "Dê like em 20 posts e ganhe badge de fã"
+       ├── "Siga 5 novos usuários e ganhe emoji especial"
+       └── "Participe de 3 discussões e ganhe título de membro"
+
+PROMOÇÕES DE COMUNIDADE:
+   ├── FEEDBACK E SUGESTÕES
+   │   ├── "Sugira melhorias e ganhe acesso beta"
+   │   ├── "Reporte bugs e ganhe badge de tester"
+   │   └── "Participe de pesquisas e ganhe recursos especiais"
+   └── ORGANIZAÇÃO DE EVENTOS
+       ├── "Organize eventos e ganhe destaque na plataforma"
+       │   ├── SISTEMA DE ORGANIZAÇÃO DE EVENTOS:
+       │   │   ├── FERRAMENTAS DE CRIAÇÃO
+       │   │   │   ├── Formulário de criação de eventos
+       │   │   │   │   ├── Nome do evento
+       │   │   │   │   ├── Descrição detalhada
+       │   │   │   │   ├── Data e horário
+       │   │   │   │   ├── Duração estimada
+       │   │   │   │   ├── Tipo de evento (Live, Competição, Workshop, etc.)
+       │   │   │   │   ├── Plataforma (Twitch, TikTok, YouTube, Instagram)
+       │   │   │   │   ├── Link do evento
+       │   │   │   │   ├── Imagem/banner do evento
+       │   │   │   │   ├── Regras e regulamentos
+       │   │   │   │   ├── Prêmios e recompensas
+       │   │   │   │   ├── Limite de participantes
+       │   │   │   │   └── Configurações de privacidade
+       │   │   │   ├── TIPOS DE EVENTOS DISPONÍVEIS:
+       │   │   │   │   ├── LIVES ESPECIAIS
+       │   │   │   │   │   ├── Maratonas de stream
+       │   │   │   │   │   ├── Lives temáticas
+       │   │   │   │   │   ├── Lives colaborativas
+       │   │   │   │   │   ├── Lives educativas
+       │   │   │   │   │   ├── Lives de entretenimento
+       │   │   │   │   │   └── Lives especiais
+       │   │   │   │   ├── COMPETIÇÕES
+       │   │   │   │   │   ├── Torneios de jogos
+       │   │   │   │   │   ├── Competições de criatividade
+       │   │   │   │   │   ├── Desafios de comunidade
+       │   │   │   │   │   ├── Competições de talento
+       │   │   │   │   │   ├── Batalhas de streamers
+       │   │   │   │   │   └── Competições especiais
+       │   │   │   │   ├── WORKSHOPS
+       │   │   │   │   │   ├── Workshops de streaming
+       │   │   │   │   │   ├── Workshops de edição
+       │   │   │   │   │   ├── Workshops de marketing
+       │   │   │   │   │   ├── Workshops de networking
+       │   │   │   │   │   ├── Workshops técnicos
+       │   │   │   │   │   └── Workshops criativos
+       │   │   │   │   ├── FESTIVAIS
+       │   │   │   │   │   ├── Festivais de conteúdo
+       │   │   │   │   │   ├── Festivais de comunidade
+       │   │   │   │   │   ├── Festivais sazonais
+       │   │   │   │   │   ├── Festivais temáticos
+       │   │   │   │   │   ├── Festivais de música
+       │   │   │   │   │   └── Festivais especiais
+       │   │   │   │   ├── ENCONTROS
+       │   │   │   │   │   ├── Encontros da comunidade
+       │   │   │   │   │   ├── Networking events
+       │   │   │   │   │   ├── Meet & Greet
+       │   │   │   │   │   ├── Conferências
+       │   │   │   │   │   ├── Seminários
+       │   │   │   │   │   └── Encontros especiais
+       │   │   │   │   └── EVENTOS ESPECIAIS
+       │   │   │   │       ├── Lançamentos
+       │   │   │   │       ├── Anúncios importantes
+       │   │   │   │       ├── Parcerias especiais
+       │   │   │   │       ├── Eventos únicos
+       │   │   │   │       ├── Eventos colaborativos
+       │   │   │   │       └── Eventos lendários
+       │   │   │   ├── FERRAMENTAS DE GESTÃO
+       │   │   │   │   ├── Dashboard do organizador
+       │   │   │   │   │   ├── Lista de participantes
+       │   │   │   │   │   ├── Estatísticas do evento
+       │   │   │   │   │   ├── Comentários e feedback
+       │   │   │   │   │   ├── Configurações do evento
+       │   │   │   │   │   ├── Edição de informações
+       │   │   │   │   │   ├── Cancelamento/adiamento
+       │   │   │   │   │   └── Relatórios detalhados
+       │   │   │   │   ├── SISTEMA DE INSCRIÇÕES
+       │   │   │   │   │   ├── Formulário de inscrição
+       │   │   │   │   │   ├── Lista de espera
+       │   │   │   │   │   ├── Confirmação automática
+       │   │   │   │   │   ├── Notificações de participantes
+       │   │   │   │   │   ├── Controle de capacidade
+       │   │   │   │   │   ├── Filtros de participantes
+       │   │   │   │   │   └── Gestão de permissões
+       │   │   │   │   ├── SISTEMA DE COMUNICAÇÃO
+       │   │   │   │   │   ├── Anúncios do evento
+       │   │   │   │   │   ├── Notificações push
+       │   │   │   │   │   ├── Email marketing
+       │   │   │   │   │   ├── Chat do evento
+       │   │   │   │   │   ├── Fórum de discussão
+       │   │   │   │   │   ├── FAQ do evento
+       │   │   │   │   │   └── Suporte ao participante
+       │   │   │   │   └── SISTEMA DE PROMOÇÃO
+       │   │   │   │       ├── Compartilhamento automático
+       │   │   │   │       ├── Banner personalizado
+       │   │   │   │       ├── Link de convite
+       │   │   │   │       ├── QR Code do evento
+       │   │   │   │       ├── Integração com redes sociais
+       │   │   │   │       ├── Campanhas de marketing
+       │   │   │   │       └── Parcerias promocionais
+       │   │   ├── DESTAQUE NA PLATAFORMA:
+       │   │   │   ├── BADGES EXCLUSIVOS
+       │   │   │   │   ├── 🎪 "ORGANIZADOR INICIANTE" - 1 evento criado
+       │   │   │   │   ├── 🎭 "ORGANIZADOR ATIVO" - 5 eventos criados
+       │   │   │   │   ├── 🎨 "CRIADOR DE EVENTOS" - 10 eventos criados
+       │   │   │   │   ├── 🏆 "ORGANIZADOR PREMIUM" - 25 eventos criados
+       │   │   │   │   ├── 👑 "ORGANIZADOR MASTER" - 50 eventos criados
+       │   │   │   │   ├── ⭐ "ORGANIZADOR LEGENDÁRIO" - 100 eventos criados
+       │   │   │   │   ├── 🌟 "ORGANIZADOR ÉPICO" - 200 eventos criados
+       │   │   │   │   └── 💫 "ORGANIZADOR LENDÁRIO" - 500 eventos criados
+       │   │   │   ├── EMOJIS EXCLUSIVOS
+       │   │   │   │   ├── 🎪 (Organizador Iniciante)
+       │   │   │   │   ├── 🎭 (Organizador Ativo)
+       │   │   │   │   ├── 🎨 (Criador de Eventos)
+       │   │   │   │   ├── 🏆 (Organizador Premium)
+       │   │   │   │   ├── 👑 (Organizador Master)
+       │   │   │   │   ├── ⭐ (Organizador Lendário)
+       │   │   │   │   ├── 🌟 (Organizador Épico)
+       │   │   │   │   └── 💫 (Organizador Lendário)
+       │   │   │   ├── TEMAS EXCLUSIVOS
+       │   │   │   │   ├── Tema "Organizador" - Roxo com detalhes dourados
+       │   │   │   │   ├── Tema "Criador" - Azul com detalhes prateados
+       │   │   │   │   ├── Tema "Premium" - Dourado com detalhes negros
+       │   │   │   │   ├── Tema "Master" - Preto com detalhes dourados
+       │   │   │   │   ├── Tema "Lendário" - Arco-íris com brilhos
+       │   │   │   │   ├── Tema "Épico" - Roxo escuro com estrelas
+       │   │   │   │   ├── Tema "Lendário" - Dourado brilhante
+       │   │   │   │   └── Tema "Supremo" - Preto com arco-íris
+       │   │   │   ├── TÍTULOS EXCLUSIVOS
+       │   │   │   │   ├── "Organizador Iniciante"
+       │   │   │   │   ├── "Organizador Ativo"
+       │   │   │   │   ├── "Criador de Eventos"
+       │   │   │   │   ├── "Organizador Premium"
+       │   │   │   │   ├── "Organizador Master"
+       │   │   │   │   ├── "Organizador Lendário"
+       │   │   │   │   ├── "Organizador Épico"
+       │   │   │   │   └── "Organizador Supremo"
+       │   │   │   ├── DESTAQUES ESPECIAIS
+       │   │   │   │   ├── Seção "Eventos em Destaque" na página principal
+       │   │   │   │   ├── Banner especial para organizadores
+       │   │   │   │   ├── Destaque na seção de eventos
+       │   │   │   │   ├── Prioridade em listagens
+       │   │   │   │   ├── Destaque em notificações
+       │   │   │   │   ├── Destaque em rankings
+       │   │   │   │   ├── Destaque em promoções
+       │   │   │   │   └── Destaque em eventos especiais
+       │   │   │   ├── PRIVILÉGIOS EXCLUSIVOS
+       │   │   │   │   ├── Acesso antecipado a recursos de eventos
+       │   │   │   │   ├── Ferramentas avançadas de organização
+       │   │   │   │   ├── Suporte prioritário para eventos
+       │   │   │   │   ├── Parcerias promocionais
+       │   │   │   │   ├── Recursos exclusivos de marketing
+       │   │   │   │   ├── Integração com redes sociais
+       │   │   │   │   ├── Analytics avançados
+       │   │   │   │   └── Status VIP na comunidade
+       │   │   │   ├── RECURSOS DE PERFIL EXCLUSIVOS
+       │   │   │   │   ├── Seção "Meus Eventos" no perfil
+       │   │   │   │   ├── Contador de eventos criados
+       │   │   │   │   ├── Lista de eventos ativos
+       │   │   │   │   ├── Histórico de eventos
+       │   │   │   │   ├── Estatísticas de organização
+       │   │   │   │   ├── Gráficos de performance
+       │   │   │   │   ├── Ranking de organizadores
+       │   │   │   │   └── Destaque especial no perfil
+       │   │   │   └── RECOMPENSAS ESPECIAIS
+       │   │   │       ├── XP extra por evento criado
+       │   │   │       ├── Acesso a recursos exclusivos
+       │   │   │       ├── Participação em decisões
+       │   │   │       ├── Destaque na página principal
+       │   │   │       ├── Status especial na comunidade
+       │   │   │       ├── Reconhecimento público
+       │   │   │       └── Experiência VIP na plataforma
+       │   │   ├── COMO GANHAR DESTAQUE:
+       │   │   │   ├── QUALIDADE DOS EVENTOS
+       │   │   │   │   ├── Eventos bem organizados
+       │   │   │   │   ├── Eventos com boa participação
+       │   │   │   │   ├── Eventos com feedback positivo
+       │   │   │   │   ├── Eventos inovadores
+       │   │   │   │   ├── Eventos que geram engajamento
+       │   │   │   │   ├── Eventos que crescem a comunidade
+       │   │   │   │   ├── Eventos com boa comunicação
+       │   │   │   │   └── Eventos com boa promoção
+       │   │   │   ├── QUANTIDADE DE EVENTOS
+       │   │   │   │   ├── 1 evento criado = Badge inicial
+       │   │   │   │   ├── 5 eventos criados = Badge intermediário
+       │   │   │   │   ├── 10 eventos criados = Badge avançado
+       │   │   │   │   ├── 25 eventos criados = Badge expert
+       │   │   │   │   ├── 50 eventos criados = Badge master
+       │   │   │   │   ├── 100 eventos criados = Badge lendário
+       │   │   │   │   ├── 200 eventos criados = Status VIP
+       │   │   │   │   └── 500 eventos criados = Status lendário
+       │   │   │   ├── IMPACTO DOS EVENTOS
+       │   │   │   │   ├── Evento com 100+ participantes = +100 XP
+       │   │   │   │   ├── Evento com 500+ participantes = +250 XP
+       │   │   │   │   ├── Evento com 1000+ participantes = +500 XP
+       │   │   │   │   ├── Evento viral = +1000 XP
+       │   │   │   │   ├── Evento com boa avaliação = +75 XP
+       │   │   │   │   ├── Evento inovador = +150 XP
+       │   │   │   │   ├── Evento colaborativo = +200 XP
+       │   │   │   │   └── Evento lendário = +2000 XP
+       │   │   │   └── CONSISTÊNCIA
+       │   │   │       ├── Organização regular de eventos
+       │   │   │       ├── Qualidade mantida
+       │   │   │       ├── Crescimento da comunidade
+       │   │   │       ├── Participação ativa
+       │   │   │       ├── Comunicação eficiente
+       │   │   │       ├── Colaboração com outros
+       │   │   │       ├── Inovação constante
+       │   │   │       └── Contribuição para a plataforma
+       │   │   ├── NOTIFICAÇÕES E RECONHECIMENTO:
+       │   │   │   ├── NOTIFICAÇÕES INSTANTÂNEAS
+       │   │   │   │   ├── "Seu evento foi criado com sucesso!"
+       │   │   │   │   ├── "Você ganhou o badge Organizador Iniciante!"
+       │   │   │   │   ├── "Seu evento está em destaque!"
+       │   │   │   │   ├── "Parabéns! Você é agora um Criador de Eventos!"
+       │   │   │   │   ├── "Novo recurso exclusivo desbloqueado!"
+       │   │   │   │   ├── "Você ganhou +100 XP por evento!"
+       │   │   │   │   ├── "Status VIP ativado!"
+       │   │   │   │   └── "Destaque na comunidade!"
+       │   │   │   ├── PROGRESSO VISUAL
+       │   │   │   │   ├── Barra de progresso para próximo badge
+       │   │   │   │   ├── Contador de eventos criados
+       │   │   │   │   ├── Lista de badges conquistados
+       │   │   │   │   ├── Ranking de organizadores
+       │   │   │   │   ├── Estatísticas de organização
+       │   │   │   │   ├── Histórico de eventos
+       │   │   │   │   ├── Gráficos de performance
+       │   │   │   │   └── Destaque no perfil
+       │   │   │   └── RECONHECIMENTO PÚBLICO
+       │   │   │       ├── Destaque na página principal
+       │   │   │       ├── Seção "Organizadores Ativos"
+       │   │   │       ├── Reconhecimento em eventos
+       │   │   │       ├── Agradecimento da equipe
+       │   │   │       ├── Status especial na comunidade
+       │   │   │       ├── Participação em decisões
+       │   │   │       ├── Acesso a recursos exclusivos
+       │   │   │       └── Experiência VIP na plataforma
+       │   │   └── BENEFÍCIOS ESPECIAIS:
+       │   │       ├── INFLUÊNCIA NA PLATAFORMA
+       │   │       │   ├── Voto em decisões importantes
+       │   │       │   ├── Participação em testes beta
+       │   │       │   ├── Acesso antecipado a recursos
+       │   │       │   ├── Sugestões priorizadas
+       │   │       │   ├── Feedback considerado na evolução
+       │   │       │   ├── Participação em discussões
+       │   │       │   ├── Influência no roadmap
+       │   │       │   └── Colaboração com a equipe
+       │   │       ├── RECONHECIMENTO DA COMUNIDADE
+       │   │       │   ├── Status especial no perfil
+       │   │       │   ├── Destaque em rankings
+       │   │       │   ├── Badges exclusivos visíveis
+       │   │       │   ├── Títulos únicos
+       │   │       │   ├── Emojis especiais
+       │   │       │   ├── Temas personalizados
+       │   │       │   ├── Recursos exclusivos
+       │   │       │   └── Privilégios VIP
+       │   │       ├── EXPERIÊNCIA ÚNICA
+       │   │       │   ├── Acesso a recursos exclusivos
+       │   │       │   ├── Participação em eventos especiais
+       │   │       │   ├── Interação com a equipe
+       │   │       │   ├── Status lendário
+       │   │       │   └── Experiência única na plataforma
+       │   │       └── RECOMPENSAS MATERIAIS
+       │   │           ├── XP extra por evento criado
+       │   │           ├── Acesso a recursos exclusivos
+       │   │           ├── Participação em decisões
+       │   │           ├── Destaque na página principal
+       │   │           ├── Status especial na comunidade
+       │   │           ├── Reconhecimento público
+       │   │           └── Experiência VIP na plataforma
+       ├── "Crie desafios e ganhe badge de criador"
+       ├── "Modere comunidades e ganhe status de moderador"
+       └── "Coordene eventos e ganhe título de organizador"
+
+PROMOÇÕES DE CONTEÚDO:
+   ├── CRIAÇÃO DE CONTEÚDO
+   │   ├── "Crie conteúdo e ganhe destaque na página principal"
+   │   ├── "Faça lives especiais e ganhe badge de streamer"
+   │   ├── "Poste regularmente e ganhe status de ativo"
+   │   └── "Colabore com outros e ganhe badge de parceiro"
+   │       ├── SISTEMA DE BADGES DE PARCEIRO:
+   │       │   ├── BADGES PROGRESSIVAS
+   │       │   │   ├── 🤝 "PARCEIRO INICIANTE" - 1 colaboração
+   │       │   │   │   ├── Requisito: Fazer 1 colaboração com outro criador
+   │       │   │   │   ├── Descrição: "Primeira colaboração realizada!"
+   │       │   │   │   ├── Cor: Verde claro (#90EE90)
+   │       │   │   │   ├── Ícone: Mãos se cumprimentando
+   │       │   │   │   └── Benefício: Acesso a emojis básicos de parceria
+   │       │   │   ├── 🤲 "PARCEIRO ATIVO" - 5 colaborações
+   │       │   │   │   ├── Requisito: Fazer 5 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Parceiro ativo da comunidade!"
+   │       │   │   │   ├── Cor: Azul claro (#87CEEB)
+   │       │   │   │   ├── Ícone: Mãos unidas com brilho
+   │       │   │   │   └── Benefício: Emojis especiais + tema azul
+   │       │   │   ├── 🤝 "PARCEIRO DEDICADO" - 10 colaborações
+   │       │   │   │   ├── Requisito: Fazer 10 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Dedicado às parcerias da comunidade!"
+   │       │   │   │   ├── Cor: Roxo claro (#DDA0DD)
+   │       │   │   │   ├── Ícone: Mãos com estrelas
+   │       │   │   │   └── Benefício: Badge animado + destaque em colaborações
+   │       │   │   ├── 🤝 "PARCEIRO PREMIUM" - 25 colaborações
+   │       │   │   │   ├── Requisito: Fazer 25 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Parceiro premium da comunidade!"
+   │       │   │   │   ├── Cor: Dourado (#FFD700)
+   │       │   │   │   ├── Ícone: Mãos douradas
+   │       │   │   │   └── Benefício: Status VIP + acesso antecipado
+   │       │   │   ├── 🤝 "PARCEIRO MASTER" - 50 colaborações
+   │       │   │   │   ├── Requisito: Fazer 50 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Mestre das parcerias da comunidade!"
+   │       │   │   │   ├── Cor: Prata (#C0C0C0)
+   │       │   │   │   ├── Ícone: Mãos prateadas
+   │       │   │   │   └── Benefício: Badge brilhante + destaque especial
+   │       │   │   ├── 🤝 "PARCEIRO LEGENDÁRIO" - 100 colaborações
+   │       │   │   │   ├── Requisito: Fazer 100 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Lenda das parcerias da comunidade!"
+   │       │   │   │   ├── Cor: Roxo/Royal (#8A2BE2)
+   │       │   │   │   ├── Ícone: Coroa com mãos
+   │       │   │   │   └── Benefício: Coroa animada + recursos exclusivos
+   │       │   │   ├── ⭐ "PARCEIRO ÉPICO" - 200 colaborações
+   │       │   │   │   ├── Requisito: Fazer 200 colaborações com outros criadores
+   │       │   │   │   ├── Descrição: "Parceiro épico da comunidade!"
+   │       │   │   │   ├── Cor: Dourado brilhante (#FFD700)
+   │       │   │   │   ├── Ícone: Mãos com estrelas brilhantes
+   │       │   │   │   └── Benefício: Badge lendário + todos os privilégios
+   │       │   │   └── 💫 "PARCEIRO SUPREMO" - 500 colaborações
+   │       │   │       ├── Requisito: Fazer 500 colaborações com outros criadores
+   │       │   │       ├── Descrição: "Parceiro supremo da comunidade!"
+   │       │   │       ├── Cor: Arco-íris com brilhos
+   │       │   │       ├── Ícone: Mãos com arco-íris
+   │       │   │       └── Benefício: Badge supremo + status lendário
+   │       │   ├── TIPOS DE COLABORAÇÃO:
+   │       │   │   ├── COLABORAÇÕES DE CONTEÚDO
+   │       │   │   │   ├── Lives colaborativas (streamer + streamer)
+   │       │   │   │   ├── Posts colaborativos (influenciador + influenciador)
+   │       │   │   │   ├── Lives + Posts (streamer + influenciador)
+   │       │   │   │   ├── Vídeos colaborativos
+   │       │   │   │   ├── Stories colaborativos
+   │       │   │   │   ├── Reels colaborativos
+   │       │   │   │   └── Lives especiais colaborativas
+   │       │   │   ├── COLABORAÇÕES DE EVENTOS
+   │       │   │   │   ├── Eventos organizados em conjunto
+   │       │   │   │   ├── Workshops colaborativos
+   │       │   │   │   ├── Competições em equipe
+   │       │   │   │   ├── Festivais colaborativos
+   │       │   │   │   ├── Maratonas em conjunto
+   │       │   │   │   ├── Encontros colaborativos
+   │       │   │   │   └── Eventos especiais em parceria
+   │       │   │   ├── COLABORAÇÕES DE MARKETING
+   │       │   │   │   ├── Cross-promoção
+   │       │   │   │   ├── Shoutouts mútuos
+   │       │   │   │   ├── Campanhas em conjunto
+   │       │   │   │   ├── Descontos colaborativos
+   │       │   │   │   ├── Produtos em parceria
+   │       │   │   │   ├── Serviços colaborativos
+   │       │   │   │   └── Promoções em conjunto
+   │       │   │   ├── COLABORAÇÕES DE COMUNIDADE
+   │       │   │   │   ├── Grupos de discussão
+   │       │   │   │   ├── Fóruns colaborativos
+   │       │   │   │   ├── Mentoria em conjunto
+   │       │   │   │   ├── Tutoriais colaborativos
+   │       │   │   │   ├── Workshops em equipe
+   │       │   │   │   ├── Ajuda mútua
+   │       │   │   │   └── Suporte colaborativo
+   │       │   │   └── COLABORAÇÕES ESPECIAIS
+   │       │   │       ├── Projetos únicos
+   │       │   │       ├── Iniciativas inovadoras
+   │       │   │       ├── Campanhas sociais
+   │       │   │       ├── Eventos beneficentes
+   │       │   │       ├── Projetos educativos
+   │       │   │       ├── Iniciativas sustentáveis
+   │       │   │       └── Projetos lendários
+   │       │   ├── EMOJIS EXCLUSIVOS
+   │       │   │   ├── 🤝 (Parceiro Iniciante)
+   │       │   │   ├── 🤲 (Parceiro Ativo)
+   │       │   │   ├── 🤝 (Parceiro Dedicado)
+   │       │   │   ├── 🤝 (Parceiro Premium)
+   │       │   │   ├── 🤝 (Parceiro Master)
+   │       │   │   ├── 🤝 (Parceiro Lendário)
+   │       │   │   ├── ⭐ (Parceiro Épico)
+   │       │   │   └── 💫 (Parceiro Supremo)
+   │       │   ├── TEMAS EXCLUSIVOS
+   │       │   │   ├── Tema "Parceiro" - Verde com detalhes azuis
+   │       │   │   ├── Tema "Ativo" - Azul com detalhes prateados
+   │       │   │   ├── Tema "Dedicado" - Roxo com detalhes dourados
+   │       │   │   ├── Tema "Premium" - Dourado com detalhes negros
+   │       │   │   ├── Tema "Master" - Prata com detalhes dourados
+   │       │   │   ├── Tema "Lendário" - Roxo/Royal com brilhos
+   │       │   │   ├── Tema "Épico" - Dourado brilhante
+   │       │   │   └── Tema "Supremo" - Arco-íris com brilhos
+   │       │   ├── TÍTULOS EXCLUSIVOS
+   │       │   │   ├── "Parceiro Iniciante"
+   │       │   │   ├── "Parceiro Ativo"
+   │       │   │   ├── "Parceiro Dedicado"
+   │       │   │   ├── "Parceiro Premium"
+   │       │   │   ├── "Parceiro Master"
+   │       │   │   ├── "Parceiro Lendário"
+   │       │   │   ├── "Parceiro Épico"
+   │       │   │   └── "Parceiro Supremo"
+   │       │   ├── RECURSOS DE PERFIL EXCLUSIVOS
+   │       │   │   ├── Seção "Minhas Colaborações" no perfil
+   │       │   │   ├── Contador de colaborações realizadas
+   │       │   │   ├── Lista de parceiros ativos
+   │       │   │   ├── Histórico de colaborações
+   │       │   │   ├── Estatísticas de parcerias
+   │       │   │   ├── Gráficos de performance
+   │       │   │   ├── Ranking de parceiros
+   │       │   │   └── Destaque especial no perfil
+   │       │   ├── PRIVILÉGIOS EXCLUSIVOS
+   │       │   │   ├── Acesso antecipado a recursos de parceria
+   │       │   │   ├── Ferramentas avançadas de colaboração
+   │       │   │   ├── Suporte prioritário para parcerias
+   │       │   │   ├── Parcerias promocionais
+   │       │   │   ├── Recursos exclusivos de networking
+   │       │   │   ├── Integração com redes sociais
+   │       │   │   ├── Analytics avançados
+   │       │   │   └── Status VIP na comunidade
+   │       │   ├── RECOMPENSAS ESPECIAIS
+   │       │   │   ├── XP extra por colaboração
+   │       │   │   ├── Acesso a recursos exclusivos
+   │       │   │   ├── Participação em decisões
+   │       │   │   └── Destaque na página principal
+   │       │   ├── COMO GANHAR BADGES:
+   │       │   │   ├── QUALIDADE DAS COLABORAÇÕES
+   │       │   │   │   ├── Colaborações bem organizadas
+   │       │   │   │   ├── Colaborações com boa participação
+   │       │   │   │   ├── Colaborações com feedback positivo
+   │       │   │   │   ├── Colaborações inovadoras
+   │       │   │   │   ├── Colaborações que geram engajamento
+   │       │   │   │   ├── Colaborações que crescem a comunidade
+   │       │   │   │   ├── Colaborações com boa comunicação
+   │       │   │   │   └── Colaborações com boa promoção
+   │       │   │   ├── QUANTIDADE DE COLABORAÇÕES
+   │       │   │   │   ├── 1 colaboração = Badge inicial
+   │       │   │   │   ├── 5 colaborações = Badge intermediário
+   │       │   │   │   ├── 10 colaborações = Badge avançado
+   │       │   │   │   ├── 25 colaborações = Badge expert
+   │       │   │   │   ├── 50 colaborações = Badge master
+   │       │   │   │   ├── 100 colaborações = Badge lendário
+   │       │   │   │   ├── 200 colaborações = Status VIP
+   │       │   │   │   └── 500 colaborações = Status lendário
+   │       │   │   ├── IMPACTO DAS COLABORAÇÕES
+   │       │   │   │   ├── Colaboração com 100+ espectadores/visualizações = +100 XP
+   │       │   │   │   ├── Colaboração com 500+ espectadores/visualizações = +250 XP
+   │       │   │   │   ├── Colaboração com 1000+ espectadores/visualizações = +500 XP
+   │       │   │   │   ├── Colaboração viral = +1000 XP
+   │       │   │   │   ├── Colaboração com boa avaliação = +75 XP
+   │       │   │   │   ├── Colaboração inovadora = +150 XP
+   │       │   │   │   ├── Colaboração com múltiplos parceiros = +200 XP
+   │       │   │   │   └── Colaboração lendária = +2000 XP
+   │       │   │   └── CONSISTÊNCIA
+   │       │   │       ├── Colaborações regulares
+   │       │   │       ├── Qualidade mantida
+   │       │   │       ├── Crescimento da comunidade
+   │       │   │       ├── Participação ativa
+   │       │   │       ├── Comunicação eficiente
+   │       │   │       ├── Colaboração com outros
+   │       │   │       ├── Inovação constante
+   │       │   │       └── Contribuição para a plataforma
+   │       │   ├── NOTIFICAÇÕES E RECONHECIMENTO:
+   │       │   │   ├── NOTIFICAÇÕES INSTANTÂNEAS
+   │       │   │   │   ├── "Sua colaboração foi criada com sucesso!"
+   │       │   │   │   ├── "Você ganhou o badge Parceiro Iniciante!"
+   │       │   │   │   ├── "Sua colaboração está em destaque!"
+   │       │   │   │   ├── "Parabéns! Você é agora um Parceiro Ativo!"
+   │       │   │   │   ├── "Novo recurso exclusivo desbloqueado!"
+   │       │   │   │   ├── "Você ganhou +100 XP por colaboração!"
+   │       │   │   │   ├── "Status VIP ativado!"
+   │       │   │   │   └── "Destaque na comunidade!"
+   │       │   │   ├── PROGRESSO VISUAL
+   │       │   │   │   ├── Barra de progresso para próximo badge
+   │       │   │   │   ├── Contador de colaborações realizadas
+   │       │   │   │   ├── Lista de badges conquistados
+   │       │   │   │   ├── Ranking de parceiros
+   │       │   │   │   ├── Estatísticas de colaborações
+   │       │   │   │   ├── Histórico de colaborações
+   │       │   │   │   ├── Gráficos de performance
+   │       │   │   │   └── Destaque no perfil
+   │       │   │   └── RECONHECIMENTO PÚBLICO
+   │       │   │       ├── Destaque na página principal
+   │       │   │       ├── Seção "Parceiros Ativos"
+   │       │   │       ├── Reconhecimento em colaborações
+   │       │   │       ├── Agradecimento da equipe
+   │       │   │       ├── Participação em decisões
+   │       │   │       └── Acesso a recursos exclusivos
+   │       │   └── BENEFÍCIOS ESPECIAIS:
+   │       │       ├── INFLUÊNCIA NA PLATAFORMA
+   │       │       │   ├── Voto em decisões importantes
+   │       │       │   ├── Participação em testes beta
+   │       │       │   ├── Acesso antecipado a recursos
+   │       │       │   ├── Sugestões priorizadas
+   │       │       │   ├── Feedback considerado na evolução
+   │       │       │   ├── Participação em discussões
+   │       │       │   ├── Influência no roadmap
+   │       │       │   └── Colaboração com a equipe
+   │       │       ├── RECONHECIMENTO DA COMUNIDADE
+   │       │       │   ├── Status especial no perfil
+   │       │       │   ├── Destaque em rankings
+   │       │       │   ├── Badges exclusivos visíveis
+   │       │       │   ├── Títulos únicos
+   │       │       │   ├── Emojis especiais
+   │       │       │   ├── Temas personalizados
+   │       │       │   ├── Recursos exclusivos
+   │       │       │   └── Privilégios VIP
+   │       │       ├── EXPERIÊNCIA ÚNICA
+   │       │       │   ├── Acesso a recursos exclusivos
+   │       │       │   ├── Participação em eventos especiais
+   │       │       │   ├── Interação com a equipe
+   │       │       │   ├── Status lendário
+   │       │       │   └── Experiência única na plataforma
+   │       │       └── RECOMPENSAS MATERIAIS
+   │       │           ├── XP extra por evento criado
+   │       │           ├── Acesso a recursos exclusivos
+   │       │           ├── Participação em decisões
+   │       │           ├── Destaque na página principal
+   │       │           ├── Status especial na comunidade
+   │       │           ├── Reconhecimento público
+   │       │           └── Experiência VIP na plataforma
+   ├── QUALIDADE DO CONTEÚDO
+   │   ├── "Conteúdo de alta qualidade e ganhe destaque"
+   │   ├── "Lives longas e ganhe badge de dedicado"
+   │   ├── "Conteúdo educativo e ganhe título de professor"
+   │   ├── "Conteúdo inovador e ganhe badge de criativo"
+   │   └── "Faça lives especiais e ganhe badge de streamer/influenciador"
+   │       ├── SISTEMA DE BADGES DE STREAMER/INFLUENCIADOR:
+   │       │   ├── BADGES PROGRESSIVAS
+   │       │   │   ├── 🎬 "CRIADOR INICIANTE" - 1 live especial
+   │       │   │   │   ├── Requisito: Fazer 1 live especial (streamer) ou 1 post especial (influenciador)
+   │       │   │   │   ├── Descrição: "Primeira criação especial realizada!"
+   │       │   │   │   ├── Cor: Verde claro (#90EE90)
+   │       │   │   │   ├── Ícone: Câmera pequena (streamer) / Estrela pequena (influenciador)
+   │       │   │   │   └── Benefício: Acesso a emojis básicos de criação
+   │       │   │   ├── 🎥 "CRIADOR ATIVO" - 5 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 5 lives especiais (streamer) ou 5 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Criador ativo da comunidade!"
+   │       │   │   │   ├── Cor: Azul claro (#87CEEB)
+   │       │   │   │   ├── Ícone: Câmera com brilho (streamer) / Estrela com brilho (influenciador)
+   │       │   │   │   └── Benefício: Emojis especiais + tema azul
+   │       │   │   ├── 🎭 "CRIADOR DEDICADO" - 10 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 10 lives especiais (streamer) ou 10 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Dedicado ao conteúdo da comunidade!"
+   │       │   │   │   ├── Cor: Roxo claro (#DDA0DD)
+   │       │   │   │   ├── Ícone: Câmera com estrelas (streamer) / Estrela com estrelas (influenciador)
+   │       │   │   │   └── Benefício: Badge animado + destaque em criações
+   │       │   │   ├── 🎪 "CRIADOR PREMIUM" - 25 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 25 lives especiais (streamer) ou 25 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Criador premium da comunidade!"
+   │       │   │   │   ├── Cor: Dourado (#FFD700)
+   │       │   │   │   ├── Ícone: Câmera dourada (streamer) / Estrela dourada (influenciador)
+   │       │   │   │   └── Benefício: Status VIP + acesso antecipado
+   │       │   │   ├── 🏆 "CRIADOR MASTER" - 50 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 50 lives especiais (streamer) ou 50 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Mestre dos criadores da comunidade!"
+   │       │   │   │   ├── Cor: Prata (#C0C0C0)
+   │       │   │   │   ├── Ícone: Câmera prateada (streamer) / Estrela prateada (influenciador)
+   │       │   │   │   └── Benefício: Badge brilhante + destaque especial
+   │       │   │   ├── 👑 "CRIADOR LEGENDÁRIO" - 100 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 100 lives especiais (streamer) ou 100 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Lenda dos criadores da comunidade!"
+   │       │   │   │   ├── Cor: Roxo/Royal (#8A2BE2)
+   │       │   │   │   ├── Ícone: Coroa com câmera (streamer) / Coroa com estrela (influenciador)
+   │       │   │   │   └── Benefício: Coroa animada + recursos exclusivos
+   │       │   │   ├── ⭐ "CRIADOR ÉPICO" - 200 criações especiais
+   │       │   │   │   ├── Requisito: Fazer 200 lives especiais (streamer) ou 200 posts especiais (influenciador)
+   │       │   │   │   ├── Descrição: "Criador épico da comunidade!"
+   │       │   │   │   ├── Cor: Dourado brilhante (#FFD700)
+   │       │   │   │   ├── Ícone: Câmera com estrelas brilhantes (streamer) / Estrela com estrelas brilhantes (influenciador)
+   │       │   │   │   └── Benefício: Badge lendário + todos os privilégios
+   │       │   │   └── 💫 "CRIADOR SUPREMO" - 500 criações especiais
+   │       │   │       ├── Requisito: Fazer 500 lives especiais (streamer) ou 500 posts especiais (influenciador)
+   │       │   │       ├── Descrição: "Criador supremo da comunidade!"
+   │       │   │       ├── Cor: Arco-íris com brilhos
+   │       │   │       ├── Ícone: Câmera com arco-íris (streamer) / Estrela com arco-íris (influenciador)
+   │       │   │       └── Benefício: Badge supremo + status lendário
+   │       │   ├── EMOJIS EXCLUSIVOS
+   │       │   │   ├── 🎬 (Criador Iniciante)
+   │       │   │   ├── 🎥 (Criador Ativo)
+   │       │   │   ├── 🎭 (Criador Dedicado)
+   │       │   │   ├── 🎪 (Criador Premium)
+   │       │   │   ├── 🏆 (Criador Master)
+   │       │   │   ├── 👑 (Criador Lendário)
+   │       │   │   ├── ⭐ (Criador Épico)
+   │       │   │   └── 💫 (Criador Supremo)
+   │       │   ├── TEMAS EXCLUSIVOS
+   │       │   │   ├── Tema "Criador" - Verde com detalhes azuis
+   │       │   │   ├── Tema "Ativo" - Azul com detalhes prateados
+   │       │   │   ├── Tema "Dedicado" - Roxo com detalhes dourados
+   │       │   │   ├── Tema "Premium" - Dourado com detalhes negros
+   │       │   │   ├── Tema "Master" - Prata com detalhes dourados
+   │       │   │   ├── Tema "Lendário" - Roxo/Royal com brilhos
+   │       │   │   ├── Tema "Épico" - Dourado brilhante
+   │       │   │   └── Tema "Supremo" - Arco-íris com brilhos
+   │       │   ├── TÍTULOS EXCLUSIVOS
+   │       │   │   ├── "Criador Iniciante"
+   │       │   │   ├── "Criador Ativo"
+   │       │   │   ├── "Criador Dedicado"
+   │       │   │   ├── "Criador Premium"
+   │       │   │   ├── "Criador Master"
+   │       │   │   ├── "Criador Lendário"
+   │       │   │   ├── "Criador Épico"
+   │       │   │   └── "Criador Supremo"
+   │       │   ├── RECURSOS DE PERFIL EXCLUSIVOS
+   │       │   │   ├── Seção "Minhas Criações Especiais" no perfil
+   │       │   │   ├── Contador de criações especiais realizadas
+   │       │   │   ├── Lista de criações especiais ativas
+   │       │   │   ├── Histórico de criações especiais
+   │       │   │   ├── Estatísticas de criações especiais
+   │       │   │   ├── Gráficos de performance
+   │       │   │   ├── Ranking de criadores
+   │       │   │   └── Destaque especial no perfil
+   │       │   ├── PRIVILÉGIOS EXCLUSIVOS
+   │       │   │   ├── Acesso antecipado a recursos de criação
+   │       │   │   ├── Ferramentas avançadas de criação
+   │       │   │   ├── Suporte prioritário para criações
+   │       │   │   ├── Parcerias promocionais
+   │       │   │   ├── Recursos exclusivos de marketing
+   │       │   │   ├── Integração com redes sociais
+   │       │   │   ├── Analytics avançados
+   │       │   │   └── Status VIP na comunidade
+   │       │   ├── RECOMPENSAS ESPECIAIS
+   │       │   │   ├── XP extra por criação especial
+   │       │   │   ├── Acesso a recursos exclusivos
+   │       │   │   ├── Participação em decisões
+   │       │   │   ├── Destaque na página principal
+   │       │   │   ├── Status especial na comunidade
+   │       │   │   ├── Reconhecimento público
+   │       │   │   └── Experiência VIP na plataforma
+   │       │   ├── COMO GANHAR BADGES:
+   │       │   │   ├── QUALIDADE DAS CRIAÇÕES ESPECIAIS
+   │       │   │   │   ├── Criações bem organizadas
+   │       │   │   │   ├── Criações com boa participação
+   │       │   │   │   ├── Criações com feedback positivo
+   │       │   │   │   ├── Criações inovadoras
+   │       │   │   │   ├── Criações que geram engajamento
+   │       │   │   │   ├── Criações que crescem a comunidade
+   │       │   │   │   ├── Criações com boa comunicação
+   │       │   │   │   └── Criações com boa promoção
+   │       │   │   ├── QUANTIDADE DE CRIAÇÕES ESPECIAIS
+   │       │   │   │   ├── 1 criação especial = Badge inicial
+   │       │   │   │   ├── 5 criações especiais = Badge intermediário
+   │       │   │   │   ├── 10 criações especiais = Badge avançado
+   │       │   │   │   ├── 25 criações especiais = Badge expert
+   │       │   │   │   ├── 50 criações especiais = Badge master
+   │       │   │   │   ├── 100 criações especiais = Badge lendário
+   │       │   │   │   ├── 200 criações especiais = Status VIP
+   │       │   │   │   └── 500 criações especiais = Status lendário
+   │       │   │   ├── IMPACTO DAS CRIAÇÕES ESPECIAIS
+   │       │   │   │   ├── Criação com 100+ espectadores/visualizações = +100 XP
+   │       │   │   │   ├── Criação com 500+ espectadores/visualizações = +250 XP
+   │       │   │   │   ├── Criação com 1000+ espectadores/visualizações = +500 XP
+   │       │   │   │   ├── Criação viral = +1000 XP
+   │       │   │   │   ├── Criação com boa avaliação = +75 XP
+   │       │   │   │   ├── Criação inovadora = +150 XP
+   │       │   │   │   ├── Criação colaborativa = +200 XP
+   │       │   │   │   └── Criação lendária = +2000 XP
+   │       │   │   └── CONSISTÊNCIA
+   │       │   │       ├── Criações especiais regulares
+   │       │   │       ├── Qualidade mantida
+   │       │   │       ├── Crescimento da comunidade
+   │       │   │       ├── Participação ativa
+   │       │   │       ├── Comunicação eficiente
+   │       │   │       ├── Colaboração com outros
+   │       │   │       ├── Inovação constante
+   │       │   │       └── Contribuição para a plataforma
+   │       │   ├── NOTIFICAÇÕES E RECONHECIMENTO:
+   │       │   │   ├── NOTIFICAÇÕES INSTANTÂNEAS
+   │       │   │   │   ├── "Sua criação especial foi criada com sucesso!"
+   │       │   │   │   ├── "Você ganhou o badge Criador Iniciante!"
+   │       │   │   │   ├── "Sua criação está em destaque!"
+   │       │   │   │   ├── "Parabéns! Você é agora um Criador Ativo!"
+   │       │   │   │   ├── "Novo recurso exclusivo desbloqueado!"
+   │       │   │   │   ├── "Você ganhou +100 XP por criação especial!"
+   │       │   │   │   ├── "Status VIP ativado!"
+   │       │   │   │   └── "Destaque na comunidade!"
+   │       │   │   ├── PROGRESSO VISUAL
+   │       │   │   │   ├── Barra de progresso para próximo badge
+   │       │   │   │   ├── Contador de criações especiais realizadas
+   │       │   │   │   ├── Lista de badges conquistados
+   │       │   │   │   ├── Ranking de criadores
+   │       │   │   │   ├── Estatísticas de criações especiais
+   │       │   │   │   ├── Histórico de criações especiais
+   │       │   │   │   ├── Gráficos de performance
+   │       │   │   │   └── Destaque no perfil
+   │       │   │   └── RECONHECIMENTO PÚBLICO
+   │       │   │       ├── Destaque na página principal
+   │       │   │       ├── Seção "Criadores Ativos"
+   │       │   │       ├── Reconhecimento em criações
+   │       │   │       ├── Agradecimento da equipe
+   │       │   │       ├── Status especial na comunidade
+   │       │   │       ├── Participação em decisões
+   │       │   │       ├── Acesso a recursos exclusivos
+   │       │   │       └── Experiência VIP na plataforma
+   │       │   └── BENEFÍCIOS ESPECIAIS:
+   │       │       ├── INFLUÊNCIA NA PLATAFORMA
+   │       │       │   ├── Voto em decisões importantes
+   │       │       │   ├── Participação em testes beta
+   │       │       │   ├── Acesso antecipado a recursos
+   │       │       │   ├── Sugestões priorizadas
+   │       │       │   ├── Feedback considerado na evolução
+   │       │       │   ├── Participação em discussões
+   │       │       │   ├── Influência no roadmap
+   │       │       │   └── Colaboração com a equipe
+   │       │       ├── RECONHECIMENTO DA COMUNIDADE
+   │       │       │   ├── Status especial no perfil
+   │       │       │   ├── Destaque em rankings
+   │       │       │   ├── Badges exclusivos visíveis
+   │       │       │   ├── Títulos únicos
+   │       │       │   ├── Emojis especiais
+   │       │       │   ├── Temas personalizados
+   │       │       │   ├── Recursos exclusivos
+   │       │       │   └── Privilégios VIP
+   │       │       ├── EXPERIÊNCIA ÚNICA
+   │       │       │   ├── Acesso a recursos exclusivos
+   │       │       │   ├── Participação em eventos especiais
+   │       │       │   ├── Interação com a equipe
+   │       │       │   ├── Status lendário
+   │       │       │   └── Experiência única na plataforma
+   │       │       └── RECOMPENSAS MATERIAIS
+   │       │           ├── XP extra por criação especial
+   │       │           ├── Acesso a recursos exclusivos
+   │       │           ├── Participação em decisões
+   │       │           ├── Destaque na página principal
+   │       │           ├── Status especial na comunidade
+   │       │           ├── Reconhecimento público
+   │       │           └── Experiência VIP na plataforma
+   └── INTERAÇÃO COM AUDIÊNCIA
+       ├── "Responda comentários e ganhe badge de atencioso"
+       ├── "Interaja com chat e ganhe status de comunicativo"
+       ├── "Faça Q&A e ganhe título de acessível"
+       └── "Crie comunidade e ganhe badge de líder"
+
+PROMOÇÕES DE GAMIFICAÇÃO:
+   ├── MISSÕES DIÁRIAS
+   │   ├── "Complete missões diárias e ganhe pontos"
+   │   ├── "Faça login por 7 dias seguidos e ganhe badge"
+   │   ├── "Complete 5 missões e ganhe recursos especiais"
+   │   └── "Missão semanal completa e ganhe título único"
+   ├── SISTEMA DE NÍVEIS
+   │   ├── "Suba de nível e desbloqueie recursos especiais"
+   │   ├── "Nível 10: Desbloqueia emojis exclusivos"
+   │   ├── "Nível 25: Desbloqueia badges especiais"
+   │   └── "Nível 50: Desbloqueia títulos únicos"
+   ├── ACHIEVEMENTS
+   │   ├── "Conquiste achievements e ganhe títulos únicos"
+   │   ├── "Primeira live: Badge de iniciante"
+   │   ├── "100 seguidores: Badge de popular"
+   │   └── "1000 visualizações: Badge de viral"
+   └── RANKINGS E COMPETIÇÕES
+       ├── "Participe de rankings e ganhe destaque"
+       ├── "Top 10 da semana: Badge de destaque"
+       ├── "Vencedor do mês: Título especial"
+       └── "Campeão do trimestre: Status VIP"
+
+RECOMPENSAS SEM DINHEIRO:
+   ├── BADGES EXCLUSIVOS POR COMPARTILHAMENTO
+   │   ├── BADGES TEMÁTICOS SEMENTESPLAY (DETALHADOS)
+   │   │   ├── 🌱 "SEMENTINHA"
+   │   │   │   ├── Requisito: Primeiro compartilhamento
+   │   │   │   ├── Descrição: "A primeira semente foi plantada!"
+   │   │   │   ├── Cor: Verde claro (#90EE90)
+   │   │   │   ├── Ícone: Broto pequeno
+   │   │   │   └── Benefício: Acesso a emojis básicos
+   │   │   ├── 🌿 "GERMINADOR"
+   │   │   │   ├── Requisito: Compartilhe 5 posts
+   │   │   │   ├── Descrição: "As sementes começam a brotar!"
+   │   │   │   ├── Cor: Verde médio (#32CD32)
+   │   │   │   ├── Ícone: Planta crescendo
+   │   │   │   └── Benefício: Emojis especiais + tema verde
+   │   │   ├── 🌱 "CULTIVADOR"
+   │   │   │   ├── Requisito: Compartilhe 25 posts
+   │   │   │   ├── Descrição: "Cultivando conhecimento e comunidade!"
+   │   │   │   ├── Cor: Verde escuro (#228B22)
+   │   │   │   ├── Ícone: Mãos cultivando
+   │   │   │   └── Benefício: Badge animado + destaque em comentários
+   │   │   ├── 🌺 "JARDINEIRO"
+   │   │   │   ├── Requisito: Compartilhe 50 posts
+   │   │   │   ├── Descrição: "Criando jardins de conexões!"
+   │   │   │   ├── Cor: Rosa/Verde (#FF69B4)
+   │   │   │   ├── Ícone: Jardim florido
+   │   │   │   └── Benefício: Tema personalizado + emojis exclusivos
+   │   │   ├── 🌾 "AGRICULTOR"
+   │   │   │   ├── Requisito: Compartilhe 100 posts
+   │   │   │   ├── Descrição: "Colhendo os frutos da comunidade!"
+   │   │   │   ├── Cor: Dourado (#FFD700)
+   │   │   │   ├── Ícone: Trigo dourado
+   │   │   │   └── Benefício: Status VIP + acesso antecipado
+   │   │   ├── 🚜 "FAZENDEIRO"
+   │   │   │   ├── Requisito: Compartilhe 250 posts
+   │   │   │   ├── Descrição: "Administrando uma fazenda de conexões!"
+   │   │   │   ├── Cor: Prata (#C0C0C0)
+   │   │   │   ├── Ícone: Trator
+   │   │   │   └── Benefício: Badge brilhante + destaque especial
+   │   │   ├── 👑 "SEMENTES MASTER"
+   │   │   │   ├── Requisito: Compartilhe 500 posts
+   │   │   │   ├── Descrição: "Mestre das sementes e conexões!"
+   │   │   │   ├── Cor: Roxo/Royal (#8A2BE2)
+   │   │   │   ├── Ícone: Coroa com sementes
+   │   │   │   └── Benefício: Coroa animada + recursos exclusivos
+   │   │   └── 👑✨ "LORDE DAS SEMENTES"
+   │   │       ├── Requisito: Compartilhe 1000 posts
+   │   │       ├── Descrição: "Lorde supremo da comunidade SementesPLAY!"
+   │   │       ├── Cor: Dourado brilhante (#FFD700)
+   │   │       ├── Ícone: Coroa com brilhos
+   │   │       └── Benefício: Badge lendário + todos os privilégios
+   │   ├── BADGES VIRAIS
+   │   │   ├── "Sementinha Viral" - Viralize 1 post
+   │   │   ├── "Germinador Viral" - Viralize 5 posts
+   │   │   ├── "Cultivador Viral" - Viralize 10 posts
+   │   │   └── "Lorde Viral" - Viralize 20 posts
+   │   ├── BADGES DE CONSISTÊNCIA
+   │   │   ├── "Sementinha Semanal" - Compartilhe por 7 dias seguidos
+   │   │   ├── "Germinador Mensal" - Compartilhe por 30 dias seguidos
+   │   │   ├── "Cultivador Trimestral" - Compartilhe por 100 dias
+   │   │   └── "Lorde Anual" - Compartilhe por 365 dias
+   │   ├── BADGES SAZONAIS
+   │   │   ├── "Sementinha de Verão" - Compartilhe posts de verão
+   │   │   ├── "Germinador de Natal" - Compartilhe posts de Natal
+   │   │   ├── "Cultivador de Carnaval" - Compartilhe posts de Carnaval
+   │   │   └── "Jardineiro de Halloween" - Compartilhe posts de Halloween
+   │   ├── BADGES ESPECIAIS
+   │   │   ├── "Sementinha Noturna" - Compartilhe posts à noite
+   │   │   ├── "Germinador Matinal" - Compartilhe posts pela manhã
+   │   │   ├── "Cultivador de Fim de Semana" - Compartilhe aos fins de semana
+   │   │   └── "Jardineiro de Feriado" - Compartilhe em feriados
+   │   └── BADGES DE CONTEÚDO
+       ├── "Sementinha de Streams" - Compartilhe lives
+       ├── "Germinador de Eventos" - Compartilhe eventos
+       ├── "Cultivador de Promoções" - Compartilhe promoções
+       └── "Jardineiro de Notícias" - Compartilhe notícias
+   ├── TÍTULOS ÚNICOS
+   │   ├── Títulos por nível
+   │   ├── Títulos por achievements
+   │   ├── Títulos sazonais
+   │   └── Títulos especiais
+   ├── STATUS E DESTAQUES
+   │   ├── Status VIP
+   │   ├── Destaque na página principal
+   │   ├── Acesso antecipado a recursos
+   │   └── Recursos exclusivos
+   └── RECURSOS ESPECIAIS
+       ├── Emojis exclusivos
+       ├── Temas personalizados
+       ├── Animações especiais
+       └── Recursos de perfil únicos
+
+================================================================================
+📰 SISTEMA DE NOTÍCIAS E EVENTOS
+================================================================================
+
+CRITÉRIOS DE IMPORTÂNCIA PARA NOTÍCIAS:
+   ├── NOVOS PARCEIROS
+   │   ├── Novos streamers parceiros
+   │   ├── Novos influenciadores parceiros
+   │   ├── Empresas parceiras
+   │   └── Benefícios exclusivos
+   ├── EVENTOS ESPECIAIS
+   │   ├── Eventos da plataforma
+   │   ├── Competições e torneios
+   │   ├── Maratonas de stream
+   │   └── Festivais de conteúdo
+   ├── PROMOÇÕES
+   │   ├── Promoções de doação
+   │   ├── Promoções de bonificação
+   │   ├── Descontos especiais
+   │   └── Recompensas exclusivas
+   ├── ATUALIZAÇÕES
+   │   ├── Atualizações de cidades FiveM
+   │   ├── Novos recursos da plataforma
+   │   ├── Melhorias no sistema
+   │   └── Correções importantes
+   ├── ANÚNCIOS
+   │   ├── Novos recursos
+   │   ├── Mudanças importantes
+   │   ├── Parcerias anunciadas
+   │   └── Eventos futuros
+   └── NOTÍCIAS DA COMUNIDADE
+       ├── Histórias de sucesso
+       ├── Destaques da semana
+       ├── Conquistas especiais
+       └── Homenagens
+
+SISTEMA DE ORDENAÇÃO:
+   ├── Prioridade 1: Eventos especiais da plataforma
+   ├── Prioridade 2: Novos parceiros
+   ├── Prioridade 3: Promoções ativas
+   ├── Prioridade 4: Atualizações importantes
+   ├── Prioridade 5: Anúncios
+   └── Prioridade 6: Notícias da comunidade
+
+================================================================================
+🔧 FUNCIONALIDADES ADICIONAIS - DETALHAMENTO
+================================================================================
+
+10. SISTEMA DE RANKINGS
+    ├── Top streamers e influenciadores por plataforma
+    │   ├── Twitch
+    │   ├── TikTok
+    │   ├── YouTube
+    │   ├── Instagram
+    │   └── Geral
+    ├── Top apoiadores
+    │   ├── Maiores doadores
+    │   ├── Mais ativos
+    │   ├── Mais favoritos
+    │   └── Mais tempo online
+    ├── Rankings semanais/mensais
+    │   ├── Semana atual
+    │   ├── Mês atual
+    │   ├── Semana anterior
+    │   ├── Mês anterior
+    │   └── Histórico
+    └── Rankings de doações
+        ├── Maiores doações
+        ├── Mais doações
+        ├── Doações consecutivas
+        └── Doações especiais
+
+11. SISTEMA DE PLATAFORMAS
+    ├── Plataformas de stream
+    │   ├── Twitch
+    │   ├── TikTok
+    │   ├── YouTube
+    │   └── Outras
+    ├── Plataformas de influenciadores
+    │   ├── Instagram
+    │   ├── TikTok
+    │   ├── YouTube
+    │   └── Outras
+    ├── Filtros avançados
+    │   ├── Por plataforma
+    │   ├── Por horário
+    │   ├── Por popularidade
+    │   ├── Por visualizações/seguidores
+    │   └── Por doações/bonificações
+    └── Tags personalizadas
+        ├── Tags do streamer/influenciador
+        ├── Tags do sistema
+        ├── Tags populares
+        ├── Busca por tags
+        └── Sugestões
+
+12. SISTEMA DE NOTIFICAÇÕES
+    ├── Alertas de stream ao vivo
+    │   ├── Favorito vai ao ar
+    │   ├── Streamer popular online
+    │   ├── Evento especial
+    │   ├── Configurações
+    │   └── Histórico
+    ├── Notificações de doações
+    │   ├── Nova doação recebida
+    │   ├── Doação feita com sucesso
+    │   ├── Erro na doação
+    │   ├── Confirmação
+    │   └── Histórico
+    ├── Sistema de mensagens
+    │   ├── Mensagens privadas
+    │   ├── Mensagens públicas
+    │   ├── Chat em tempo real
+    │   ├── Emojis
+    │   └── Moderação
+    └── Notificações de favoritos
+        ├── Favorito online
+        ├── Nova stream de favorito
+        ├── Evento de favorito
+        ├── Configurações
+        └── Histórico
+
+13. SISTEMA DE CONQUISTAS/BADGES
+    ├── Para streamers e apoiadores
+    │   ├── Conquistas de stream
+    │   ├── Conquistas de doação
+    │   ├── Conquistas de visualização
+    │   ├── Conquistas de favoritos
+    │   └── Conquistas especiais
+    ├── Níveis de patrocínio
+    │   ├── Bronze (0-100 doações)
+    │   ├── Prata (101-500 doações)
+    │   ├── Ouro (501-1000 doações)
+    │   ├── Platina (1001-5000 doações)
+    │   └── Diamante (5000+ doações)
+    ├── Conquistas especiais
+    │   ├── Primeira stream
+    │   ├── Primeira doação
+    │   ├── 100 visualizações
+    │   ├── 1000 visualizações
+    │   ├── 10 doações
+    │   ├── 100 doações
+    │   └── Eventos especiais
+    └── Badges por doações
+        ├── Badge de doador
+        ├── Badge de apoiador
+        ├── Badge de fã
+        ├── Badge VIP
+        ├── Badge especial
+        └── Badges personalizados
+
+14. SISTEMA DE ESTATÍSTICAS
+    ├── Estatísticas de visualizações
+    │   ├── Total de visualizações
+    │   ├── Visualizações por período
+    │   ├── Pico de visualizações
+    │   ├── Média de visualizações
+    │   ├── Gráficos
+    │   └── Comparação
+    ├── Estatísticas de doações
+    │   ├── Total de doações
+    │   ├── Valor total
+    │   ├── Média de doações
+    │   ├── Maior doação
+    │   ├── Doações por período
+    │   ├── Gráficos
+    │   └── Relatórios
+    ├── Estatísticas de favoritos
+    │   ├── Total de favoritos
+    │   ├── Favoritos ativos
+    │   ├── Novos favoritos
+    │   ├── Favoritos perdidos
+    │   ├── Gráficos
+    │   └── Análise
+    └── Relatórios detalhados
+        ├── Relatório semanal
+        ├── Relatório mensal
+        ├── Relatório anual
+        ├── Relatório personalizado
+        ├── Exportação
+        └── Compartilhamento
+
+================================================================================
+🔗 LINKS DE STREAM E REDES SOCIAIS - PLATAFORMAS SUPORTADAS
+================================================================================
+
+LINKS DE STREAM:
+   ├── Twitch
+   │   ├── Link direto para canal
+   │   ├── Link para stream ao vivo
+   │   ├── Link para vídeos
+   │   └── Link para clipes
+   ├── TikTok
+   │   ├── Link para perfil
+   │   ├── Link para lives
+   │   ├── Link para vídeos
+   │   └── Link para stories
+   └── YouTube
+       ├── Link para canal
+       ├── Link para lives
+       ├── Link para vídeos
+       └── Link para shorts
+
+REDES SOCIAIS PARA BONIFICAÇÃO:
+   ├── Instagram
+   │   ├── Link para perfil
+   │   ├── Link para posts
+   │   ├── Link para stories
+   │   ├── Link para reels
+   │   └── Link para IGTV
+   ├── Outras redes (futuro)
+   │   ├── Twitter/X
+   │   ├── Facebook
+   │   ├── LinkedIn
+   │   └── Outras plataformas
+
+CONFIGURAÇÃO DE LINKS:
+   ├── Campo para link do Twitch
+   ├── Campo para link do TikTok
+   ├── Campo para link do YouTube
+   ├── Campo para link do Instagram
+   ├── Validação de URLs
+   ├── Preview dos links
+   └── Configuração de plataforma principal
+
+BOTÃO DINÂMICO BASEADO NA PLATAFORMA ESCOLHIDA:
+   ├── Se plataforma = Twitch
+   │   ├── Botão "Assistir no Twitch"
+   │   └── Link direto para canal Twitch
+   ├── Se plataforma = TikTok
+   │   ├── Botão "Assistir no TikTok"
+   │   └── Link direto para perfil TikTok
+   ├── Se plataforma = YouTube
+   │   ├── Botão "Assistir no YouTube"
+   │   └── Link direto para canal YouTube
+   ├── Se plataforma = Instagram
+   │   ├── Botão "Seguir no Instagram"
+   │   └── Link direto para perfil Instagram
+   └── Menu dropdown com todas as opções disponíveis
+
+================================================================================
+🎨 INTERFACE E DESIGN
+================================================================================
+
+DESIGN RESPONSIVO:
+   ├── Mobile (320px - 768px)
+   ├── Tablet (768px - 1024px)
+   ├── Desktop (1024px+)
+   └── Adaptação automática
+
+CORES PRINCIPAIS:
+   ├── Verde principal: #00FF00
+   ├── Verde escuro: #008000
+   ├── Verde claro: #90EE90
+   ├── Preto: #000000
+   ├── Branco: #FFFFFF
+   └── Cinza: #808080
+
+COMPONENTES UI:
+   ├── Botões modernos
+   ├── Cards elegantes
+   ├── Modais responsivos
+   ├── Formulários intuitivos
+   ├── Navegação clara
+   └── Animações suaves
+
+================================================================================
+🔒 SEGURANÇA
+================================================================================
+
+AUTENTICAÇÃO:
+   ├── JWT tokens
+   ├── Refresh tokens
+   ├── Senhas criptografadas
+   ├── Validação de dados
+   └── Rate limiting
+
+PROTEÇÃO DE DADOS:
+   ├── HTTPS obrigatório
+   ├── Validação de entrada
+   ├── Sanitização de dados
+   ├── Proteção contra SQL injection
+   └── Proteção contra XSS
+
+PRIVACIDADE:
+   ├── Configurações de privacidade
+   ├── Dados pessoais protegidos
+   ├── Opção de conta anônima
+   ├── Controle de visibilidade
+   └── GDPR compliance
+
+================================================================================
+📱 FUNCIONALIDADES MOBILE
+================================================================================
+
+APP-LIKE EXPERIENCE:
+   ├── PWA (Progressive Web App)
+   ├── Instalação no celular
+   ├── Notificações push
+   ├── Offline mode básico
+   └── Performance otimizada
+
+GESTOS:
+   ├── Swipe para navegar
+   ├── Pull to refresh
+   ├── Tap to interact
+   ├── Long press para opções
+   └── Gestos personalizados
+
+================================================================================
+🚀 PERFORMANCE
+================================================================================
+
+OTIMIZAÇÕES:
+   ├── Lazy loading
+   ├── Code splitting
+   ├── Image optimization
+   ├── Caching inteligente
+   ├── CDN para assets
+   └── Database indexing
+
+MONITORAMENTO:
+   ├── Analytics
+   ├── Error tracking
+   ├── Performance monitoring
+   ├── User behavior
+   └── Real-time metrics
+
+================================================================================ 
