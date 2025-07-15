@@ -8,5 +8,8 @@
     "multer": "^2.0.1",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.25"
+  },
+  "devDependencies": {
+    "tsconfig-paths": "^4.2.0"
   }
 }
