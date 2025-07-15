@@ -7,6 +7,7 @@ import Link from 'next/link';
 interface User {
   email: string;
   avatar?: string;
+  name?: string;
 }
 
 export default function Navigation() {
@@ -16,15 +17,20 @@ export default function Navigation() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const userName = localStorage.getItem('userName');
+    const userAvatar = localStorage.getItem('userAvatar');
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setUser({
           email: payload.email,
-          avatar: payload.avatar,
+          avatar: userAvatar || payload.avatar,
+          name: userName || payload.name,
         });
       } catch {
         localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userAvatar');
       }
     }
     setLoading(false);
@@ -32,6 +38,8 @@ export default function Navigation() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userAvatar');
     setUser(null);
     router.replace('/login');
   };
@@ -42,6 +50,28 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-2xl font-bold text-white">SementesPLAY</div>
           <div className="w-8 h-8 bg-white/20 rounded-full animate-pulse"></div>
+        </div>
+      </nav>
+    );
+  }
+
+  if (user) {
+    return (
+      <nav className="w-full bg-gradient-to-r from-purple-900 to-blue-900 shadow-lg px-8 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="text-2xl font-bold text-white">SementesPLAY</div>
+          <div className="flex items-center gap-4">
+            {user.avatar && (
+              <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white" />
+            )}
+            <span className="text-white font-semibold">{user.name || user.email}</span>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-bold ml-2"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </nav>
     );
