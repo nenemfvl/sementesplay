@@ -48,9 +48,20 @@ export default function Login() {
               try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
+                const idToken = await user.getIdToken();
+                // Enviar idToken para o backend
+                const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/auth/google' || 'http://localhost:3001/auth/google', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ idToken }),
+                });
+                if (!response.ok) throw new Error('Erro ao autenticar com backend');
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
                 showToast('Login com Google realizado com sucesso!', 'success');
-                // Aqui você pode salvar o usuário ou redirecionar
-                router.replace('/dashboard');
+                setTimeout(() => {
+                  router.replace('/dashboard');
+                }, 500); // Fallback para garantir redirecionamento
               } catch (error) {
                 showToast('Erro ao fazer login com Google', 'error');
               } finally {
