@@ -10,6 +10,8 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://sementesplay.vercel.app',
       'https://sementesplay-frontend.vercel.app',
+      'https://frontend-amr3xhwhk-favelaas-projects.vercel.app',
+      'https://frontend-xi-beryl-69.vercel.app',
       process.env.FRONTEND_URL
     ].filter(Boolean),
     credentials: true,
