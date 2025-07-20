@@ -87,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           mensagem: 'Parabéns! Sua candidatura para criador foi aprovada. Você agora pode começar a receber doações da comunidade.',
           tipo: 'candidatura_aprovada',
           lida: false,
-          dataCriacao: new Date()
+          //dataCriacao: new Date()
         }
       })
 
