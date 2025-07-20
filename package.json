@@ -11,7 +11,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "seed": "ts-node --project tsconfig-seed.json scripts/seed.ts"
+    "seed": "ts-node --project tsconfig-seed.json scripts/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
