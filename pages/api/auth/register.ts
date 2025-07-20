@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.criador.create({
         data: {
           usuarioId: usuario.id,
-          descricao: '',
+          //descricao: '',
           categoria: 'Gaming',
           seguidores: 0,
           totalDoacoes: 0,
