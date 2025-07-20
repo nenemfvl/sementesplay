@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-sss-dark text-sss-white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-sss-accent hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-sss-light hover:bg-sss-medium text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .card {
+    @apply bg-sss-medium rounded-lg shadow-lg border border-sss-light p-6;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sementes-500 focus:border-transparent;
+  }
+  
+  .badge-sementes {
+    @apply bg-sementes-100 text-sementes-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+  }
+  
+  .badge-cashback {
+    @apply bg-cashback-100 text-cashback-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+  }
+  
+  .badge-supremo {
+    @apply bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+  }
+  
+  .badge-parceiro {
+    @apply bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+  }
+  
+  .badge-comum {
+    @apply bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-sss-accent to-red-500 bg-clip-text text-transparent;
+  }
+  
+  .animate-grow {
+    animation: grow 2s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+} 

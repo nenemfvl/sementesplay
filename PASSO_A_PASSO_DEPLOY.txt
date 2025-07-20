@@ -1,0 +1,40 @@
+PASSO A PASSO PARA COLOCAR O SITE ONLINE (SementesPLAY)
+
+1. Subir o código para o GitHub
+- Crie um repositório no GitHub
+- Faça o commit e push do seu projeto
+
+2. Criar conta e fazer deploy na Vercel
+- Crie uma conta em https://vercel.com/
+- Conecte seu GitHub e importe o repositório
+- Faça o deploy
+
+3. Configurar variáveis de ambiente na Vercel
+- No painel da Vercel, vá em Settings > Environment Variables
+- Adicione:
+  DATABASE_URL=...
+  RESEND_API_KEY=...
+  NEXT_PUBLIC_BASE_URL=https://seudominio.vercel.app
+
+4. (Recomendado) Banco de dados online
+- Crie um banco PostgreSQL no Railway (https://railway.app/) ou Supabase
+- Copie a nova DATABASE_URL e coloque na Vercel
+- Rode as migrações do Prisma
+
+5. (Opcional) Domínio próprio
+- Compre um domínio (ex: Registro.br)
+- No painel da Vercel, adicione o domínio e siga as instruções de DNS
+
+6. Finalizar verificação do domínio no Resend
+- Complete a configuração DNS no painel do seu provedor
+- Quando o status ficar “Verified” no Resend, pode usar o remetente personalizado
+
+Resumo:
+- Suba o código para o GitHub
+- Deploy na Vercel
+- Configure variáveis de ambiente
+- Configure banco de dados online (recomendado)
+- (Opcional) Configure domínio próprio
+- Finalize verificação do domínio no Resend
+
+Pronto! Seu site estará online e com e-mail funcional. 

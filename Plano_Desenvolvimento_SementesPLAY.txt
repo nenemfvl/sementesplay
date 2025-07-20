@@ -1,0 +1,365 @@
+===========================================
+PLANO DE DESENVOLVIMENTO - SEMENTESPLAY
+Site baseado no sistema SSS da Wemade
+===========================================
+
+1. ESTRUTURA DO SITE
+====================
+FRONTEND: Next.js com TypeScript e Tailwind CSS
+BACKEND: API Routes do Next.js
+BANCO DE DADOS: SQLite (desenvolvimento) / PostgreSQL (produção)
+AUTENTICAÇÃO: Sistema próprio com sessões
+INTERFACE: Design moderno e responsivo
+
+2. PÁGINAS PRINCIPAIS
+======================
+HOME: Apresentação do sistema
+LOGIN/REGISTRO: Sistema de autenticação
+DASHBOARD DO USUÁRIO: Painel principal
+DASHBOARD DO CRIADOR: Painel para criadores de conteúdo
+DASHBOARD DO PARCEIRO: Painel para donos de cidades FiveM
+RANKING: Lista de criadores por pontuação
+DOAÇÕES: Sistema de doação de Sementes
+RESGATE: Sistema de resgate de cashback
+
+3. SISTEMAS PRINCIPAIS
+=======================
+
+A. SISTEMA DE USUÁRIOS
+- Usuário comum (pode doar Sementes)
+- Criador de conteúdo (recebe doações)
+- Parceiro (dono de cidade FiveM)
+
+B. SISTEMA DE SEMENTES
+- Moeda virtual do sistema
+- Gerada automaticamente por compras em cidades FiveM
+- Usada para doações entre usuários
+
+C. SISTEMA DE CASHBACK
+- 10% das compras vira Sementes
+- Código único gerado pelo dono da cidade
+- Sistema de resgate direto no site
+
+D. SISTEMA DE RANKING
+- Criadores são ranqueados por doações recebidas
+- Níveis: Supremo, Parceiro, Comum
+- Benefícios baseados no nível
+
+E. SISTEMA DE PARCEIROS
+- Painel exclusivo para donos de cidades
+- Geração de códigos de cashback
+- Relatórios de vendas e comissões
+
+4. FUNCIONALIDADES ESPECÍFICAS
+===============================
+
+PARA USUÁRIOS COMUNS:
+- Visualizar ranking de criadores
+- Fazer doações com Sementes
+- Ver histórico de doações
+- Resgatar cashback com códigos
+
+PARA CRIADORES:
+- Receber doações
+- Ver estatísticas de engajamento
+- Acessar benefícios por nível
+- Histórico de recebimentos
+
+PARA PARCEIROS (DONOS DE CIDADES):
+- Gerar códigos de cashback
+- Ver relatórios de vendas
+- Gerenciar comissões
+- Dashboard de performance
+
+5. TECNOLOGIAS QUE VOU USAR
+============================
+FRONTEND: Next.js, React, TypeScript, Tailwind CSS
+BACKEND: API Routes, Prisma (ORM)
+BANCO: SQLite
+AUTENTICAÇÃO: NextAuth.js
+VALIDAÇÃO: Zod
+ÍCONES: Heroicons
+ANIMAÇÕES: Framer Motion
+
+6. ESTRUTURA DE ARQUIVOS
+=========================
+sementesplay/
+├── pages/           # Páginas do Next.js
+├── components/      # Componentes React
+├── lib/            # Utilitários e configurações
+├── prisma/         # Schema do banco de dados
+├── styles/         # Estilos globais
+├── types/          # Tipos TypeScript
+└── public/         # Arquivos estáticos
+
+7. FLUXO DE DESENVOLVIMENTO
+============================
+
+PASSO 1: SETUP INICIAL
+- Configurar Next.js e dependências
+- Instalar TypeScript, Tailwind CSS
+- Configurar Prisma e banco de dados
+- Setup de autenticação básica
+
+PASSO 2: BANCO DE DADOS
+- Criar schema do banco de dados
+- Definir tabelas: usuarios, criadores, parceiros, sementes, doacoes, transacoes
+- Criar migrations
+- Configurar relacionamentos
+
+PASSO 3: SISTEMA DE AUTENTICAÇÃO
+- Criar páginas de login/registro
+- Implementar sistema de sessões
+- Proteger rotas por tipo de usuário
+- Validação de formulários
+
+PASSO 4: DASHBOARD PRINCIPAL
+- Criar layout base do site
+- Implementar navegação
+- Dashboard básico para usuários
+- Sistema de notificações
+
+PASSO 5: SISTEMA DE SEMENTES
+- Lógica de geração de Sementes
+- Sistema de carteira virtual
+- Histórico de transações
+- Validações de segurança
+
+PASSO 6: SISTEMA DE DOAÇÕES
+- Interface de doação
+- Transferência de Sementes entre usuários
+- Validações de saldo
+- Histórico de doações
+
+PASSO 7: SISTEMA DE RANKING
+- Cálculo de pontuação dos criadores
+- Sistema de níveis (Supremo, Parceiro, Comum)
+- Página de ranking
+- Benefícios por nível
+
+PASSO 8: PAINEL DE PARCEIROS
+- Dashboard exclusivo para donos de cidades
+- Geração de códigos de cashback
+- Relatórios de vendas
+- Sistema de comissões
+
+PASSO 9: SISTEMA DE RESGATE
+- Interface de resgate de cashback
+- Validação de códigos
+- Processamento de resgates
+- Histórico de resgates
+
+PASSO 10: RELATÓRIOS E ANALYTICS
+- Estatísticas gerais do sistema
+- Relatórios para parceiros
+- Dashboard de administração
+- Métricas de performance
+
+8. DIFERENÇAS DO SISTEMA ORIGINAL
+==================================
+SEMENTES ao invés de Seeds
+CRIADORES ao invés de Streamers
+CASHBACK DIRETO ao invés de carteira
+CÓDIGOS DE PARCEIROS para resgate
+PAINEL DE DONOS DE CIDADES exclusivo
+SISTEMA DE COMISSÕES para parceiros
+
+9. ESTRUTURA DO BANCO DE DADOS
+===============================
+
+TABELA USUARIOS:
+- id, nome, email, senha, tipo (comum/criador/parceiro)
+- sementes, nivel, pontuacao, data_criacao
+
+TABELA CRIADORES:
+- id, usuario_id, descricao, categoria, seguidores
+- total_doacoes, nivel_atual, beneficios
+
+TABELA PARCEIROS:
+- id, usuario_id, nome_cidade, comissao_mensal
+- total_vendas, codigos_gerados
+
+TABELA SEMENTES:
+- id, usuario_id, quantidade, tipo (gerada/doada/resgatada)
+- data, descricao
+
+TABELA DOACOES:
+- id, doador_id, criador_id, quantidade, data
+- mensagem
+
+TABELA TRANSACOES:
+- id, usuario_id, tipo, valor, codigo_parceiro
+- status, data
+
+TABELA CODIGOS_CASHBACK:
+- id, parceiro_id, codigo, valor, usado
+- data_geracao, data_uso
+
+10. FUNCIONALIDADES AVANÇADAS
+==============================
+
+SISTEMA DE NOTIFICAÇÕES:
+- Notificações em tempo real
+- Email de confirmação
+- Alertas de doações
+
+SISTEMA DE SEGURANÇA:
+- Validação de transações
+- Prevenção de fraude
+- Logs de auditoria
+
+SISTEMA DE BACKUP:
+- Backup automático do banco
+- Recuperação de dados
+- Versionamento
+
+SISTEMA DE PERFORMANCE:
+- Cache de dados
+- Otimização de consultas
+- Monitoramento
+
+11. INTERFACE E UX
+===================
+
+DESIGN PRINCIPAL:
+- Cores: Verde (Sementes), Dourado (Cashback)
+- Layout responsivo
+- Animações suaves
+- Ícones intuitivos
+
+COMPONENTES REUTILIZÁVEIS:
+- Cards de criadores
+- Botões de doação
+- Formulários
+- Tabelas de ranking
+
+NAVEGAÇÃO:
+- Menu lateral para dashboards
+- Breadcrumbs
+- Filtros e busca
+- Paginação
+
+12. TESTES E QUALIDADE
+=======================
+
+TESTES UNITÁRIOS:
+- Funções de cálculo
+- Validações
+- Utilitários
+
+TESTES DE INTEGRAÇÃO:
+- APIs
+- Banco de dados
+- Autenticação
+
+TESTES DE INTERFACE:
+- Responsividade
+- Usabilidade
+- Performance
+
+13. DEPLOY E PRODUÇÃO
+======================
+
+AMBIENTE DE DESENVOLVIMENTO:
+- Local com SQLite
+- Hot reload
+- Debug tools
+
+AMBIENTE DE PRODUÇÃO:
+- Vercel/Netlify
+- PostgreSQL
+- CDN para assets
+- SSL/HTTPS
+
+MONITORAMENTO:
+- Logs de erro
+- Métricas de performance
+- Alertas automáticos
+
+14. DOCUMENTAÇÃO
+=================
+
+DOCUMENTAÇÃO TÉCNICA:
+- Setup do projeto
+- Estrutura do código
+- APIs disponíveis
+- Configurações
+
+DOCUMENTAÇÃO DO USUÁRIO:
+- Como usar o sistema
+- FAQ
+- Tutoriais
+- Suporte
+
+15. CRONOGRAMA ESTIMADO
+========================
+
+SEMANA 1: Setup e estrutura básica
+SEMANA 2: Autenticação e banco de dados
+SEMANA 3: Sistema de Sementes e doações
+SEMANA 4: Ranking e níveis
+SEMANA 5: Painel de parceiros
+SEMANA 6: Sistema de resgate
+SEMANA 7: Relatórios e analytics
+SEMANA 8: Testes e otimizações
+
+TOTAL: 8 semanas para versão completa
+
+16. RECURSOS NECESSÁRIOS
+=========================
+
+DESENVOLVIMENTO:
+- Editor de código (VS Code)
+- Node.js e npm
+- Git para versionamento
+- Banco de dados local
+
+PRODUÇÃO:
+- Servidor/hosting
+- Banco de dados em nuvem
+- Domínio
+- SSL certificate
+
+17. MANUTENÇÃO E ATUALIZAÇÕES
+==============================
+
+ATUALIZAÇÕES REGULARES:
+- Correções de bugs
+- Novas funcionalidades
+- Melhorias de performance
+- Atualizações de segurança
+
+BACKUP E RECUPERAÇÃO:
+- Backup diário
+- Testes de recuperação
+- Monitoramento contínuo
+
+SUPORTE:
+- Sistema de tickets
+- Documentação atualizada
+- Treinamento de usuários
+
+===========================================
+RESUMO EXECUTIVO
+===========================================
+
+O SementesPLAY será um sistema completo baseado no SSS da Wemade, 
+adaptado para o ecossistema FiveM com foco em cashback e doações.
+
+PRINCIPAIS CARACTERÍSTICAS:
+- Sistema de cashback de 10% em compras FiveM
+- Doações entre usuários usando Sementes
+- Ranking de criadores de conteúdo
+- Painel exclusivo para donos de cidades
+- Resgate direto de dinheiro real
+
+TECNOLOGIAS: Next.js, TypeScript, Tailwind CSS, Prisma, SQLite/PostgreSQL
+
+CRONOGRAMA: 8 semanas para versão completa
+
+RESULTADO: Sistema funcional e escalável para monetização de criadores
+e engajamento de usuários no ecossistema FiveM.
+
+===========================================
+FIM DO PLANO
+=========================================== 
