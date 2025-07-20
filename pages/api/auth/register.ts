@@ -46,12 +46,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.criador.create({
         data: {
           usuarioId: usuario.id,
-          //descricao: '',
+          nome: usuario.nome,
+          bio: '',
           categoria: 'Gaming',
-          //seguidores: 0,
-          //totalDoacoes: 0,
-          //nivelAtual: 'comum',
-          //beneficios: '[]'
+          redesSociais: '{}',
+          portfolio: '{}'
         }
       })
     }
