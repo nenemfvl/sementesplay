@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           //seguidores: 0,
           //totalDoacoes: 0,
           //nivelAtual: 'comum',
-          beneficios: '[]'
+          //beneficios: '[]'
         }
       })
     }
