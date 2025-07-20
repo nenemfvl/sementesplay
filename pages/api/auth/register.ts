@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           usuarioId: usuario.id,
           //descricao: '',
           categoria: 'Gaming',
-          seguidores: 0,
+          //seguidores: 0,
           totalDoacoes: 0,
           nivelAtual: 'comum',
           beneficios: '[]'
