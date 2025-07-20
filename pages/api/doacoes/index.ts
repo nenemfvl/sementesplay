@@ -73,7 +73,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await tx.criador.update({
         where: { id: criadorId },
         data: {
-          totalDoacoes: { increment: quantidade },
           seguidores: { increment: 1 } // Incrementar seguidores se for primeira doação
         }
       })
