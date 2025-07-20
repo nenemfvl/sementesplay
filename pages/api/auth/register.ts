@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           //descricao: '',
           categoria: 'Gaming',
           //seguidores: 0,
-          totalDoacoes: 0,
+          //totalDoacoes: 0,
           nivelAtual: 'comum',
           beneficios: '[]'
         }
