@@ -90,40 +90,39 @@ export default function Dashboard() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
+        {/* Header/Navbar igual ao da home */}
         <header className="bg-sss-medium shadow-lg border-b border-sss-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                  <span className="text-lg">🌱</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-gray-300">Dashboard</p>
+            <div className="flex justify-between items-center py-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <h1 className="text-2xl font-bold text-gradient">
+                    🌱 SementesPLAY
+                  </h1>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-4">
-                <Link href="/notificacoes" className="p-2 text-gray-300 hover:text-sss-accent">
-                  <BellIcon className="w-6 h-6" />
-                </Link>
-                <Link href="/configuracoes" className="p-2 text-gray-300 hover:text-sss-accent">
-                  <CogIcon className="w-6 h-6" />
-                </Link>
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-sss-accent rounded-full flex items-center justify-center">
-                    <UserIcon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-sss-white font-medium hidden sm:inline">{user.nome}</span>
-                </div>
-                <button 
-                  onClick={() => auth.logout()}
-                  className="p-2 text-gray-300 hover:text-red-400"
-                  title="Sair"
-                >
-                  <ArrowLeftOnRectangleIcon className="w-6 h-6" />
-                </button>
+              <nav className="hidden md:flex space-x-8">
+                <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
+                <a href="/#como-funciona" className="text-sss-white hover:text-sss-accent">Como Funciona</a>
+                <a href="/#beneficios" className="text-sss-white hover:text-sss-accent">Benefícios</a>
+                <a href="/#niveis" className="text-sss-white hover:text-sss-accent">Níveis</a>
+                <a href="/#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
+                <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
+              </nav>
+              <div className="flex space-x-4 items-center">
+                {user ? (
+                  <>
+                    <span className="text-sss-white font-medium">{user.nome}</span>
+                    <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
+                      <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" className="btn-outline">Entrar</a>
+                    <a href="/registro" className="btn-primary">Cadastrar</a>
+                  </>
+                )}
               </div>
             </div>
           </div>
