@@ -111,26 +111,15 @@ export default function Registro() {
                     <label className="block text-sm font-medium text-sss-white mb-3">
                       Tipo de Conta
                     </label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { value: 'usuario', label: 'Usuário', icon: '👤' },
-                        { value: 'criador', label: 'Criador', icon: '🎬' },
-                        { value: 'parceiro', label: 'Parceiro', icon: '🏢' }
-                      ].map((tipo) => (
-                        <button
-                          key={tipo.value}
-                          type="button"
-                          className={`p-3 rounded-lg border-2 transition-colors ${
-                            formData.tipoConta === tipo.value
-                              ? 'border-sss-accent bg-sss-accent/10 text-sss-accent'
-                              : 'border-sss-light bg-sss-dark text-gray-300 hover:border-sss-accent/50'
-                          }`}
-                          onClick={() => setFormData({ ...formData, tipoConta: tipo.value })}
-                        >
-                          <div className="text-lg mb-1">{tipo.icon}</div>
-                          <div className="text-xs font-medium">{tipo.label}</div>
-                        </button>
-                      ))}
+                    <div className="grid grid-cols-1 gap-3">
+                      <button
+                        type="button"
+                        className="p-3 rounded-lg border-2 border-sss-accent bg-sss-accent/10 text-sss-accent cursor-default"
+                        disabled
+                      >
+                        <div className="text-lg mb-1">👤</div>
+                        <div className="text-xs font-medium">Usuário</div>
+                      </button>
                     </div>
                   </div>
 
