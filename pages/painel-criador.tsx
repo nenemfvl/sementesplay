@@ -462,14 +462,14 @@ export default function PainelCriador() {
       {/* Modal de adicionar conteúdo */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <form onSubmit={editando ? handleEditConteudo : handleAddConteudo} className="bg-white rounded shadow p-6 w-full max-w-md flex flex-col gap-3">
-            <h2 className="text-xl font-bold mb-2">{editando ? 'Editar Conteúdo' : 'Adicionar Conteúdo'}</h2>
-            <input ref={tituloRef} required className="border rounded px-2 py-1" placeholder="Título" value={form.titulo} onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} />
-            <input required className="border rounded px-2 py-1" placeholder="URL" value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))} />
-            <input required className="border rounded px-2 py-1" placeholder="Tipo (ex: vídeo, live)" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} />
-            <input required className="border rounded px-2 py-1" placeholder="Categoria" value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} />
+          <form onSubmit={editando ? handleEditConteudo : handleAddConteudo} className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col gap-3">
+            <h2 className="text-xl font-bold mb-2">Editar Conteúdo</h2>
+            <input ref={tituloRef} required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Título" value={form.titulo} onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} />
+            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="URL" value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))} />
+            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Tipo (ex: vídeo, live)" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} />
+            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Categoria" value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} />
             <div className="flex gap-2 mt-2">
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded font-semibold" disabled={saving}>{saving ? 'Salvando...' : (editando ? 'Salvar' : 'Adicionar')}</button>
+              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition" disabled={saving}>{saving ? 'Salvando...' : (editando ? 'Salvar' : 'Adicionar')}</button>
               <button type="button" className="bg-gray-300 px-4 py-2 rounded" onClick={() => { setShowModal(false); setEditando(null); }} disabled={saving}>Cancelar</button>
             </div>
           </form>
@@ -479,19 +479,19 @@ export default function PainelCriador() {
         <h1 className="text-3xl font-bold mb-6">Painel do Criador</h1>
         {/* Estatísticas principais */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
             <span className="text-lg font-semibold">Visualizações</span>
             <span className="text-2xl font-bold text-green-600">{!loading ? totalVisualizacoes : '--'}</span>
           </div>
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
             <span className="text-lg font-semibold">Curtidas</span>
             <span className="text-2xl font-bold text-pink-500">{!loading ? totalCurtidas : '--'}</span>
           </div>
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
             <span className="text-lg font-semibold">Comentários</span>
             <span className="text-2xl font-bold text-blue-500">{!loading ? totalComentarios : '--'}</span>
           </div>
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
             <span className="text-lg font-semibold">Compartilhamentos</span>
             <span className="text-2xl font-bold text-yellow-500">{!loading ? totalCompartilhamentos : '--'}</span>
           </div>
@@ -500,7 +500,7 @@ export default function PainelCriador() {
         <section className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-bold">Seus Conteúdos</h2>
-            <button className="bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition" onClick={() => setShowModal(true)}>Adicionar Conteúdo</button>
+            <button className="bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition" onClick={() => setShowModal(true)}>Adicionar Conteúdo</button>
           </div>
           {categorias.length > 0 && (
             <div className="mb-2 flex gap-2 items-center">
@@ -521,7 +521,7 @@ export default function PainelCriador() {
               {getPreview((conteudoFixado as any).url)}
             </div>
           )}
-          <div className="bg-white rounded shadow p-4 min-h-[120px]">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white min-h-[120px]">
             {loading ? (
               <div className="text-gray-400 text-center">Carregando...</div>
             ) : conteudos && conteudos.length > 0 ? (
@@ -549,7 +549,7 @@ export default function PainelCriador() {
         </section>
         {/* Missões e Conquistas */}
         <section className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Missões</h2>
             {loadingMissoes ? (
               <span className="text-gray-400">Carregando...</span>
@@ -566,7 +566,7 @@ export default function PainelCriador() {
               <span className="text-gray-400">Nenhuma missão disponível.</span>
             )}
           </div>
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Conquistas</h2>
             {loadingConquistas ? (
               <span className="text-gray-400">Carregando...</span>
@@ -586,7 +586,7 @@ export default function PainelCriador() {
         </section>
         {/* Histórico de Doações e Ranking de Doadores */}
         <section className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Histórico de Doações</h2>
             {loadingDoacoes ? (
               <span className="text-gray-400">Carregando...</span>
@@ -605,7 +605,7 @@ export default function PainelCriador() {
               <span className="text-gray-400">Nenhuma doação recebida ainda.</span>
             )}
           </div>
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Ranking de Doadores</h2>
             {loadingRanking ? (
               <span className="text-gray-400">Carregando...</span>
@@ -625,7 +625,7 @@ export default function PainelCriador() {
         </section>
         {/* Personalização do Perfil */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Personalização do Perfil</h2>
             {loadingPerfil ? (
               <span className="text-gray-400">Carregando...</span>
@@ -636,21 +636,21 @@ export default function PainelCriador() {
                     <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-1">
                       {perfil.fotoPerfil ? <img src={perfil.fotoPerfil} alt="Foto de perfil" className="w-full h-full object-cover" /> : <span className="text-gray-400">Foto</span>}
                     </div>
-                    <input className="border rounded px-2 py-1 w-32" placeholder="URL da foto" value={perfil.fotoPerfil||''} onChange={e => setPerfil(f => ({ ...f, fotoPerfil: e.target.value }))} />
+                    <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="URL da foto" value={perfil.fotoPerfil||''} onChange={e => setPerfil(f => ({ ...f, fotoPerfil: e.target.value }))} />
                   </div>
                   <div className="flex-1">
-                    <input className="border rounded px-2 py-1 w-full mb-1" placeholder="Banner (URL)" value={perfil.banner||''} onChange={e => setPerfil(f => ({ ...f, banner: e.target.value }))} />
+                    <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Banner (URL)" value={perfil.banner||''} onChange={e => setPerfil(f => ({ ...f, banner: e.target.value }))} />
                     {perfil.banner && <img src={perfil.banner} alt="Banner" className="w-full h-16 object-cover rounded" />}
                   </div>
                 </div>
-                <textarea className="border rounded px-2 py-1" placeholder="Bio" value={perfil.bio||''} onChange={e => setPerfil(f => ({ ...f, bio: e.target.value }))} />
-                <input className="border rounded px-2 py-1" placeholder="Descrição" value={perfil.descricao||''} onChange={e => setPerfil(f => ({ ...f, descricao: e.target.value }))} />
-                <input className="border rounded px-2 py-1" placeholder="Tags/interesses (separados por vírgula)" value={perfil.tags||''} onChange={e => setPerfil(f => ({ ...f, tags: e.target.value }))} />
+                <textarea className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Bio" value={perfil.bio||''} onChange={e => setPerfil(f => ({ ...f, bio: e.target.value }))} />
+                <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Descrição" value={perfil.descricao||''} onChange={e => setPerfil(f => ({ ...f, descricao: e.target.value }))} />
+                <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Tags/interesses (separados por vírgula)" value={perfil.tags||''} onChange={e => setPerfil(f => ({ ...f, tags: e.target.value }))} />
                 <div className="flex items-center gap-2">
                   <label className="font-semibold">Tema/cor:</label>
                   <input type="color" value={perfil.tema||'#22c55e'} onChange={e => setPerfil(f => ({ ...f, tema: e.target.value }))} />
                 </div>
-                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoPerfil}>{salvandoPerfil ? 'Salvando...' : 'Salvar'}</button>
+                <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoPerfil}>{salvandoPerfil ? 'Salvando...' : 'Salvar'}</button>
                 {perfilStatus==='salvo' && <span className="text-green-600 text-sm">Perfil salvo!</span>}
               </form>
             )}
@@ -658,33 +658,33 @@ export default function PainelCriador() {
         </section>
         {/* Atalhos e widgets */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Personalização</h3>
             <ul className="space-y-1">
-              <li><a href="#" className="text-green-700 hover:underline">Editar perfil</a></li>
-              <li><a href="#" className="text-green-700 hover:underline">Alterar foto/banner</a></li>
-              <li><a href="#" className="text-green-700 hover:underline">Escolher tema</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Editar perfil</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Alterar foto/banner</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Escolher tema</a></li>
             </ul>
           </div>
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Missões & Conquistas</h3>
             <ul className="space-y-1">
-              <li><a href="#" className="text-blue-700 hover:underline">Ver missões</a></li>
-              <li><a href="#" className="text-blue-700 hover:underline">Ver conquistas</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Ver missões</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Ver conquistas</a></li>
             </ul>
           </div>
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Monetização</h3>
             <ul className="space-y-1">
-              <li><a href="#" className="text-yellow-700 hover:underline">Histórico de doações</a></li>
-              <li><a href="#" className="text-yellow-700 hover:underline">Ranking de doadores</a></li>
-              <li><a href="#" className="text-yellow-700 hover:underline">Metas de arrecadação</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Histórico de doações</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Ranking de doadores</a></li>
+              <li><a href="#" className="text-sss-accent hover:underline">Metas de arrecadação</a></li>
             </ul>
           </div>
         </section>
         {/* Notificações e suporte */}
         <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Notificações</h3>
             {loadingNotificacoes ? (
               <span className="text-gray-400">Carregando...</span>
@@ -702,10 +702,10 @@ export default function PainelCriador() {
               <span className="text-gray-400">Nenhuma notificação recente.</span>
             )}
           </div>
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Suporte & Feedback</h3>
             <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
-              <textarea className="border rounded px-2 py-1" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
+              <textarea className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
               <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded font-semibold" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
               {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
             </form>
@@ -716,18 +716,18 @@ export default function PainelCriador() {
         </section>
         {/* Enquetes para Seguidores */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Enquetes para Seguidores</h2>
             <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
-              <input className="border rounded px-2 py-1" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
+              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
               {novaEnquete.opcoes.map((op, i) => (
                 <div key={i} className="flex gap-2 items-center">
-                  <input className="border rounded px-2 py-1 flex-1" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
+                  <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1 placeholder-gray-400" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
                   {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
                 </div>
               ))}
-              <button type="button" className="text-blue-600 underline w-fit" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
+              <button type="button" className="text-sss-accent underline w-fit" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
+              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
               {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
             </form>
             {loadingEnquetes ? (
@@ -756,7 +756,7 @@ export default function PainelCriador() {
         </section>
         {/* Caixa de Perguntas/Recados dos Fãs */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
             {loadingRecados ? (
               <span className="text-gray-400">Carregando...</span>
@@ -773,13 +773,13 @@ export default function PainelCriador() {
                       <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
                     ) : respondendo === r.id ? (
                       <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
-                        <input className="border rounded px-2 py-1 flex-1" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
+                        <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1 placeholder-gray-400" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
                         <button type="submit" className="bg-green-600 text-white px-3 py-1 rounded font-semibold" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
                         <button type="button" className="bg-gray-300 px-3 py-1 rounded" onClick={() => setRespondendo(null)}>Cancelar</button>
                         {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
                       </form>
                     ) : (
-                      <button className="text-blue-600 hover:underline text-sm mt-1" onClick={() => setRespondendo(r.id)}>Responder</button>
+                      <button className="text-sss-accent hover:underline text-sm mt-1" onClick={() => setRespondendo(r.id)}>Responder</button>
                     )}
                   </li>
                 ))}
@@ -791,13 +791,13 @@ export default function PainelCriador() {
         </section>
         {/* Geração de Links Personalizados para Divulgação */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4 flex flex-col md:flex-row items-center gap-6">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light flex flex-col md:flex-row items-center gap-6 text-sss-white">
             <div className="flex-1">
               <h2 className="text-lg font-bold mb-2">Link Personalizado para Divulgação</h2>
               {linkDivulgacao ? (
                 <div className="flex items-center gap-2 mb-2">
-                  <input className="border rounded px-2 py-1 flex-1" value={linkDivulgacao} readOnly />
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded font-semibold" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
+                  <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1" value={linkDivulgacao} readOnly />
+                  <button className="bg-sss-accent text-white px-3 py-1 rounded font-semibold" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
                 </div>
               ) : (
                 <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
@@ -810,7 +810,7 @@ export default function PainelCriador() {
         </section>
         {/* Exportação de Dados do Perfil */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4 flex items-center gap-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light flex items-center gap-4 text-sss-white">
             <h2 className="text-lg font-bold flex-1">Exportar Dados do Perfil</h2>
             <button className="bg-gray-700 text-white px-4 py-2 rounded font-semibold" onClick={() => exportarDados({ perfil, conteudos, doacoes, conquistas, missoes, enquetes, recados })}>
               Baixar JSON
@@ -819,13 +819,13 @@ export default function PainelCriador() {
         </section>
         {/* Integrações Externas */}
         <section className="mb-8">
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h2 className="text-lg font-bold mb-2">Integrações Externas</h2>
             <form onSubmit={handleSalvarIntegracoes} className="flex flex-col gap-2 max-w-md">
-              <input className="border rounded px-2 py-1" placeholder="Token/ID do YouTube" value={integracoes.youtube||''} onChange={e => setIntegracoes(f => ({...f, youtube: e.target.value}))} />
-              <input className="border rounded px-2 py-1" placeholder="Token/ID do Twitch" value={integracoes.twitch||''} onChange={e => setIntegracoes(f => ({...f, twitch: e.target.value}))} />
-              <input className="border rounded px-2 py-1" placeholder="Token/ID do Discord" value={integracoes.discord||''} onChange={e => setIntegracoes(f => ({...f, discord: e.target.value}))} />
-              <button type="submit" className="bg-blue-700 text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoIntegracoes}>{salvandoIntegracoes ? 'Salvando...' : 'Salvar Integrações'}</button>
+              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do YouTube" value={integracoes.youtube||''} onChange={e => setIntegracoes(f => ({...f, youtube: e.target.value}))} />
+              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do Twitch" value={integracoes.twitch||''} onChange={e => setIntegracoes(f => ({...f, twitch: e.target.value}))} />
+              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do Discord" value={integracoes.discord||''} onChange={e => setIntegracoes(f => ({...f, discord: e.target.value}))} />
+              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoIntegracoes}>{salvandoIntegracoes ? 'Salvando...' : 'Salvar Integrações'}</button>
               {integracoesStatus==='salvo' && <span className="text-green-600 text-sm">Integrações salvas!</span>}
             </form>
           </div>
