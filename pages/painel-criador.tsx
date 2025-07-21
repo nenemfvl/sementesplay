@@ -475,7 +475,7 @@ export default function PainelCriador() {
           </form>
         </div>
       )}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8 bg-sss-dark min-h-screen">
         <h1 className="text-3xl font-bold mb-6">Painel do Criador</h1>
         {/* Estatísticas principais */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
