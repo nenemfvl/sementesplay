@@ -49,8 +49,8 @@ export default function Registro() {
         // Salvar usuário na sessão
         auth.setUser(data.usuario)
         alert('Conta criada com sucesso! 🎉')
-        // Redirecionar para o dashboard
-        window.location.href = '/dashboard'
+        // Redirecionar para a página principal
+        window.location.href = '/'
       } else {
         alert(`Erro: ${data.error}`)
       }
