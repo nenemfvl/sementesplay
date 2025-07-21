@@ -2,7 +2,6 @@ import React from 'react'
 import Head from 'next/head'
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
 import { auth } from '../lib/auth'
-import Navbar from '../components/Navbar';
 
 export default function Criadores() {
   const user = typeof window !== 'undefined' ? auth.getUser() : null;
@@ -13,7 +12,6 @@ export default function Criadores() {
         <meta name="description" content="Página de criadores do SementesPLAY" />
       </Head>
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
         {/* Conteúdo centralizado zerado */}
         <div className="flex flex-col items-center justify-center py-16">
           <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center max-w-2xl w-full">
