@@ -84,7 +84,6 @@ export default function Home() {
               </div>
               <nav className="hidden md:flex space-x-8">
                 <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
-                <a href="#como-funciona" className="text-sss-white hover:text-sss-accent">Como Funciona</a>
                 <a href="#beneficios" className="text-sss-white hover:text-sss-accent">Benefícios</a>
                 <a href="#niveis" className="text-sss-white hover:text-sss-accent">Níveis</a>
                 <a href="#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
