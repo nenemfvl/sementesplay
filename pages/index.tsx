@@ -72,7 +72,7 @@ export default function Home() {
 
       <div className="min-h-screen bg-sss-dark">
         {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light sticky top-0 z-50">
+        <header className="bg-sss-medium shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center gap-2">
@@ -87,22 +87,23 @@ export default function Home() {
                 <a href="/parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
                 <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
               </nav>
-              <div className="flex items-center space-x-4 ml-auto">
-                {user ? (
-                  <>
-                    <span className="text-sss-accent font-bold">{user.nome}</span>
-                    <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
-                      <ArrowLeftOnRectangleIcon className="w-6 h-6" />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <a href="/login" className="btn-outline">Entrar</a>
-                    <a href="/registro" className="btn-primary">Cadastrar</a>
-                  </>
-                )}
-              </div>
             </div>
+          </div>
+          {/* Usuário e logout colados na borda direita */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-4 px-6">
+            {user ? (
+              <>
+                <span className="text-sss-accent font-bold">{user.nome}</span>
+                <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
+                  <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+                </button>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="btn-outline">Entrar</a>
+                <a href="/registro" className="btn-primary">Cadastrar</a>
+              </>
+            )}
           </div>
         </header>
 
