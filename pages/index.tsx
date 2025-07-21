@@ -73,12 +73,13 @@ export default function Home() {
       <div className="min-h-screen bg-sss-dark">
         {/* Header */}
         <header className="bg-sss-medium shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
+          {/* Logo e nome colados à esquerda */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6">
+            <span className="text-2xl text-sss-accent">🌱</span>
+            <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
+          </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl text-sss-accent">🌱</span>
-                <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
-              </div>
+            <div className="flex justify-center items-center py-6">
               <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
                 <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
                 <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
