@@ -19,7 +19,8 @@ import {
   LinkIcon,
   CogIcon,
   ShieldCheckIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
@@ -266,30 +267,44 @@ export default function Criadores() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
+        {/* Navbar igual à home */}
         <header className="bg-sss-medium shadow-lg border-b border-sss-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <Link href="/dashboard" className="inline-flex items-center text-sss-accent hover:text-red-400">
-                  <ArrowLeftIcon className="w-5 h-5 mr-2" />
-                  Voltar ao Dashboard
-                </Link>
+            <div className="flex justify-between items-center py-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <h1 className="text-2xl font-bold text-gradient">
+                    🌱 SementesPLAY
+                  </h1>
+                </div>
               </div>
-              
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
-                  <TrophyIcon className="w-6 h-6 text-yellow-500" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-yellow-400">Painel de Criadores</p>
-                </div>
+              <nav className="hidden md:flex space-x-8">
+                <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
+                <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
+                <a href="/salao" className="text-sss-white hover:text-sss-accent">Salão</a>
+                <a href="/criadores" className="text-sss-white hover:text-sss-accent">Criadores</a>
+                <a href="#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
+                <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
+              </nav>
+              <div className="flex space-x-4 items-center">
+                {user ? (
+                  <>
+                    <span className="text-sss-white font-medium">{user.nome}</span>
+                    <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
+                      <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" className="btn-outline">Entrar</a>
+                    <a href="/registro" className="btn-primary">Cadastrar</a>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </header>
-
+        {/* Conteúdo da página Criadores */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
