@@ -13,7 +13,7 @@ export default function Parceiros() {
       </Head>
       <div className="min-h-screen bg-sss-dark">
         {/* Navbar igual à home */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
+        <header className="bg-sss-medium shadow-lg border-b border-sss-light sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
