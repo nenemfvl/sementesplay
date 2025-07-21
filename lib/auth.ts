@@ -38,11 +38,9 @@ export const auth = {
       if (user) {
         return JSON.parse(user)
       }
-      // Se não há usuário, criar um de teste
-      auth.setUser(defaultUser)
-      return defaultUser
+      return null
     }
-    return defaultUser
+    return null
   },
 
   // Verificar se está logado
