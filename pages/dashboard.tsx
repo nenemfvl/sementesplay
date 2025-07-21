@@ -104,6 +104,7 @@ export default function Dashboard() {
               <nav className="hidden md:flex space-x-8">
                 <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
                 <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
+                <a href="/salao" className="text-sss-white hover:text-sss-accent">Salão</a>
                 <a href="/#beneficios" className="text-sss-white hover:text-sss-accent">Benefícios</a>
                 <a href="/#niveis" className="text-sss-white hover:text-sss-accent">Níveis</a>
                 <a href="/#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
