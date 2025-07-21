@@ -1,32 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient()
+let missoes: any[] = [];
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    if (req.method === 'GET') {
-      const missoes = await prisma.missao.findMany()
-      return res.status(200).json(missoes)
-    }
-    if (req.method === 'POST') {
-      const data = req.body
-      const missao = await prisma.missao.create({ data })
-      return res.status(201).json(missao)
-    }
-    if (req.method === 'PUT') {
-      const { id, ...data } = req.body
-      const missao = await prisma.missao.update({ where: { id }, data })
-      return res.status(200).json(missao)
-    }
-    if (req.method === 'DELETE') {
-      const { id } = req.body
-      await prisma.missao.delete({ where: { id } })
-      return res.status(204).end()
-    }
-    return res.status(405).json({ error: 'Método não permitido' })
-  } catch (error) {
-    console.error('Erro no endpoint de Missao:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    return res.status(200).json(missoes);
   }
+  if (req.method === 'POST') {
+    const nova = { id: Date.now().toString(), ...req.body, data: new Date().toISOString() };
+    missoes.push(nova);
+    return res.status(201).json(nova);
+  }
+  return res.status(405).json({ error: 'Método não permitido' });
 } 

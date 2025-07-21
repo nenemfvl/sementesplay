@@ -1,17 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient()
+let conquistas: any[] = [];
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    if (req.method === 'GET') {
-      const conquistas = await prisma.conquista.findMany()
-      return res.status(200).json(conquistas)
-    }
-    return res.status(405).json({ error: 'Método não permitido' })
-  } catch (error) {
-    console.error('Erro ao buscar conquistas:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    return res.status(200).json(conquistas);
   }
+  if (req.method === 'POST') {
+    const nova = { id: Date.now().toString(), ...req.body, data: new Date().toISOString() };
+    conquistas.push(nova);
+    return res.status(201).json(nova);
+  }
+  return res.status(405).json({ error: 'Método não permitido' });
 } 
