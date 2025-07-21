@@ -454,6 +454,18 @@ export default function PainelCriador() {
     URL.revokeObjectURL(url);
   }
 
+  function getYoutubeInfo(url: string) {
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      const id = yt[1];
+      return {
+        thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+        link: `https://www.youtube.com/watch?v=${id}`
+      };
+    }
+    return null;
+  }
+
   return (
     <>
       <Head>
@@ -526,21 +538,33 @@ export default function PainelCriador() {
               <div className="text-gray-400 text-center">Carregando...</div>
             ) : conteudos && conteudos.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {conteudosFiltrados.map((c) => (
-                  <div key={c.id} className="border rounded p-3 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-lg">{c.titulo}</span>
-                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{c.tipo}</span>
+                {conteudosFiltrados.map((c) => {
+                  const yt = getYoutubeInfo((c as any).url);
+                  return (
+                    <div key={c.id} className="border rounded p-3 flex flex-col gap-2 bg-sss-medium border-sss-light text-sss-white">
+                      {yt ? (
+                        <>
+                          <img src={yt.thumbnail} alt={c.titulo} className="rounded w-full max-h-48 object-cover mb-2" />
+                          <a href={yt.link} target="_blank" rel="noopener" className="text-lg font-bold hover:underline">{c.titulo}</a>
+                          <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded w-fit">{c.tipo}</span>
+                          <a href={yt.link} target="_blank" rel="noopener" className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded font-semibold w-fit">Assistir no YouTube</a>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-full h-32 bg-gray-700 rounded flex items-center justify-center text-gray-400">Preview</div>
+                          <a href={(c as any).url} target="_blank" rel="noopener" className="text-lg font-bold hover:underline">{c.titulo}</a>
+                          <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded w-fit">{c.tipo}</span>
+                          <a href={(c as any).url} target="_blank" rel="noopener" className="mt-2 bg-sss-accent hover:bg-green-700 text-white px-4 py-1 rounded font-semibold w-fit">Ver conteúdo</a>
+                        </>
+                      )}
+                      <div className="flex gap-2 mt-2">
+                        <button className="text-blue-400 hover:underline text-sm" onClick={() => { setEditando(c); setForm({ titulo: c.titulo, url: (c as any).url || '', tipo: c.tipo, categoria: (c as any).categoria || '' }); setShowModal(true); }}>Editar</button>
+                        <button className="text-red-400 hover:underline text-sm" onClick={() => handleRemoverConteudo(c.id)}>Remover</button>
+                        <button className="text-yellow-400 hover:underline text-sm" onClick={() => handleFixarConteudo(c.id, true)} disabled={!!conteudoFixado}>Fixar</button>
+                      </div>
                     </div>
-                    <span className="text-sm text-gray-500">{c.dataPublicacao ? new Date(c.dataPublicacao).toLocaleDateString() : ''}</span>
-                    {getPreview((c as any).url)}
-                    <div className="flex gap-2 mt-2">
-                      <button className="text-blue-600 hover:underline text-sm" onClick={() => { setEditando(c); setForm({ titulo: c.titulo, url: (c as any).url || '', tipo: c.tipo, categoria: (c as any).categoria || '' }); setShowModal(true); }}>Editar</button>
-                      <button className="text-red-600 hover:underline text-sm" onClick={() => handleRemoverConteudo(c.id)}>Remover</button>
-                      <button className="text-yellow-600 hover:underline text-sm" onClick={() => handleFixarConteudo(c.id, true)} disabled={!!conteudoFixado}>Fixar</button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <span className="text-gray-400">Nenhum conteúdo cadastrado ainda.</span>
