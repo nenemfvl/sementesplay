@@ -32,7 +32,6 @@ export default function Login() {
       if (response.ok) {
         // Salvar usuário na sessão
         auth.setUser(data.usuario)
-        alert('Login realizado com sucesso! 🎉')
         // Redirecionar para a página principal
         window.location.href = '/'
       } else {
