@@ -21,6 +21,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
+import PainelCriador from './painel-criador';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -74,7 +75,8 @@ export default function Dashboard() {
     { id: 'overview', label: 'Visão Geral', icon: ChartBarIcon },
     { id: 'donations', label: 'Minhas Doações', icon: HeartIcon },
     { id: 'creators', label: 'Criadores', icon: UserIcon },
-    { id: 'cashback', label: 'Cashback', icon: GiftIcon }
+    { id: 'cashback', label: 'Cashback', icon: GiftIcon },
+    { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
   ]
 
   return (
@@ -411,6 +413,11 @@ export default function Dashboard() {
                   <GiftIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-sss-white mb-2">Sistema de Cashback</h3>
                   <p className="text-gray-400">Resgate seus códigos de cashback e ganhe Sementes extras.</p>
+                </div>
+              )}
+              {activeTab === 'painel-criador' && (
+                <div className="bg-white rounded-lg p-2">
+                  <PainelCriador />
                 </div>
               )}
             </div>
