@@ -43,7 +43,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         <meta property="og:image" content="/icons/icon-192x192.png" />
       </Head>
       
-      <PWABanner />
+      {/* <PWABanner /> */}
       <OfflineIndicator />
       <Component {...pageProps} />
     </SessionProvider>
