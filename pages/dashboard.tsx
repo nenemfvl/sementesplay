@@ -23,7 +23,6 @@ import {
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import PainelCriador from './painel-criador';
-import PainelParceiro from './parceiro';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -79,7 +78,7 @@ export default function Dashboard() {
     { id: 'creators', label: 'Criadores', icon: UserIcon },
     { id: 'cashback', label: 'Cashback', icon: GiftIcon },
     { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
-    { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon },
+    // { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon }, // Desabilitado
   ]
 
   return (
@@ -422,11 +421,11 @@ export default function Dashboard() {
                   <PainelCriador />
                 </div>
               )}
-              {activeTab === 'painel-parceiro' && (
+              {/* {activeTab === 'painel-parceiro' && (
                 <div className="bg-white rounded-lg p-2">
                   <PainelParceiro />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
