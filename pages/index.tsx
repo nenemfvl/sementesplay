@@ -92,7 +92,6 @@ export default function Home() {
               <div className="flex space-x-4 items-center">
                 {user ? (
                   <>
-                    {user.foto && <img src={user.foto} className="w-8 h-8 rounded-full" alt="Foto do usuário" />}
                     <span className="text-sss-white font-medium">{user.nome}</span>
                     <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
                       <ArrowLeftOnRectangleIcon className="w-6 h-6" />
