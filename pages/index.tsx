@@ -75,14 +75,11 @@ export default function Home() {
         <header className="bg-sss-medium shadow-lg border-b border-sss-light sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <h1 className="text-2xl font-bold text-gradient">
-                    🌱 SementesPLAY
-                  </h1>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl text-sss-accent">🌱</span>
+                <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
               </div>
-              <nav className="hidden md:flex space-x-8">
+              <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
                 <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
                 <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
                 <a href="/salao" className="text-sss-white hover:text-sss-accent">Salão</a>
@@ -90,10 +87,10 @@ export default function Home() {
                 <a href="/parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
                 <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
               </nav>
-              <div className="flex space-x-4 items-center">
+              <div className="flex items-center space-x-4 ml-auto">
                 {user ? (
                   <>
-                    <span className="text-sss-white font-medium">{user.nome}</span>
+                    <span className="text-sss-accent font-bold">{user.nome}</span>
                     <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
                       <ArrowLeftOnRectangleIcon className="w-6 h-6" />
                     </button>
