@@ -8,11 +8,14 @@ import {
   UserGroupIcon, 
   ChartBarIcon,
   PlayIcon,
-  StarIcon
+  StarIcon,
+  ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline'
+import { auth } from '../lib/auth';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('como-funciona')
+  const user = typeof window !== 'undefined' ? auth.getUser() : null;
 
   const features = [
     {
@@ -84,10 +87,23 @@ export default function Home() {
                 <a href="#beneficios" className="text-sss-white hover:text-sss-accent">Benefícios</a>
                 <a href="#niveis" className="text-sss-white hover:text-sss-accent">Níveis</a>
                 <a href="#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
+                <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
               </nav>
-              <div className="flex space-x-4">
-                <a href="/login" className="btn-outline">Entrar</a>
-                <a href="/registro" className="btn-primary">Cadastrar</a>
+              <div className="flex space-x-4 items-center">
+                {user ? (
+                  <>
+                    {user.foto && <img src={user.foto} className="w-8 h-8 rounded-full" alt="Foto do usuário" />}
+                    <span className="text-sss-white font-medium">{user.nome}</span>
+                    <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
+                      <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" className="btn-outline">Entrar</a>
+                    <a href="/registro" className="btn-primary">Cadastrar</a>
+                  </>
+                )}
               </div>
             </div>
           </div>
