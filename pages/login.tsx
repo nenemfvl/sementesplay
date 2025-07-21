@@ -33,8 +33,8 @@ export default function Login() {
         // Salvar usuário na sessão
         auth.setUser(data.usuario)
         alert('Login realizado com sucesso! 🎉')
-        // Redirecionar para o dashboard
-        window.location.href = '/dashboard'
+        // Redirecionar para a página principal
+        window.location.href = '/'
       } else {
         alert(`Erro: ${data.error}`)
       }
