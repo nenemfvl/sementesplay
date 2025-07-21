@@ -17,11 +17,13 @@ import {
   ChatBubbleLeftIcon,
   ShieldCheckIcon,
   UserGroupIcon,
-  StarIcon
+  StarIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import PainelCriador from './painel-criador';
+import PainelParceiro from './parceiro';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -77,6 +79,7 @@ export default function Dashboard() {
     { id: 'creators', label: 'Criadores', icon: UserIcon },
     { id: 'cashback', label: 'Cashback', icon: GiftIcon },
     { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
+    { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon },
   ]
 
   return (
@@ -418,6 +421,11 @@ export default function Dashboard() {
               {activeTab === 'painel-criador' && (
                 <div className="bg-white rounded-lg p-2">
                   <PainelCriador />
+                </div>
+              )}
+              {activeTab === 'painel-parceiro' && (
+                <div className="bg-white rounded-lg p-2">
+                  <PainelParceiro />
                 </div>
               )}
             </div>
