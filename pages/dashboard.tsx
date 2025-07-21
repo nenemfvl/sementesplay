@@ -105,6 +105,7 @@ export default function Dashboard() {
                 <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
                 <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
                 <a href="/salao" className="text-sss-white hover:text-sss-accent">Salão</a>
+                <a href="/criadores" className="text-sss-white hover:text-sss-accent">Criadores</a>
                 <a href="/#parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
                 <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
               </nav>
