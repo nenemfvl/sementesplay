@@ -6,27 +6,27 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'GET') {
-      const missoes = await prisma.missao.findMany()
-      return res.status(200).json(missoes)
+      const comentarios = await prisma.comentario.findMany()
+      return res.status(200).json(comentarios)
     }
     if (req.method === 'POST') {
       const data = req.body
-      const missao = await prisma.missao.create({ data })
-      return res.status(201).json(missao)
+      const comentario = await prisma.comentario.create({ data })
+      return res.status(201).json(comentario)
     }
     if (req.method === 'PUT') {
       const { id, ...data } = req.body
-      const missao = await prisma.missao.update({ where: { id }, data })
-      return res.status(200).json(missao)
+      const comentario = await prisma.comentario.update({ where: { id }, data })
+      return res.status(200).json(comentario)
     }
     if (req.method === 'DELETE') {
       const { id } = req.body
-      await prisma.missao.delete({ where: { id } })
+      await prisma.comentario.delete({ where: { id } })
       return res.status(204).end()
     }
     return res.status(405).json({ error: 'Método não permitido' })
   } catch (error) {
-    console.error('Erro no endpoint de Missao:', error)
+    console.error('Erro no endpoint de Comentario:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

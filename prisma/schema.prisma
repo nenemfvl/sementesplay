@@ -36,6 +36,9 @@ model Usuario {
   saques         Saque[]
   pagamentos     Pagamento[]
   tokensRecuperacao TokenRecuperacao[]
+  missaoUsuarios MissaoUsuario[]
+  conquistas     ConquistaUsuario[]
+  comentarios    Comentario[]
 
   @@map("usuarios")
 }
@@ -151,6 +154,7 @@ model Criador {
   // Relacionamentos
   usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   doacoesRecebidas Doacao[] @relation("Criador")
+  conteudos     Conteudo[]
 
   @@map("criadores")
 }
@@ -296,4 +300,100 @@ model TokenRecuperacao {
   usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("tokens_recuperacao")
+}
+
+model Conteudo {
+  id          String   @id @default(cuid())
+  criadorId   String
+  titulo      String
+  url         String
+  tipo        String   // video, live, post, short, etc.
+  categoria   String
+  descricao   String?
+  preview     String?  // url da imagem de preview
+  fixado      Boolean  @default(false)
+  dataPublicacao DateTime @default(now())
+  plataforma  String   // youtube, twitch, instagram, tiktok, etc.
+  visualizacoes Int    @default(0)
+  curtidas    Int      @default(0)
+  compartilhamentos Int @default(0)
+
+  criador     Criador  @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  comentarios Comentario[]
+
+  @@map("conteudos")
+}
+
+model Comentario {
+  id          String   @id @default(cuid())
+  conteudoId  String
+  usuarioId   String
+  texto       String
+  data        DateTime @default(now())
+  respostaAId String?
+
+  conteudo    Conteudo @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  respostas   Comentario[] @relation("RespostaComentario")
+  respostaA   Comentario?  @relation("RespostaComentario", fields: [respostaAId], references: [id])
+
+  @@map("comentarios")
+}
+
+model Missao {
+  id          String   @id @default(cuid())
+  titulo      String
+  descricao   String
+  tipo        String   // diaria, semanal, especial
+  recompensa  Int      // sementes, pontos, etc.
+  ativa       Boolean  @default(true)
+  dataInicio  DateTime @default(now())
+  dataFim     DateTime?
+  criadorOnly Boolean  @default(false)
+
+  usuarios    MissaoUsuario[]
+
+  @@map("missoes")
+}
+
+model MissaoUsuario {
+  id        String   @id @default(cuid())
+  missaoId  String
+  usuarioId String
+  progresso Int      @default(0)
+  concluida Boolean  @default(false)
+  dataInicio DateTime @default(now())
+  dataConclusao DateTime?
+
+  missao    Missao   @relation(fields: [missaoId], references: [id], onDelete: Cascade)
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([missaoId, usuarioId])
+  @@map("missoes_usuarios")
+}
+
+model Conquista {
+  id          String   @id @default(cuid())
+  titulo      String
+  descricao   String
+  icone       String   // url do ícone
+  criterio    String   // ex: "10 doações", "100 seguidores"
+  ativa       Boolean  @default(true)
+
+  usuarios    ConquistaUsuario[]
+
+  @@map("conquistas")
+}
+
+model ConquistaUsuario {
+  id            String   @id @default(cuid())
+  conquistaId   String
+  usuarioId     String
+  dataConquista DateTime @default(now())
+
+  conquista     Conquista @relation(fields: [conquistaId], references: [id], onDelete: Cascade)
+  usuario       Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([conquistaId, usuarioId])
+  @@map("conquistas_usuarios")
 } 
