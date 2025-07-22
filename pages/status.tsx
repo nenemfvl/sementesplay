@@ -23,7 +23,7 @@ export default function Status() {
           </div>
         </div>
         {/* Footer minimalista centralizado */}
-        <footer className="bg-sss-dark border-t border-sss-light mt-16">
+        <footer className="bg-black border-t border-sss-light mt-16">
           <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col items-center">
             {/* Logo e nome */}
             <div className="flex items-center gap-2 mb-4">
