@@ -25,10 +25,7 @@ export default function Navbar() {
         <span className="text-2xl text-sss-accent">🌱</span>
         <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
       </button>
-      {/* Debug visual do asPath centralizado no topo da tela */}
-      <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', background: 'yellow', color: 'black', fontSize: 16, zIndex: 99999, textAlign: 'center', padding: 4}}>
-        asPath: {router.asPath}
-      </div>
+      {/* Remover o bloco de debug visual do asPath */}
       <div className="flex justify-center items-center py-6">
         <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
           <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
