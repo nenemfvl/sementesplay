@@ -13,7 +13,7 @@ export default function Salao() {
         <meta name="description" content="Salão da comunidade SementesPLAY" />
       </Head>
       <div className="min-h-screen bg-sss-dark">
-        <header className="bg-gradient-to-r from-sss-accent to-red-500 shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
+        <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
           <Navbar />
         </header>
         {/* Conteúdo da página do Salão */}
