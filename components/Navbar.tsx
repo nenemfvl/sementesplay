@@ -1,8 +1,10 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
 
 export default function Navbar() {
+  const router = useRouter();
   const [user, setUser] = React.useState<User | null>(null);
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -24,12 +26,12 @@ export default function Navbar() {
       </button>
       <div className="flex justify-center items-center py-6">
         <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
-          <a href="/" className="text-sss-white hover:text-sss-accent">Início</a>
-          <a href="/status" className="text-sss-white hover:text-sss-accent">Status</a>
-          <a href="/salao" className="text-sss-white hover:text-sss-accent">Salão</a>
-          <a href="/criadores" className="text-sss-white hover:text-sss-accent">Criadores</a>
-          <a href="/parceiros" className="text-sss-white hover:text-sss-accent">Parceiros</a>
-          <a href="/dashboard" className="text-sss-white hover:text-sss-accent">Dashboard</a>
+          <a href="/" className={`${router.pathname === '/' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
+          <a href="/status" className={`${router.pathname === '/status' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
+          <a href="/salao" className={`${router.pathname === '/salao' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Salão</a>
+          <a href="/criadores" className={`${router.pathname === '/criadores' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Criadores</a>
+          <a href="/parceiros" className={`${router.pathname === '/parceiros' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
+          <a href="/dashboard" className={`${router.pathname === '/dashboard' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
       </div>
       {/* Usuário e logout colados na borda direita */}
