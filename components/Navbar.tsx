@@ -26,6 +26,9 @@ export default function Navbar() {
         <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
       </button>
       <div className="flex justify-center items-center py-6">
+        <span style={{position: 'absolute', top: 0, right: 0, color: 'yellow', fontSize: 12, zIndex: 9999}}>
+          asPath: {router.asPath}
+        </span>
         <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
           <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
           <a href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
