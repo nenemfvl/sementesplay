@@ -28,12 +28,12 @@ export default function Navbar() {
       {/* Remover o bloco de debug visual do asPath */}
       <div className="flex justify-center items-center py-6">
         <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
-          <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
-          <a href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
-          <a href="/salao" className={`${router.asPath.startsWith('/salao') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Salão</a>
-          <a href="/criadores" className={`${router.asPath.startsWith('/criadores') || router.asPath.startsWith('/criador') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Criadores</a>
-          <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
-          <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold border-b-2 border-sss-accent' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
+          <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
+          <a href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
+          <a href="/salao" className={`${router.asPath.startsWith('/salao') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Salão</a>
+          <a href="/criadores" className={`${router.asPath.startsWith('/criadores') || router.asPath.startsWith('/criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Criadores</a>
+          <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
+          <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
       </div>
       {/* Usuário e logout colados na borda direita */}
