@@ -5,6 +5,7 @@ import { auth, User } from '../lib/auth';
 
 export default function Navbar() {
   const router = useRouter();
+  console.log('Navbar asPath:', router.asPath);
   const [user, setUser] = React.useState<User | null>(null);
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
