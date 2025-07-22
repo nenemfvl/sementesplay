@@ -55,11 +55,11 @@ export default function Navbar() {
               </button>
               {showSocials && (
                 <div className="origin-top-right absolute right-0 mt-2 w-16 rounded-md shadow-lg bg-black ring-1 ring-black ring-opacity-5 z-50 flex flex-col items-center py-2 gap-2">
+                  <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-discord fa-lg"></i></a>
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-instagram fa-lg"></i></a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-twitter fa-lg"></i></a>
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-facebook fa-lg"></i></a>
-                  <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-telegram fa-lg"></i></a>
+                  <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-tiktok fa-lg"></i></a>
                   <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-youtube fa-lg"></i></a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-twitter fa-lg"></i></a>
                 </div>
               )}
             </div>
