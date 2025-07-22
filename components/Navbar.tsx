@@ -1,12 +1,15 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
+import { GlobeAltIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {
   const router = useRouter();
   console.log('Navbar asPath:', router.asPath);
   const [user, setUser] = React.useState<User | null>(null);
+  const [showSocials, setShowSocials] = React.useState(false);
+
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       setUser(auth.getUser());
@@ -41,6 +44,25 @@ export default function Navbar() {
         {user ? (
           <>
             <span className="text-sss-accent font-bold">{user.nome}</span>
+            {/* Dropdown de redes sociais */}
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => setShowSocials((v) => !v)}
+                className="p-2 text-gray-300 hover:text-sss-accent focus:outline-none"
+                title="Redes sociais"
+              >
+                <UserGroupIcon className="w-6 h-6" />
+              </button>
+              {showSocials && (
+                <div className="origin-top-right absolute right-0 mt-2 w-16 rounded-md shadow-lg bg-black ring-1 ring-black ring-opacity-5 z-50 flex flex-col items-center py-2 gap-2">
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-instagram fa-lg"></i></a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-twitter fa-lg"></i></a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-facebook fa-lg"></i></a>
+                  <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-telegram fa-lg"></i></a>
+                  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-youtube fa-lg"></i></a>
+                </div>
+              )}
+            </div>
             <button onClick={() => { auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
               <ArrowLeftOnRectangleIcon className="w-6 h-6" />
             </button>
