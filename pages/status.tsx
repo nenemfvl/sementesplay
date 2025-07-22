@@ -13,7 +13,9 @@ export default function Status() {
         <meta name="description" content="Status do sistema SementesPLAY" />
       </Head>
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
+        <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
+          <Navbar />
+        </header>
         {/* Conteúdo da página de status */}
         <div className="flex flex-col items-center justify-center py-16">
           <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center">
