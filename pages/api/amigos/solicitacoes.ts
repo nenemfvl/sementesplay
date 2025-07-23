@@ -9,35 +9,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Por enquanto, retornar dados mockados
-    const solicitacoes = [
-      {
-        id: '1',
-        remetenteId: '6',
-        remetenteNome: 'Lucia Ferreira',
-        remetenteEmail: 'lucia@email.com',
-        dataEnvio: new Date(Date.now() - 1000 * 60 * 15), // 15 min atrás
-        mensagem: 'Oi! Vamos ser amigos?'
-      },
-      {
-        id: '2',
-        remetenteId: '7',
-        remetenteNome: 'Roberto Alves',
-        remetenteEmail: 'roberto@email.com',
-        dataEnvio: new Date(Date.now() - 1000 * 60 * 60), // 1 hora atrás
-        mensagem: 'Gostei do seu perfil!'
-      },
-      {
-        id: '3',
-        remetenteId: '8',
-        remetenteNome: 'Fernanda Costa',
-        remetenteEmail: 'fernanda@email.com',
-        dataEnvio: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 horas atrás
-        mensagem: undefined
-      }
-    ]
+    const { usuarioId } = req.query
 
-    return res.status(200).json({ solicitacoes })
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    }
+
+    // Buscar solicitações pendentes recebidas pelo usuário
+    const solicitacoes = await prisma.amizade.findMany({
+      where: {
+        amigoId: String(usuarioId),
+        status: 'pendente'
+      },
+      include: {
+        usuario: {
+          select: {
+            id: true,
+            nome: true,
+            email: true
+          }
+        }
+      },
+      orderBy: {
+        dataSolicitacao: 'desc'
+      }
+    })
+
+    const solicitacoesFormatadas = solicitacoes.map(solicitacao => ({
+      id: solicitacao.id,
+      remetenteId: solicitacao.usuarioId,
+      remetenteNome: solicitacao.usuario.nome,
+      remetenteEmail: solicitacao.usuario.email,
+      dataEnvio: solicitacao.dataSolicitacao,
+      mensagem: undefined // Por enquanto sem mensagem personalizada
+    }))
+
+    return res.status(200).json({ solicitacoes: solicitacoesFormatadas })
   } catch (error) {
     console.error('Erro ao buscar solicitações:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })

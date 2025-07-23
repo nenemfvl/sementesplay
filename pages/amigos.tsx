@@ -61,9 +61,9 @@ export default function Amigos() {
   const loadDados = async () => {
     try {
       const [amigosResponse, solicitacoesResponse, sugeridosResponse] = await Promise.all([
-        fetch('/api/amigos'),
-        fetch('/api/amigos/solicitacoes'),
-        fetch('/api/amigos/sugeridos')
+        fetch(`/api/amigos?usuarioId=${user?.id}`),
+        fetch(`/api/amigos/solicitacoes?usuarioId=${user?.id}`),
+        fetch(`/api/amigos/sugeridos?usuarioId=${user?.id}`)
       ])
 
       if (amigosResponse.ok) {

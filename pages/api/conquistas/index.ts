@@ -8,62 +8,64 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { usuarioId } = req.query
 
-      // Buscar conquistas ativas
-      const conquistas = await prisma.conquista.findMany({
-        where: { ativa: true },
-        include: {
-          usuarios: {
-            where: { usuarioId: usuarioId ? String(usuarioId) : undefined }
-          }
-        },
-        orderBy: { id: 'asc' }
-      })
-
-      // Formatar conquistas com status do usuário
-      const conquistasFormatadas = conquistas.map(conquista => {
-        const conquistaUsuario = conquista.usuarios[0]
-
-        return {
-          id: conquista.id,
-          titulo: conquista.titulo,
-          descricao: conquista.descricao,
-          icone: conquista.icone,
-          criterio: conquista.criterio,
-          ativa: conquista.ativa,
-          desbloqueada: !!conquistaUsuario,
-          dataConquista: conquistaUsuario?.dataConquista || null
-        }
-      })
-
-      return res.status(200).json(conquistasFormatadas)
-    } catch (error) {
-      console.error('Erro ao buscar conquistas:', error)
-      return res.status(500).json({ error: 'Erro interno do servidor' })
-    }
-  }
-
-  if (req.method === 'POST') {
-    try {
-      const { titulo, descricao, icone, criterio } = req.body
-
-      if (!titulo || !descricao || !icone || !criterio) {
-        return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
+      if (!usuarioId) {
+        return res.status(400).json({ error: 'ID do usuário é obrigatório' })
       }
 
-      // Criar nova conquista
-      const novaConquista = await prisma.conquista.create({
-        data: {
-          titulo: String(titulo),
-          descricao: String(descricao),
-          icone: String(icone),
-          criterio: String(criterio),
-          ativa: true
+      // Buscar conquistas do usuário
+      const conquistasUsuario = await prisma.conquistaUsuario.findMany({
+        where: {
+          usuarioId: String(usuarioId)
+        },
+        include: {
+          conquista: true
+        },
+        orderBy: {
+          dataConquista: 'desc'
         }
       })
 
-      return res.status(201).json(novaConquista)
+      const conquistasFormatadas = conquistasUsuario.map(cu => ({
+        id: cu.conquista.id,
+        nome: cu.conquista.titulo,
+        descricao: cu.conquista.descricao,
+        icone: cu.conquista.icone,
+        cor: 'blue', // Mockado por enquanto
+        nivel: 1, // Mockado por enquanto
+        maxNivel: 1, // Mockado por enquanto
+        desbloqueada: true,
+        dataConquista: cu.dataConquista
+      }))
+
+      // Buscar todas as conquistas disponíveis para mostrar as não desbloqueadas
+      const todasConquistas = await prisma.conquista.findMany({
+        where: {
+          ativa: true
+        },
+        orderBy: {
+          titulo: 'asc'
+        }
+      })
+
+      const conquistasNaoDesbloqueadas = todasConquistas
+        .filter(conquista => !conquistasFormatadas.find(c => c.id === conquista.id))
+        .map(conquista => ({
+          id: conquista.id,
+          nome: conquista.titulo,
+          descricao: conquista.descricao,
+          icone: conquista.icone,
+          cor: 'gray', // Mockado por enquanto
+          nivel: 0,
+          maxNivel: 1, // Mockado por enquanto
+          desbloqueada: false,
+          dataConquista: null
+        }))
+
+      const todasConquistasFormatadas = [...conquistasFormatadas, ...conquistasNaoDesbloqueadas]
+
+      return res.status(200).json({ conquistas: todasConquistasFormatadas })
     } catch (error) {
-      console.error('Erro ao criar conquista:', error)
+      console.error('Erro ao buscar conquistas:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
     }
   }

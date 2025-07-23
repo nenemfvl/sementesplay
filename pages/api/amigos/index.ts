@@ -21,8 +21,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ]
         },
         include: {
-          usuario: true,
-          amigo: true
+          usuario: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              nivel: true,
+              sementes: true
+            }
+          },
+          amigo: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              nivel: true,
+              sementes: true
+            }
+          }
         }
       })
 

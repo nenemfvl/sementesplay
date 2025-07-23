@@ -24,25 +24,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ]
       },
       include: {
-        usuario1: true,
-        usuario2: true,
+        usuario1: {
+          select: {
+            id: true,
+            nome: true,
+            email: true
+          }
+        },
+        usuario2: {
+          select: {
+            id: true,
+            nome: true,
+            email: true
+          }
+        },
         mensagens: {
-          orderBy: { dataEnvio: 'desc' },
+          orderBy: {
+            dataEnvio: 'desc'
+          },
           take: 1
         }
       },
-      orderBy: { ultimaMensagem: 'desc' }
+      orderBy: {
+        ultimaMensagem: 'desc'
+      }
     })
 
-    // Formatar conversas
     const conversasFormatadas = conversas.map(conversa => {
       const outroUsuario = conversa.usuario1Id === usuarioId ? conversa.usuario2 : conversa.usuario1
       const ultimaMensagem = conversa.mensagens[0]
-
-      // Contar mensagens não lidas
-      const mensagensNaoLidas = conversa.mensagens.filter(msg => 
-        !msg.lida && msg.remetenteId !== usuarioId
-      ).length
 
       return {
         id: conversa.id,
@@ -50,9 +60,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         usuarioNome: outroUsuario.nome,
         usuarioEmail: outroUsuario.email,
         ultimaMensagem: ultimaMensagem?.texto || 'Nenhuma mensagem',
-        ultimaMensagemTimestamp: ultimaMensagem?.dataEnvio || conversa.dataCriacao,
-        naoLidas: mensagensNaoLidas,
-        online: true // Mockado por enquanto
+        ultimaAtividade: ultimaMensagem?.dataEnvio || conversa.dataCriacao,
+        naoLidas: 0 // Por enquanto
       }
     })
 

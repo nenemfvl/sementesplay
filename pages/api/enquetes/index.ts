@@ -6,40 +6,60 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const { usuarioId } = req.query
-
       // Buscar enquetes ativas
-      const enquetes = await prisma.enquete.findMany({
-        where: { ativa: true },
+      const enquetes = await prisma.enquetes.findMany({
+        where: {
+          ativa: true,
+          OR: [
+            { dataFim: null },
+            { dataFim: { gt: new Date() } }
+          ]
+        },
         include: {
-          criador: true,
+          criador: {
+            select: {
+              id: true,
+              nome: true
+            }
+          },
           votos: {
-            where: { usuarioId: usuarioId ? String(usuarioId) : undefined }
+            select: {
+              opcaoIndex: true
+            }
           }
         },
-        orderBy: { dataCriacao: 'desc' }
+        orderBy: {
+          dataCriacao: 'desc'
+        }
       })
 
-      // Formatar enquetes com opções e votos
-      const enquetesFormatadas = enquetes.map((enquete: any) => {
-        const opcoes = JSON.parse(enquete.opcoes || '[]')
-        const votosUsuario = enquete.votos[0]
+      const enquetesFormatadas = enquetes.map(enquete => {
+        const opcoes = JSON.parse(enquete.opcoes)
+        const totalVotos = enquete.votos.length
+        
+        // Calcular votos por opção
+        const votosPorOpcao = opcoes.map((opcao: string, index: number) => {
+          const votos = enquete.votos.filter(voto => voto.opcaoIndex === index).length
+          return {
+            opcao,
+            votos,
+            porcentagem: totalVotos > 0 ? Math.round((votos / totalVotos) * 100) : 0
+          }
+        })
 
         return {
           id: enquete.id,
           pergunta: enquete.pergunta,
-          opcoes: opcoes.map((opcao: string, index: number) => ({
-            id: index.toString(),
-            texto: opcao,
-            votos: 0 // Será calculado separadamente
-          })),
-          data: enquete.dataCriacao,
+          opcoes: votosPorOpcao,
           criador: enquete.criador.nome,
-          votoUsuario: votosUsuario ? votosUsuario.opcaoIndex : null
+          totalVotos,
+          dataCriacao: enquete.dataCriacao,
+          dataFim: enquete.dataFim,
+          ativa: enquete.ativa
         }
       })
 
-      return res.status(200).json(enquetesFormatadas)
+      return res.status(200).json({ enquetes: enquetesFormatadas })
     } catch (error) {
       console.error('Erro ao buscar enquetes:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
@@ -54,8 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      // Criar nova enquete
-      const novaEnquete = await prisma.enquete.create({
+      const novaEnquete = await prisma.enquetes.create({
         data: {
           criadorId: String(criadorId),
           pergunta: String(pergunta),
@@ -64,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      return res.status(201).json(novaEnquete)
+      return res.status(201).json({ enquete: novaEnquete })
     } catch (error) {
       console.error('Erro ao criar enquete:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })

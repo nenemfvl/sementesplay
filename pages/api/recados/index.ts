@@ -13,18 +13,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Buscar recados recebidos pelo usuário
-      const recados = await prisma.recado.findMany({
-        where: { destinatarioId: String(usuarioId) },
-        include: {
-          remetente: true
+      const recados = await prisma.recados.findMany({
+        where: {
+          destinatarioId: String(usuarioId)
         },
-        orderBy: { dataEnvio: 'desc' }
+        include: {
+          remetente: {
+            select: {
+              id: true,
+              nome: true,
+              email: true
+            }
+          }
+        },
+        orderBy: {
+          dataEnvio: 'desc'
+        }
       })
 
-      // Formatar recados
       const recadosFormatados = recados.map(recado => ({
         id: recado.id,
-        remetente: recado.remetente.nome,
+        remetenteId: recado.remetenteId,
+        remetenteNome: recado.remetente.nome,
+        remetenteEmail: recado.remetente.email,
         titulo: recado.titulo,
         mensagem: recado.mensagem,
         lido: recado.lido,
@@ -32,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         dataLeitura: recado.dataLeitura
       }))
 
-      return res.status(200).json(recadosFormatados)
+      return res.status(200).json({ recados: recadosFormatados })
     } catch (error) {
       console.error('Erro ao buscar recados:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
@@ -47,20 +58,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
       }
 
-      // Criar novo recado
-      const novoRecado = await prisma.recado.create({
+      const novoRecado = await prisma.recados.create({
         data: {
           remetenteId: String(remetenteId),
           destinatarioId: String(destinatarioId),
           titulo: String(titulo),
-          mensagem: String(mensagem),
-          lido: false
+          mensagem: String(mensagem)
         }
       })
 
-      return res.status(201).json(novoRecado)
+      return res.status(201).json({ recado: novoRecado })
     } catch (error) {
-      console.error('Erro ao criar recado:', error)
+      console.error('Erro ao enviar recado:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
     }
   }
