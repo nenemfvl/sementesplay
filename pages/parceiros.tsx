@@ -1,11 +1,61 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
+import { motion } from 'framer-motion'
+import { 
+  ArrowLeftOnRectangleIcon,
+  XMarkIcon,
+  BuildingOfficeIcon,
+  UserIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+  GlobeAltIcon,
+  DocumentTextIcon,
+  CheckIcon
+} from '@heroicons/react/24/outline'
 import { auth } from '../lib/auth'
 import Navbar from '../components/Navbar';
 
 export default function Parceiros() {
   const user = typeof window !== 'undefined' ? auth.getUser() : null;
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    nomeCidade: '',
+    siteCidade: '',
+    descricao: '',
+    experiencia: '',
+    expectativa: ''
+  });
+  const [enviando, setEnviando] = useState(false);
+  const [enviado, setEnviado] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEnviando(true);
+    
+    // Simular envio
+    setTimeout(() => {
+      setEnviando(false);
+      setEnviado(true);
+      setTimeout(() => {
+        setShowModal(false);
+        setEnviado(false);
+        setFormData({
+          nome: '',
+          email: '',
+          telefone: '',
+          nomeCidade: '',
+          siteCidade: '',
+          descricao: '',
+          experiencia: '',
+          expectativa: ''
+        });
+      }, 2000);
+    }, 1500);
+  };
+
   return (
     <>
       <Head>
@@ -44,16 +94,207 @@ export default function Parceiros() {
             
             <div className="bg-sss-accent/10 rounded-lg p-6 border border-sss-accent">
               <h3 className="text-xl font-semibold text-sss-accent mb-4">Interessado em ser Parceiro?</h3>
-              <p className="text-gray-300 mb-4">Entre em contato conosco para mais informações sobre o processo de cadastro.</p>
-              <a 
-                href="mailto:parceiros@sementesplay.com" 
+              <p className="text-gray-300 mb-4">Preencha o formulário abaixo e nossa equipe entrará em contato em até 24 horas.</p>
+              <button 
+                onClick={() => setShowModal(true)}
                 className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block"
               >
                 Solicitar Cadastro
-              </a>
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Modal de Cadastro de Parceiro */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-sss-light"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <BuildingOfficeIcon className="w-8 h-8 text-sss-accent" />
+                  <h2 className="text-2xl font-bold text-sss-white">Cadastro de Parceiro</h2>
+                </div>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-400 hover:text-sss-white transition"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              {enviado ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckIcon className="w-8 h-8 text-green-500" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-sss-white mb-2">Solicitação Enviada!</h3>
+                  <p className="text-gray-400">Nossa equipe entrará em contato em até 24 horas.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Requisitos */}
+                  <div className="bg-sss-dark rounded-lg p-4 mb-6 border border-sss-light">
+                    <h3 className="text-lg font-semibold text-sss-white mb-3">📋 Requisitos para se tornar Parceiro</h3>
+                    <ul className="text-gray-300 space-y-2 text-sm">
+                      <li>• Ser dono de uma cidade FiveM ativa</li>
+                      <li>• Ter pelo menos 50 jogadores ativos</li>
+                      <li>• Cidade funcionando há pelo menos 3 meses</li>
+                      <li>• Discord ativo para comunicação</li>
+                      <li>• Compromisso com a comunidade</li>
+                    </ul>
+                  </div>
+
+                  {/* Formulário */}
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <UserIcon className="w-4 h-4 inline mr-2" />
+                          Nome Completo
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.nome}
+                          onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                          placeholder="Seu nome completo"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <EnvelopeIcon className="w-4 h-4 inline mr-2" />
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                          placeholder="seu@email.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <PhoneIcon className="w-4 h-4 inline mr-2" />
+                          WhatsApp
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={formData.telefone}
+                          onChange={(e) => setFormData(prev => ({ ...prev, telefone: e.target.value }))}
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                          placeholder="(11) 99999-9999"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <BuildingOfficeIcon className="w-4 h-4 inline mr-2" />
+                          Nome da Cidade
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.nomeCidade}
+                          onChange={(e) => setFormData(prev => ({ ...prev, nomeCidade: e.target.value }))}
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                          placeholder="Nome da sua cidade FiveM"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        <GlobeAltIcon className="w-4 h-4 inline mr-2" />
+                        Site da Cidade (opcional)
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.siteCidade}
+                        onChange={(e) => setFormData(prev => ({ ...prev, siteCidade: e.target.value }))}
+                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                        placeholder="https://sua-cidade.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        <DocumentTextIcon className="w-4 h-4 inline mr-2" />
+                        Descrição da Cidade
+                      </label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={formData.descricao}
+                        onChange={(e) => setFormData(prev => ({ ...prev, descricao: e.target.value }))}
+                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                        placeholder="Conte um pouco sobre sua cidade, recursos, comunidade..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Experiência com FiveM
+                      </label>
+                      <textarea
+                        required
+                        rows={2}
+                        value={formData.experiencia}
+                        onChange={(e) => setFormData(prev => ({ ...prev, experiencia: e.target.value }))}
+                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                        placeholder="Há quanto tempo administra a cidade? Quantos jogadores ativos?"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Expectativas como Parceiro
+                      </label>
+                      <textarea
+                        required
+                        rows={2}
+                        value={formData.expectativa}
+                        onChange={(e) => setFormData(prev => ({ ...prev, expectativa: e.target.value }))}
+                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                        placeholder="O que espera ganhar sendo parceiro? Como pode contribuir?"
+                      />
+                    </div>
+
+                    <div className="flex space-x-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 px-4 py-2 border border-sss-light text-sss-white rounded-lg hover:bg-sss-light transition"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={enviando}
+                        className="flex-1 px-4 py-2 bg-sss-accent text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+                      >
+                        {enviando ? 'Enviando...' : 'Enviar Solicitação'}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </motion.div>
+          </div>
+        )}
+
         {/* Footer minimalista centralizado */}
         <footer className="bg-black border-t border-sss-light mt-16">
           <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col items-center">
