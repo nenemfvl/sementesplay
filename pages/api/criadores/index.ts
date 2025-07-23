@@ -43,10 +43,10 @@ interface Criador {
   tags: string[]
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      // Buscar criadores aprovados
+      // Buscar criadores
       const criadores = await prisma.criador.findMany({
         include: {
           usuario: {
@@ -57,15 +57,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
               sementes: true,
               dataCriacao: true
             }
-          },
-          conteudos: {
-            where: {
-              ativo: true
-            },
-            orderBy: {
-              dataCriacao: 'desc'
-            },
-            take: 5
           }
         },
         orderBy: {
@@ -73,7 +64,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      const criadoresFormatados: Criador[] = criadores.map(criador => ({
+      const criadoresFormatados: Criador[] = criadores.map((criador: any) => ({
         id: criador.id,
         nome: criador.usuario.nome,
         email: criador.usuario.email,
@@ -98,17 +89,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           comentarios: 0,
           compartilhamentos: 0
         },
-        conteudos: criador.conteudos.map((conteudo: any) => ({
-          id: conteudo.id,
-          titulo: conteudo.titulo,
-          tipo: conteudo.tipo,
-          url: conteudo.url,
-          thumbnail: conteudo.preview || '/thumbnails/default.jpg',
-          visualizacoes: conteudo.visualizacoes || 0,
-          likes: conteudo.curtidas || 0,
-          dataCriacao: conteudo.dataPublicacao,
-          status: 'ativo'
-        })),
+        conteudos: [],
         avaliacao: 0,
         tags: []
       }))
