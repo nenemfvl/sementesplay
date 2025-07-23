@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       // Buscar enquetes ativas
-      const enquetes = await prisma.enquetes.findMany({
+      const enquetes = await prisma.enquete.findMany({
         where: {
           ativa: true,
           OR: [
@@ -33,13 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      const enquetesFormatadas = enquetes.map(enquete => {
+      const enquetesFormatadas = enquetes.map((enquete: any) => {
         const opcoes = JSON.parse(enquete.opcoes)
         const totalVotos = enquete.votos.length
         
         // Calcular votos por opção
         const votosPorOpcao = opcoes.map((opcao: string, index: number) => {
-          const votos = enquete.votos.filter(voto => voto.opcaoIndex === index).length
+          const votos = enquete.votos.filter((voto: any) => voto.opcaoIndex === index).length
           return {
             opcao,
             votos,
@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      const novaEnquete = await prisma.enquetes.create({
+      const novaEnquete = await prisma.enquete.create({
         data: {
           criadorId: String(criadorId),
           pergunta: String(pergunta),

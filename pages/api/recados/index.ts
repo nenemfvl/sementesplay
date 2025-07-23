@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Buscar recados recebidos pelo usuário
-      const recados = await prisma.recados.findMany({
+      const recados = await prisma.recado.findMany({
         where: {
           destinatarioId: String(usuarioId)
         },
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      const recadosFormatados = recados.map(recado => ({
+      const recadosFormatados = recados.map((recado: any) => ({
         id: recado.id,
         remetenteId: recado.remetenteId,
         remetenteNome: recado.remetente.nome,
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
       }
 
-      const novoRecado = await prisma.recados.create({
+      const novoRecado = await prisma.recado.create({
         data: {
           remetenteId: String(remetenteId),
           destinatarioId: String(destinatarioId),
