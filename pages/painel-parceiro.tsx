@@ -85,11 +85,18 @@ export default function PainelParceiro() {
     }
     
     setUser(currentUser)
-    loadParceiroData()
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadParceiroData()
+    }
+  }, [user])
 
   const loadParceiroData = async () => {
     try {
+      console.log('Carregando dados do parceiro para usuário:', user?.id)
+      
       const [parceiroRes, codigosRes, transacoesRes, statsRes] = await Promise.all([
         fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`),
         fetch(`/api/parceiros/codigos?usuarioId=${user?.id}`),
@@ -97,9 +104,15 @@ export default function PainelParceiro() {
         fetch(`/api/parceiros/estatisticas?usuarioId=${user?.id}`)
       ])
 
+      console.log('Resposta da API de perfil:', parceiroRes.status)
+      
       if (parceiroRes.ok) {
         const parceiroData = await parceiroRes.json()
+        console.log('Dados do parceiro:', parceiroData)
         setParceiro(parceiroData)
+      } else {
+        const errorData = await parceiroRes.json()
+        console.error('Erro na API de perfil:', errorData)
       }
 
       if (codigosRes.ok) {
