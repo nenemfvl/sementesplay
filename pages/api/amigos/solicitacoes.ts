@@ -11,6 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { usuarioId } = req.query
 
+    console.log('Solicitações - usuarioId recebido:', usuarioId);
+
     if (!usuarioId) {
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
     }
@@ -35,6 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    console.log('Solicitações encontradas:', solicitacoes);
+
     const solicitacoesFormatadas = solicitacoes.map(solicitacao => ({
       id: solicitacao.id,
       remetenteId: solicitacao.usuarioId,
@@ -43,6 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       dataEnvio: solicitacao.dataSolicitacao,
       mensagem: undefined // Por enquanto sem mensagem personalizada
     }))
+
+    console.log('Solicitações formatadas para retorno:', solicitacoesFormatadas);
 
     return res.status(200).json({ solicitacoes: solicitacoesFormatadas })
   } catch (error) {
