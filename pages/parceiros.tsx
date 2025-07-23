@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
@@ -10,13 +10,71 @@ import {
   PhoneIcon,
   GlobeAltIcon,
   DocumentTextIcon,
-  CheckIcon
+  CheckIcon,
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  PlusIcon,
+  ClipboardDocumentIcon,
+  ArrowTrendingUpIcon,
+  UsersIcon,
+  CreditCardIcon,
+  CogIcon
 } from '@heroicons/react/24/outline'
-import { auth } from '../lib/auth'
+import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar';
 
+interface Parceiro {
+  id: string
+  usuarioId: string
+  nomeCidade: string
+  comissaoMensal: number
+  totalVendas: number
+  codigosGerados: number
+  usuario?: User
+}
+
+interface CodigoCashback {
+  id: string
+  codigo: string
+  valor: number
+  usado: boolean
+  dataGeracao: string
+  dataUso?: string
+}
+
+interface Transacao {
+  id: string
+  valor: number
+  codigoParceiro: string
+  status: string
+  data: string
+  usuario?: {
+    nome: string
+    email: string
+  }
+}
+
+interface Estatisticas {
+  totalVendas: number
+  totalComissoes: number
+  codigosAtivos: number
+  codigosUsados: number
+  transacoesMes: number
+  usuariosAtivos: number
+}
+
 export default function Parceiros() {
-  const user = typeof window !== 'undefined' ? auth.getUser() : null;
+  const [user, setUser] = useState<User | null>(null);
+  const [parceiro, setParceiro] = useState<Parceiro | null>(null);
+  const [codigos, setCodigos] = useState<CodigoCashback[]>([]);
+  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
+  const [estatisticas, setEstatisticas] = useState<Estatisticas | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showGerarCodigo, setShowGerarCodigo] = useState(false);
+  const [novoCodigo, setNovoCodigo] = useState({ valor: '', quantidade: '1' });
+  const [salvando, setSalvando] = useState(false);
+  const [copiado, setCopiado] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
@@ -30,6 +88,130 @@ export default function Parceiros() {
   });
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
+
+  useEffect(() => {
+    const currentUser = auth.getUser();
+    setUser(currentUser);
+    
+    if (currentUser) {
+      checkParceiroStatus(currentUser.id);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const checkParceiroStatus = async (usuarioId: string) => {
+    try {
+      const response = await fetch(`/api/parceiros/perfil?usuarioId=${usuarioId}`);
+      
+      if (response.ok) {
+        const parceiroData = await response.json();
+        setParceiro(parceiroData);
+        
+        // Carregar dados adicionais do parceiro
+        await Promise.all([
+          loadCodigos(usuarioId),
+          loadTransacoes(usuarioId),
+          loadEstatisticas(usuarioId)
+        ]);
+      } else {
+        // Usuário não é parceiro
+        setParceiro(null);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar status de parceiro:', error);
+      setParceiro(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadCodigos = async (usuarioId: string) => {
+    try {
+      const response = await fetch(`/api/parceiros/codigos?usuarioId=${usuarioId}`);
+      if (response.ok) {
+        const codigosData = await response.json();
+        setCodigos(codigosData);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar códigos:', error);
+    }
+  };
+
+  const loadTransacoes = async (usuarioId: string) => {
+    try {
+      const response = await fetch(`/api/parceiros/transacoes?usuarioId=${usuarioId}`);
+      if (response.ok) {
+        const transacoesData = await response.json();
+        setTransacoes(transacoesData);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar transações:', error);
+    }
+  };
+
+  const loadEstatisticas = async (usuarioId: string) => {
+    try {
+      const response = await fetch(`/api/parceiros/estatisticas?usuarioId=${usuarioId}`);
+      if (response.ok) {
+        const statsData = await response.json();
+        setEstatisticas(statsData);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error);
+    }
+  };
+
+  const gerarCodigo = async () => {
+    if (!novoCodigo.valor || !novoCodigo.quantidade) {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    setSalvando(true);
+    try {
+      const res = await fetch('/api/parceiros/gerar-codigo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          valor: parseFloat(novoCodigo.valor),
+          quantidade: parseInt(novoCodigo.quantidade),
+          usuarioId: user?.id
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setCodigos(prev => [...data.codigos, ...prev]);
+        setNovoCodigo({ valor: '', quantidade: '1' });
+        setShowGerarCodigo(false);
+        alert('Códigos gerados com sucesso!');
+        if (user) {
+          await Promise.all([
+            loadCodigos(user.id),
+            loadEstatisticas(user.id)
+          ]);
+        }
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Erro ao gerar códigos');
+      }
+    } catch (error) {
+      alert('Erro ao gerar códigos');
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const copiarCodigo = async (codigo: string) => {
+    try {
+      await navigator.clipboard.writeText(codigo);
+      setCopiado(codigo);
+      setTimeout(() => setCopiado(null), 2000);
+    } catch (error) {
+      alert('Erro ao copiar código');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +255,22 @@ export default function Parceiros() {
     }
   };
 
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: ChartBarIcon },
+    { id: 'codigos', label: 'Códigos Cashback', icon: CreditCardIcon },
+    { id: 'transacoes', label: 'Transações', icon: DocumentTextIcon },
+    { id: 'relatorios', label: 'Relatórios', icon: ArrowTrendingUpIcon },
+    { id: 'configuracoes', label: 'Configurações', icon: CogIcon }
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
+        <div className="text-sss-white">Carregando...</div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -81,46 +279,456 @@ export default function Parceiros() {
       </Head>
       <div className="min-h-screen bg-sss-dark">
         <Navbar />
-        {/* Conteúdo centralizado zerado */}
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center max-w-4xl w-full">
-            <h1 className="text-3xl font-bold text-sss-accent mb-6">Parceiros SementesPLAY</h1>
-            <p className="text-sss-white text-lg mb-8">Donos de cidades FiveM que geram códigos de cashback para a comunidade</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
-                <h3 className="text-xl font-semibold text-sss-white mb-4">Como Funciona</h3>
-                <ul className="text-gray-300 space-y-2 text-left">
-                  <li>• Cadastre sua cidade FiveM como parceira</li>
-                  <li>• Gere códigos de cashback únicos</li>
-                  <li>• Receba 10% de comissão das vendas</li>
-                  <li>• Acompanhe estatísticas em tempo real</li>
-                </ul>
+        
+        {parceiro ? (
+          // Painel de Parceiro
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header */}
+            <motion.div 
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-sss-white">Painel Parceiro</h1>
+                  <p className="text-gray-400 mt-2">Gerencie sua cidade: {parceiro.nomeCidade}</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <p className="text-sm text-gray-400">Comissão Mensal</p>
+                    <p className="text-xl font-bold text-sss-accent">R$ {parceiro.comissaoMensal.toFixed(2)}</p>
+                  </div>
+                  <div className="w-12 h-12 bg-sss-accent/20 rounded-lg flex items-center justify-center">
+                    <BuildingOfficeIcon className="w-6 h-6 text-sss-accent" />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Tabs */}
+            <motion.div 
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="flex space-x-1 bg-sss-medium rounded-lg p-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? 'bg-sss-accent text-white'
+                        : 'text-gray-400 hover:text-sss-white hover:bg-sss-light'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              {activeTab === 'dashboard' && (
+                <div className="space-y-6">
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gray-400 text-sm">Total de Vendas</p>
+                          <p className="text-2xl font-bold text-sss-white">
+                            R$ {estatisticas?.totalVendas.toFixed(2) || '0.00'}
+                          </p>
+                        </div>
+                        <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                          <CurrencyDollarIcon className="w-6 h-6 text-green-500" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gray-400 text-sm">Comissões</p>
+                          <p className="text-2xl font-bold text-sss-white">
+                            R$ {estatisticas?.totalComissoes.toFixed(2) || '0.00'}
+                          </p>
+                        </div>
+                        <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                          <ChartBarIcon className="w-6 h-6 text-blue-500" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gray-400 text-sm">Códigos Ativos</p>
+                          <p className="text-2xl font-bold text-sss-white">
+                            {estatisticas?.codigosAtivos || 0}
+                          </p>
+                        </div>
+                        <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                          <CreditCardIcon className="w-6 h-6 text-yellow-500" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gray-400 text-sm">Usuários Ativos</p>
+                          <p className="text-2xl font-bold text-sss-white">
+                            {estatisticas?.usuariosAtivos || 0}
+                          </p>
+                        </div>
+                        <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                          <UsersIcon className="w-6 h-6 text-purple-500" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Transactions */}
+                  <div className="bg-sss-medium rounded-lg border border-sss-light">
+                    <div className="p-6 border-b border-sss-light">
+                      <h3 className="text-lg font-semibold text-sss-white">Transações Recentes</h3>
+                    </div>
+                    <div className="p-6">
+                      {transacoes.length > 0 ? (
+                        <div className="space-y-4">
+                          {transacoes.slice(0, 5).map((transacao) => (
+                            <div key={transacao.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg">
+                              <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                  <CurrencyDollarIcon className="w-5 h-5 text-sss-accent" />
+                                </div>
+                                <div>
+                                  <p className="text-sss-white font-medium">
+                                    Código: {transacao.codigoParceiro}
+                                  </p>
+                                  <p className="text-sm text-gray-400">
+                                    {transacao.usuario?.nome || 'Usuário'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sss-white font-semibold">
+                                  R$ {transacao.valor.toFixed(2)}
+                                </p>
+                                <p className={`text-sm ${
+                                  transacao.status === 'aprovada' ? 'text-green-500' : 
+                                  transacao.status === 'pendente' ? 'text-yellow-500' : 'text-red-500'
+                                }`}>
+                                  {transacao.status}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-400 text-center py-8">Nenhuma transação encontrada</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'codigos' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-sss-white">Códigos de Cashback</h2>
+                    <button
+                      onClick={() => setShowGerarCodigo(true)}
+                      className="bg-sss-accent text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition flex items-center space-x-2"
+                    >
+                      <PlusIcon className="w-4 h-4" />
+                      <span>Gerar Códigos</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {codigos.map((codigo) => (
+                      <div key={codigo.id} className="bg-sss-medium rounded-lg border border-sss-light p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-2">
+                            <CreditCardIcon className="w-5 h-5 text-sss-accent" />
+                            <span className="text-sss-white font-medium">Código</span>
+                          </div>
+                          <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            codigo.usado 
+                              ? 'bg-red-500/20 text-red-400' 
+                              : 'bg-green-500/20 text-green-400'
+                          }`}>
+                            {codigo.usado ? 'Usado' : 'Ativo'}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-sm text-gray-400">Código</p>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-lg font-mono text-sss-white">{codigo.codigo}</p>
+                              <button
+                                onClick={() => copiarCodigo(codigo.codigo)}
+                                className="text-sss-accent hover:text-sss-white transition"
+                              >
+                                {copiado === codigo.codigo ? (
+                                  <CheckIcon className="w-4 h-4" />
+                                ) : (
+                                  <ClipboardDocumentIcon className="w-4 h-4" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <p className="text-sm text-gray-400">Valor</p>
+                            <p className="text-lg font-bold text-sss-accent">
+                              R$ {codigo.valor.toFixed(2)}
+                            </p>
+                          </div>
+                          
+                          <div className="flex justify-between text-sm">
+                            <div>
+                              <p className="text-gray-400">Gerado em</p>
+                              <p className="text-sss-white">
+                                {new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}
+                              </p>
+                            </div>
+                            {codigo.dataUso && (
+                              <div>
+                                <p className="text-gray-400">Usado em</p>
+                                <p className="text-sss-white">
+                                  {new Date(codigo.dataUso).toLocaleDateString('pt-BR')}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {codigos.length === 0 && (
+                    <div className="text-center py-12">
+                      <CreditCardIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-400">Nenhum código gerado ainda</p>
+                      <button
+                        onClick={() => setShowGerarCodigo(true)}
+                        className="mt-4 bg-sss-accent text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+                      >
+                        Gerar Primeiro Código
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'transacoes' && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-sss-white">Histórico de Transações</h2>
+                  
+                  <div className="bg-sss-medium rounded-lg border border-sss-light">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-sss-light">
+                            <th className="text-left p-4 text-gray-400 font-medium">Código</th>
+                            <th className="text-left p-4 text-gray-400 font-medium">Usuário</th>
+                            <th className="text-left p-4 text-gray-400 font-medium">Valor</th>
+                            <th className="text-left p-4 text-gray-400 font-medium">Status</th>
+                            <th className="text-left p-4 text-gray-400 font-medium">Data</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transacoes.map((transacao) => (
+                            <tr key={transacao.id} className="border-b border-sss-light/50">
+                              <td className="p-4">
+                                <span className="font-mono text-sss-white">{transacao.codigoParceiro}</span>
+                              </td>
+                              <td className="p-4">
+                                <span className="text-sss-white">{transacao.usuario?.nome || 'N/A'}</span>
+                              </td>
+                              <td className="p-4">
+                                <span className="text-sss-accent font-semibold">
+                                  R$ {transacao.valor.toFixed(2)}
+                                </span>
+                              </td>
+                              <td className="p-4">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  transacao.status === 'aprovada' ? 'bg-green-500/20 text-green-400' : 
+                                  transacao.status === 'pendente' ? 'bg-yellow-500/20 text-yellow-400' : 
+                                  'bg-red-500/20 text-red-400'
+                                }`}>
+                                  {transacao.status}
+                                </span>
+                              </td>
+                              <td className="p-4">
+                                <span className="text-gray-400">
+                                  {new Date(transacao.data).toLocaleDateString('pt-BR')}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    {transacoes.length === 0 && (
+                      <div className="text-center py-12">
+                        <DocumentTextIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-400">Nenhuma transação encontrada</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'relatorios' && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-sss-white">Relatórios</h2>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="bg-sss-medium rounded-lg border border-sss-light p-6">
+                      <h3 className="text-lg font-semibold text-sss-white mb-4">Relatório de Vendas</h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Total de Vendas</span>
+                          <span className="text-sss-white font-semibold">
+                            R$ {estatisticas?.totalVendas.toFixed(2) || '0.00'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Comissões</span>
+                          <span className="text-sss-accent font-semibold">
+                            R$ {estatisticas?.totalComissoes.toFixed(2) || '0.00'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Transações este mês</span>
+                          <span className="text-sss-white font-semibold">
+                            {estatisticas?.transacoesMes || 0}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sss-medium rounded-lg border border-sss-light p-6">
+                      <h3 className="text-lg font-semibold text-sss-white mb-4">Relatório de Códigos</h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Códigos Gerados</span>
+                          <span className="text-sss-white font-semibold">
+                            {parceiro.codigosGerados}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Códigos Ativos</span>
+                          <span className="text-green-400 font-semibold">
+                            {estatisticas?.codigosAtivos || 0}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Códigos Usados</span>
+                          <span className="text-blue-400 font-semibold">
+                            {estatisticas?.codigosUsados || 0}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'configuracoes' && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-sss-white">Configurações</h2>
+                  
+                  <div className="bg-sss-medium rounded-lg border border-sss-light p-6">
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Informações da Cidade</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          Nome da Cidade
+                        </label>
+                        <input
+                          type="text"
+                          value={parceiro.nomeCidade}
+                          disabled
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                          Comissão Mensal
+                        </label>
+                        <input
+                          type="text"
+                          value={`R$ ${parceiro.comissaoMensal.toFixed(2)}`}
+                          disabled
+                          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        ) : (
+          // Página de Informações para não-parceiros
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center max-w-4xl w-full">
+              <h1 className="text-3xl font-bold text-sss-accent mb-6">Parceiros SementesPLAY</h1>
+              <p className="text-sss-white text-lg mb-8">Donos de cidades FiveM que geram códigos de cashback para a comunidade</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
+                  <h3 className="text-xl font-semibold text-sss-white mb-4">Como Funciona</h3>
+                  <ul className="text-gray-300 space-y-2 text-left">
+                    <li>• Cadastre sua cidade FiveM como parceira</li>
+                    <li>• Gere códigos de cashback únicos</li>
+                    <li>• Receba 10% de comissão das vendas</li>
+                    <li>• Acompanhe estatísticas em tempo real</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
+                  <h3 className="text-xl font-semibold text-sss-white mb-4">Benefícios</h3>
+                  <ul className="text-gray-300 space-y-2 text-left">
+                    <li>• Painel exclusivo de gestão</li>
+                    <li>• Relatórios detalhados de vendas</li>
+                    <li>• Suporte prioritário</li>
+                    <li>• Taxa mensal de R$ 500,00</li>
+                  </ul>
+                </div>
               </div>
               
-              <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
-                <h3 className="text-xl font-semibold text-sss-white mb-4">Benefícios</h3>
-                <ul className="text-gray-300 space-y-2 text-left">
-                  <li>• Painel exclusivo de gestão</li>
-                  <li>• Relatórios detalhados de vendas</li>
-                  <li>• Suporte prioritário</li>
-                  <li>• Taxa mensal de R$ 500,00</li>
-                </ul>
+              <div className="bg-sss-accent/10 rounded-lg p-6 border border-sss-accent">
+                <h3 className="text-xl font-semibold text-sss-accent mb-4">Interessado em ser Parceiro?</h3>
+                <p className="text-gray-300 mb-4">Preencha o formulário abaixo e nossa equipe entrará em contato em até 24 horas.</p>
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block"
+                >
+                  Solicitar Cadastro
+                </button>
               </div>
             </div>
-            
-            <div className="bg-sss-accent/10 rounded-lg p-6 border border-sss-accent">
-              <h3 className="text-xl font-semibold text-sss-accent mb-4">Interessado em ser Parceiro?</h3>
-              <p className="text-gray-300 mb-4">Preencha o formulário abaixo e nossa equipe entrará em contato em até 24 horas.</p>
-              <button 
-                onClick={() => setShowModal(true)}
-                className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block"
-              >
-                Solicitar Cadastro
-              </button>
-            </div>
           </div>
-        </div>
+        )}
 
         {/* Modal de Cadastro de Parceiro */}
         {showModal && (
@@ -308,6 +916,76 @@ export default function Parceiros() {
                   </form>
                 </>
               )}
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal Gerar Código */}
+        {showGerarCodigo && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md border border-sss-light"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-sss-white">Gerar Códigos de Cashback</h3>
+                <button
+                  onClick={() => setShowGerarCodigo(false)}
+                  className="text-gray-400 hover:text-sss-white"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Valor do Código (R$)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={novoCodigo.valor}
+                    onChange={(e) => setNovoCodigo(prev => ({ ...prev, valor: e.target.value }))}
+                    className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                    placeholder="10.00"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Quantidade de Códigos
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={novoCodigo.quantidade}
+                    onChange={(e) => setNovoCodigo(prev => ({ ...prev, quantidade: e.target.value }))}
+                    className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:border-sss-accent focus:outline-none"
+                    placeholder="1"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowGerarCodigo(false)}
+                  className="flex-1 px-4 py-2 border border-sss-light text-sss-white rounded-lg hover:bg-sss-light transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={gerarCodigo}
+                  disabled={salvando}
+                  className="flex-1 px-4 py-2 bg-sss-accent text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+                >
+                  {salvando ? 'Gerando...' : 'Gerar Códigos'}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
