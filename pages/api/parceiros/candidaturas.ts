@@ -34,9 +34,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Já existe uma candidatura pendente para este email' })
       }
 
+      // Buscar ou criar usuário sistema para candidaturas
+      let usuarioSistema = await prisma.usuario.findFirst({
+        where: { tipo: 'sistema' }
+      })
+
+      if (!usuarioSistema) {
+        usuarioSistema = await prisma.usuario.create({
+          data: {
+            nome: 'Sistema',
+            email: 'sistema@sementesplay.com',
+            senha: 'sistema123',
+            tipo: 'sistema',
+            nivel: 'sistema'
+          }
+        })
+      }
+
       // Criar candidatura
       const candidatura = await prisma.candidaturaParceiro.create({
         data: {
+          usuarioId: usuarioSistema.id,
           nome,
           email,
           telefone,
@@ -52,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Log de auditoria
       await prisma.logAuditoria.create({
         data: {
-          usuarioId: 'sistema', // Candidatura sem usuário logado
+          usuarioId: usuarioSistema.id,
           acao: 'CANDIDATURA_PARCEIRO',
           detalhes: `Nova candidatura de parceiro: ${nome} (${email}) - Cidade: ${nomeCidade}`,
           nivel: 'info'
