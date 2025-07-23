@@ -88,7 +88,10 @@ export default function Amigos() {
   }
 
   const enviarSolicitacao = async (amigoId: string) => {
-    if (!user) return;
+    if (!user || !user.id) {
+      alert('Usuário não autenticado. Faça login novamente.');
+      return;
+    }
     try {
       const response = await fetch('/api/amigos', {
         method: 'POST',
