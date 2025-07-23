@@ -33,8 +33,10 @@ export default function Login() {
         // Salvar usuário na sessão (garante que sempre salva algo)
         if (data.usuario) {
           auth.setUser(data.usuario)
+          console.log('Usuário salvo no localStorage:', data.usuario)
         } else {
           auth.setUser(data)
+          console.log('Usuário salvo no localStorage (fallback):', data)
         }
         // Redirecionar para a página principal
         window.location.href = '/'
