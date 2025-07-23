@@ -9,38 +9,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Buscar estatísticas reais para cada categoria
+    const [totalDoadores, totalCriadores, totalMissoes, totalSocial] = await Promise.all([
+      // Total de doadores únicos
+      prisma.doacao.groupBy({
+        by: ['doadorId'],
+        _count: { doadorId: true }
+      }).then(result => result.length),
+
+      // Total de criadores únicos
+      prisma.doacao.groupBy({
+        by: ['criadorId'],
+        _count: { criadorId: true }
+      }).then(result => result.length),
+
+      // Total de missões completadas
+      prisma.missaoUsuario.count({
+        where: { concluida: true }
+      }),
+
+      // Total de usuários ativos (com pontuação > 0)
+      prisma.usuario.count({
+        where: { pontuacao: { gt: 0 } }
+      })
+    ])
+
     const categorias = [
       {
         id: 'doador',
         nome: 'Doadores',
-        descricao: 'Ranking dos maiores doadores',
+        descricao: 'Usuários que mais doaram Sementes',
         icone: '💝',
-        cor: 'red',
-        totalParticipantes: 1250
+        cor: 'text-pink-400',
+        totalParticipantes: totalDoadores
       },
       {
         id: 'criador',
         nome: 'Criadores',
-        descricao: 'Ranking dos criadores mais apoiados',
+        descricao: 'Criadores que mais receberam doações',
         icone: '👨‍🎨',
-        cor: 'purple',
-        totalParticipantes: 450
+        cor: 'text-purple-400',
+        totalParticipantes: totalCriadores
       },
       {
         id: 'missao',
         nome: 'Missões',
-        descricao: 'Ranking por missões completadas',
-        icone: '⭐',
-        cor: 'yellow',
-        totalParticipantes: 890
+        descricao: 'Usuários que mais completaram missões',
+        icone: '🎯',
+        cor: 'text-blue-400',
+        totalParticipantes: totalMissoes
       },
       {
         id: 'social',
         nome: 'Social',
-        descricao: 'Ranking por atividade social',
-        icone: '🦋',
-        cor: 'blue',
-        totalParticipantes: 670
+        descricao: 'Usuários mais ativos socialmente',
+        icone: '👥',
+        cor: 'text-green-400',
+        totalParticipantes: totalSocial
       }
     ]
 

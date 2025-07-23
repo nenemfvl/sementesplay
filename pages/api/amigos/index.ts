@@ -4,69 +4,93 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Método não permitido' })
-  }
+  if (req.method === 'GET') {
+    try {
+      const { usuarioId } = req.query
 
-  try {
-    // Por enquanto, retornar dados mockados
-    // Em produção, você criaria tabelas de amizades no banco
-    const amigos = [
-      {
-        id: '1',
-        nome: 'João Silva',
-        email: 'joao@email.com',
-        nivel: 'Parceiro',
-        sementes: 2500,
-        status: 'online' as const,
-        ultimaAtividade: new Date(),
-        mutual: true
-      },
-      {
-        id: '2',
-        nome: 'Maria Santos',
-        email: 'maria@email.com',
-        nivel: 'Criador',
-        sementes: 5000,
-        status: 'away' as const,
-        ultimaAtividade: new Date(Date.now() - 1000 * 60 * 30), // 30 min atrás
-        mutual: true
-      },
-      {
-        id: '3',
-        nome: 'Pedro Costa',
-        email: 'pedro@email.com',
-        nivel: 'Iniciante',
-        sementes: 800,
-        status: 'offline' as const,
-        ultimaAtividade: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
-        mutual: false
-      },
-      {
-        id: '4',
-        nome: 'Ana Oliveira',
-        email: 'ana@email.com',
-        nivel: 'Parceiro',
-        sementes: 3200,
-        status: 'online' as const,
-        ultimaAtividade: new Date(),
-        mutual: true
-      },
-      {
-        id: '5',
-        nome: 'Carlos Lima',
-        email: 'carlos@email.com',
-        nivel: 'Criador',
-        sementes: 7500,
-        status: 'offline' as const,
-        ultimaAtividade: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 dia atrás
-        mutual: false
+      if (!usuarioId) {
+        return res.status(400).json({ error: 'ID do usuário é obrigatório' })
       }
-    ]
 
-    return res.status(200).json({ amigos })
-  } catch (error) {
-    console.error('Erro ao buscar amigos:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+      // Buscar amizades aceitas do usuário
+      const amizades = await prisma.amizade.findMany({
+        where: {
+          OR: [
+            { usuarioId: String(usuarioId), status: 'aceita' },
+            { amigoId: String(usuarioId), status: 'aceita' }
+          ]
+        },
+        include: {
+          usuario: true,
+          amigo: true
+        }
+      })
+
+      // Formatar lista de amigos
+      const amigos = amizades.map(amizade => {
+        const amigo = amizade.usuarioId === usuarioId ? amizade.amigo : amizade.usuario
+        const mutual = true // Se está na lista, é mutual
+
+        return {
+          id: amigo.id,
+          nome: amigo.nome,
+          email: amigo.email,
+          nivel: amigo.nivel,
+          sementes: amigo.sementes,
+          status: 'online' as const, // Mockado por enquanto
+          ultimaAtividade: new Date(),
+          mutual
+        }
+      })
+
+      return res.status(200).json({ amigos })
+    } catch (error) {
+      console.error('Erro ao buscar amigos:', error)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
+    }
   }
+
+  if (req.method === 'POST') {
+    try {
+      const { usuarioId, amigoId } = req.body
+
+      if (!usuarioId || !amigoId) {
+        return res.status(400).json({ error: 'IDs do usuário e amigo são obrigatórios' })
+      }
+
+      if (usuarioId === amigoId) {
+        return res.status(400).json({ error: 'Não é possível adicionar a si mesmo como amigo' })
+      }
+
+      // Verificar se já existe amizade
+      const amizadeExistente = await prisma.amizade.findFirst({
+        where: {
+          OR: [
+            { usuarioId: String(usuarioId), amigoId: String(amigoId) },
+            { usuarioId: String(amigoId), amigoId: String(usuarioId) }
+          ]
+        }
+      })
+
+      if (amizadeExistente) {
+        return res.status(400).json({ error: 'Amizade já existe' })
+      }
+
+      // Criar solicitação de amizade
+      const novaAmizade = await prisma.amizade.create({
+        data: {
+          usuarioId: String(usuarioId),
+          amigoId: String(amigoId),
+          status: 'pendente'
+        }
+      })
+
+      return res.status(201).json(novaAmizade)
+    } catch (error) {
+      console.error('Erro ao adicionar amigo:', error)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
+    }
+  }
+
+  return res.status(405).json({ error: 'Método não permitido' })
 } 

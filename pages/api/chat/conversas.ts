@@ -9,62 +9,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Por enquanto, retornar dados mockados
-    // Em produção, você criaria tabelas de conversas e mensagens
-    const conversas = [
-      {
-        id: '1',
-        usuarioId: '1',
-        usuarioNome: 'João Silva',
-        usuarioEmail: 'joao@email.com',
-        ultimaMensagem: 'Oi! Como você está?',
-        ultimaMensagemTimestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 min atrás
-        naoLidas: 2,
-        online: true
-      },
-      {
-        id: '2',
-        usuarioId: '2',
-        usuarioNome: 'Maria Santos',
-        usuarioEmail: 'maria@email.com',
-        ultimaMensagem: 'Obrigada pela doação!',
-        ultimaMensagemTimestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 min atrás
-        naoLidas: 0,
-        online: false
-      },
-      {
-        id: '3',
-        usuarioId: '3',
-        usuarioNome: 'Pedro Costa',
-        usuarioEmail: 'pedro@email.com',
-        ultimaMensagem: 'Vamos jogar juntos?',
-        ultimaMensagemTimestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hora atrás
-        naoLidas: 1,
-        online: true
-      },
-      {
-        id: '4',
-        usuarioId: '4',
-        usuarioNome: 'Ana Oliveira',
-        usuarioEmail: 'ana@email.com',
-        ultimaMensagem: 'Parabéns pelo ranking!',
-        ultimaMensagemTimestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
-        naoLidas: 0,
-        online: false
-      },
-      {
-        id: '5',
-        usuarioId: '5',
-        usuarioNome: 'Carlos Lima',
-        usuarioEmail: 'carlos@email.com',
-        ultimaMensagem: 'Conseguiu completar a missão?',
-        ultimaMensagemTimestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 dia atrás
-        naoLidas: 0,
-        online: false
-      }
-    ]
+    const { usuarioId } = req.query
 
-    return res.status(200).json({ conversas })
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    }
+
+    // Buscar conversas do usuário
+    const conversas = await prisma.conversa.findMany({
+      where: {
+        OR: [
+          { usuario1Id: String(usuarioId) },
+          { usuario2Id: String(usuarioId) }
+        ]
+      },
+      include: {
+        usuario1: true,
+        usuario2: true,
+        mensagens: {
+          orderBy: { dataEnvio: 'desc' },
+          take: 1
+        }
+      },
+      orderBy: { ultimaMensagem: 'desc' }
+    })
+
+    // Formatar conversas
+    const conversasFormatadas = conversas.map(conversa => {
+      const outroUsuario = conversa.usuario1Id === usuarioId ? conversa.usuario2 : conversa.usuario1
+      const ultimaMensagem = conversa.mensagens[0]
+
+      // Contar mensagens não lidas
+      const mensagensNaoLidas = conversa.mensagens.filter(msg => 
+        !msg.lida && msg.remetenteId !== usuarioId
+      ).length
+
+      return {
+        id: conversa.id,
+        usuarioId: outroUsuario.id,
+        usuarioNome: outroUsuario.nome,
+        usuarioEmail: outroUsuario.email,
+        ultimaMensagem: ultimaMensagem?.texto || 'Nenhuma mensagem',
+        ultimaMensagemTimestamp: ultimaMensagem?.dataEnvio || conversa.dataCriacao,
+        naoLidas: mensagensNaoLidas,
+        online: true // Mockado por enquanto
+      }
+    })
+
+    return res.status(200).json({ conversas: conversasFormatadas })
   } catch (error) {
     console.error('Erro ao buscar conversas:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })

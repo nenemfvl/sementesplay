@@ -40,6 +40,15 @@ model Usuario {
   missaoUsuarios MissaoUsuario[]
   conquistas     ConquistaUsuario[]
   comentarios    Comentario[]
+  amizades       Amizade[] @relation("UsuarioAmizade")
+  amizadesRecebidas Amizade[] @relation("AmigoUsuario")
+  conversas1     Conversa[] @relation("Usuario1Conversa")
+  conversas2     Conversa[] @relation("Usuario2Conversa")
+  mensagens      Mensagem[]
+  recadosEnviados Recado[] @relation("RemetenteRecado")
+  recadosRecebidos Recado[] @relation("DestinatarioRecado")
+  enquetes       Enquete[]
+  votosEnquete   VotoEnquete[]
 
   @@map("usuarios")
 }
@@ -419,4 +428,93 @@ model ConquistaUsuario {
 
   @@unique([conquistaId, usuarioId])
   @@map("conquistas_usuarios")
+}
+
+model Amizade {
+  id            String   @id @default(cuid())
+  usuarioId     String
+  amigoId       String
+  status        String   @default("pendente") // pendente, aceita, rejeitada
+  dataSolicitacao DateTime @default(now())
+  dataResposta  DateTime?
+
+  usuario       Usuario   @relation("UsuarioAmizade", fields: [usuarioId], references: [id], onDelete: Cascade)
+  amigo         Usuario   @relation("AmigoUsuario", fields: [amigoId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, amigoId])
+  @@map("amizades")
+}
+
+model Conversa {
+  id            String   @id @default(cuid())
+  usuario1Id    String
+  usuario2Id    String
+  dataCriacao   DateTime @default(now())
+  ultimaMensagem DateTime?
+
+  usuario1      Usuario   @relation("Usuario1Conversa", fields: [usuario1Id], references: [id], onDelete: Cascade)
+  usuario2      Usuario   @relation("Usuario2Conversa", fields: [usuario2Id], references: [id], onDelete: Cascade)
+  mensagens     Mensagem[]
+
+  @@unique([usuario1Id, usuario2Id])
+  @@map("conversas")
+}
+
+model Mensagem {
+  id            String   @id @default(cuid())
+  conversaId    String
+  remetenteId   String
+  texto         String
+  lida          Boolean  @default(false)
+  dataEnvio     DateTime @default(now())
+
+  conversa      Conversa @relation(fields: [conversaId], references: [id], onDelete: Cascade)
+  remetente     Usuario  @relation(fields: [remetenteId], references: [id], onDelete: Cascade)
+
+  @@map("mensagens")
+}
+
+model Enquete {
+  id            String   @id @default(cuid())
+  criadorId     String
+  pergunta      String
+  opcoes        String   // JSON array de opções
+  ativa         Boolean  @default(true)
+  dataCriacao   DateTime @default(now())
+  dataFim       DateTime?
+
+  criador       Usuario  @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  votos         VotoEnquete[]
+
+  @@map("enquetes")
+}
+
+model VotoEnquete {
+  id            String   @id @default(cuid())
+  enqueteId     String
+  usuarioId     String
+  opcaoIndex    Int
+  dataVoto      DateTime @default(now())
+
+  enquete       Enquete  @relation(fields: [enqueteId], references: [id], onDelete: Cascade)
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([enqueteId, usuarioId])
+  @@map("votos_enquetes")
+}
+
+model Recado {
+  id            String   @id @default(cuid())
+  remetenteId   String
+  destinatarioId String
+  titulo        String
+  mensagem      String
+  lido          Boolean  @default(false)
+  dataEnvio     DateTime @default(now())
+  dataLeitura   DateTime?
+
+  remetente     Usuario  @relation("RemetenteRecado", fields: [remetenteId], references: [id], onDelete: Cascade)
+  destinatario  Usuario  @relation("DestinatarioRecado", fields: [destinatarioId], references: [id], onDelete: Cascade)
+
+  @@map("recados")
 } 
