@@ -78,7 +78,7 @@ export default function PainelParceiro() {
       return
     }
     
-    if (currentUser.tipo !== 'parceiro') {
+    if (currentUser.nivel !== 'parceiro') {
       alert('Acesso negado. Apenas parceiros podem acessar esta área.')
       window.location.href = '/dashboard'
       return
