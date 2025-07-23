@@ -48,9 +48,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
       // Buscar criadores aprovados
       const criadores = await prisma.criador.findMany({
-        where: {
-          status: 'aprovado'
-        },
         include: {
           usuario: {
             select: {
@@ -72,7 +69,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           }
         },
         orderBy: {
-          dataAprovacao: 'desc'
+          dataCriacao: 'desc'
         }
       })
 
@@ -81,39 +78,39 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         nome: criador.usuario.nome,
         email: criador.usuario.email,
         bio: criador.bio || 'Criador de conteúdo da comunidade SementesPLAY',
-        avatar: criador.avatar || '/avatars/default.jpg',
+        avatar: '/avatars/default.jpg',
         categoria: criador.categoria || 'geral',
-        status: criador.status,
+        status: 'ativo',
         nivel: criador.nivel || '1',
-        seguidores: criador.seguidores || 0,
-        doacoesRecebidas: criador.doacoesRecebidas || 0,
+        seguidores: criador.apoiadores || 0,
+        doacoesRecebidas: criador.doacoes || 0,
         totalSementes: criador.usuario.sementes,
         dataCriacao: criador.usuario.dataCriacao,
-        dataAprovacao: criador.dataAprovacao,
+        dataAprovacao: criador.dataCriacao,
         redesSociais: {
-          youtube: criador.youtube,
-          twitch: criador.twitch,
-          instagram: criador.instagram
+          youtube: '',
+          twitch: '',
+          instagram: ''
         },
         estatisticas: {
-          visualizacoes: criador.visualizacoes || 0,
-          likes: criador.likes || 0,
-          comentarios: criador.comentarios || 0,
-          compartilhamentos: criador.compartilhamentos || 0
+          visualizacoes: 0,
+          likes: 0,
+          comentarios: 0,
+          compartilhamentos: 0
         },
-        conteudos: criador.conteudos.map(conteudo => ({
+        conteudos: criador.conteudos.map((conteudo: any) => ({
           id: conteudo.id,
           titulo: conteudo.titulo,
           tipo: conteudo.tipo,
           url: conteudo.url,
-          thumbnail: conteudo.thumbnail || '/thumbnails/default.jpg',
+          thumbnail: conteudo.preview || '/thumbnails/default.jpg',
           visualizacoes: conteudo.visualizacoes || 0,
-          likes: conteudo.likes || 0,
-          dataCriacao: conteudo.dataCriacao,
-          status: conteudo.ativo ? 'ativo' : 'inativo'
+          likes: conteudo.curtidas || 0,
+          dataCriacao: conteudo.dataPublicacao,
+          status: 'ativo'
         })),
-        avaliacao: criador.avaliacao || 0,
-        tags: criador.tags ? JSON.parse(criador.tags) : []
+        avaliacao: 0,
+        tags: []
       }))
 
       return res.status(200).json({
