@@ -103,8 +103,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       return res.status(201).json(novaAmizade)
     } catch (error) {
-      console.error('Erro ao adicionar amigo:', error)
-      return res.status(500).json({ error: 'Erro interno do servidor' })
+      console.error('Erro ao adicionar amigo:', error);
+      if (error instanceof Error) {
+        return res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+      }
+      return res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
 
