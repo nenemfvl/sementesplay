@@ -87,16 +87,17 @@ export default function Amigos() {
     }
   }
 
-  const enviarSolicitacao = async (usuarioId: string, mensagem?: string) => {
+  const enviarSolicitacao = async (amigoId: string) => {
+    if (!user) return;
     try {
-      const response = await fetch('/api/amigos/solicitar', {
+      const response = await fetch('/api/amigos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          destinatarioId: usuarioId,
-          mensagem
+          usuarioId: user.id,
+          amigoId
         })
       })
 
@@ -104,7 +105,8 @@ export default function Amigos() {
         alert('Solicitação de amizade enviada!')
         loadDados()
       } else {
-        alert('Erro ao enviar solicitação')
+        const erro = await response.json();
+        alert(erro.error || 'Erro ao enviar solicitação')
       }
     } catch (error) {
       console.error('Erro ao enviar solicitação:', error)
