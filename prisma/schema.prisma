@@ -30,6 +30,7 @@ model Usuario {
   transacoes     Transacao[]
   notificacoes   Notificacao[]
   candidaturas   CandidaturaCriador[]
+  candidaturasParceiro CandidaturaParceiro[]
   logsAuditoria  LogAuditoria[]
   carteira       CarteiraDigital?
   dadosBancarios DadosBancarios?
@@ -181,6 +182,28 @@ model CandidaturaCriador {
   usuario         Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("candidaturas_criador")
+}
+
+model CandidaturaParceiro {
+  id              String    @id @default(cuid())
+  usuarioId       String
+  nome            String
+  email           String
+  telefone        String
+  nomeCidade      String
+  siteCidade      String?
+  descricao       String
+  experiencia     String
+  expectativa     String
+  status          String    @default("pendente") // pendente, aprovada, rejeitada
+  dataCandidatura DateTime  @default(now())
+  dataRevisao     DateTime?
+  observacoes     String?
+
+  // Relacionamentos
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("candidaturas_parceiro")
 }
 
 model LogAuditoria {

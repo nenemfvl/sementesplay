@@ -35,25 +35,42 @@ export default function Parceiros() {
     e.preventDefault();
     setEnviando(true);
     
-    // Simular envio
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/parceiros/candidaturas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setEnviando(false);
+        setEnviado(true);
+        setTimeout(() => {
+          setShowModal(false);
+          setEnviado(false);
+          setFormData({
+            nome: '',
+            email: '',
+            telefone: '',
+            nomeCidade: '',
+            siteCidade: '',
+            descricao: '',
+            experiencia: '',
+            expectativa: ''
+          });
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        alert(`Erro: ${errorData.error}`);
+        setEnviando(false);
+      }
+    } catch (error) {
+      console.error('Erro ao enviar candidatura:', error);
+      alert('Erro ao enviar candidatura. Tente novamente.');
       setEnviando(false);
-      setEnviado(true);
-      setTimeout(() => {
-        setShowModal(false);
-        setEnviado(false);
-        setFormData({
-          nome: '',
-          email: '',
-          telefone: '',
-          nomeCidade: '',
-          siteCidade: '',
-          descricao: '',
-          experiencia: '',
-          expectativa: ''
-        });
-      }, 2000);
-    }, 1500);
+    }
   };
 
   return (
