@@ -30,8 +30,12 @@ export default function Login() {
       const data = await response.json()
 
       if (response.ok) {
-        // Salvar usuário na sessão
-        auth.setUser(data.usuario)
+        // Salvar usuário na sessão (garante que sempre salva algo)
+        if (data.usuario) {
+          auth.setUser(data.usuario)
+        } else {
+          auth.setUser(data)
+        }
         // Redirecionar para a página principal
         window.location.href = '/'
       } else {
