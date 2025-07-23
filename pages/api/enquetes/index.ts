@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { usuarioId } = req.query
 
       // Buscar enquetes ativas
-      const enquetes = await prisma.Enquete.findMany({
+      const enquetes = await prisma.enquete.findMany({
         where: { ativa: true },
         include: {
           criador: true,
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Criar nova enquete
-      const novaEnquete = await prisma.Enquete.create({
+      const novaEnquete = await prisma.enquete.create({
         data: {
           criadorId: String(criadorId),
           pergunta: String(pergunta),

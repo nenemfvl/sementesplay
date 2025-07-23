@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Buscar recados recebidos pelo usuário
-      const recados = await prisma.Recado.findMany({
+      const recados = await prisma.recado.findMany({
         where: { destinatarioId: String(usuarioId) },
         include: {
           remetente: true
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Criar novo recado
-      const novoRecado = await prisma.Recado.create({
+      const novoRecado = await prisma.recado.create({
         data: {
           remetenteId: String(remetenteId),
           destinatarioId: String(destinatarioId),

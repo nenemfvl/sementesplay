@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (tipo) where.tipo = String(tipo)
 
       // Buscar conteúdos
-      const conteudos = await prisma.Conteudo.findMany({
+      const conteudos = await prisma.conteudo.findMany({
         where,
         include: {
           criador: {
@@ -70,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Criar novo conteúdo
-      const novoConteudo = await prisma.Conteudo.create({
+      const novoConteudo = await prisma.conteudo.create({
         data: {
           criadorId: String(criadorId),
           titulo: String(titulo),

@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { usuarioId } = req.query
 
       // Buscar conquistas ativas
-      const conquistas = await prisma.Conquista.findMany({
+      const conquistas = await prisma.conquista.findMany({
         where: { ativa: true },
         include: {
           usuarios: {
@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Criar nova conquista
-      const novaConquista = await prisma.Conquista.create({
+      const novaConquista = await prisma.conquista.create({
         data: {
           titulo: String(titulo),
           descricao: String(descricao),
