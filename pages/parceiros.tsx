@@ -16,9 +16,42 @@ export default function Parceiros() {
         <Navbar />
         {/* Conteúdo centralizado zerado */}
         <div className="flex flex-col items-center justify-center py-16">
-          <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center max-w-2xl w-full">
-            <h1 className="text-3xl font-bold text-sss-accent mb-4">Parceiros</h1>
-            <p className="text-sss-white text-lg mb-2">Página pronta para receber conteúdo.</p>
+          <div className="bg-sss-medium rounded-lg shadow-lg p-8 border border-sss-light text-center max-w-4xl w-full">
+            <h1 className="text-3xl font-bold text-sss-accent mb-6">Parceiros SementesPLAY</h1>
+            <p className="text-sss-white text-lg mb-8">Donos de cidades FiveM que geram códigos de cashback para a comunidade</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
+                <h3 className="text-xl font-semibold text-sss-white mb-4">Como Funciona</h3>
+                <ul className="text-gray-300 space-y-2 text-left">
+                  <li>• Cadastre sua cidade FiveM como parceira</li>
+                  <li>• Gere códigos de cashback únicos</li>
+                  <li>• Receba 10% de comissão das vendas</li>
+                  <li>• Acompanhe estatísticas em tempo real</li>
+                </ul>
+              </div>
+              
+              <div className="bg-sss-dark rounded-lg p-6 border border-sss-light">
+                <h3 className="text-xl font-semibold text-sss-white mb-4">Benefícios</h3>
+                <ul className="text-gray-300 space-y-2 text-left">
+                  <li>• Painel exclusivo de gestão</li>
+                  <li>• Relatórios detalhados de vendas</li>
+                  <li>• Suporte prioritário</li>
+                  <li>• Taxa mensal de R$ 500,00</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-sss-accent/10 rounded-lg p-6 border border-sss-accent">
+              <h3 className="text-xl font-semibold text-sss-accent mb-4">Interessado em ser Parceiro?</h3>
+              <p className="text-gray-300 mb-4">Entre em contato conosco para mais informações sobre o processo de cadastro.</p>
+              <a 
+                href="mailto:parceiros@sementesplay.com" 
+                className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block"
+              >
+                Solicitar Cadastro
+              </a>
+            </div>
           </div>
         </div>
         {/* Footer minimalista centralizado */}

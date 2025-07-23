@@ -23,6 +23,7 @@ import {
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import PainelCriador from './painel-criador';
+import PainelParceiro from './painel-parceiro';
 import Navbar from '../components/Navbar';
 
 export default function Dashboard() {
@@ -79,7 +80,7 @@ export default function Dashboard() {
     { id: 'creators', label: 'Criadores', icon: UserIcon },
     { id: 'cashback', label: 'Cashback', icon: GiftIcon },
     { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
-    // { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon }, // Desabilitado
+    { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon },
   ]
 
   return (
@@ -223,6 +224,14 @@ export default function Dashboard() {
                 <ShieldCheckIcon className="w-8 h-8 mx-auto mb-2 text-blue-500" />
                 <h3 className="font-semibold">Moderação</h3>
                 <p className="text-sm text-gray-400">Denúncias e suporte</p>
+              </Link>
+            )}
+            
+            {user.tipo === 'parceiro' && (
+              <Link href="/painel-parceiro" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
+                <BuildingOfficeIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
+                <h3 className="font-semibold">Painel Parceiro</h3>
+                <p className="text-sm text-gray-400">Gerencie sua cidade</p>
               </Link>
             )}
             
@@ -386,11 +395,11 @@ export default function Dashboard() {
                   <PainelCriador />
                 </div>
               )}
-              {/* {activeTab === 'painel-parceiro' && (
+              {activeTab === 'painel-parceiro' && (
                 <div className="bg-white rounded-lg p-2">
                   <PainelParceiro />
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </div>
