@@ -175,8 +175,10 @@ export default function Amigos() {
     if (!confirm('Tem certeza que deseja remover este amigo?')) return
 
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const response = await fetch(`/api/amigos/${amigoId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       })
 
       if (response.ok) {
