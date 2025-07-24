@@ -1,7 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
+
+const getUserFromToken = (req: NextApiRequest) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader) return null
+  const token = authHeader.split(' ')[1]
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as { id: string }
+  } catch {
+    return null
+  }
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -9,63 +21,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const user = getUserFromToken(req)
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário não autenticado' })
+    }
     const { usuarioId } = req.query
 
-    if (!usuarioId) {
-      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    if (!usuarioId || usuarioId !== user.id) {
+      return res.status(403).json({ error: 'Acesso negado' })
     }
 
-    // Buscar conversas do usuário
-    const conversas = await prisma.conversa.findMany({
+    // Buscar todos os amigos aceitos
+    const amizades = await prisma.amizade.findMany({
       where: {
         OR: [
-          { usuario1Id: String(usuarioId) },
-          { usuario2Id: String(usuarioId) }
+          { usuarioId: String(usuarioId), status: 'aceita' },
+          { amigoId: String(usuarioId), status: 'aceita' }
         ]
       },
       include: {
-        usuario1: {
-          select: {
-            id: true,
-            nome: true,
-            email: true
-          }
-        },
-        usuario2: {
-          select: {
-            id: true,
-            nome: true,
-            email: true
-          }
-        },
-        mensagens: {
-          orderBy: {
-            dataEnvio: 'desc'
-          },
-          take: 1
-        }
-      },
-      orderBy: {
-        ultimaMensagem: 'desc'
+        usuario: { select: { id: true, nome: true, email: true } },
+        amigo: { select: { id: true, nome: true, email: true } }
       }
     })
 
-    const conversasFormatadas = conversas.map(conversa => {
-      const outroUsuario = conversa.usuario1Id === usuarioId ? conversa.usuario2 : conversa.usuario1
-      const ultimaMensagem = conversa.mensagens[0]
-
+    // Para cada amigo, buscar conversa (se existir) e última mensagem
+    const conversas = await Promise.all(amizades.map(async amizade => {
+      const amigo = amizade.usuarioId === usuarioId ? amizade.amigo : amizade.usuario
+      // Buscar conversa (pode ser em qualquer direção)
+      const conversa = await prisma.conversa.findFirst({
+        where: {
+          OR: [
+            { usuario1Id: String(usuarioId), usuario2Id: amigo.id },
+            { usuario1Id: amigo.id, usuario2Id: String(usuarioId) }
+          ]
+        },
+        include: {
+          mensagens: {
+            orderBy: { dataEnvio: 'desc' },
+            take: 1
+          }
+        }
+      })
+      const ultimaMensagem = conversa?.mensagens[0]
       return {
-        id: conversa.id,
-        usuarioId: outroUsuario.id,
-        usuarioNome: outroUsuario.nome,
-        usuarioEmail: outroUsuario.email,
+        id: conversa?.id || null,
+        usuarioId: amigo.id,
+        usuarioNome: amigo.nome,
+        usuarioEmail: amigo.email,
         ultimaMensagem: ultimaMensagem?.texto || 'Nenhuma mensagem',
-        ultimaAtividade: ultimaMensagem?.dataEnvio || conversa.dataCriacao,
+        ultimaAtividade: ultimaMensagem?.dataEnvio || null,
         naoLidas: 0 // Por enquanto
       }
-    })
+    }))
 
-    return res.status(200).json({ conversas: conversasFormatadas })
+    return res.status(200).json({ conversas })
   } catch (error) {
     console.error('Erro ao buscar conversas:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
