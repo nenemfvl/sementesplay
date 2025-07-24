@@ -16,6 +16,41 @@ const getUserFromToken = (req: NextApiRequest) => {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    try {
+      const user = getUserFromToken(req)
+      if (!user) {
+        return res.status(401).json({ error: 'Usuário não autenticado' })
+      }
+      const { usuario1Id, usuario2Id } = req.body
+      if (!usuario1Id || !usuario2Id) {
+        return res.status(400).json({ error: 'IDs dos usuários são obrigatórios' })
+      }
+      // Verificar se já existe conversa
+      let conversa = await prisma.conversa.findFirst({
+        where: {
+          OR: [
+            { usuario1Id: usuario1Id, usuario2Id: usuario2Id },
+            { usuario1Id: usuario2Id, usuario2Id: usuario1Id }
+          ]
+        }
+      })
+      if (!conversa) {
+        conversa = await prisma.conversa.create({
+          data: {
+            usuario1Id: usuario1Id,
+            usuario2Id: usuario2Id,
+            dataCriacao: new Date()
+          }
+        })
+      }
+      return res.status(201).json({ id: conversa.id })
+    } catch (error) {
+      console.error('Erro ao criar conversa:', error)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
+    }
+  }
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
