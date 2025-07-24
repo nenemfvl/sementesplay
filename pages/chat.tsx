@@ -148,6 +148,38 @@ export default function Chat() {
   const enviarMensagem = async () => {
     if (!novaMensagem.trim() || !conversaAtiva) return
 
+    let conversaId = conversaAtiva.id
+    // Se não existe conversa, criar uma nova
+    if (!conversaId) {
+      const token = localStorage.getItem('sementesplay_token')
+      const resp = await fetch('/api/chat/conversas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          usuario1Id: user!.id,
+          usuario2Id: conversaAtiva.usuarioId
+        })
+      })
+      const data = await resp.json()
+      if (resp.ok && data.id) {
+        conversaId = data.id
+        setConversaAtiva({ ...conversaAtiva, id: conversaId })
+        setConversas(prev => prev.map(c => c.usuarioId === conversaAtiva.usuarioId ? { ...c, id: conversaId } : c))
+      } else {
+        alert('Erro ao criar conversa')
+        return
+      }
+    }
+
+    // Só envie a mensagem se conversaId estiver definido
+    if (!conversaId) {
+      alert('Erro ao obter o ID da conversa')
+      return
+    }
+
     const mensagem: Mensagem = {
       id: Date.now().toString(),
       remetenteId: user!.id,
@@ -159,7 +191,7 @@ export default function Chat() {
     }
 
     try {
-      const response = await fetch(`/api/chat/conversas/${conversaAtiva.id}/mensagens`, {
+      const response = await fetch(`/api/chat/conversas/${conversaId}/mensagens`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
