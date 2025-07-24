@@ -108,7 +108,10 @@ export default function Chat() {
   const loadConversas = async () => {
     try {
       if (!user) return;
-      const response = await fetch(`/api/chat/conversas?usuarioId=${user.id}`)
+      const token = localStorage.getItem('sementesplay_token')
+      const response = await fetch(`/api/chat/conversas?usuarioId=${user.id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      })
       const data = await response.json()
       if (response.ok) {
         setConversas(data.conversas)
