@@ -1030,8 +1030,6 @@ export default function Parceiros() {
               <a href="/privacidade" className="hover:text-sss-accent">Política de Privacidade</a>
               <span>|</span>
               <a href="/ajuda" className="hover:text-sss-accent">Ajuda</a>
-              <span>|</span>
-              <a href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</a>
             </div>
             {/* Copyright */}
             <div className="text-gray-500 text-xs text-center">

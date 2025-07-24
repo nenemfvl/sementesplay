@@ -227,7 +227,7 @@ export default function Dashboard() {
               </Link>
             )}
             
-            {user.tipo === 'parceiro' && (
+            {user.nivel === 'parceiro' && (
               <Link href="/painel-parceiro" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
                 <BuildingOfficeIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
                 <h3 className="font-semibold">Painel Parceiro</h3>
@@ -335,7 +335,7 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     <div className="space-y-3">
-                      {user.tipo === 'criador' ? (
+                      {user.nivel === 'criador' ? (
                         <div className="flex items-center space-x-3 p-3 bg-sss-dark rounded-lg">
                           <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
                             <StarIcon className="w-5 h-5 text-sss-accent" />
