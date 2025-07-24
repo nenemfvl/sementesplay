@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
-import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, ArrowLeftIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth } from '../lib/auth'
 
@@ -11,9 +11,11 @@ export default function Login() {
     email: '',
     password: ''
   })
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -41,11 +43,11 @@ export default function Login() {
         // Redirecionar para a página principal
         window.location.href = '/'
       } else {
-        alert(`Erro: ${data.error}`)
+        setError(data.error || 'Erro ao fazer login. Tente novamente.')
       }
     } catch (error) {
       console.error('Erro no login:', error)
-      alert('Erro ao fazer login. Tente novamente.')
+      setError('Erro ao fazer login. Tente novamente.')
     }
   }
 
@@ -91,6 +93,19 @@ export default function Login() {
             transition={{ duration: 0.6, delay: 0.3 }}
             onSubmit={handleSubmit}
           >
+            {error && (
+              <div className="flex items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <ExclamationTriangleIcon className="w-5 h-5 mr-2 text-red-500" />
+                <span>
+                  {error.includes('inválidos') ? (
+                    <>
+                      Email ou senha inválidos.<br />
+                      <span className="text-sm">Não tem conta? <Link href="/registro" className="underline text-blue-600 hover:text-blue-800">Crie uma conta grátis</Link></span>
+                    </>
+                  ) : error}
+                </span>
+              </div>
+            )}
             <div className="bg-sss-medium rounded-lg p-6 shadow-lg border border-sss-light">
               <div className="space-y-4">
                 {/* Email */}
