@@ -67,10 +67,12 @@ export default function Chat() {
   }, [user])
 
   useEffect(() => {
-    if (conversaAtiva) {
-      loadMensagens(conversaAtiva.id)
-    }
-  }, [conversaAtiva])
+    if (!conversaAtiva) return;
+    const interval = setInterval(() => {
+      loadMensagens(conversaAtiva.id);
+    }, 3000); // a cada 3 segundos
+    return () => clearInterval(interval);
+  }, [conversaAtiva]);
 
   useEffect(() => {
     if (mensagensRef.current) {
