@@ -191,10 +191,12 @@ export default function Chat() {
     }
 
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const response = await fetch(`/api/chat/conversas/${conversaId}/mensagens`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           conteudo: novaMensagem,
