@@ -377,7 +377,7 @@ export default function Chat() {
                             <UserCircleIcon className="w-6 h-6 text-sss-accent" />
                           </div>
                           <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-sss-medium ${
-                            conversa.online ? 'bg-green-500' : 'bg-gray-500'
+                            onlineUsers.includes(conversa.usuarioId) ? 'bg-green-500' : 'bg-gray-500'
                           }`}></div>
                         </div>
                         
@@ -426,7 +426,7 @@ export default function Chat() {
                           <UserCircleIcon className="w-6 h-6 text-sss-accent" />
                         </div>
                         <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-sss-medium ${
-                          conversaAtiva.online ? 'bg-green-500' : 'bg-gray-500'
+                          onlineUsers.includes(conversaAtiva.usuarioId) ? 'bg-green-500' : 'bg-gray-500'
                         }`}></div>
                       </div>
                       
@@ -435,7 +435,7 @@ export default function Chat() {
                           {conversaAtiva.usuarioNome}
                         </h3>
                         <p className="text-gray-400 text-sm">
-                          {conversaAtiva.online ? 'Online' : 'Offline'}
+                          {onlineUsers.includes(conversaAtiva.usuarioId) ? 'Online' : 'Offline'}
                         </p>
                       </div>
                     </div>
