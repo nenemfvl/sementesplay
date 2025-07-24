@@ -1,27 +1,35 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { Client } from 'pg'
 
-// Simulação de usuários online em memória
-let onlineUsers: { [id: string]: number } = {}
+const connectionString = process.env.DATABASE_URL || ''
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const client = new Client({ connectionString })
+  await client.connect()
+
   if (req.method === 'POST') {
-    // Recebe um ping do usuário para marcar como online
     const { userId } = req.body
     if (userId) {
-      onlineUsers[userId] = Date.now()
+      await client.query(
+        `INSERT INTO usuarios_online (usuario_id, atualizado_em)
+         VALUES ($1, NOW())
+         ON CONFLICT (usuario_id) DO UPDATE SET atualizado_em = NOW()`,
+        [userId]
+      )
     }
-    // Limpa usuários que não deram ping nos últimos 20 segundos
-    const now = Date.now()
-    Object.keys(onlineUsers).forEach(id => {
-      if (now - onlineUsers[id] > 20000) {
-        delete onlineUsers[id]
-      }
-    })
+    await client.end()
     return res.status(200).json({ success: true })
   }
+
   if (req.method === 'GET') {
-    // Retorna lista de IDs online
-    return res.status(200).json({ online: Object.keys(onlineUsers) })
+    // Retorna usuários que deram ping hoje (com date)
+    const { rows } = await client.query(
+      `SELECT usuario_id FROM usuarios_online WHERE atualizado_em = CURRENT_DATE`
+    )
+    await client.end()
+    return res.status(200).json({ online: rows.map(r => r.usuario_id) })
   }
+
+  await client.end()
   return res.status(405).json({ error: 'Método não permitido' })
 } 
