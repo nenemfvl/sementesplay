@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
-import { 
-  UserIcon, 
-  CurrencyDollarIcon, 
-  HeartIcon, 
+import {
+  UserIcon,
+  CurrencyDollarIcon,
+  HeartIcon,
   GiftIcon,
   ChartBarIcon,
   CogIcon,
@@ -30,6 +30,10 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<any>(null)
+  const [topCreators, setTopCreators] = useState<any[]>([])
+  const [loadingData, setLoadingData] = useState(true)
+  const [criadores, setCriadores] = useState<any[]>([])
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -41,7 +45,27 @@ export default function Dashboard() {
     setLoading(false)
   }, [])
 
-  if (loading) {
+  useEffect(() => {
+    if (!user) return
+    setLoadingData(true)
+    Promise.all([
+      fetch(`/api/perfil/stats?usuarioId=${user.id}`).then(r => r.json()),
+      fetch('/api/analytics/performers?period=7d').then(r => r.json()),
+      fetch('/api/criadores').then(r => r.json())
+    ]).then(([statsData, performersData, criadoresData]) => {
+      setStats(statsData)
+      setTopCreators(performersData.creators || [])
+      setCriadores(criadoresData.criadores || [])
+      setLoadingData(false)
+    }).catch(() => {
+      setStats(null)
+      setTopCreators([])
+      setCriadores([])
+      setLoadingData(false)
+    })
+  }, [user])
+
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen bg-sss-dark flex items-center justify-center">
         <div className="text-sss-white">Carregando...</div>
@@ -49,30 +73,19 @@ export default function Dashboard() {
     )
   }
 
-  if (!user) {
+  if (!user || !stats) {
     return null
   }
 
-  // Dados do usuário logado
   const userStats = {
     sementes: user.sementes,
-    doacoesEnviadas: 0, // TODO: Buscar do banco
-    criadoresApoiados: 0, // TODO: Buscar do banco
+    doacoesEnviadas: stats.totalDoacoes || 0,
+    criadoresApoiados: stats.criadoresApoiados || 0,
     nivel: user.nivel,
-    ranking: 0 // TODO: Calcular ranking
+    ranking: 0 // TODO: Calcular ranking se necessário
   }
 
-  const recentDonations = [
-    { id: 1, criador: 'JoãoGamer', valor: 100, data: '2024-01-15' },
-    { id: 2, criador: 'MariaStream', valor: 50, data: '2024-01-14' },
-    { id: 3, criador: 'PedroFiveM', valor: 200, data: '2024-01-13' }
-  ]
-
-  const topCreators = [
-    { id: 1, nome: 'JoãoGamer', sementes: 2500, nivel: 'Ouro' },
-    { id: 2, nome: 'MariaStream', sementes: 1800, nivel: 'Prata' },
-    { id: 3, nome: 'PedroFiveM', sementes: 1200, nivel: 'Bronze' }
-  ]
+  const recentDonations = stats.historicoDoacoes || []
 
   const tabs = [
     { id: 'overview', label: 'Visão Geral', icon: ChartBarIcon },
@@ -95,7 +108,7 @@ export default function Dashboard() {
         {/* Conteúdo centralizado zerado */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Stats Cards */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -151,7 +164,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -162,55 +175,55 @@ export default function Dashboard() {
               <h3 className="font-semibold text-sm lg:text-base">Fazer Doação</h3>
               <p className="text-xs lg:text-sm opacity-90 hidden lg:block">Apoie seus criadores favoritos</p>
             </Link>
-            
+
             <Link href="/cashback" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <GiftIcon className="w-6 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold text-sm lg:text-base">Cashback</h3>
               <p className="text-xs lg:text-sm text-gray-400 hidden lg:block">Ganhe Sementes extras</p>
             </Link>
-            
+
             <Link href="/carteira" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <CurrencyDollarIcon className="w-6 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold text-sm lg:text-base">Carteira</h3>
               <p className="text-xs lg:text-sm text-gray-400 hidden lg:block">Gerencie pagamentos</p>
             </Link>
-            
+
             <Link href="/ranking" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <TrophyIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Ver Ranking</h3>
               <p className="text-sm text-gray-400">Top doadores e criadores</p>
             </Link>
-            
+
             <Link href="/perfil" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <UserIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Meu Perfil</h3>
               <p className="text-sm text-gray-400">Estatísticas e conquistas</p>
             </Link>
-            
+
             <Link href="/missoes" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <TrophyIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Missões</h3>
               <p className="text-sm text-gray-400">Complete e ganhe recompensas</p>
             </Link>
-            
+
             <Link href="/chat" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <ChatBubbleLeftIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Chat</h3>
               <p className="text-sm text-gray-400">Converse com a comunidade</p>
             </Link>
-            
+
             <Link href="/amigos" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <UserGroupIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Amigos</h3>
               <p className="text-sm text-gray-400">Gerencie seus amigos</p>
             </Link>
-            
+
             <Link href="/notificacoes-tempo-real" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <BellIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Notificações</h3>
               <p className="text-sm text-gray-400">Tempo real</p>
             </Link>
-            
+
             {Number(user.nivel) >= 3 && (
               <Link href="/criadores" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
                 <TrophyIcon className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
@@ -218,7 +231,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-400">Gerenciar criadores</p>
               </Link>
             )}
-            
+
             {Number(user.nivel) >= 4 && (
               <Link href="/moderacao" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
                 <ShieldCheckIcon className="w-8 h-8 mx-auto mb-2 text-blue-500" />
@@ -226,7 +239,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-400">Denúncias e suporte</p>
               </Link>
             )}
-            
+
             {user.nivel === 'parceiro' && (
               <Link href="/painel-parceiro" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
                 <BuildingOfficeIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
@@ -234,7 +247,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-400">Gerencie sua cidade</p>
               </Link>
             )}
-            
+
             {Number(user.nivel) >= 3 && (
               <Link href="/analytics" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-lg text-center transition-colors">
                 <ChartBarIcon className="w-8 h-8 mx-auto mb-2" />
@@ -282,8 +295,10 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     <div className="space-y-3">
-                      {recentDonations.map((donation) => (
-                        <div key={donation.id} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                      {recentDonations.length === 0 ? (
+                        <div className="text-gray-400 text-sm">Nenhuma doação recente.</div>
+                      ) : recentDonations.map((donation: any, idx: number) => (
+                        <div key={idx} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
                               <HeartIcon className="w-5 h-5 text-sss-accent" />
@@ -306,19 +321,21 @@ export default function Dashboard() {
                   <div>
                     <h3 className="text-lg font-semibold text-sss-white mb-4">Top Criadores</h3>
                     <div className="space-y-3">
-                      {topCreators.map((creator, index) => (
+                      {topCreators.length === 0 ? (
+                        <div className="text-gray-400 text-sm">Nenhum criador em destaque.</div>
+                      ) : topCreators.slice(0, 3).map((creator: any, index: number) => (
                         <div key={creator.id} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center text-sm font-bold text-yellow-500">
                               {index + 1}
                             </div>
                             <div>
-                              <p className="text-sss-white font-medium">{creator.nome}</p>
-                              <p className="text-sm text-gray-400">Nível {creator.nivel}</p>
+                              <p className="text-sss-white font-medium">{creator.name}</p>
+                              <p className="text-sm text-gray-400">{creator.category || 'Nível 1'}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sss-white font-semibold">{creator.sementes}</p>
+                            <p className="text-sss-white font-semibold">{creator.value}</p>
                             <p className="text-sm text-gray-400">Sementes</p>
                           </div>
                         </div>
@@ -368,26 +385,83 @@ export default function Dashboard() {
               )}
 
               {activeTab === 'donations' && (
-                <div className="text-center py-8">
-                  <HeartIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-sss-white mb-2">Histórico de Doações</h3>
-                  <p className="text-gray-400">Em breve você poderá ver seu histórico completo de doações.</p>
+                <div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-4">Histórico de Doações</h3>
+                  <div className="space-y-3">
+                    {recentDonations.length === 0 ? (
+                      <div className="text-gray-400 text-sm">Nenhuma doação encontrada.</div>
+                    ) : recentDonations.map((donation: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                            <HeartIcon className="w-5 h-5 text-sss-accent" />
+                          </div>
+                          <div>
+                            <p className="text-sss-white font-medium">{donation.criador}</p>
+                            <p className="text-sm text-gray-400">{donation.data}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sss-white font-semibold">R$ {donation.valor}</p>
+                          <p className="text-sm text-gray-400">Doação</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {activeTab === 'creators' && (
-                <div className="text-center py-8">
-                  <UserIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-sss-white mb-2">Criadores Favoritos</h3>
-                  <p className="text-gray-400">Gerencie seus criadores favoritos e veja estatísticas.</p>
+                <div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-4">Criadores</h3>
+                  <div className="space-y-3">
+                    {criadores.length === 0 ? (
+                      <div className="text-gray-400 text-sm">Nenhum criador encontrado.</div>
+                    ) : criadores.slice(0, 10).map((criador: any) => (
+                      <div key={criador.id} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                            <UserIcon className="w-5 h-5 text-sss-accent" />
+                          </div>
+                          <div>
+                            <p className="text-sss-white font-medium">{criador.nome}</p>
+                            <p className="text-sm text-gray-400">{criador.categoria}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sss-white font-semibold">{criador.totalSementes}</p>
+                          <p className="text-sm text-gray-400">Sementes</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {activeTab === 'cashback' && (
-                <div className="text-center py-8">
-                  <GiftIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-sss-white mb-2">Sistema de Cashback</h3>
-                  <p className="text-gray-400">Resgate seus códigos de cashback e ganhe Sementes extras.</p>
+                <div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-4">Cashbacks Resgatados</h3>
+                  <div className="space-y-3">
+                    {stats.historicoCashback && stats.historicoCashback.length === 0 ? (
+                      <div className="text-gray-400 text-sm">Nenhum cashback resgatado.</div>
+                    ) : stats.historicoCashback && stats.historicoCashback.map((cashback: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                            <GiftIcon className="w-5 h-5 text-green-500" />
+                          </div>
+                          <div>
+                            <p className="text-sss-white font-medium">{cashback.codigo}</p>
+                            <p className="text-sm text-gray-400">{cashback.data}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sss-white font-semibold">R$ {cashback.valor}</p>
+                          <p className="text-sm text-gray-400">Cashback</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               {activeTab === 'painel-criador' && (
