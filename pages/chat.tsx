@@ -56,15 +56,15 @@ export default function Chat() {
       return
     }
     setUser(currentUser)
-    loadConversas()
-    setupWebSocket()
-
-    return () => {
-      if (wsRef.current && typeof wsRef.current.close === 'function') {
-        wsRef.current.close()
-      }
-    }
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadConversas()
+      setupWebSocket()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   useEffect(() => {
     if (conversaAtiva) {
@@ -107,7 +107,8 @@ export default function Chat() {
 
   const loadConversas = async () => {
     try {
-      const response = await fetch('/api/chat/conversas')
+      if (!user) return;
+      const response = await fetch(`/api/chat/conversas?usuarioId=${user.id}`)
       const data = await response.json()
       if (response.ok) {
         setConversas(data.conversas)
