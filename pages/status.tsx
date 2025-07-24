@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 
@@ -20,12 +20,54 @@ function getStatusIcon(status: string) {
 }
 
 export default function Status() {
+  const [totalSementes, setTotalSementes] = useState<number | null>(null)
+  const [displaySementes, setDisplaySementes] = useState(0)
+
+  useEffect(() => {
+    fetch('/api/admin/stats')
+      .then(res => res.json())
+      .then(data => {
+        if (typeof data.totalSementes === 'number') {
+          setTotalSementes(data.totalSementes)
+        }
+      })
+  }, [])
+
+  // Animação de contagem crescente
+  useEffect(() => {
+    if (totalSementes === null) return
+    let start = 0
+    const duration = 1200 // ms
+    const increment = Math.ceil(totalSementes / 60)
+    let current = 0
+    const step = () => {
+      current += increment
+      if (current >= totalSementes) {
+        setDisplaySementes(totalSementes)
+      } else {
+        setDisplaySementes(current)
+        requestAnimationFrame(step)
+      }
+    }
+    step()
+  }, [totalSementes])
+
   return (
     <>
       <Head>
         <title>Status do Sistema - SementesPLAY</title>
       </Head>
       <div className="min-h-screen bg-sss-dark flex flex-col items-center justify-center py-12 px-4">
+        {/* Contador de Sementes */}
+        <div className="flex flex-col items-center mb-8">
+          <span className="text-gray-400 text-sm mb-1">Sementes em circulação</span>
+          <div className="flex items-center gap-2">
+            <span className="text-4xl md:text-5xl font-extrabold text-sss-accent drop-shadow-lg animate-pulse">
+              {totalSementes === null ? '...' : displaySementes.toLocaleString('pt-BR')}
+            </span>
+            <span className="text-2xl md:text-3xl">🌱</span>
+          </div>
+        </div>
         <h1 className="text-3xl font-bold text-sss-accent mb-4">Status do Sistema</h1>
         <p className="text-gray-300 mb-8 text-center max-w-xl">Aqui você acompanha o funcionamento dos principais serviços do SementesPLAY. Em caso de instabilidade, consulte esta página antes de abrir um chamado de suporte.</p>
         <div className="w-full max-w-2xl bg-sss-medium rounded-lg border border-sss-light p-6 mb-8">
