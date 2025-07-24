@@ -55,8 +55,13 @@ export default function Amigos() {
       return
     }
     setUser(currentUser)
-    loadDados()
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadDados()
+    }
+  }, [user])
 
   const loadDados = async () => {
     try {
