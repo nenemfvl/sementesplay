@@ -34,7 +34,21 @@ export default function Navbar() {
           <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
           <a href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
           <a href="/salao" className={`${router.asPath.startsWith('/salao') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Salão</a>
-          <a href="/criadores" className={`${router.asPath.startsWith('/criadores') || router.asPath.startsWith('/criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Criadores</a>
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              const user = auth.getUser();
+              if (!user) {
+                window.location.href = '/login';
+                return;
+              }
+              window.location.href = '/buscar';
+            }}
+            className={`${router.asPath.startsWith('/buscar') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}
+          >
+            Buscar Criadores
+          </a>
           <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
           <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
