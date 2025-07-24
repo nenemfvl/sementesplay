@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
-import { 
-  LightBulbIcon, 
-  ArrowTrendingUpIcon, 
+import {
+  LightBulbIcon,
+  ArrowTrendingUpIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   ClockIcon,
@@ -17,76 +17,14 @@ interface Insight {
   value?: string
   trend?: number
   priority: 'high' | 'medium' | 'low'
-  timestamp: Date
+  timestamp: string
 }
 
-export default function InsightsPanel() {
-  const [insights, setInsights] = useState<Insight[]>([])
-  const [loading, setLoading] = useState(true)
+interface InsightsPanelProps {
+  insights?: Insight[]
+}
 
-  useEffect(() => {
-    // Simular geração de insights
-    const generateInsights = () => {
-      const mockInsights: Insight[] = [
-        {
-          id: '1',
-          type: 'positive',
-          title: 'Crescimento Recorde',
-          description: 'Doações aumentaram 25% esta semana, o maior crescimento dos últimos 3 meses.',
-          value: '+25%',
-          trend: 25,
-          priority: 'high',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30) // 30 min atrás
-        },
-        {
-          id: '2',
-          type: 'trend',
-          title: 'Horário de Pico Identificado',
-          description: 'Maior atividade entre 20h e 22h. Considere programar eventos neste horário.',
-          value: '20h-22h',
-          priority: 'medium',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2) // 2h atrás
-        },
-        {
-          id: '3',
-          type: 'warning',
-          title: 'Retenção de Usuários',
-          description: 'Taxa de retenção caiu 8% este mês. Recomenda-se revisar estratégias de engajamento.',
-          value: '-8%',
-          trend: -8,
-          priority: 'high',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4) // 4h atrás
-        },
-        {
-          id: '4',
-          type: 'info',
-          title: 'Novo Criador em Destaque',
-          description: 'AnaArt recebeu 150% mais doações que a média. Considere destacar em campanhas.',
-          value: '+150%',
-          trend: 150,
-          priority: 'medium',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6) // 6h atrás
-        },
-        {
-          id: '5',
-          type: 'positive',
-          title: 'Missões Efetivas',
-          description: 'Sistema de missões aumentou engajamento em 40%. Continue incentivando participação.',
-          value: '+40%',
-          trend: 40,
-          priority: 'medium',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8) // 8h atrás
-        }
-      ]
-
-      setInsights(mockInsights)
-      setLoading(false)
-    }
-
-    // Simular delay de processamento
-    setTimeout(generateInsights, 2000)
-  }, [])
-
+export default function InsightsPanel({ insights = [] }: InsightsPanelProps) {
   const getInsightIcon = (type: Insight['type']) => {
     switch (type) {
       case 'positive':
@@ -111,24 +49,21 @@ export default function InsightsPanel() {
     }
   }
 
-  const formatTime = (date: Date) => {
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr)
     const now = new Date()
     const diff = now.getTime() - date.getTime()
     const minutes = Math.floor(diff / 1000 / 60)
     const hours = Math.floor(minutes / 60)
-    
     if (minutes < 60) return `${minutes}m atrás`
     if (hours < 24) return `${hours}h atrás`
     return `${Math.floor(hours / 24)}d atrás`
   }
 
-  if (loading) {
+  if (!insights || insights.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="flex items-center space-x-3">
-          <div className="w-6 h-6 border-2 border-sss-accent border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-gray-400">Analisando dados...</span>
-        </div>
+        <span className="text-gray-400">Nenhum insight disponível.</span>
       </div>
     )
   }
@@ -160,7 +95,6 @@ export default function InsightsPanel() {
               <div className="flex-shrink-0 mt-1">
                 {getInsightIcon(insight.type)}
               </div>
-              
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold text-sss-white text-sm">
@@ -168,29 +102,27 @@ export default function InsightsPanel() {
                   </h3>
                   {insight.value && (
                     <span className={`text-sm font-bold ${
-                      insight.trend && insight.trend > 0 ? 'text-green-400' : 
-                      insight.trend && insight.trend < 0 ? 'text-red-400' : 'text-gray-400'
+                      insight.trend && insight.trend > 0 ? 'text-green-400' :
+                        insight.trend && insight.trend < 0 ? 'text-red-400' : 'text-gray-400'
                     }`}>
                       {insight.value}
                     </span>
                   )}
                 </div>
-                
                 <p className="text-sm text-gray-400 mb-2">
                   {insight.description}
                 </p>
-                
                 <div className="flex items-center space-x-2 text-xs text-gray-500">
                   <ClockIcon className="w-3 h-3" />
                   <span>{formatTime(insight.timestamp)}</span>
                   <span>•</span>
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     insight.priority === 'high' ? 'bg-red-500/20 text-red-400' :
-                    insight.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-green-500/20 text-green-400'
+                      insight.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-green-500/20 text-green-400'
                   }`}>
-                    {insight.priority === 'high' ? 'Alta' : 
-                     insight.priority === 'medium' ? 'Média' : 'Baixa'} prioridade
+                    {insight.priority === 'high' ? 'Alta' :
+                      insight.priority === 'medium' ? 'Média' : 'Baixa'} prioridade
                   </span>
                 </div>
               </div>

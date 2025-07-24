@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { TrophyIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
 
 interface Performer {
-  id: number
+  id: string
   name: string
   type: 'creator' | 'donor'
   value: number
@@ -12,24 +12,13 @@ interface Performer {
   category: string
 }
 
-export default function TopPerformers() {
+interface TopPerformersProps {
+  creators?: Performer[]
+  donors?: Performer[]
+}
+
+export default function TopPerformers({ creators = [], donors = [] }: TopPerformersProps) {
   const [activeTab, setActiveTab] = useState<'creators' | 'donors'>('creators')
-
-  const topCreators: Performer[] = [
-    { id: 1, name: 'JoãoGamer', type: 'creator', value: 15420, change: 12.5, avatar: '🎮', category: 'Gaming' },
-    { id: 2, name: 'MariaStream', type: 'creator', value: 12850, change: 8.3, avatar: '🎵', category: 'Music' },
-    { id: 3, name: 'PedroFiveM', type: 'creator', value: 9870, change: 15.7, avatar: '🚗', category: 'Gaming' },
-    { id: 4, name: 'AnaArt', type: 'creator', value: 7650, change: 22.1, avatar: '🎨', category: 'Art' },
-    { id: 5, name: 'CarlosTech', type: 'creator', value: 6540, change: 5.2, avatar: '💻', category: 'Tech' }
-  ]
-
-  const topDonors: Performer[] = [
-    { id: 1, name: 'DoadorVIP', type: 'donor', value: 5000, change: 18.5, avatar: '👑', category: 'VIP' },
-    { id: 2, name: 'ApoiadorFiel', type: 'donor', value: 3200, change: 12.3, avatar: '💎', category: 'Gold' },
-    { id: 3, name: 'FãDedicado', type: 'donor', value: 2800, change: 8.7, avatar: '⭐', category: 'Silver' },
-    { id: 4, name: 'NovoApoiador', type: 'donor', value: 2100, change: 25.1, avatar: '🌱', category: 'Bronze' },
-    { id: 5, name: 'DoadorRegular', type: 'donor', value: 1800, change: 3.2, avatar: '💫', category: 'Regular' }
-  ]
 
   const getIcon = (rank: number) => {
     if (rank === 1) return <TrophyIcon className="w-5 h-5 text-yellow-400" />
@@ -45,7 +34,7 @@ export default function TopPerformers() {
     return `R$ ${performer.value.toLocaleString()}`
   }
 
-  const currentData = activeTab === 'creators' ? topCreators : topDonors
+  const currentData = activeTab === 'creators' ? creators : donors
 
   return (
     <div>
