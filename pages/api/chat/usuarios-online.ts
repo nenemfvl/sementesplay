@@ -1,28 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+// Simulação de usuários online em memória
+let onlineUsers: { [id: string]: number } = {}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Método não permitido' })
-  }
-
-  try {
-    // Por enquanto, retornar alguns usuários mockados
-    // Em uma implementação real, você rastrearia usuários online
-    const usuarios = await prisma.usuario.findMany({
-      select: {
-        id: true,
-        nome: true,
-        nivel: true
-      },
-      take: 10
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    // Recebe um ping do usuário para marcar como online
+    const { userId } = req.body
+    if (userId) {
+      onlineUsers[userId] = Date.now()
+    }
+    // Limpa usuários que não deram ping nos últimos 20 segundos
+    const now = Date.now()
+    Object.keys(onlineUsers).forEach(id => {
+      if (now - onlineUsers[id] > 20000) {
+        delete onlineUsers[id]
+      }
     })
-
-    return res.status(200).json({ usuarios })
-  } catch (error) {
-    console.error('Erro ao buscar usuários online:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+    return res.status(200).json({ success: true })
   }
+  if (req.method === 'GET') {
+    // Retorna lista de IDs online
+    return res.status(200).json({ online: Object.keys(onlineUsers) })
+  }
+  return res.status(405).json({ error: 'Método não permitido' })
 } 
