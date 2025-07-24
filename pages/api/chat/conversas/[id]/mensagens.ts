@@ -37,7 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       conversaId: String(id),
       remetenteId: user.id,
       texto: conteudo,
-      tipo: tipo || 'texto',
       dataEnvio: new Date()
     }
   })
