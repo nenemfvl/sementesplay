@@ -26,6 +26,7 @@
     "critters": "^0.0.23",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.0.0",
     "next-auth": "^4.24.0",
     "postcss": "^8.4.31",

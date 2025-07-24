@@ -1,12 +1,32 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
+
+const getUserFromToken = (req: NextApiRequest) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader) return null
+  const token = authHeader.split(' ')[1]
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as { id: string }
+  } catch {
+    return null
+  }
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
+      const user = getUserFromToken(req)
+      if (!user) {
+        return res.status(401).json({ error: 'Usuário não autenticado' })
+      }
       const { usuarioId } = req.query
+
+      if (!usuarioId || usuarioId !== user.id) {
+        return res.status(403).json({ error: 'Acesso negado' })
+      }
 
       if (!usuarioId) {
         return res.status(400).json({ error: 'ID do usuário é obrigatório' })
@@ -68,10 +88,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
+      const user = getUserFromToken(req)
+      if (!user) {
+        return res.status(401).json({ error: 'Usuário não autenticado' })
+      }
       const { usuarioId, amigoId } = req.body
 
       if (!usuarioId || !amigoId) {
         return res.status(400).json({ error: 'IDs do usuário e amigo são obrigatórios' })
+      }
+
+      if (usuarioId !== user.id) {
+        return res.status(403).json({ error: 'Acesso negado' })
       }
 
       if (usuarioId === amigoId) {

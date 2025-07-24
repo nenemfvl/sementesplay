@@ -32,7 +32,7 @@ export default function Login() {
       if (response.ok) {
         // Salvar usuário na sessão (garante que sempre salva algo)
         if (data.usuario) {
-          auth.setUser(data.usuario)
+          auth.setUser(data.usuario, data.token)
           console.log('Usuário salvo no localStorage:', data.usuario)
         } else {
           auth.setUser(data)

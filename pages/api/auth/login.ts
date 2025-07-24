@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -38,9 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Retornar usuário sem senha
     const { senha: _, ...usuarioSemSenha } = usuario
 
+    // Gerar JWT
+    const token = jwt.sign(
+      { id: usuarioSemSenha.id, email: usuarioSemSenha.email, tipo: usuarioSemSenha.tipo },
+      process.env.JWT_SECRET || 'sementesplay_secret',
+      { expiresIn: '24h' }
+    )
+
     res.status(200).json({
       message: 'Login realizado com sucesso',
-      usuario: usuarioSemSenha
+      usuario: usuarioSemSenha,
+      token
     })
 
   } catch (error) {

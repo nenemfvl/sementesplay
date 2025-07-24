@@ -60,10 +60,17 @@ export default function Amigos() {
 
   const loadDados = async () => {
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const [amigosResponse, solicitacoesResponse, sugeridosResponse] = await Promise.all([
-        fetch(`/api/amigos?usuarioId=${user?.id}`),
-        fetch(`/api/amigos/solicitacoes?usuarioId=${user?.id}`),
-        fetch(`/api/amigos/sugeridos?usuarioId=${user?.id}`)
+        fetch(`/api/amigos?usuarioId=${user?.id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }),
+        fetch(`/api/amigos/solicitacoes?usuarioId=${user?.id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }),
+        fetch(`/api/amigos/sugeridos?usuarioId=${user?.id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        })
       ])
 
       if (amigosResponse.ok) {
@@ -93,10 +100,12 @@ export default function Amigos() {
       return;
     }
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const response = await fetch('/api/amigos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           usuarioId: user.id,

@@ -25,9 +25,12 @@ const defaultUser: User = {
 
 export const auth = {
   // Salvar usuário na sessão
-  setUser: (user: User) => {
+  setUser: (user: User, token?: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('sementesplay_user', JSON.stringify(user))
+      if (token) {
+        localStorage.setItem('sementesplay_token', token)
+      }
     }
   },
 
