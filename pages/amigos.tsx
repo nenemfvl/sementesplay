@@ -133,8 +133,10 @@ export default function Amigos() {
 
   const aceitarSolicitacao = async (solicitacaoId: string) => {
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/aceitar`, {
-        method: 'POST'
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       })
 
       if (response.ok) {
@@ -151,8 +153,10 @@ export default function Amigos() {
 
   const rejeitarSolicitacao = async (solicitacaoId: string) => {
     try {
+      const token = localStorage.getItem('sementesplay_token')
       const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/rejeitar`, {
-        method: 'POST'
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       })
 
       if (response.ok) {
