@@ -720,7 +720,14 @@ export default function Parceiros() {
                 <h3 className="text-xl font-semibold text-sss-accent mb-4">Interessado em ser Parceiro?</h3>
                 <p className="text-gray-300 mb-4">Preencha o formulário abaixo e nossa equipe entrará em contato em até 24 horas.</p>
                 <button 
-                  onClick={() => setShowModal(true)}
+                  onClick={() => {
+                    const user = auth.getUser();
+                    if (!user) {
+                      window.location.href = '/login';
+                      return;
+                    }
+                    setShowModal(true);
+                  }}
                   className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block"
                 >
                   Solicitar Cadastro
