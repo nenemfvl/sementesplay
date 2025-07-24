@@ -48,6 +48,7 @@ export default function Chat() {
   const [gravando, setGravando] = useState(false)
   const mensagensRef = useRef<HTMLDivElement>(null)
   const wsRef = useRef<WebSocket | null>(null)
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([])
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -79,6 +80,33 @@ export default function Chat() {
       mensagensRef.current.scrollTop = mensagensRef.current.scrollHeight
     }
   }, [mensagens])
+
+  // Ping para marcar usuário como online
+  useEffect(() => {
+    if (!user) return;
+    const ping = () => {
+      fetch('/api/chat/usuarios-online', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id })
+      })
+    }
+    ping();
+    const interval = setInterval(ping, 10000) // a cada 10s
+    return () => clearInterval(interval)
+  }, [user])
+
+  // Buscar lista de usuários online periodicamente
+  useEffect(() => {
+    const fetchOnline = async () => {
+      const res = await fetch('/api/chat/usuarios-online')
+      const data = await res.json()
+      setOnlineUsers(data.online || [])
+    }
+    fetchOnline()
+    const interval = setInterval(fetchOnline, 5000) // a cada 5s
+    return () => clearInterval(interval)
+  }, [])
 
   const setupWebSocket = () => {
     // Simular WebSocket para demonstração
