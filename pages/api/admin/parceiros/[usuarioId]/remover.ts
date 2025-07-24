@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { getUserFromToken } from '../../_utils/auth-backend';
+import { getUserFromToken } from '../../utils/auth-backend';
 
 const prisma = new PrismaClient();
 
