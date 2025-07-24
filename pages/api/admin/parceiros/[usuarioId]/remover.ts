@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { auth } from '../../../../lib/auth';
+import { getUserFromToken } from '../../../../lib/auth-backend';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const user = auth.getUser();
+    const user = getUserFromToken(req);
     if (!user || Number(user.nivel) < 5) {
       return res.status(403).json({ error: 'Acesso negado' });
     }
