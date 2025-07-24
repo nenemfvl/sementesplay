@@ -25,6 +25,7 @@ import { auth, User } from '../lib/auth'
 import PainelCriador from './painel-criador';
 import PainelParceiro from './painel-parceiro';
 import Navbar from '../components/Navbar';
+import Notificacoes from '../components/Notificacoes'
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -34,6 +35,7 @@ export default function Dashboard() {
   const [topCreators, setTopCreators] = useState<any[]>([])
   const [loadingData, setLoadingData] = useState(true)
   const [criadores, setCriadores] = useState<any[]>([])
+  const [cashbackData, setCashbackData] = useState<any>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -63,6 +65,15 @@ export default function Dashboard() {
       setCriadores([])
       setLoadingData(false)
     })
+  }, [user])
+
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/usuario/cashback?usuarioId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setCashbackData(data))
+        .catch(() => setCashbackData(null))
+    }
   }, [user])
 
   if (loading || loadingData) {
@@ -105,6 +116,7 @@ export default function Dashboard() {
 
       <div className="min-h-screen bg-sss-dark">
         <Navbar />
+        {user && <Notificacoes usuarioId={user.id} />}
         {/* Conteúdo centralizado zerado */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Stats Cards */}
@@ -440,28 +452,76 @@ export default function Dashboard() {
 
               {activeTab === 'cashback' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-sss-white mb-4">Cashbacks Resgatados</h3>
-                  <div className="space-y-3">
-                    {stats.historicoCashback && stats.historicoCashback.length === 0 ? (
-                      <div className="text-gray-400 text-sm">Nenhum cashback resgatado.</div>
-                    ) : stats.historicoCashback && stats.historicoCashback.map((cashback: any, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
-                            <GiftIcon className="w-5 h-5 text-green-500" />
-                          </div>
-                          <div>
-                            <p className="text-sss-white font-medium">{cashback.codigo}</p>
-                            <p className="text-sm text-gray-400">{cashback.data}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sss-white font-semibold">R$ {cashback.valor}</p>
-                          <p className="text-sm text-gray-400">Cashback</p>
+                  <div className="bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded mb-4 text-blue-200">
+                    <strong>Como funciona:</strong><br />
+                    • Use o cupom <b>sementesplay20</b> ao comprar em sites parceiros.<br />
+                    • Após a compra, aguarde o parceiro repassar 20% do valor para liberar seu cashback.<br />
+                    • Você recebe 10% em sementes, 2% vai para o fundo de sementes (distribuído a cada ciclo).<br />
+                    • Veja aqui o status das suas compras e seus ganhos do fundo.<br />
+                    • Dúvidas? Fale com o suporte.
+                  </div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-4">Cashback e Fundo de Sementes</h3>
+                  {!cashbackData ? (
+                    <div className="text-gray-400 text-sm">Carregando cashback...</div>
+                  ) : (
+                    <>
+                      <div className="mb-6">
+                        <h4 className="text-md font-bold text-sss-accent mb-2">Compras com Cupom sementesplay20</h4>
+                        <div className="space-y-3">
+                          {cashbackData.compras.length === 0 ? (
+                            <div className="text-gray-400 text-sm">Nenhuma compra registrada com o cupom.</div>
+                          ) : cashbackData.compras.map((compra: any) => (
+                            <div key={compra.id} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                                  <GiftIcon className="w-5 h-5 text-green-500" />
+                                </div>
+                                <div>
+                                  <p className="text-sss-white font-medium">R$ {compra.valorCompra.toFixed(2)}</p>
+                                  <p className="text-sm text-gray-400">{new Date(compra.dataCompra).toLocaleDateString('pt-BR')}</p>
+                                  <p className="text-xs text-gray-400">Status: {compra.status.replace('_', ' ')}</p>
+                                  {compra.comprovanteUrl && (
+                                    <a href={compra.comprovanteUrl} target="_blank" rel="noopener noreferrer" className="text-sss-accent underline text-xs">Ver comprovante</a>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sss-white font-semibold">{compra.status === 'cashback_liberado' ? '+Sementes' : ''}</p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      <div className="mb-6">
+                        <h4 className="text-md font-bold text-sss-accent mb-2">Ganhos do Fundo de Sementes</h4>
+                        <div className="space-y-3">
+                          {cashbackData.ganhosFundo.length === 0 ? (
+                            <div className="text-gray-400 text-sm">Nenhum ganho de fundo registrado.</div>
+                          ) : cashbackData.ganhosFundo.map((ganho: any) => (
+                            <div key={ganho.id} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                  <GiftIcon className="w-5 h-5 text-blue-500" />
+                                </div>
+                                <div>
+                                  <p className="text-sss-white font-medium">+{ganho.valor.toFixed(2)} Sementes</p>
+                                  <p className="text-sm text-gray-400">{new Date(ganho.data).toLocaleDateString('pt-BR')}</p>
+                                  <p className="text-xs text-gray-400">Ciclo do Fundo</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mb-6">
+                        <h4 className="text-md font-bold text-sss-accent mb-2">Totais Recebidos</h4>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sss-white">Total de compras: {cashbackData.compras.length}</span>
+                          <span className="text-sss-white">Total de sementes do fundo: {cashbackData.ganhosFundo.reduce((acc: number, g: any) => acc + g.valor, 0).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
               {activeTab === 'painel-criador' && (

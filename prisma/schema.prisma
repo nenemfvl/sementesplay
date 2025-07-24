@@ -49,6 +49,8 @@ model Usuario {
   recadosRecebidos Recado[] @relation("DestinatarioRecado")
   enquetes       Enquete[]
   votosEnquete   VotoEnquete[]
+  comprasParceiro CompraParceiro[]
+  repasses       RepasseParceiro[]
 
   @@map("usuarios")
 }
@@ -238,10 +240,13 @@ model Parceiro {
   comissaoMensal  Float
   totalVendas     Float    @default(0)
   codigosGerados  Int      @default(0)
+  saldoDevedor    Float    @default(0) // NOVO: saldo devedor do parceiro
 
   // Relacionamentos
   usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   codigosCashback CodigoCashback[]
+  comprasParceiro CompraParceiro[]
+  repasses        RepasseParceiro[]
 
   @@map("parceiros")
 }
@@ -517,4 +522,68 @@ model Recado {
   destinatario  Usuario  @relation("DestinatarioRecado", fields: [destinatarioId], references: [id], onDelete: Cascade)
 
   @@map("recados")
+} 
+
+// NOVO: Registro de compras feitas com o cupom sementesplay20
+model CompraParceiro {
+  id            String   @id @default(cuid())
+  usuarioId     String
+  parceiroId    String
+  valorCompra   Float
+  dataCompra    DateTime @default(now())
+  comprovanteUrl String?
+  status        String   @default("aguardando_repasse") // aguardando_repasse, repasse_confirmado, cashback_liberado, rejeitada
+  cupomUsado    String   // sempre 'sementesplay20'
+
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  parceiro      Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  repasse       RepasseParceiro?
+
+  @@map("compras_parceiro")
+}
+
+// NOVO: Registro de repasses feitos pelo parceiro
+model RepasseParceiro {
+  id            String   @id @default(cuid())
+  parceiroId    String
+  compraId      String
+  valor         Float
+  dataRepasse   DateTime @default(now())
+  comprovanteUrl String?
+  status        String   @default("pendente") // pendente, confirmado, rejeitado
+
+  parceiro      Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  compra        CompraParceiro @relation(fields: [compraId], references: [id], onDelete: Cascade)
+
+  @@map("repasses_parceiro")
+}
+
+// NOVO: Fundo de sementes por ciclo
+model FundoSementes {
+  id          String   @id @default(cuid())
+  ciclo       Int
+  valorTotal  Float
+  dataInicio  DateTime
+  dataFim     DateTime
+  distribuido Boolean  @default(false)
+  distribuicoes DistribuicaoFundo[]
+
+  @@map("fundo_sementes")
+}
+
+// NOVO: Distribuição do fundo de sementes
+model DistribuicaoFundo {
+  id         String   @id @default(cuid())
+  fundoId    String
+  usuarioId  String?
+  criadorId  String?
+  valor      Float
+  tipo       String   // 'criador' ou 'usuario'
+  data       DateTime @default(now())
+
+  fundo      FundoSementes @relation(fields: [fundoId], references: [id], onDelete: Cascade)
+  usuario    Usuario?      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  criador    Criador?      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+
+  @@map("distribuicoes_fundo")
 } 

@@ -17,6 +17,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar'
+import Notificacoes from '../components/Notificacoes'
 
 interface Parceiro {
   id: string
@@ -70,6 +71,9 @@ export default function PainelParceiro() {
   const [salvando, setSalvando] = useState(false)
   const [copiado, setCopiado] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [painelDados, setPainelDados] = useState<any>(null)
+  const [abaPainel, setAbaPainel] = useState('dashboard')
+  const [uploading, setUploading] = useState<string | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -90,6 +94,7 @@ export default function PainelParceiro() {
   useEffect(() => {
     if (user) {
       loadParceiroData()
+      loadPainelDados()
     }
   }, [user])
 
@@ -133,6 +138,18 @@ export default function PainelParceiro() {
       console.error('Erro ao carregar dados do parceiro:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadPainelDados = async () => {
+    try {
+      const res = await fetch(`/api/parceiros/painel?usuarioId=${user?.id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setPainelDados(data)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar painel do parceiro:', error)
     }
   }
 
@@ -182,11 +199,40 @@ export default function PainelParceiro() {
     }
   }
 
+  const enviarComprovanteRepasse = async (compraId: string, valor: number, file: File) => {
+    setUploading(compraId)
+    // Simulação de upload, idealmente usar um serviço de storage
+    const comprovanteUrl = URL.createObjectURL(file)
+    try {
+      const res = await fetch('/api/repasses-parceiro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          parceiroId: parceiro?.id,
+          compraId,
+          valor,
+          comprovanteUrl
+        })
+      })
+      if (res.ok) {
+        alert('Comprovante enviado com sucesso! Aguarde aprovação.')
+        loadPainelDados()
+      } else {
+        alert('Erro ao enviar comprovante')
+      }
+    } catch (error) {
+      alert('Erro ao enviar comprovante')
+    } finally {
+      setUploading(null)
+    }
+  }
+
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: ChartBarIcon },
     { id: 'codigos', label: 'Códigos Cashback', icon: CreditCardIcon },
     { id: 'transacoes', label: 'Transações', icon: DocumentTextIcon },
     { id: 'relatorios', label: 'Relatórios', icon: ArrowTrendingUpIcon },
+    { id: 'cashback', label: 'Cashback & Repasse', icon: CurrencyDollarIcon },
     { id: 'configuracoes', label: 'Configurações', icon: CogIcon }
   ]
 
@@ -215,6 +261,7 @@ export default function PainelParceiro() {
 
       <div className="min-h-screen bg-sss-dark">
         <Navbar />
+        {user && <Notificacoes usuarioId={user.id} />}
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
@@ -580,6 +627,120 @@ export default function PainelParceiro() {
                         </span>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'cashback' && painelDados && (
+              <div className="space-y-6">
+                <div className="bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded mb-4 text-blue-200">
+                  <strong>Instruções:</strong><br />
+                  • O cupom obrigatório para compras é <b>sementesplay20</b>.<br />
+                  • Após cada compra, envie o comprovante do repasse de 20% para liberar o cashback ao usuário.<br />
+                  • O comprovante deve ser imagem ou PDF, até 5MB.<br />
+                  • O saldo devedor é atualizado automaticamente após aprovação do repasse.<br />
+                  • Dúvidas? Entre em contato com o suporte.
+                </div>
+                <div className="bg-sss-medium rounded-lg border border-sss-light p-6">
+                  <h2 className="text-xl font-bold text-sss-white mb-4">Cashback & Repasse</h2>
+                  <div className="mb-6">
+                    <span className="text-gray-400">Saldo Devedor:</span>
+                    <span className="text-2xl font-bold text-red-400 ml-2">R$ {painelDados.saldoDevedor?.toFixed(2) || '0,00'}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-2">Compras com Cupom sementesplay20</h3>
+                  <div className="overflow-x-auto mb-6">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-sss-light">
+                          <th className="text-left p-2 text-gray-400 font-medium">Usuário</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Valor</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Data</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Status</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Comprovante</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {painelDados.compras.map((compra: any) => (
+                          <tr key={compra.id} className="border-b border-sss-light/50">
+                            <td className="p-2">{compra.usuarioId}</td>
+                            <td className="p-2">R$ {compra.valorCompra.toFixed(2)}</td>
+                            <td className="p-2">{new Date(compra.dataCompra).toLocaleDateString('pt-BR')}</td>
+                            <td className="p-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                compra.status === 'aguardando_repasse' ? 'bg-yellow-500/20 text-yellow-400' :
+                                compra.status === 'repasse_confirmado' ? 'bg-blue-500/20 text-blue-400' :
+                                compra.status === 'cashback_liberado' ? 'bg-green-500/20 text-green-400' :
+                                'bg-red-500/20 text-red-400'
+                              }`}>
+                                {compra.status.replace('_', ' ')}
+                              </span>
+                            </td>
+                            <td className="p-2">
+                              {compra.status === 'aguardando_repasse' ? (
+                                <label className="flex items-center space-x-2 cursor-pointer">
+                                  <input
+                                    type="file"
+                                    accept="image/*,application/pdf"
+                                    style={{ display: 'none' }}
+                                    disabled={uploading === compra.id}
+                                    onChange={e => {
+                                      if (e.target.files && e.target.files[0]) {
+                                        enviarComprovanteRepasse(compra.id, compra.valorCompra, e.target.files[0])
+                                      }
+                                    }}
+                                  />
+                                  <span className="bg-sss-accent text-white px-3 py-1 rounded-lg font-semibold hover:bg-green-700 transition cursor-pointer">
+                                    {uploading === compra.id ? 'Enviando...' : 'Enviar Comprovante'}
+                                  </span>
+                                </label>
+                              ) : compra.comprovanteUrl ? (
+                                <a href={compra.comprovanteUrl} target="_blank" rel="noopener noreferrer" className="text-sss-accent underline">Ver</a>
+                              ) : (
+                                <span className="text-gray-400">-</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-2">Histórico de Repasses</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-sss-light">
+                          <th className="text-left p-2 text-gray-400 font-medium">Valor</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Data</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Status</th>
+                          <th className="text-left p-2 text-gray-400 font-medium">Comprovante</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {painelDados.repasses.map((repasse: any) => (
+                          <tr key={repasse.id} className="border-b border-sss-light/50">
+                            <td className="p-2">R$ {repasse.valor.toFixed(2)}</td>
+                            <td className="p-2">{new Date(repasse.dataRepasse).toLocaleDateString('pt-BR')}</td>
+                            <td className="p-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                repasse.status === 'pendente' ? 'bg-yellow-500/20 text-yellow-400' :
+                                repasse.status === 'confirmado' ? 'bg-green-500/20 text-green-400' :
+                                'bg-red-500/20 text-red-400'
+                              }`}>
+                                {repasse.status}
+                              </span>
+                            </td>
+                            <td className="p-2">
+                              {repasse.comprovanteUrl ? (
+                                <a href={repasse.comprovanteUrl} target="_blank" rel="noopener noreferrer" className="text-sss-accent underline">Ver</a>
+                              ) : (
+                                <span className="text-gray-400">-</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
