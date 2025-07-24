@@ -67,17 +67,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
       // Registra manutenção (pode ser um usuário do sistema ou só registro interno)
       // Registra fundo de sementes
-      await tx.fundoSementes.upsert({
-        where: { distribuido: false },
-        update: { valorTotal: { increment: pctFundo } },
-        create: {
-          ciclo: 1, // lógica de ciclo a ser implementada
-          valorTotal: pctFundo,
-          dataInicio: new Date(),
-          dataFim: new Date(),
-          distribuido: false
-        }
-      })
+      const fundoExistente = await tx.fundoSementes.findFirst({
+        where: { distribuido: false }
+      });
+      if (fundoExistente) {
+        await tx.fundoSementes.update({
+          where: { id: fundoExistente.id },
+          data: { valorTotal: { increment: pctFundo } }
+        });
+      } else {
+        await tx.fundoSementes.create({
+          data: {
+            ciclo: 1, // lógica de ciclo a ser implementada
+            valorTotal: pctFundo,
+            dataInicio: new Date(),
+            dataFim: new Date(),
+            distribuido: false
+          }
+        });
+      }
       // Registra histórico de sementes para usuário e parceiro
       await tx.semente.createMany({
         data: [
