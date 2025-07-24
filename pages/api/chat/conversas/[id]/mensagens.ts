@@ -16,6 +16,32 @@ const getUserFromToken = (req: NextApiRequest) => {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    const { id } = req.query
+    if (!id) {
+      return res.status(400).json({ error: 'ID da conversa é obrigatório' })
+    }
+
+    const mensagens = await prisma.mensagem.findMany({
+      where: { conversaId: String(id) },
+      include: {
+        remetente: { select: { id: true, nome: true } }
+      },
+      orderBy: { dataEnvio: 'asc' }
+    })
+
+    const mensagensFormatadas = mensagens.map(mensagem => ({
+      id: mensagem.id,
+      remetenteId: mensagem.remetenteId,
+      remetenteNome: mensagem.remetente.nome,
+      conteudo: mensagem.texto,
+      timestamp: mensagem.dataEnvio,
+      lida: mensagem.lida
+    }))
+
+    return res.status(200).json({ mensagens: mensagensFormatadas })
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
