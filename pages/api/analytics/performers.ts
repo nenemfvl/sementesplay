@@ -77,7 +77,7 @@ export default async function handler(
         type: 'creator',
         value: c._sum.quantidade || 0,
         change: 0, // Pode calcular variação se quiser
-        avatar: criador?.usuario.avatar || '🎮',
+        avatar: '🎮',
         category: criador?.categoria || '',
         rank: i + 1
       }
@@ -103,7 +103,7 @@ export default async function handler(
         type: 'donor',
         value: d._sum.quantidade || 0,
         change: 0, // Pode calcular variação se quiser
-        avatar: doador?.avatar || '👑',
+        avatar: '👑',
         category: '',
         rank: i + 1
       }
