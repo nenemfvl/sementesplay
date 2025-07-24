@@ -11,46 +11,47 @@ datasource db {
 }
 
 model Usuario {
-  id             String   @id @default(cuid())
-  nome           String
-  email          String   @unique
-  senha          String
-  tipo           String   @default("comum") // comum, criador, parceiro
-  sementes       Int      @default(0)
-  nivel          String   @default("comum") // comum, parceiro, supremo
-  pontuacao      Int      @default(0)
-  dataCriacao    DateTime @default(now())
+  id              String   @id @default(cuid())
+  nome            String
+  email           String   @unique
+  senha           String
+  tipo            String   @default("comum") // comum, criador, parceiro
+  sementes        Int      @default(0)
+  nivel           String   @default("comum") // comum, parceiro, supremo
+  pontuacao       Int      @default(0)
+  dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
 
   // Relacionamentos
-  criador        Criador?
-  parceiro       Parceiro?
-  sementesHistorico Semente[]
-  doacoesFeitas  Doacao[] @relation("Doador")
-  transacoes     Transacao[]
-  notificacoes   Notificacao[]
-  candidaturas   CandidaturaCriador[]
+  criador              Criador?
+  parceiro             Parceiro?
+  sementesHistorico    Semente[]
+  doacoesFeitas        Doacao[]              @relation("Doador")
+  transacoes           Transacao[]
+  notificacoes         Notificacao[]
+  candidaturas         CandidaturaCriador[]
   candidaturasParceiro CandidaturaParceiro[]
-  logsAuditoria  LogAuditoria[]
-  carteira       CarteiraDigital?
-  dadosBancarios DadosBancarios?
-  saques         Saque[]
-  pagamentos     Pagamento[]
-  tokensRecuperacao TokenRecuperacao[]
-  missaoUsuarios MissaoUsuario[]
-  conquistas     ConquistaUsuario[]
-  comentarios    Comentario[]
-  amizades       Amizade[] @relation("UsuarioAmizade")
-  amizadesRecebidas Amizade[] @relation("AmigoUsuario")
-  conversas1     Conversa[] @relation("Usuario1Conversa")
-  conversas2     Conversa[] @relation("Usuario2Conversa")
-  mensagens      Mensagem[]
-  recadosEnviados Recado[] @relation("RemetenteRecado")
-  recadosRecebidos Recado[] @relation("DestinatarioRecado")
-  enquetes       Enquete[]
-  votosEnquete   VotoEnquete[]
-  comprasParceiro CompraParceiro[]
-  repasses       RepasseParceiro[]
+  logsAuditoria        LogAuditoria[]
+  carteira             CarteiraDigital?
+  dadosBancarios       DadosBancarios?
+  saques               Saque[]
+  pagamentos           Pagamento[]
+  tokensRecuperacao    TokenRecuperacao[]
+  missaoUsuarios       MissaoUsuario[]
+  conquistas           ConquistaUsuario[]
+  comentarios          Comentario[]
+  amizades             Amizade[]             @relation("UsuarioAmizade")
+  amizadesRecebidas    Amizade[]             @relation("AmigoUsuario")
+  conversas1           Conversa[]            @relation("Usuario1Conversa")
+  conversas2           Conversa[]            @relation("Usuario2Conversa")
+  mensagens            Mensagem[]
+  recadosEnviados      Recado[]              @relation("RemetenteRecado")
+  recadosRecebidos     Recado[]              @relation("DestinatarioRecado")
+  enquetes             Enquete[]
+  votosEnquete         VotoEnquete[]
+  comprasParceiro      CompraParceiro[]
+  repasses             RepasseParceiro[]
+  DistribuicaoFundo    DistribuicaoFundo[]
 
   @@map("usuarios")
 }
@@ -66,107 +67,108 @@ model CarteiraDigital {
   dataAtualizacao DateTime @updatedAt
 
   // Relacionamentos
-  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  movimentacoes   MovimentacaoCarteira[]
+  usuario       Usuario                @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  movimentacoes MovimentacaoCarteira[]
 
   @@map("carteiras_digitais")
 }
 
 model MovimentacaoCarteira {
-  id              String   @id @default(cuid())
-  carteiraId      String
-  tipo            String   // credito, debito, saque, pagamento
-  valor           Float
-  saldoAnterior   Float
-  saldoPosterior  Float
-  descricao       String
-  referencia      String?  // ID da transação relacionada
-  status          String   @default("processado") // processado, pendente, cancelado
-  data            DateTime @default(now())
+  id             String   @id @default(cuid())
+  carteiraId     String
+  tipo           String // credito, debito, saque, pagamento
+  valor          Float
+  saldoAnterior  Float
+  saldoPosterior Float
+  descricao      String
+  referencia     String? // ID da transação relacionada
+  status         String   @default("processado") // processado, pendente, cancelado
+  data           DateTime @default(now())
 
   // Relacionamentos
-  carteira        CarteiraDigital @relation(fields: [carteiraId], references: [id], onDelete: Cascade)
+  carteira CarteiraDigital @relation(fields: [carteiraId], references: [id], onDelete: Cascade)
 
   @@map("movimentacoes_carteira")
 }
 
 model DadosBancarios {
-  id              String   @id @default(cuid())
-  usuarioId       String   @unique
+  id              String    @id @default(cuid())
+  usuarioId       String    @unique
   banco           String
   agencia         String
   conta           String
-  tipoConta       String   // corrente, poupanca
+  tipoConta       String // corrente, poupanca
   cpfCnpj         String
   nomeTitular     String
-  validado        Boolean  @default(false)
+  validado        Boolean   @default(false)
   dataValidacao   DateTime?
-  dataCriacao     DateTime @default(now())
-  dataAtualizacao DateTime @updatedAt
+  dataCriacao     DateTime  @default(now())
+  dataAtualizacao DateTime  @updatedAt
 
   // Relacionamentos
-  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("dados_bancarios")
 }
 
 model Saque {
-  id              String   @id @default(cuid())
-  usuarioId       String
-  valor           Float
-  taxa            Float    @default(0)
-  valorLiquido    Float
-  dadosBancarios  String   // JSON com dados bancários
-  status          String   @default("pendente") // pendente, processando, aprovado, rejeitado, concluido
-  motivoRejeicao  String?
-  dataSolicitacao DateTime @default(now())
+  id                String    @id @default(cuid())
+  usuarioId         String
+  valor             Float
+  taxa              Float     @default(0)
+  valorLiquido      Float
+  dadosBancarios    String // JSON com dados bancários
+  status            String    @default("pendente") // pendente, processando, aprovado, rejeitado, concluido
+  motivoRejeicao    String?
+  dataSolicitacao   DateTime  @default(now())
   dataProcessamento DateTime?
-  dataConclusao   DateTime?
-  comprovante     String?  // URL do comprovante
+  dataConclusao     DateTime?
+  comprovante       String? // URL do comprovante
 
   // Relacionamentos
-  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("saques")
 }
 
 model Pagamento {
-  id              String   @id @default(cuid())
-  usuarioId       String
-  tipo            String   // pix, cartao_credito, cartao_debito
-  valor           Float
-  sementesGeradas Int
-  gateway         String   // mercadopago, pagseguro, etc
-  gatewayId       String?  // ID da transação no gateway
-  status          String   @default("pendente") // pendente, aprovado, rejeitado, cancelado
-  dadosPagamento  String   // JSON com dados do pagamento
-  dataPagamento   DateTime @default(now())
+  id                String    @id @default(cuid())
+  usuarioId         String
+  tipo              String // pix, cartao_credito, cartao_debito
+  valor             Float
+  sementesGeradas   Int
+  gateway           String // mercadopago, pagseguro, etc
+  gatewayId         String? // ID da transação no gateway
+  status            String    @default("pendente") // pendente, aprovado, rejeitado, cancelado
+  dadosPagamento    String // JSON com dados do pagamento
+  dataPagamento     DateTime  @default(now())
   dataProcessamento DateTime?
 
   // Relacionamentos
-  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("pagamentos")
 }
 
 model Criador {
-  id            String   @id @default(cuid())
-  usuarioId     String   @unique
-  nome          String
-  bio           String
-  categoria     String
-  redesSociais  String   // JSON como string
-  portfolio     String   // JSON como string
-  nivel         String   @default("comum")
-  sementes      Int      @default(0)
-  apoiadores    Int      @default(0)
-  doacoes       Int      @default(0)
-  dataCriacao   DateTime @default(now())
+  id           String   @id @default(cuid())
+  usuarioId    String   @unique
+  nome         String
+  bio          String
+  categoria    String
+  redesSociais String // JSON como string
+  portfolio    String // JSON como string
+  nivel        String   @default("comum")
+  sementes     Int      @default(0)
+  apoiadores   Int      @default(0)
+  doacoes      Int      @default(0)
+  dataCriacao  DateTime @default(now())
 
   // Relacionamentos
-  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  doacoesRecebidas Doacao[] @relation("Criador")
-  conteudos     Conteudo[]
+  usuario          Usuario             @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  doacoesRecebidas Doacao[]            @relation("Criador")
+  conteudos        Conteudo[]
+  distribuicoes    DistribuicaoFundo[]
 
   @@map("criadores")
 }
@@ -178,8 +180,8 @@ model CandidaturaCriador {
   email           String
   bio             String
   categoria       String
-  redesSociais    String    // JSON como string
-  portfolio       String    // JSON como string
+  redesSociais    String // JSON como string
+  portfolio       String // JSON como string
   experiencia     String
   motivacao       String
   metas           String
@@ -190,7 +192,7 @@ model CandidaturaCriador {
   observacoes     String?
 
   // Relacionamentos
-  usuario         Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("candidaturas_criador")
 }
@@ -212,38 +214,38 @@ model CandidaturaParceiro {
   observacoes     String?
 
   // Relacionamentos
-  usuario         Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("candidaturas_parceiro")
 }
 
 model LogAuditoria {
-  id         String   @id @default(cuid())
-  usuarioId  String
-  acao       String
-  detalhes   String
-  ip         String?
-  userAgent  String?
-  timestamp  DateTime @default(now())
-  nivel      String   @default("info") // info, warning, error, success
+  id        String   @id @default(cuid())
+  usuarioId String
+  acao      String
+  detalhes  String
+  ip        String?
+  userAgent String?
+  timestamp DateTime @default(now())
+  nivel     String   @default("info") // info, warning, error, success
 
   // Relacionamentos
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("logs_auditoria")
 }
 
 model Parceiro {
-  id              String   @id @default(cuid())
-  usuarioId       String   @unique
-  nomeCidade      String
-  comissaoMensal  Float
-  totalVendas     Float    @default(0)
-  codigosGerados  Int      @default(0)
-  saldoDevedor    Float    @default(0) // NOVO: saldo devedor do parceiro
+  id             String @id @default(cuid())
+  usuarioId      String @unique
+  nomeCidade     String
+  comissaoMensal Float
+  totalVendas    Float  @default(0)
+  codigosGerados Int    @default(0)
+  saldoDevedor   Float  @default(0) // NOVO: saldo devedor do parceiro
 
   // Relacionamentos
-  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario         Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   codigosCashback CodigoCashback[]
   comprasParceiro CompraParceiro[]
   repasses        RepasseParceiro[]
@@ -255,12 +257,12 @@ model Semente {
   id         String   @id @default(cuid())
   usuarioId  String
   quantidade Int
-  tipo       String   // gerada, doada, resgatada
+  tipo       String // gerada, doada, resgatada
   data       DateTime @default(now())
   descricao  String
 
   // Relacionamentos
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("sementes")
 }
@@ -274,8 +276,8 @@ model Doacao {
   mensagem   String?
 
   // Relacionamentos
-  doador     Usuario  @relation("Doador", fields: [doadorId], references: [id], onDelete: Cascade)
-  criador    Criador  @relation("Criador", fields: [criadorId], references: [id], onDelete: Cascade)
+  doador  Usuario @relation("Doador", fields: [doadorId], references: [id], onDelete: Cascade)
+  criador Criador @relation("Criador", fields: [criadorId], references: [id], onDelete: Cascade)
 
   @@map("doacoes")
 }
@@ -290,22 +292,22 @@ model Transacao {
   data           DateTime @default(now())
 
   // Relacionamentos
-  usuario        Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("transacoes")
 }
 
 model CodigoCashback {
-  id            String    @id @default(cuid())
-  parceiroId    String
-  codigo        String    @unique
-  valor         Float
-  usado         Boolean   @default(false)
-  dataGeracao   DateTime  @default(now())
-  dataUso       DateTime?
+  id          String    @id @default(cuid())
+  parceiroId  String
+  codigo      String    @unique
+  valor       Float
+  usado       Boolean   @default(false)
+  dataGeracao DateTime  @default(now())
+  dataUso     DateTime?
 
   // Relacionamentos
-  parceiro      Parceiro  @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  parceiro Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
 
   @@map("codigos_cashback")
 }
@@ -313,49 +315,49 @@ model CodigoCashback {
 model Notificacao {
   id        String   @id @default(cuid())
   usuarioId String
-  tipo      String   // doacao, ranking, cashback, sistema, candidatura_aprovada, candidatura_rejeitada, pagamento, saque
+  tipo      String // doacao, ranking, cashback, sistema, candidatura_aprovada, candidatura_rejeitada, pagamento, saque
   titulo    String
   mensagem  String
   lida      Boolean  @default(false)
   data      DateTime @default(now())
 
   // Relacionamentos
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("notificacoes")
 }
 
 model TokenRecuperacao {
-  id        String   @id @default(cuid())
-  usuarioId String
-  token     String   @unique
-  usado     Boolean  @default(false)
-  expiraEm  DateTime
+  id          String   @id @default(cuid())
+  usuarioId   String
+  token       String   @unique
+  usado       Boolean  @default(false)
+  expiraEm    DateTime
   dataCriacao DateTime @default(now())
 
   // Relacionamentos
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("tokens_recuperacao")
 }
 
 model Conteudo {
-  id          String   @id @default(cuid())
-  criadorId   String
-  titulo      String
-  url         String
-  tipo        String   // video, live, post, short, etc.
-  categoria   String
-  descricao   String?
-  preview     String?  // url da imagem de preview
-  fixado      Boolean  @default(false)
-  dataPublicacao DateTime @default(now())
-  plataforma  String   // youtube, twitch, instagram, tiktok, etc.
-  visualizacoes Int    @default(0)
-  curtidas    Int      @default(0)
-  compartilhamentos Int @default(0)
+  id                String   @id @default(cuid())
+  criadorId         String
+  titulo            String
+  url               String
+  tipo              String // video, live, post, short, etc.
+  categoria         String
+  descricao         String?
+  preview           String? // url da imagem de preview
+  fixado            Boolean  @default(false)
+  dataPublicacao    DateTime @default(now())
+  plataforma        String // youtube, twitch, instagram, tiktok, etc.
+  visualizacoes     Int      @default(0)
+  curtidas          Int      @default(0)
+  compartilhamentos Int      @default(0)
 
-  criador     Criador  @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  criador     Criador      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
   comentarios Comentario[]
 
   @@map("conteudos")
@@ -369,55 +371,55 @@ model Comentario {
   data        DateTime @default(now())
   respostaAId String?
 
-  conteudo    Conteudo @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  respostas   Comentario[] @relation("RespostaComentario")
-  respostaA   Comentario?  @relation("RespostaComentario", fields: [respostaAId], references: [id])
+  conteudo  Conteudo     @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  usuario   Usuario      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  respostas Comentario[] @relation("RespostaComentario")
+  respostaA Comentario?  @relation("RespostaComentario", fields: [respostaAId], references: [id])
 
   @@map("comentarios")
 }
 
 model Missao {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   titulo      String
   descricao   String
-  tipo        String   // diaria, semanal, especial
-  recompensa  Int      // sementes, pontos, etc.
-  ativa       Boolean  @default(true)
-  dataInicio  DateTime @default(now())
+  tipo        String // diaria, semanal, especial
+  recompensa  Int // sementes, pontos, etc.
+  ativa       Boolean   @default(true)
+  dataInicio  DateTime  @default(now())
   dataFim     DateTime?
-  criadorOnly Boolean  @default(false)
+  criadorOnly Boolean   @default(false)
 
-  usuarios    MissaoUsuario[]
+  usuarios MissaoUsuario[]
 
   @@map("missoes")
 }
 
 model MissaoUsuario {
-  id        String   @id @default(cuid())
-  missaoId  String
-  usuarioId String
-  progresso Int      @default(0)
-  concluida Boolean  @default(false)
-  dataInicio DateTime @default(now())
+  id            String    @id @default(cuid())
+  missaoId      String
+  usuarioId     String
+  progresso     Int       @default(0)
+  concluida     Boolean   @default(false)
+  dataInicio    DateTime  @default(now())
   dataConclusao DateTime?
 
-  missao    Missao   @relation(fields: [missaoId], references: [id], onDelete: Cascade)
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  missao  Missao  @relation(fields: [missaoId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@unique([missaoId, usuarioId])
   @@map("missoes_usuarios")
 }
 
 model Conquista {
-  id          String   @id @default(cuid())
-  titulo      String
-  descricao   String
-  icone       String   // url do ícone
-  criterio    String   // ex: "10 doações", "100 seguidores"
-  ativa       Boolean  @default(true)
+  id        String  @id @default(cuid())
+  titulo    String
+  descricao String
+  icone     String // url do ícone
+  criterio  String // ex: "10 doações", "100 seguidores"
+  ativa     Boolean @default(true)
 
-  usuarios    ConquistaUsuario[]
+  usuarios ConquistaUsuario[]
 
   @@map("conquistas")
 }
@@ -428,144 +430,146 @@ model ConquistaUsuario {
   usuarioId     String
   dataConquista DateTime @default(now())
 
-  conquista     Conquista @relation(fields: [conquistaId], references: [id], onDelete: Cascade)
-  usuario       Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  conquista Conquista @relation(fields: [conquistaId], references: [id], onDelete: Cascade)
+  usuario   Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@unique([conquistaId, usuarioId])
   @@map("conquistas_usuarios")
 }
 
 model Amizade {
-  id            String   @id @default(cuid())
-  usuarioId     String
-  amigoId       String
-  status        String   @default("pendente") // pendente, aceita, rejeitada
-  dataSolicitacao DateTime @default(now())
-  dataResposta  DateTime?
+  id              String    @id @default(cuid())
+  usuarioId       String
+  amigoId         String
+  status          String    @default("pendente") // pendente, aceita, rejeitada
+  dataSolicitacao DateTime  @default(now())
+  dataResposta    DateTime?
 
-  usuario       Usuario   @relation("UsuarioAmizade", fields: [usuarioId], references: [id], onDelete: Cascade)
-  amigo         Usuario   @relation("AmigoUsuario", fields: [amigoId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation("UsuarioAmizade", fields: [usuarioId], references: [id], onDelete: Cascade)
+  amigo   Usuario @relation("AmigoUsuario", fields: [amigoId], references: [id], onDelete: Cascade)
 
   @@unique([usuarioId, amigoId])
   @@map("amizades")
 }
 
 model Conversa {
-  id            String   @id @default(cuid())
-  usuario1Id    String
-  usuario2Id    String
-  dataCriacao   DateTime @default(now())
+  id             String    @id @default(cuid())
+  usuario1Id     String
+  usuario2Id     String
+  dataCriacao    DateTime  @default(now())
   ultimaMensagem DateTime?
 
-  usuario1      Usuario   @relation("Usuario1Conversa", fields: [usuario1Id], references: [id], onDelete: Cascade)
-  usuario2      Usuario   @relation("Usuario2Conversa", fields: [usuario2Id], references: [id], onDelete: Cascade)
-  mensagens     Mensagem[]
+  usuario1  Usuario    @relation("Usuario1Conversa", fields: [usuario1Id], references: [id], onDelete: Cascade)
+  usuario2  Usuario    @relation("Usuario2Conversa", fields: [usuario2Id], references: [id], onDelete: Cascade)
+  mensagens Mensagem[]
 
   @@unique([usuario1Id, usuario2Id])
   @@map("conversas")
 }
 
 model Mensagem {
-  id            String   @id @default(cuid())
-  conversaId    String
-  remetenteId   String
-  texto         String
-  lida          Boolean  @default(false)
-  dataEnvio     DateTime @default(now())
+  id          String   @id @default(cuid())
+  conversaId  String
+  remetenteId String
+  texto       String
+  lida        Boolean  @default(false)
+  dataEnvio   DateTime @default(now())
 
-  conversa      Conversa @relation(fields: [conversaId], references: [id], onDelete: Cascade)
-  remetente     Usuario  @relation(fields: [remetenteId], references: [id], onDelete: Cascade)
+  conversa  Conversa @relation(fields: [conversaId], references: [id], onDelete: Cascade)
+  remetente Usuario  @relation(fields: [remetenteId], references: [id], onDelete: Cascade)
 
   @@map("mensagens")
 }
 
 model Enquete {
-  id            String   @id @default(cuid())
-  criadorId     String
-  pergunta      String
-  opcoes        String   // JSON array de opções
-  ativa         Boolean  @default(true)
-  dataCriacao   DateTime @default(now())
-  dataFim       DateTime?
+  id          String    @id @default(cuid())
+  criadorId   String
+  pergunta    String
+  opcoes      String // JSON array de opções
+  ativa       Boolean   @default(true)
+  dataCriacao DateTime  @default(now())
+  dataFim     DateTime?
 
-  criador       Usuario  @relation(fields: [criadorId], references: [id], onDelete: Cascade)
-  votos         VotoEnquete[]
+  criador Usuario       @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  votos   VotoEnquete[]
 
   @@map("enquetes")
 }
 
 model VotoEnquete {
-  id            String   @id @default(cuid())
-  enqueteId     String
-  usuarioId     String
-  opcaoIndex    Int
-  dataVoto      DateTime @default(now())
+  id         String   @id @default(cuid())
+  enqueteId  String
+  usuarioId  String
+  opcaoIndex Int
+  dataVoto   DateTime @default(now())
 
-  enquete       Enquete  @relation(fields: [enqueteId], references: [id], onDelete: Cascade)
-  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  enquete Enquete @relation(fields: [enqueteId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@unique([enqueteId, usuarioId])
   @@map("votos_enquetes")
 }
 
 model Recado {
-  id            String   @id @default(cuid())
-  remetenteId   String
+  id             String    @id @default(cuid())
+  remetenteId    String
   destinatarioId String
-  titulo        String
-  mensagem      String
-  lido          Boolean  @default(false)
-  dataEnvio     DateTime @default(now())
-  dataLeitura   DateTime?
+  titulo         String
+  mensagem       String
+  lido           Boolean   @default(false)
+  dataEnvio      DateTime  @default(now())
+  dataLeitura    DateTime?
 
-  remetente     Usuario  @relation("RemetenteRecado", fields: [remetenteId], references: [id], onDelete: Cascade)
-  destinatario  Usuario  @relation("DestinatarioRecado", fields: [destinatarioId], references: [id], onDelete: Cascade)
+  remetente    Usuario @relation("RemetenteRecado", fields: [remetenteId], references: [id], onDelete: Cascade)
+  destinatario Usuario @relation("DestinatarioRecado", fields: [destinatarioId], references: [id], onDelete: Cascade)
 
   @@map("recados")
-} 
+}
 
 // NOVO: Registro de compras feitas com o cupom sementesplay20
 model CompraParceiro {
-  id            String   @id @default(cuid())
-  usuarioId     String
-  parceiroId    String
-  valorCompra   Float
-  dataCompra    DateTime @default(now())
+  id             String   @id @default(cuid())
+  usuarioId      String
+  parceiroId     String
+  valorCompra    Float
+  dataCompra     DateTime @default(now())
   comprovanteUrl String?
-  status        String   @default("aguardando_repasse") // aguardando_repasse, repasse_confirmado, cashback_liberado, rejeitada
-  cupomUsado    String   // sempre 'sementesplay20'
+  status         String   @default("aguardando_repasse") // aguardando_repasse, repasse_confirmado, cashback_liberado, rejeitada
+  cupomUsado     String // sempre 'sementesplay20'
 
-  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  parceiro      Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
-  repasse       RepasseParceiro?
+  usuario  Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  parceiro Parceiro         @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  repasse  RepasseParceiro?
 
   @@map("compras_parceiro")
 }
 
 // NOVO: Registro de repasses feitos pelo parceiro
 model RepasseParceiro {
-  id            String   @id @default(cuid())
-  parceiroId    String
-  compraId      String
-  valor         Float
-  dataRepasse   DateTime @default(now())
+  id             String   @id @default(cuid())
+  parceiroId     String
+  compraId       String   @unique
+  valor          Float
+  dataRepasse    DateTime @default(now())
   comprovanteUrl String?
-  status        String   @default("pendente") // pendente, confirmado, rejeitado
+  status         String   @default("pendente") // pendente, confirmado, rejeitado
 
-  parceiro      Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
-  compra        CompraParceiro @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  parceiro  Parceiro       @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  compra    CompraParceiro @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  Usuario   Usuario?       @relation(fields: [usuarioId], references: [id])
+  usuarioId String?
 
   @@map("repasses_parceiro")
 }
 
 // NOVO: Fundo de sementes por ciclo
 model FundoSementes {
-  id          String   @id @default(cuid())
-  ciclo       Int
-  valorTotal  Float
-  dataInicio  DateTime
-  dataFim     DateTime
-  distribuido Boolean  @default(false)
+  id            String              @id @default(cuid())
+  ciclo         Int
+  valorTotal    Float
+  dataInicio    DateTime
+  dataFim       DateTime
+  distribuido   Boolean             @default(false)
   distribuicoes DistribuicaoFundo[]
 
   @@map("fundo_sementes")
@@ -573,17 +577,17 @@ model FundoSementes {
 
 // NOVO: Distribuição do fundo de sementes
 model DistribuicaoFundo {
-  id         String   @id @default(cuid())
-  fundoId    String
-  usuarioId  String?
-  criadorId  String?
-  valor      Float
-  tipo       String   // 'criador' ou 'usuario'
-  data       DateTime @default(now())
+  id        String   @id @default(cuid())
+  fundoId   String
+  usuarioId String?
+  criadorId String?
+  valor     Float
+  tipo      String // 'criador' ou 'usuario'
+  data      DateTime @default(now())
 
-  fundo      FundoSementes @relation(fields: [fundoId], references: [id], onDelete: Cascade)
-  usuario    Usuario?      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  criador    Criador?      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  fundo   FundoSementes @relation(fields: [fundoId], references: [id], onDelete: Cascade)
+  usuario Usuario?      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  criador Criador?      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
 
   @@map("distribuicoes_fundo")
-} 
+}
