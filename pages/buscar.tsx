@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
@@ -10,8 +10,16 @@ import {
   HeartIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { auth } from '../lib/auth';
 
 export default function Buscar() {
+  useEffect(() => {
+    const user = auth.getUser();
+    if (!user) {
+      window.location.href = '/login';
+    }
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState('')
   const [filtroNivel, setFiltroNivel] = useState('todos')
   const [ordenacao, setOrdenacao] = useState('ranking')
