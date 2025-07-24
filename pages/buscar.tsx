@@ -23,97 +23,48 @@ export default function Buscar() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filtroNivel, setFiltroNivel] = useState('todos')
   const [ordenacao, setOrdenacao] = useState('ranking')
+  const [criadores, setCriadores] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Dados mockados dos criadores
-  const criadores = [
-    { 
-      id: 1, 
-      nome: 'JoãoGamer', 
-      nivel: 'Supremo', 
-      sementes: 25000, 
-      apoiadores: 150, 
-      avatar: '🎮',
-      posicao: 1,
-      categoria: 'supremo',
-      tags: ['FiveM', 'RP', 'Gaming']
-    },
-    { 
-      id: 2, 
-      nome: 'MariaStream', 
-      nivel: 'Supremo', 
-      sementes: 22000, 
-      apoiadores: 120, 
-      avatar: '🎬',
-      posicao: 2,
-      categoria: 'supremo',
-      tags: ['Streaming', 'FiveM', 'Comunidade']
-    },
-    { 
-      id: 3, 
-      nome: 'PedroFiveM', 
-      nivel: 'Parceiro', 
-      sementes: 18000, 
-      apoiadores: 95, 
-      avatar: '🚗',
-      posicao: 3,
-      categoria: 'parceiro',
-      tags: ['FiveM', 'Veículos', 'Mods']
-    },
-    { 
-      id: 4, 
-      nome: 'AnaGaming', 
-      nivel: 'Parceiro', 
-      sementes: 15000, 
-      apoiadores: 80, 
-      avatar: '🎯',
-      posicao: 4,
-      categoria: 'parceiro',
-      tags: ['Gaming', 'Competitivo', 'Esports']
-    },
-    { 
-      id: 5, 
-      nome: 'CarlosRP', 
-      nivel: 'Comum', 
-      sementes: 12000, 
-      apoiadores: 65, 
-      avatar: '👮',
-      posicao: 5,
-      categoria: 'comum',
-      tags: ['RP', 'Roleplay', 'FiveM']
-    },
-    { 
-      id: 6, 
-      nome: 'LucasGamer', 
-      nivel: 'Comum', 
-      sementes: 10000, 
-      apoiadores: 55, 
-      avatar: '🎲',
-      posicao: 6,
-      categoria: 'comum',
-      tags: ['Gaming', 'Variedades', 'Diversão']
+  useEffect(() => {
+    async function fetchCriadores() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/criadores');
+        const data = await res.json();
+        if (res.ok && data.criadores) {
+          setCriadores(data.criadores);
+        } else {
+          setCriadores([]);
+        }
+      } catch {
+        setCriadores([]);
+      }
+      setLoading(false);
     }
-  ]
+    fetchCriadores();
+  }, []);
 
   // Filtrar e ordenar criadores
   const criadoresFiltrados = criadores
-    .filter(criador => {
+    .filter((criador: any) => {
       const matchSearch = criador.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         criador.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                         (criador.tags || []).some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       const matchNivel = filtroNivel === 'todos' || criador.categoria === filtroNivel
       return matchSearch && matchNivel
     })
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       switch (ordenacao) {
         case 'ranking':
-          return a.posicao - b.posicao
+          return (a.posicao || 0) - (b.posicao || 0)
         case 'sementes':
-          return b.sementes - a.sementes
+          return (b.sementes || 0) - (a.sementes || 0)
         case 'apoiadores':
-          return b.apoiadores - a.apoiadores
+          return (b.apoiadores || 0) - (a.apoiadores || 0)
         case 'nome':
           return a.nome.localeCompare(b.nome)
         default:
-          return a.posicao - b.posicao
+          return (a.posicao || 0) - (b.posicao || 0)
       }
     })
 
@@ -270,7 +221,15 @@ export default function Buscar() {
                 )}
               </div>
 
-              {criadoresFiltrados.length === 0 ? (
+              {loading ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12"
+                >
+                  <p className="text-gray-400">Carregando criadores...</p>
+                </motion.div>
+              ) : criadoresFiltrados.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -328,7 +287,7 @@ export default function Buscar() {
 
                         {/* Tags */}
                         <div className="flex flex-wrap justify-center gap-1 mb-4">
-                          {criador.tags.map((tag, tagIndex) => (
+                          {criador.tags.map((tag: string, tagIndex: number) => (
                             <span
                               key={tagIndex}
                               className="px-2 py-1 bg-sss-dark text-gray-300 text-xs rounded-full"

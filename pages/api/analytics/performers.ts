@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface Performer {
-  id: number
+  id: string
   name: string
   type: 'creator' | 'donor'
   value: number
@@ -17,7 +20,31 @@ interface PerformersData {
   period: string
 }
 
-export default function handler(
+function getPeriodDates(period: string) {
+  const now = new Date()
+  let start: Date
+  switch (period) {
+    case '1d':
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      break
+    case '30d':
+      start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      break
+    case '90d':
+      start = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      break
+    case '1y':
+      start = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      break
+    case '7d':
+    default:
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+  }
+  return { start }
+}
+
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<PerformersData | { error: string }>
 ) {
@@ -26,55 +53,69 @@ export default function handler(
   }
 
   const { period = '7d' } = req.query
+  const { start } = getPeriodDates(period as string)
 
-  const topCreators: Performer[] = [
-    { id: 1, name: 'JoãoGamer', type: 'creator', value: 15420, change: 12.5, avatar: '🎮', category: 'Gaming', rank: 1 },
-    { id: 2, name: 'MariaStream', type: 'creator', value: 12850, change: 8.3, avatar: '🎵', category: 'Music', rank: 2 },
-    { id: 3, name: 'PedroFiveM', type: 'creator', value: 9870, change: 15.7, avatar: '🚗', category: 'Gaming', rank: 3 },
-    { id: 4, name: 'AnaArt', type: 'creator', value: 7650, change: 22.1, avatar: '🎨', category: 'Art', rank: 4 },
-    { id: 5, name: 'CarlosTech', type: 'creator', value: 6540, change: 5.2, avatar: '💻', category: 'Tech', rank: 5 },
-    { id: 6, name: 'LucasCraft', type: 'creator', value: 5430, change: 18.9, avatar: '⛏️', category: 'Gaming', rank: 6 },
-    { id: 7, name: 'JuliaCooks', type: 'creator', value: 4320, change: 11.3, avatar: '👩‍🍳', category: 'Cooking', rank: 7 },
-    { id: 8, name: 'RobertoFitness', type: 'creator', value: 3980, change: 7.8, avatar: '💪', category: 'Fitness', rank: 8 },
-    { id: 9, name: 'FernandaBeauty', type: 'creator', value: 3650, change: 14.2, avatar: '💄', category: 'Beauty', rank: 9 },
-    { id: 10, name: 'ThiagoTravel', type: 'creator', value: 3320, change: 9.6, avatar: '✈️', category: 'Travel', rank: 10 }
-  ]
+  try {
+    // Top Criadores (por valor recebido)
+    const topCreatorsRaw = await prisma.doacao.groupBy({
+      by: ['criadorId'],
+      where: { data: { gte: start } },
+      _sum: { quantidade: true },
+      orderBy: { _sum: { quantidade: 'desc' } },
+      take: 10
+    })
+    const criadorIds = topCreatorsRaw.map(c => c.criadorId)
+    const criadores = await prisma.criador.findMany({
+      where: { id: { in: criadorIds } },
+      include: { usuario: true }
+    })
+    const topCreators: Performer[] = topCreatorsRaw.map((c, i) => {
+      const criador = criadores.find(cr => cr.id === c.criadorId)
+      return {
+        id: criador?.id || '',
+        name: criador?.usuario.nome || 'Desconhecido',
+        type: 'creator',
+        value: c._sum.quantidade || 0,
+        change: 0, // Pode calcular variação se quiser
+        avatar: criador?.usuario.avatar || '🎮',
+        category: criador?.categoria || '',
+        rank: i + 1
+      }
+    })
 
-  const topDonors: Performer[] = [
-    { id: 1, name: 'DoadorVIP', type: 'donor', value: 5000, change: 18.5, avatar: '👑', category: 'VIP', rank: 1 },
-    { id: 2, name: 'ApoiadorFiel', type: 'donor', value: 3200, change: 12.3, avatar: '💎', category: 'Gold', rank: 2 },
-    { id: 3, name: 'FãDedicado', type: 'donor', value: 2800, change: 8.7, avatar: '⭐', category: 'Silver', rank: 3 },
-    { id: 4, name: 'NovoApoiador', type: 'donor', value: 2100, change: 25.1, avatar: '🌱', category: 'Bronze', rank: 4 },
-    { id: 5, name: 'DoadorRegular', type: 'donor', value: 1800, change: 3.2, avatar: '💫', category: 'Regular', rank: 5 },
-    { id: 6, name: 'ApoiadorAnônimo', type: 'donor', value: 1650, change: 15.8, avatar: '🎭', category: 'Anonymous', rank: 6 },
-    { id: 7, name: 'FãPremium', type: 'donor', value: 1420, change: 6.9, avatar: '🏆', category: 'Premium', rank: 7 },
-    { id: 8, name: 'DoadorEspecial', type: 'donor', value: 1280, change: 11.4, avatar: '🌟', category: 'Special', rank: 8 },
-    { id: 9, name: 'ApoiadorAtivo', type: 'donor', value: 1150, change: 4.7, avatar: '⚡', category: 'Active', rank: 9 },
-    { id: 10, name: 'FãRecente', type: 'donor', value: 980, change: 22.3, avatar: '🆕', category: 'New', rank: 10 }
-  ]
+    // Top Doadores (por valor doado)
+    const topDonorsRaw = await prisma.doacao.groupBy({
+      by: ['doadorId'],
+      where: { data: { gte: start } },
+      _sum: { quantidade: true },
+      orderBy: { _sum: { quantidade: 'desc' } },
+      take: 10
+    })
+    const doadorIds = topDonorsRaw.map(d => d.doadorId)
+    const doadores = await prisma.usuario.findMany({
+      where: { id: { in: doadorIds } }
+    })
+    const topDonors: Performer[] = topDonorsRaw.map((d, i) => {
+      const doador = doadores.find(u => u.id === d.doadorId)
+      return {
+        id: doador?.id || '',
+        name: doador?.nome || 'Desconhecido',
+        type: 'donor',
+        value: d._sum.quantidade || 0,
+        change: 0, // Pode calcular variação se quiser
+        avatar: doador?.avatar || '👑',
+        category: '',
+        rank: i + 1
+      }
+    })
 
-  // Ajustar valores baseado no período
-  const periodMultiplier = period === '1d' ? 0.14 : 
-                          period === '7d' ? 1 : 
-                          period === '30d' ? 4.3 : 
-                          period === '90d' ? 12.9 : 52.1
-
-  const adjustValues = (performers: Performer[]): Performer[] => {
-    return performers.map(performer => ({
-      ...performer,
-      value: Math.round(performer.value * periodMultiplier),
-      change: performer.change + (Math.random() - 0.5) * 10 // Variação aleatória
-    }))
+    return res.status(200).json({
+      creators: topCreators,
+      donors: topDonors,
+      period: period as string
+    })
+  } catch (error) {
+    console.error('Erro ao buscar performers analytics:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
-
-  const response: PerformersData = {
-    creators: adjustValues(topCreators),
-    donors: adjustValues(topDonors),
-    period: period as string
-  }
-
-  // Simular delay de processamento
-  setTimeout(() => {
-    res.status(200).json(response)
-  }, 400)
 } 

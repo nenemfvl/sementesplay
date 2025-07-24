@@ -1,4 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface TrendPoint {
   label: string
@@ -15,7 +18,46 @@ interface TrendsData {
   average: number
 }
 
-export default function handler(
+function getTimeRangeDates(timeRange: string) {
+  const now = new Date()
+  let start: Date, interval: 'hour' | 'day' | 'month', points: number, labels: string[]
+  switch (timeRange) {
+    case '1d':
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      interval = 'hour'
+      points = 24
+      labels = Array.from({ length: 24 }, (_, i) => `${i}:00`)
+      break
+    case '30d':
+      start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      interval = 'day'
+      points = 30
+      labels = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
+      break
+    case '90d':
+      start = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      interval = 'month'
+      points = 12
+      labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+      break
+    case '1y':
+      start = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      interval = 'month'
+      points = 12
+      labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+      break
+    case '7d':
+    default:
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      interval = 'day'
+      points = 7
+      labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+      break
+  }
+  return { start, interval, points, labels }
+}
+
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<TrendsData | { error: string }>
 ) {
@@ -24,52 +66,122 @@ export default function handler(
   }
 
   const { metric = 'donations', timeRange = '7d' } = req.query
+  const { start, interval, points, labels } = getTimeRangeDates(timeRange as string)
 
-  const generateTrendData = (metric: string, timeRange: string): TrendPoint[] => {
-    const dataPoints = timeRange === '1d' ? 24 : 
-                      timeRange === '7d' ? 7 : 
-                      timeRange === '30d' ? 30 : 
-                      timeRange === '90d' ? 12 : 12
+  try {
+    let data: TrendPoint[] = []
+    let total = 0
+    let change = 0
+    let average = 0
 
-    const baseValue = metric === 'donations' ? 1000 :
-                     metric === 'users' ? 500 :
-                     metric === 'revenue' ? 5000 :
-                     metric === 'engagement' ? 200 :
-                     100
+    if (metric === 'donations' || metric === 'revenue') {
+      // Doações por período
+      const doacoes = await prisma.doacao.findMany({
+        where: { data: { gte: start } },
+        orderBy: { data: 'asc' }
+      })
+      // Agrupar por intervalo
+      const grouped = Array(points).fill(0)
+      doacoes.forEach(d => {
+        const date = new Date(d.data)
+        let idx = 0
+        if (interval === 'hour') {
+          idx = date.getHours()
+        } else if (interval === 'day') {
+          const diff = Math.floor((date.getTime() - start.getTime()) / (24 * 60 * 60 * 1000))
+          idx = Math.max(0, Math.min(points - 1, diff))
+        } else if (interval === 'month') {
+          idx = date.getMonth()
+        }
+        grouped[idx] += metric === 'donations' ? 1 : d.quantidade
+      })
+      data = grouped.map((value, i) => ({
+        label: labels[i] || `${i + 1}`,
+        value,
+        timestamp: ''
+      }))
+      total = grouped.reduce((a, b) => a + b, 0)
+      average = total / points
+      change = points > 1 && grouped[0] > 0 ? ((grouped[points - 1] - grouped[0]) / grouped[0]) * 100 : 0
+    } else if (metric === 'users') {
+      // Novos usuários por período
+      const usuarios = await prisma.usuario.findMany({
+        where: { dataCriacao: { gte: start } },
+        orderBy: { dataCriacao: 'asc' }
+      })
+      const grouped = Array(points).fill(0)
+      usuarios.forEach(u => {
+        const date = new Date(u.dataCriacao)
+        let idx = 0
+        if (interval === 'hour') {
+          idx = date.getHours()
+        } else if (interval === 'day') {
+          const diff = Math.floor((date.getTime() - start.getTime()) / (24 * 60 * 60 * 1000))
+          idx = Math.max(0, Math.min(points - 1, diff))
+        } else if (interval === 'month') {
+          idx = date.getMonth()
+        }
+        grouped[idx] += 1
+      })
+      data = grouped.map((value, i) => ({
+        label: labels[i] || `${i + 1}`,
+        value,
+        timestamp: ''
+      }))
+      total = grouped.reduce((a, b) => a + b, 0)
+      average = total / points
+      change = points > 1 && grouped[0] > 0 ? ((grouped[points - 1] - grouped[0]) / grouped[0]) * 100 : 0
+    } else if (metric === 'engagement') {
+      // Engajamento: pode ser número de doações + novos usuários
+      const doacoes = await prisma.doacao.findMany({ where: { data: { gte: start } } })
+      const usuarios = await prisma.usuario.findMany({ where: { dataCriacao: { gte: start } } })
+      const grouped = Array(points).fill(0)
+      doacoes.forEach(d => {
+        const date = new Date(d.data)
+        let idx = 0
+        if (interval === 'hour') {
+          idx = date.getHours()
+        } else if (interval === 'day') {
+          const diff = Math.floor((date.getTime() - start.getTime()) / (24 * 60 * 60 * 1000))
+          idx = Math.max(0, Math.min(points - 1, diff))
+        } else if (interval === 'month') {
+          idx = date.getMonth()
+        }
+        grouped[idx] += 1
+      })
+      usuarios.forEach(u => {
+        const date = new Date(u.dataCriacao)
+        let idx = 0
+        if (interval === 'hour') {
+          idx = date.getHours()
+        } else if (interval === 'day') {
+          const diff = Math.floor((date.getTime() - start.getTime()) / (24 * 60 * 60 * 1000))
+          idx = Math.max(0, Math.min(points - 1, diff))
+        } else if (interval === 'month') {
+          idx = date.getMonth()
+        }
+        grouped[idx] += 1
+      })
+      data = grouped.map((value, i) => ({
+        label: labels[i] || `${i + 1}`,
+        value,
+        timestamp: ''
+      }))
+      total = grouped.reduce((a, b) => a + b, 0)
+      average = total / points
+      change = points > 1 && grouped[0] > 0 ? ((grouped[points - 1] - grouped[0]) / grouped[0]) * 100 : 0
+    }
 
-    const labels = timeRange === '1d' ? 
-      Array.from({ length: 24 }, (_, i) => `${i}:00`) :
-      timeRange === '7d' ? 
-      ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'] :
-      timeRange === '30d' ? 
-      Array.from({ length: 30 }, (_, i) => `${i + 1}`) :
-      timeRange === '90d' ? 
-      ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'] :
-      ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-
-    return Array.from({ length: dataPoints }, (_, i) => ({
-      label: labels[i] || `${i + 1}`,
-      value: Math.round(baseValue + Math.random() * baseValue * 0.5 + Math.sin(i * 0.5) * baseValue * 0.3),
-      timestamp: new Date(Date.now() - (dataPoints - i) * 24 * 60 * 60 * 1000).toISOString()
-    }))
+    return res.status(200).json({
+      metric: metric as string,
+      timeRange: timeRange as string,
+      data,
+      total,
+      change: Math.round(change * 100) / 100,
+      average: Math.round(average * 100) / 100
+    })
+  } catch (error) {
+    console.error('Erro ao buscar trends analytics:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
-
-  const data = generateTrendData(metric as string, timeRange as string)
-  const total = data.reduce((sum, point) => sum + point.value, 0)
-  const average = total / data.length
-  const change = ((data[data.length - 1].value - data[0].value) / data[0].value) * 100
-
-  const response: TrendsData = {
-    metric: metric as string,
-    timeRange: timeRange as string,
-    data,
-    total,
-    change: Math.round(change * 100) / 100,
-    average: Math.round(average * 100) / 100
-  }
-
-  // Simular delay de processamento
-  setTimeout(() => {
-    res.status(200).json(response)
-  }, 300)
 } 

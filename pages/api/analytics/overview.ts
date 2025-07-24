@@ -1,4 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface AnalyticsOverview {
   totalDonations: number
@@ -12,7 +15,41 @@ interface AnalyticsOverview {
   period: string
 }
 
-export default function handler(
+function getPeriodDates(period: string) {
+  const now = new Date()
+  let start: Date, prevStart: Date, prevEnd: Date
+  switch (period) {
+    case '1d':
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      break
+    case '30d':
+      start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      break
+    case '90d':
+      start = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      break
+    case '1y':
+      start = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 2 * 365 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      break
+    case '7d':
+    default:
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+  }
+  return { start, prevStart, prevEnd }
+}
+
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AnalyticsOverview | { error: string }>
 ) {
@@ -21,70 +58,55 @@ export default function handler(
   }
 
   const { period = '7d' } = req.query
+  const { start, prevStart, prevEnd } = getPeriodDates(period as string)
 
-  // Dados mockados baseados no período
-  const mockData: Record<string, AnalyticsOverview> = {
-    '1d': {
-      totalDonations: 1542,
-      totalUsers: 284,
-      totalCreators: 15,
-      totalRevenue: 4523,
-      growthRate: 12.5,
-      userGrowth: 8.3,
-      creatorGrowth: 15.7,
-      revenueGrowth: 22.1,
-      period: '24h'
-    },
-    '7d': {
-      totalDonations: 15420,
-      totalUsers: 2847,
-      totalCreators: 156,
-      totalRevenue: 45230,
-      growthRate: 12.5,
-      userGrowth: 8.3,
-      creatorGrowth: 15.7,
-      revenueGrowth: 22.1,
-      period: '7 dias'
-    },
-    '30d': {
-      totalDonations: 65420,
-      totalUsers: 12470,
-      totalCreators: 456,
-      totalRevenue: 189230,
-      growthRate: 18.2,
-      userGrowth: 12.7,
-      creatorGrowth: 22.3,
-      revenueGrowth: 28.9,
-      period: '30 dias'
-    },
-    '90d': {
-      totalDonations: 189420,
-      totalUsers: 32470,
-      totalCreators: 856,
-      totalRevenue: 452230,
-      growthRate: 25.1,
-      userGrowth: 18.9,
-      creatorGrowth: 31.2,
-      revenueGrowth: 35.7,
-      period: '90 dias'
-    },
-    '1y': {
-      totalDonations: 654420,
-      totalUsers: 124470,
-      totalCreators: 2856,
-      totalRevenue: 1452230,
-      growthRate: 42.3,
-      userGrowth: 38.7,
-      creatorGrowth: 51.2,
-      revenueGrowth: 58.9,
-      period: '1 ano'
+  try {
+    // Período atual
+    const [
+      totalDonations,
+      totalUsers,
+      totalCreators,
+      totalRevenue
+    ] = await Promise.all([
+      prisma.doacao.count({ where: { data: { gte: start } } }),
+      prisma.usuario.count({ where: { dataCriacao: { gte: start } } }),
+      prisma.criador.count({ where: { usuario: { dataCriacao: { gte: start } } } }),
+      prisma.doacao.aggregate({ _sum: { quantidade: true }, where: { data: { gte: start } } })
+    ])
+
+    // Período anterior
+    const [
+      prevTotalDonations,
+      prevTotalUsers,
+      prevTotalCreators,
+      prevTotalRevenue
+    ] = await Promise.all([
+      prisma.doacao.count({ where: { data: { gte: prevStart, lt: prevEnd } } }),
+      prisma.usuario.count({ where: { dataCriacao: { gte: prevStart, lt: prevEnd } } }),
+      prisma.criador.count({ where: { usuario: { dataCriacao: { gte: prevStart, lt: prevEnd } } } }),
+      prisma.doacao.aggregate({ _sum: { quantidade: true }, where: { data: { gte: prevStart, lt: prevEnd } } })
+    ])
+
+    function percentChange(current: number, prev: number) {
+      if (prev === 0) return current > 0 ? 100 : 0
+      return ((current - prev) / prev) * 100
     }
+
+    const overview: AnalyticsOverview = {
+      totalDonations,
+      totalUsers,
+      totalCreators,
+      totalRevenue: totalRevenue._sum.quantidade || 0,
+      growthRate: percentChange(totalDonations, prevTotalDonations),
+      userGrowth: percentChange(totalUsers, prevTotalUsers),
+      creatorGrowth: percentChange(totalCreators, prevTotalCreators),
+      revenueGrowth: percentChange(totalRevenue._sum.quantidade || 0, prevTotalRevenue._sum.quantidade || 0),
+      period: period as string
+    }
+
+    return res.status(200).json(overview)
+  } catch (error) {
+    console.error('Erro ao buscar overview analytics:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
-
-  const data = mockData[period as string] || mockData['7d']
-
-  // Simular delay de processamento
-  setTimeout(() => {
-    res.status(200).json(data)
-  }, 500)
 } 

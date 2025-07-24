@@ -1,4 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface Insight {
   id: string
@@ -25,7 +28,41 @@ interface InsightsData {
   period: string
 }
 
-export default function handler(
+function getPeriodDates(period: string) {
+  const now = new Date()
+  let start: Date, prevStart: Date, prevEnd: Date
+  switch (period) {
+    case '1d':
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      break
+    case '30d':
+      start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      break
+    case '90d':
+      start = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      break
+    case '1y':
+      start = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 2 * 365 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      break
+    case '7d':
+    default:
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      prevStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
+      prevEnd = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+  }
+  return { start, prevStart, prevEnd }
+}
+
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<InsightsData | { error: string }>
 ) {
@@ -34,136 +71,128 @@ export default function handler(
   }
 
   const { period = '7d' } = req.query
+  const { start, prevStart, prevEnd } = getPeriodDates(period as string)
 
-  const generateInsights = (period: string): Insight[] => {
-    const baseInsights: Insight[] = [
-      {
+  try {
+    // Crescimento de doações
+    const [
+      totalDonations,
+      prevTotalDonations,
+      doacoes
+    ] = await Promise.all([
+      prisma.doacao.count({ where: { data: { gte: start } } }),
+      prisma.doacao.count({ where: { data: { gte: prevStart, lt: prevEnd } } }),
+      prisma.doacao.findMany({ where: { data: { gte: start } }, orderBy: { data: 'asc' } })
+    ])
+    const growth = prevTotalDonations === 0 ? 100 : ((totalDonations - prevTotalDonations) / prevTotalDonations) * 100
+
+    // Horário de pico (hora com mais doações)
+    let peakHour = null
+    if (doacoes.length > 0) {
+      const hours = Array(24).fill(0)
+      doacoes.forEach(d => {
+        const h = new Date(d.data).getHours()
+        hours[h]++
+      })
+      const max = Math.max(...hours)
+      const idx = hours.findIndex(v => v === max)
+      peakHour = idx
+    }
+
+    // Criador destaque (mais recebeu doações)
+    const topCriador = await prisma.doacao.groupBy({
+      by: ['criadorId'],
+      where: { data: { gte: start } },
+      _sum: { quantidade: true },
+      orderBy: { _sum: { quantidade: 'desc' } },
+      take: 1
+    })
+    let criadorNome = null
+    if (topCriador.length > 0) {
+      const criador = await prisma.criador.findUnique({
+        where: { id: topCriador[0].criadorId },
+        include: { usuario: true }
+      })
+      criadorNome = criador?.usuario.nome || null
+    }
+
+    // Retenção de usuários (usuários que fizeram mais de uma doação no período)
+    const doacoesUsuarios = await prisma.doacao.groupBy({
+      by: ['doadorId'],
+      where: { data: { gte: start } },
+      _count: { id: true }
+    })
+    const retidos = doacoesUsuarios.filter(u => u._count.id > 1).length
+    const totalUsuarios = doacoesUsuarios.length
+    const retentionRate = totalUsuarios === 0 ? 0 : (retidos / totalUsuarios) * 100
+
+    // Montar insights
+    const insights: Insight[] = []
+    if (totalDonations > 0) {
+      insights.push({
         id: '1',
-        type: 'positive',
-        title: 'Crescimento Recorde',
-        description: 'Doações aumentaram significativamente este período, o maior crescimento dos últimos meses.',
-        value: '+25%',
-        trend: 25,
+        type: growth >= 0 ? 'positive' : 'warning',
+        title: growth >= 0 ? 'Crescimento de Doações' : 'Queda nas Doações',
+        description: growth >= 0 ? `As doações cresceram ${growth.toFixed(1)}% em relação ao período anterior.` : `As doações caíram ${Math.abs(growth).toFixed(1)}% em relação ao período anterior.`,
+        value: `${growth.toFixed(1)}%`,
+        trend: growth,
         priority: 'high',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+        timestamp: new Date().toISOString(),
         category: 'donations',
-        action: 'Monitorar tendência de crescimento'
-      },
-      {
+        action: growth >= 0 ? 'Monitorar tendência de crescimento' : 'Rever estratégias de engajamento'
+      })
+    }
+    if (peakHour !== null) {
+      insights.push({
         id: '2',
         type: 'trend',
-        title: 'Horário de Pico Identificado',
-        description: 'Maior atividade entre 20h e 22h. Considere programar eventos neste horário.',
-        value: '20h-22h',
+        title: 'Horário de Pico',
+        description: `Maior atividade de doações às ${peakHour}h.`,
+        value: `${peakHour}:00`,
         priority: 'medium',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        category: 'engagement',
-        action: 'Otimizar programação de eventos'
-      },
-      {
+        timestamp: new Date().toISOString(),
+        category: 'donations',
+        action: 'Otimizar campanhas para o horário de pico'
+      })
+    }
+    if (criadorNome) {
+      insights.push({
         id: '3',
-        type: 'warning',
-        title: 'Retenção de Usuários',
-        description: 'Taxa de retenção caiu este período. Recomenda-se revisar estratégias de engajamento.',
-        value: '-8%',
-        trend: -8,
-        priority: 'high',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-        category: 'users',
-        action: 'Implementar campanhas de retenção'
-      },
-      {
-        id: '4',
         type: 'info',
-        title: 'Novo Criador em Destaque',
-        description: 'Criador recebeu mais doações que a média. Considere destacar em campanhas.',
-        value: '+150%',
-        trend: 150,
+        title: 'Criador em Destaque',
+        description: `O criador que mais recebeu doações foi ${criadorNome}.`,
+        value: criadorNome,
         priority: 'medium',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+        timestamp: new Date().toISOString(),
         category: 'creators',
         action: 'Promover criador em destaque'
-      },
-      {
-        id: '5',
-        type: 'positive',
-        title: 'Missões Efetivas',
-        description: 'Sistema de missões aumentou engajamento. Continue incentivando participação.',
-        value: '+40%',
-        trend: 40,
-        priority: 'medium',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
-        category: 'missions',
-        action: 'Expandir sistema de missões'
-      },
-      {
-        id: '6',
-        type: 'trend',
-        title: 'Padrão de Doação',
-        description: 'Usuários tendem a doar mais no final de semana. Otimize campanhas.',
-        value: 'Fim de semana',
-        priority: 'low',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
-        category: 'donations',
-        action: 'Programar campanhas para fim de semana'
-      },
-      {
-        id: '7',
-        type: 'warning',
-        title: 'Criadores Inativos',
-        description: 'Alguns criadores não receberam doações. Considere suporte.',
-        value: '15 criadores',
-        priority: 'medium',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 16).toISOString(),
-        category: 'creators',
-        action: 'Contatar criadores inativos'
-      },
-      {
-        id: '8',
-        type: 'info',
-        title: 'Nova Categoria Popular',
-        description: 'Categoria de gaming está crescendo rapidamente.',
-        value: 'Gaming',
-        priority: 'low',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
-        category: 'categories',
-        action: 'Investir em criadores de gaming'
-      }
-    ]
+      })
+    }
+    if (totalUsuarios > 0) {
+      insights.push({
+        id: '4',
+        type: retentionRate < 50 ? 'warning' : 'positive',
+        title: 'Retenção de Usuários',
+        description: retentionRate < 50 ? `Apenas ${retentionRate.toFixed(1)}% dos usuários fizeram mais de uma doação.` : `Ótima retenção: ${retentionRate.toFixed(1)}% dos usuários doaram mais de uma vez!`,
+        value: `${retentionRate.toFixed(1)}%`,
+        priority: 'high',
+        timestamp: new Date().toISOString(),
+        category: 'users',
+        action: retentionRate < 50 ? 'Rever estratégias de retenção' : 'Manter boas práticas'
+      })
+    }
 
-    // Ajustar insights baseado no período
-    const periodInsights = baseInsights.map(insight => {
-      const adjustedTrend = insight.trend ? insight.trend + (Math.random() - 0.5) * 10 : undefined
-      return {
-        ...insight,
-        trend: adjustedTrend,
-        value: insight.value?.includes('%') ? 
-          `${Math.round((adjustedTrend || 0) * 100) / 100}%` : insight.value
-      }
-    })
+    const summary = {
+      positive: insights.filter(i => i.type === 'positive').length,
+      warning: insights.filter(i => i.type === 'warning').length,
+      info: insights.filter(i => i.type === 'info').length,
+      trend: insights.filter(i => i.type === 'trend').length,
+      total: insights.length
+    }
 
-    // Retornar insights mais relevantes para o período
-    return periodInsights.slice(0, period === '1d' ? 3 : period === '7d' ? 5 : 8)
+    return res.status(200).json({ insights, summary, period: period as string })
+  } catch (error) {
+    console.error('Erro ao buscar insights analytics:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
-
-  const insights = generateInsights(period as string)
-  
-  const summary = {
-    positive: insights.filter(i => i.type === 'positive').length,
-    warning: insights.filter(i => i.type === 'warning').length,
-    info: insights.filter(i => i.type === 'info').length,
-    trend: insights.filter(i => i.type === 'trend').length,
-    total: insights.length
-  }
-
-  const response: InsightsData = {
-    insights,
-    summary,
-    period: period as string
-  }
-
-  // Simular delay de processamento
-  setTimeout(() => {
-    res.status(200).json(response)
-  }, 600)
 } 

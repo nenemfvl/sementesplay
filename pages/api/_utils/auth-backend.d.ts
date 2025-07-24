@@ -1,1 +1,0 @@
-export declare function getUserFromToken(req: import('next').NextApiRequest): any; 
