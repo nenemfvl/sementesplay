@@ -49,6 +49,11 @@ function getPeriodDates(period: string) {
   return { start, prevStart, prevEnd }
 }
 
+function percentChange(current: number, prev: number) {
+  if (prev === 0) return current > 0 ? 100 : 0
+  return ((current - prev) / prev) * 100
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AnalyticsOverview | { error: string }>
@@ -86,11 +91,6 @@ export default async function handler(
       prisma.criador.count({ where: { usuario: { dataCriacao: { gte: prevStart, lt: prevEnd } } } }),
       prisma.doacao.aggregate({ _sum: { quantidade: true }, where: { data: { gte: prevStart, lt: prevEnd } } })
     ])
-
-    function percentChange(current: number, prev: number) {
-      if (prev === 0) return current > 0 ? 100 : 0
-      return ((current - prev) / prev) * 100
-    }
 
     const overview: AnalyticsOverview = {
       totalDonations,
