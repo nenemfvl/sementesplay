@@ -46,8 +46,17 @@ interface Criador {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
+      const { usuarioId } = req.query
+
+      // Construir filtros
+      const where: any = {}
+      if (usuarioId) {
+        where.usuarioId = String(usuarioId)
+      }
+
       // Buscar criadores
       const criadores = await prisma.criador.findMany({
+        where,
         include: {
           usuario: {
             select: {

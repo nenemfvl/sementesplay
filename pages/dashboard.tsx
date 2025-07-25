@@ -36,6 +36,7 @@ export default function Dashboard() {
   const [loadingData, setLoadingData] = useState(true)
   const [criadores, setCriadores] = useState<any[]>([])
   const [cashbackData, setCashbackData] = useState<any>(null)
+  const [criadorId, setCriadorId] = useState<string | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -50,10 +51,27 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
     setLoadingData(true)
+    
+    // Buscar dados do criador se o usuário for um criador
+    const fetchCriadorData = async () => {
+      try {
+        const response = await fetch(`/api/criadores?usuarioId=${user.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.criadores && data.criadores.length > 0) {
+            setCriadorId(data.criadores[0].id)
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do criador:', error)
+      }
+    }
+
     Promise.all([
       fetch(`/api/perfil/stats?usuarioId=${user.id}`).then(r => r.json()),
       fetch('/api/analytics/performers?period=7d').then(r => r.json()),
-      fetch('/api/criadores').then(r => r.json())
+      fetch('/api/criadores').then(r => r.json()),
+      fetchCriadorData()
     ]).then(([statsData, performersData, criadoresData]) => {
       setStats(statsData)
       setTopCreators(performersData.creators || [])
@@ -373,9 +391,13 @@ export default function Dashboard() {
                             <p className="text-sss-white font-medium">Você é um Criador!</p>
                             <p className="text-gray-400 text-sm">Gerencie seu perfil e receba doações</p>
                           </div>
-                          <Link href={`/criador/${user.id}`} className="text-sss-accent hover:text-red-400">
-                            Ver perfil
-                          </Link>
+                          {criadorId ? (
+                            <Link href={`/criador/${criadorId}`} className="text-sss-accent hover:text-red-400">
+                              Ver perfil
+                            </Link>
+                          ) : (
+                            <span className="text-gray-400">Carregando...</span>
+                          )}
                         </div>
                       ) : (
                         <div className="flex items-center space-x-3 p-3 bg-sss-dark rounded-lg">
