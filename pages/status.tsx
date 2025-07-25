@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
+import { FaTwitch, FaYoutube, FaTiktok, FaInstagram } from 'react-icons/fa'
+import { useRouter } from 'next/router'
 
 const statusList = [
   { nome: 'Cashback', status: 'ok', descricao: 'Sistema de cashback funcionando normalmente.' },
@@ -15,6 +17,14 @@ const statusList = [
   { nome: 'Painel Admin', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
 ]
 
+const redes = [
+  { nome: 'Todos', valor: 'todos', icon: null },
+  { nome: 'Twitch', valor: 'twitch', icon: <FaTwitch /> },
+  { nome: 'YouTube', valor: 'youtube', icon: <FaYoutube /> },
+  { nome: 'TikTok', valor: 'tiktok', icon: <FaTiktok /> },
+  { nome: 'Instagram', valor: 'instagram', icon: <FaInstagram /> },
+]
+
 function getStatusIcon(status: string) {
   if (status === 'ok') return <CheckCircleIcon className="w-6 h-6 text-green-500" />
   if (status === 'instavel') return <ExclamationTriangleIcon className="w-6 h-6 text-yellow-500" />
@@ -24,6 +34,9 @@ function getStatusIcon(status: string) {
 export default function Status() {
   const [totalSementes, setTotalSementes] = useState<number | null>(null)
   const [displaySementes, setDisplaySementes] = useState(0)
+  const [filtroRede, setFiltroRede] = useState('todos')
+  const [criadores, setCriadores] = useState<any[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     fetch('/api/admin/stats')
@@ -34,6 +47,22 @@ export default function Status() {
         }
       })
   }, [])
+
+  useEffect(() => {
+    fetch('/api/ranking/criadores')
+      .then(res => res.json())
+      .then(data => setCriadores(data.ranking || []))
+  }, [])
+
+  // Função para filtrar criadores pela rede social
+  const criadoresFiltrados = filtroRede === 'todos'
+    ? criadores
+    : criadores.filter(c => c.redeSocial === filtroRede)
+
+  // Top 1
+  const top1 = criadoresFiltrados[0]
+  // Restante
+  const outros = criadoresFiltrados.slice(1)
 
   // Remover animação de contagem crescente
   // useEffect do contador removida
@@ -72,7 +101,71 @@ export default function Status() {
           <section className="w-full max-w-5xl mx-auto">
             <Noticias />
           </section>
-          {/* Removido: Título, descrição, tabela de status e dica */}
+          {/* Barra de filtro de redes sociais */}
+          <div className="w-full max-w-5xl mx-auto mt-8 mb-6">
+            <div className="flex border-b border-blue-900">
+              {redes.map((rede) => (
+                <button
+                  key={rede.valor}
+                  className={`px-4 py-2 font-semibold transition-colors ${
+                    filtroRede === rede.valor
+                      ? 'text-blue-400 border-b-2 border-blue-400'
+                      : 'text-gray-400'
+                  }`}
+                  onClick={() => setFiltroRede(rede.valor)}
+                >
+                  {rede.icon && <span className="inline-block mr-2 align-middle">{rede.icon}</span>}
+                  {rede.nome}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Aqui virá o ranking real de criadores filtrado */}
+          {criadoresFiltrados.length === 0 ? (
+            <div className="w-full max-w-5xl mx-auto text-center text-gray-400 py-8">Nenhum criador encontrado para este filtro.</div>
+          ) : (
+            <div className="w-full max-w-5xl mx-auto">
+              {/* Destaque Top 1 */}
+              {top1 && (
+                <div className="flex flex-col md:flex-row items-center bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
+                  <img src={top1.avatar || '/default-avatar.png'} alt={top1.nome} className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6" />
+                  <div className="flex-1 flex flex-col items-center md:items-start">
+                    <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
+                    <h2 className="text-2xl font-bold text-sss-white mb-1">{top1.nome}</h2>
+                    <div className="flex gap-2 mb-2">
+                      {top1.redes?.twitch && <a href={top1.redes.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl"><FaTwitch /></a>}
+                      {top1.redes?.youtube && <a href={top1.redes.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl"><FaYoutube /></a>}
+                      {top1.redes?.tiktok && <a href={top1.redes.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl"><FaTiktok /></a>}
+                      {top1.redes?.instagram && <a href={top1.redes.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl"><FaInstagram /></a>}
+                    </div>
+                    <button className="mt-2 bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
+                  </div>
+                </div>
+              )}
+              {/* Lista dos demais criadores */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {outros.map((c, i) => (
+                  <div key={c.id} className="bg-sss-medium rounded-xl p-4 flex items-center gap-4 shadow-md">
+                    <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400" />
+                    <div className="flex-1">
+                      <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
+                      <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Botão Ver Classificação */}
+          <div className="flex justify-center mt-8">
+            <button
+              className="flex items-center gap-2 border border-gray-500 rounded-xl px-6 py-3 text-white text-lg font-medium hover:border-sss-accent hover:text-sss-accent transition-colors"
+              onClick={() => router.push('/ranking')}
+            >
+              <PlusIcon className="w-5 h-5 mr-2" />
+              Ver Classificação
+            </button>
+          </div>
         </main>
         {/* Footer minimalista centralizado */}
         <footer className="bg-black border-t border-sss-light mt-16">
