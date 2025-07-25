@@ -90,9 +90,18 @@ export default function Perfil() {
       })
       const data = await res.json()
       if (res.ok && data.avatarUrl) {
-        setAvatarUrl(data.avatarUrl)
-        setUser({ ...(user as any), avatarUrl: data.avatarUrl })
-        auth.setUser({ ...(user as any), avatarUrl: data.avatarUrl }) // Garante persistência
+        // Buscar perfil atualizado do usuário
+        const resPerfil = await fetch('/api/perfil');
+        if (resPerfil.ok) {
+          const userAtualizado = await resPerfil.json();
+          auth.setUser(userAtualizado);
+          setUser(userAtualizado);
+          setAvatarUrl(userAtualizado.avatarUrl || null);
+        } else {
+          setAvatarUrl(data.avatarUrl);
+          setUser({ ...(user as any), avatarUrl: data.avatarUrl });
+          auth.setUser({ ...(user as any), avatarUrl: data.avatarUrl });
+        }
       }
     } catch (err) {
       alert('Erro ao fazer upload do avatar')
