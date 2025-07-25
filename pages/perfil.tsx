@@ -166,7 +166,7 @@ export default function Perfil() {
                 <div className="w-20 h-20 bg-sss-accent/20 rounded-full flex items-center justify-center relative group">
                   {avatarUrl ? (
                     <Image
-                      src={avatarUrl}
+                      src={avatarUrl.replace('http://', 'https://')}
                       alt="Avatar do usuário"
                       width={80}
                       height={80}
