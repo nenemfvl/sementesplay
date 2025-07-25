@@ -2,9 +2,16 @@ import { NextApiRequest } from 'next';
 import jwt from 'jsonwebtoken';
 
 export function getUserFromToken(req: NextApiRequest) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return null;
-  const token = authHeader.split(' ')[1];
+  let token = null;
+  // Tenta pegar do header Authorization
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+  // Se não achar, tenta pegar do cookie
+  if (!token && req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  }
+  if (!token) return null;
   try {
     return jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as any;
   } catch {
