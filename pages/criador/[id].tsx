@@ -163,7 +163,24 @@ export default function PerfilCriador() {
   if (!criador) {
     return (
       <div className="min-h-screen bg-sss-dark flex items-center justify-center">
-        <div className="text-sss-white text-xl">Criador não encontrado</div>
+        <div className="text-center">
+          <div className="text-sss-white text-xl mb-4">Criador não encontrado</div>
+          <div className="text-gray-400 text-sm mb-4">
+            ID buscado: {id}
+          </div>
+          <div className="text-gray-400 text-sm">
+            <button 
+              onClick={() => {
+                console.log('Debug: ID do criador não encontrado:', id)
+                console.log('Debug: Router query:', router.query)
+                console.log('Debug: Router asPath:', router.asPath)
+              }}
+              className="px-4 py-2 bg-sss-accent text-white rounded-lg"
+            >
+              Ver logs no console
+            </button>
+          </div>
+        </div>
       </div>
     )
   }

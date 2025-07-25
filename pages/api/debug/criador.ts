@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { usuarioId: String(usuarioId) },
       select: {
         id: true,
+        usuarioId: true,
         nome: true,
         bio: true,
         categoria: true,
@@ -61,11 +62,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('Debug: Todos os criadores:', todosCriadores)
 
+    // Buscar todos os usuários com nível criador
+    const usuariosCriadores = await prisma.usuario.findMany({
+      where: { nivel: 'criador' },
+      select: {
+        id: true,
+        nome: true,
+        nivel: true
+      }
+    })
+
+    console.log('Debug: Usuários com nível criador:', usuariosCriadores)
+
     return res.status(200).json({
       usuario,
       criador,
       todosCriadores,
-      existeCriador: !!criador
+      usuariosCriadores,
+      existeCriador: !!criador,
+      usuarioId: String(usuarioId)
     })
   } catch (error) {
     console.error('Erro no debug:', error)
