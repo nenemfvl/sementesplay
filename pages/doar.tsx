@@ -12,6 +12,7 @@ import {
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar'
+import Image from 'next/image'
 
 export default function Doar() {
   const [selectedCreator, setSelectedCreator] = useState('')
@@ -180,18 +181,36 @@ export default function Doar() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredCreators.length > 0 ? (
                       filteredCreators.map((creator) => (
-                        <button
-                          key={creator.id}
-                          type="button"
-                          onClick={() => setSelectedCreator(creator.id.toString())}
-                          className={`p-4 rounded-lg border-2 transition-all ${
-                            selectedCreator === creator.id.toString()
-                              ? 'border-sss-accent bg-sss-accent/10'
-                              : 'border-sss-light bg-sss-dark hover:border-sss-accent/50'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <div className="text-2xl">{creator.avatar}</div>
+                                                 <button
+                           key={creator.id}
+                           type="button"
+                           onClick={() => setSelectedCreator(creator.id.toString())}
+                           className={`p-4 rounded-lg border-2 transition-all ${
+                             selectedCreator === creator.id.toString()
+                               ? 'border-sss-accent bg-sss-accent/10'
+                               : 'border-sss-light bg-sss-dark hover:border-sss-accent/50'
+                           }`}
+                         >
+                           <div className="flex items-center space-x-3">
+                             <div className="w-12 h-12 rounded-full overflow-hidden bg-sss-accent/20 flex items-center justify-center">
+                               {creator.avatarUrl ? (
+                                 <Image
+                                   src={creator.avatarUrl.replace('http://', 'https://')}
+                                   alt={`Avatar de ${creator.nome}`}
+                                   width={48}
+                                   height={48}
+                                   className="rounded-full object-cover w-12 h-12"
+                                   onError={(e) => {
+                                     // Fallback para emoji se a imagem falhar
+                                     e.currentTarget.style.display = 'none';
+                                     e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                   }}
+                                 />
+                               ) : null}
+                               <div className={`text-2xl ${creator.avatarUrl ? 'hidden' : ''}`}>
+                                 {creator.avatar || '👤'}
+                               </div>
+                             </div>
                             <div className="flex-1 text-left">
                               <div className="flex items-center space-x-2">
                                 <h3 className="font-semibold text-sss-white">{creator.nome}</h3>
