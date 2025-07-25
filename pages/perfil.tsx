@@ -215,13 +215,6 @@ export default function Perfil() {
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Botão Voltar */}
-          <div className="mb-6">
-            <Link href="/dashboard" className="inline-flex items-center text-sss-accent hover:text-red-400 transition-colors">
-              <ArrowLeftIcon className="w-5 h-5 mr-2" />
-              Voltar ao Dashboard
-            </Link>
-          </div>
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}
