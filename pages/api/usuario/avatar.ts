@@ -27,7 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (err) {
       return res.status(400).json({ error: 'Erro no upload da imagem' });
     }
-    const file = files.avatar as formidable.File;
+    const fileField = files.avatar;
+    const file = Array.isArray(fileField) ? fileField[0] : fileField;
     if (!file) {
       return res.status(400).json({ error: 'Arquivo não enviado' });
     }
