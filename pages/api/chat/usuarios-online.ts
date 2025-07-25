@@ -1,35 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Client } from 'pg'
 
-const connectionString = process.env.DATABASE_URL || ''
+// Armazena os usuários online em memória (para produção, use Redis ou DB)
+let usuariosOnline: Record<string, number> = {}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const client = new Client({ connectionString })
-  await client.connect()
-
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('API usuarios-online chamada:', req.method)
   if (req.method === 'POST') {
     const { userId } = req.body
-    if (userId) {
-      await client.query(
-        `INSERT INTO usuarios_online (usuario_id, atualizado_em)
-         VALUES ($1, NOW())
-         ON CONFLICT (usuario_id) DO UPDATE SET atualizado_em = NOW()`,
-        [userId]
-      )
-    }
-    await client.end()
-    return res.status(200).json({ success: true })
+    if (!userId) return res.status(400).json({ error: 'userId obrigatório' })
+    usuariosOnline[userId] = Date.now()
+    return res.status(200).json({ ok: true })
   }
-
   if (req.method === 'GET') {
-    // Retorna usuários que deram ping nos últimos 20 segundos
-    const { rows } = await client.query(
-      `SELECT usuario_id FROM usuarios_online WHERE atualizado_em > NOW() - INTERVAL '20 seconds'`
+    const agora = Date.now()
+    const online = Object.keys(usuariosOnline).filter(
+      id => agora - usuariosOnline[id] < 30000 // 30 segundos
     )
-    await client.end()
-    return res.status(200).json({ online: rows.map(r => r.usuario_id) })
+    return res.status(200).json({ online })
   }
-
-  await client.end()
-  return res.status(405).json({ error: 'Método não permitido' })
+  res.setHeader('Allow', ['POST', 'GET'])
+  res.status(405).end(`Method ${req.method} Not Allowed`)
 } 
