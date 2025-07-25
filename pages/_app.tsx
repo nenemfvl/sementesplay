@@ -10,20 +10,13 @@ import { auth } from '../lib/auth'
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
     const user = auth.getUser()
-    if (!user) {
-      console.log('Ping PRESENÇA: Usuário não encontrado')
-      return
-    }
+    if (!user) return
     const ping = () => {
-      console.log('Ping PRESENÇA: Enviando para userId', user.id)
       fetch('/api/chat/usuarios-online', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })
       })
-        .then(res => res.json())
-        .then(data => console.log('Ping PRESENÇA: Resposta', data))
-        .catch(err => console.error('Ping PRESENÇA: Erro', err))
     }
     ping()
     const interval = setInterval(ping, 10000)

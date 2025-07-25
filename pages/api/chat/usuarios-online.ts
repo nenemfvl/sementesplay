@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 let usuariosOnline: Record<string, number> = {}
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('API usuarios-online chamada:', req.method)
   if (req.method === 'POST') {
     const { userId } = req.body
     if (!userId) return res.status(400).json({ error: 'userId obrigatório' })
