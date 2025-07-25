@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
+import Noticias from '../components/Noticias';
 
 const statusList = [
   { nome: 'Cashback', status: 'ok', descricao: 'Sistema de cashback funcionando normalmente.' },
@@ -83,6 +84,8 @@ export default function Status() {
               <span className="text-2xl md:text-3xl">🌱</span>
             </div>
           </div>
+          {/* Notícias */}
+          <Noticias />
           <h1 className="text-3xl font-bold text-sss-accent mb-4">Status do Sistema</h1>
           <p className="text-gray-300 mb-8 text-center max-w-xl">Aqui você acompanha o funcionamento dos principais serviços do SementesPLAY. Em caso de instabilidade, consulte esta página antes de abrir um chamado de suporte.</p>
           <div className="w-full max-w-2xl bg-sss-medium rounded-lg border border-sss-light p-6 mb-8">
