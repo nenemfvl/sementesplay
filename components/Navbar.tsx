@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { ArrowLeftOnRectangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 
@@ -63,7 +63,25 @@ export default function Navbar() {
       <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-4 px-6">
         {user ? (
           <>
-            <span className="text-sss-accent font-bold">{user.nome}</span>
+            <div className="flex items-center gap-2">
+              {/* Avatar do usuário */}
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-sss-accent flex items-center justify-center">
+                {user.avatarUrl ? (
+                  <img 
+                    src={user.avatarUrl} 
+                    alt={`Avatar de ${user.nome}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback para ícone se a imagem falhar
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                <UserIcon className={`w-5 h-5 text-white ${user.avatarUrl ? 'hidden' : ''}`} />
+              </div>
+              <span className="text-sss-accent font-bold">{user.nome}</span>
+            </div>
             {/* Dropdown de redes sociais */}
             <div className="relative inline-block text-left">
               <button
