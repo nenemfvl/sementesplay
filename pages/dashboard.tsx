@@ -55,34 +55,54 @@ export default function Dashboard() {
     // Buscar dados do criador se o usuário for um criador
     const fetchCriadorData = async () => {
       try {
+        console.log('Buscando dados do criador para usuário:', user.id)
         const response = await fetch(`/api/criadores?usuarioId=${user.id}`)
+        console.log('Resposta da API criadores:', response.status)
+        
         if (response.ok) {
           const data = await response.json()
+          console.log('Dados recebidos:', data)
+          
           if (data.criadores && data.criadores.length > 0) {
+            console.log('Criador encontrado:', data.criadores[0])
             setCriadorId(data.criadores[0].id)
+          } else {
+            console.log('Nenhum criador encontrado para este usuário')
           }
+        } else {
+          console.error('Erro na resposta da API:', response.status)
         }
       } catch (error) {
         console.error('Erro ao buscar dados do criador:', error)
       }
     }
 
-    Promise.all([
-      fetch(`/api/perfil/stats?usuarioId=${user.id}`).then(r => r.json()),
-      fetch('/api/analytics/performers?period=7d').then(r => r.json()),
-      fetch('/api/criadores').then(r => r.json()),
-      fetchCriadorData()
-    ]).then(([statsData, performersData, criadoresData]) => {
-      setStats(statsData)
-      setTopCreators(performersData.creators || [])
-      setCriadores(criadoresData.criadores || [])
-      setLoadingData(false)
-    }).catch(() => {
-      setStats(null)
-      setTopCreators([])
-      setCriadores([])
-      setLoadingData(false)
-    })
+    const fetchData = async () => {
+      try {
+        const [statsData, performersData, criadoresData] = await Promise.all([
+          fetch(`/api/perfil/stats?usuarioId=${user.id}`).then(r => r.json()),
+          fetch('/api/analytics/performers?period=7d').then(r => r.json()),
+          fetch('/api/criadores').then(r => r.json())
+        ])
+        
+        setStats(statsData)
+        setTopCreators(performersData.creators || [])
+        setCriadores(criadoresData.criadores || [])
+        
+        // Buscar dados do criador separadamente
+        await fetchCriadorData()
+        
+        setLoadingData(false)
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error)
+        setStats(null)
+        setTopCreators([])
+        setCriadores([])
+        setLoadingData(false)
+      }
+    }
+
+    fetchData()
   }, [user])
 
   useEffect(() => {
@@ -382,7 +402,7 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     <div className="space-y-3">
-                      {user.nivel === 'criador' ? (
+                      {(user.nivel === 'criador' || criadorId) ? (
                         <div className="flex items-center space-x-3 p-3 bg-sss-dark rounded-lg">
                           <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
                             <StarIcon className="w-5 h-5 text-sss-accent" />
