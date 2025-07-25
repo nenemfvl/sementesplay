@@ -15,8 +15,10 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     console.log('Tentando fazer login...');
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    console.log('Depois do preventDefault');
+    setError(null);
+    console.log('Antes do fetch');
 
     // Log para garantir que está no navegador
     console.log('window:', typeof window, window ? 'existe' : 'NÃO existe');
