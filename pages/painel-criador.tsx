@@ -135,19 +135,19 @@ export default function PainelCriador() {
   const linkDivulgacao = perfil && (perfil.id || perfil.nome) ? `https://sementesplay.com/c/${perfil.id || perfil.nome}` : '';
 
   // Estatísticas calculadas
-  const totalVisualizacoes = conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0);
-  const totalCurtidas = conteudos.reduce((acc, c) => acc + (c as any).curtidas || 0, 0);
-  const totalComentarios = conteudos.reduce((acc, c) => acc + (c as any).comentarios || 0, 0);
-  const totalCompartilhamentos = conteudos.reduce((acc, c) => acc + (c as any).compartilhamentos || 0, 0);
+  const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
+  const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).curtidas || 0, 0) : 0;
+  const totalComentarios = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).comentarios || 0, 0) : 0;
+  const totalCompartilhamentos = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).compartilhamentos || 0, 0) : 0;
 
   function handleFixarConteudo(id: string, fixar: boolean) {
     setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado: fixar } : (fixar ? { ...c, fixado: false } : c)));
     // Aqui você pode fazer um fetch PUT para atualizar no backend se desejar
   }
 
-  const categorias = Array.from(new Set(conteudos.map((c: any) => c.categoria).filter(Boolean)));
-  const conteudoFixado = conteudos.find((c: any) => c.fixado);
-  const conteudosFiltrados = conteudos.filter((c: any) => (!categoriaFiltro || c.categoria === categoriaFiltro) && (!conteudoFixado || c.id !== conteudoFixado.id));
+  const categorias = Array.isArray(conteudos) ? Array.from(new Set(conteudos.map((c: any) => c.categoria).filter(Boolean))) : [];
+  const conteudoFixado = Array.isArray(conteudos) ? conteudos.find((c: any) => c.fixado) : undefined;
+  const conteudosFiltrados = Array.isArray(conteudos) ? conteudos.filter((c: any) => (!categoriaFiltro || c.categoria === categoriaFiltro) && (!conteudoFixado || c.id !== conteudoFixado?.id)) : [];
 
   // Só carregar dados se estiver autorizado
   useEffect(() => {
@@ -635,7 +635,7 @@ export default function PainelCriador() {
             <h2 className="text-lg font-bold mb-2">Missões</h2>
             {loadingMissoes ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : missoes.length > 0 ? (
+            ) : Array.isArray(missoes) && missoes.length > 0 ? (
               <ul className="space-y-2">
                 {missoes.map(m => (
                   <li key={m.id} className="border rounded p-2">
@@ -652,7 +652,7 @@ export default function PainelCriador() {
             <h2 className="text-lg font-bold mb-2">Conquistas</h2>
             {loadingConquistas ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : conquistas.length > 0 ? (
+            ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
               <ul className="space-y-2">
                 {conquistas.map(c => (
                   <li key={c.id} className="border rounded p-2">
@@ -672,7 +672,7 @@ export default function PainelCriador() {
             <h2 className="text-lg font-bold mb-2">Histórico de Doações</h2>
             {loadingDoacoes ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : doacoes.length > 0 ? (
+            ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
               <ul className="space-y-2">
                 {doacoes.map(d => (
                   <li key={d.id} className="border rounded p-2 flex flex-col">
@@ -691,7 +691,7 @@ export default function PainelCriador() {
             <h2 className="text-lg font-bold mb-2">Ranking de Doadores</h2>
             {loadingRanking ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : ranking.length > 0 ? (
+            ) : Array.isArray(ranking) && ranking.length > 0 ? (
               <ol className="space-y-2 list-decimal list-inside">
                 {ranking.map((d, i) => (
                   <li key={d.id} className="border rounded p-2 flex justify-between items-center">
@@ -770,7 +770,7 @@ export default function PainelCriador() {
             <h3 className="font-bold mb-2">Notificações</h3>
             {loadingNotificacoes ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : notificacoes.length > 0 ? (
+            ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
               <ul className="space-y-2">
                 {notificacoes.map(n => (
                   <li key={n.id} className="border rounded p-2">
@@ -814,7 +814,7 @@ export default function PainelCriador() {
             </form>
             {loadingEnquetes ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : enquetes.length > 0 ? (
+            ) : Array.isArray(enquetes) && enquetes.length > 0 ? (
               <ul className="space-y-2">
                 {enquetes.map(e => (
                   <li key={e.id} className="border rounded p-2">
@@ -842,7 +842,7 @@ export default function PainelCriador() {
             <h2 className="text-lg font-bold mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
             {loadingRecados ? (
               <span className="text-gray-400">Carregando...</span>
-            ) : recados.length > 0 ? (
+            ) : Array.isArray(recados) && recados.length > 0 ? (
               <ul className="space-y-2">
                 {recados.map(r => (
                   <li key={r.id} className="border rounded p-2">
