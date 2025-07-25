@@ -36,12 +36,21 @@ export default function Login() {
         if (data.usuario) {
           auth.setUser(data.usuario, data.token)
           console.log('Usuário salvo no localStorage:', data.usuario)
+          // Confirmação extra
+          setTimeout(() => {
+            const userLS = localStorage.getItem('sementesplay_user');
+            console.log('Usuário no localStorage após login:', userLS);
+            window.location.href = '/';
+          }, 200);
         } else {
           auth.setUser(data)
           console.log('Usuário salvo no localStorage (fallback):', data)
+          setTimeout(() => {
+            const userLS = localStorage.getItem('sementesplay_user');
+            console.log('Usuário no localStorage após login:', userLS);
+            window.location.href = '/';
+          }, 200);
         }
-        // Redirecionar para a página principal
-        window.location.href = '/'
       } else {
         setError(data.error || 'Erro ao fazer login. Tente novamente.')
       }
