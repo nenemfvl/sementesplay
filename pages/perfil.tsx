@@ -16,6 +16,8 @@ import {
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import Image from 'next/image'
+import Cropper from 'react-easy-crop'
+import Modal from 'react-modal'
 
 export default function Perfil() {
   const [user, setUser] = useState<User | null>(null)
@@ -24,6 +26,11 @@ export default function Perfil() {
   const [activeTab, setActiveTab] = useState('overview')
   const [uploading, setUploading] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -90,13 +97,60 @@ export default function Perfil() {
     }
   }
 
+  const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels)
+  }
+
+  const showCropModal = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      setSelectedImage(reader.result as string)
+      setCropModalOpen(true)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const getCroppedImg = async (imageSrc: string, crop: any) => {
+    const image = new window.Image()
+    image.src = imageSrc
+    await new Promise((resolve) => { image.onload = resolve })
+    const canvas = document.createElement('canvas')
+    canvas.width = crop.width
+    canvas.height = crop.height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('Falha ao obter contexto do canvas')
+    ctx.drawImage(
+      image,
+      crop.x,
+      crop.y,
+      crop.width,
+      crop.height,
+      0,
+      0,
+      crop.width,
+      crop.height
+    )
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob)
+        else reject(new Error('Falha ao gerar imagem'))
+      }, 'image/jpeg')
+    })
+  }
+
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !user) return
     const file = e.target.files[0]
-    const formData = new FormData()
-    formData.append('avatar', file)
-    formData.append('usuarioId', user.id)
+    showCropModal(file)
+  }
+
+  const handleCropSave = async () => {
+    if (!selectedImage || !croppedAreaPixels || !user) return
     setUploading(true)
+    const croppedBlob = await getCroppedImg(selectedImage, croppedAreaPixels)
+    const formData = new FormData()
+    formData.append('avatar', croppedBlob, 'avatar.jpg')
+    formData.append('usuarioId', user.id)
     try {
       const res = await fetch('/api/usuario/avatar', {
         method: 'POST',
@@ -104,7 +158,6 @@ export default function Perfil() {
       })
       const data = await res.json()
       if (res.ok && data.avatarUrl) {
-        // Buscar perfil atualizado do usuário
         const resPerfil = await fetch('/api/perfil');
         if (resPerfil.ok) {
           const userAtualizado = await resPerfil.json();
@@ -121,6 +174,8 @@ export default function Perfil() {
       alert('Erro ao fazer upload do avatar')
     } finally {
       setUploading(false)
+      setCropModalOpen(false)
+      setSelectedImage(null)
     }
   }
 
@@ -462,6 +517,38 @@ export default function Perfil() {
           </motion.div>
         </div>
       </div>
+
+      {/* Modal de Crop de Avatar */}
+      <Modal
+        isOpen={cropModalOpen}
+        onRequestClose={() => setCropModalOpen(false)}
+        contentLabel="Ajustar avatar"
+        ariaHideApp={false}
+        className="flex items-center justify-center fixed inset-0 z-50 bg-black bg-opacity-60"
+      >
+        <div className="bg-white rounded-lg p-6 flex flex-col items-center">
+          <h2 className="mb-4 text-lg font-bold">Ajuste sua foto de perfil</h2>
+          {selectedImage && (
+            <div className="relative w-64 h-64">
+              <Cropper
+                image={selectedImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+          )}
+          <div className="flex gap-4 mt-4">
+            <button onClick={() => setCropModalOpen(false)} className="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+            <button onClick={handleCropSave} className="px-4 py-2 bg-sss-accent text-white rounded" disabled={uploading}>{uploading ? 'Salvando...' : 'Salvar'}</button>
+          </div>
+        </div>
+      </Modal>
     </>
   )
 } 
