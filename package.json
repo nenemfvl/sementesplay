@@ -62,5 +62,17 @@
     "sementes"
   ],
   "author": "SementesPLAY Team",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "next.config.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nenemfvl/sementesplay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nenemfvl/sementesplay/issues"
+  },
+  "homepage": "https://github.com/nenemfvl/sementesplay#readme"
 }
