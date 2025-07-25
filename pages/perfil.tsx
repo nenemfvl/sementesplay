@@ -55,6 +55,18 @@ export default function Perfil() {
         }
       })
       .catch(err => console.error('Erro ao buscar perfil autenticado:', err))
+
+    // Buscar sessão autenticada com token
+    fetch('/api/auth/session', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.user) {
+          // Sessão válida, pode atualizar estado se quiser
+        }
+      })
+      .catch(err => console.error('Erro ao buscar sessão autenticada:', err))
   }, [])
 
   const loadStats = async () => {
