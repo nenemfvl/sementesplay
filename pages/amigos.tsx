@@ -47,6 +47,9 @@ export default function Amigos() {
   const [activeTab, setActiveTab] = useState('amigos')
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('todos')
+  const [onlineIds, setOnlineIds] = useState<string[]>([])
+  const [searchResults, setSearchResults] = useState<Amigo[]>([])
+  const [searching, setSearching] = useState(false)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -62,6 +65,96 @@ export default function Amigos() {
       loadDados()
     }
   }, [user])
+
+  useEffect(() => {
+    if (!user) return;
+    const ping = () => {
+      fetch('/api/chat/usuarios-online', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id })
+      });
+    };
+    ping();
+    const interval = setInterval(ping, 10000); // a cada 10s
+    return () => clearInterval(interval);
+  }, [user]);
+
+  // Buscar lista de usuários online periodicamente
+  useEffect(() => {
+    const fetchOnline = async () => {
+      try {
+        const res = await fetch('/api/chat/usuarios-online')
+        const data = await res.json()
+        setOnlineIds(data.online || [])
+      } catch {}
+    }
+    fetchOnline()
+    const interval = setInterval(fetchOnline, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Função para buscar usuários globalmente
+  const buscarUsuarios = async (q: string) => {
+    if (!q || q.length < 2) {
+      setSearchResults([])
+      return
+    }
+    setSearching(true)
+    const token = localStorage.getItem('sementesplay_token')
+    const res = await fetch(`/api/usuarios?query=${encodeURIComponent(q)}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
+    const data = await res.json()
+    setSearchResults(data.usuarios || [])
+    setSearching(false)
+  }
+
+  // Barra de pesquisa global
+  // <input
+  //   type="text"
+  //   placeholder="Buscar pessoas por nome ou e-mail..."
+  //   className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent mb-4"
+  //   value={searchTerm}
+  //   onChange={e => {
+  //     setSearchTerm(e.target.value)
+  //     buscarUsuarios(e.target.value)
+  //   }}
+  // />
+
+  // Renderizar resultados da busca global
+  // {searching ? <div>Buscando...</div> : searchResults.length > 0 && (
+  //   <div className="space-y-4">
+  //     {searchResults.map(usuario => (
+  //       <div key={usuario.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg border border-sss-light">
+  //         <div className="flex items-center space-x-4">
+  //           <div className="relative">
+  //             <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
+  //               <span className="text-lg">👤</span>
+  //             </div>
+  //             <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-sss-dark ${onlineIds.includes(usuario.id) ? 'bg-green-500' : 'bg-gray-500'}`}></span>
+  //           </div>
+  //           <div>
+  //             <h3 className="text-sss-white font-semibold">{usuario.nome}</h3>
+  //             <p className="text-gray-400 text-sm">{usuario.email}</p>
+  //             <div className="flex items-center space-x-4 mt-1">
+  //               <span className="text-xs text-gray-500">Nível {usuario.nivel}</span>
+  //               <span className="text-xs text-sss-accent">{usuario.sementes} 🌱</span>
+  //             </div>
+  //           </div>
+  //         </div>
+  //         {/* Se não for amigo, botão de adicionar */}
+  //         {!amigos.some(a => a.id === usuario.id) && (
+  //           <button onClick={() => enviarSolicitacao(usuario.id)} className="px-4 py-2 bg-sss-accent text-white rounded">Adicionar</button>
+  //         )}
+  //         {/* Se já for amigo, mostrar texto */}
+  //         {amigos.some(a => a.id === usuario.id) && (
+  //           <span className="text-xs text-green-400">Já é seu amigo</span>
+  //         )}
+  //       </div>
+  //     ))}
+  //   </div>
+  // )}
 
   const loadDados = async () => {
     try {
@@ -306,6 +399,54 @@ export default function Amigos() {
               <p className="text-gray-400">
                 Conecte-se com outros membros da comunidade
               </p>
+
+              {/* Barra de pesquisa global */}
+              <input
+                type="text"
+                placeholder="Buscar pessoas por nome ou e-mail..."
+                className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent mb-4 mt-4"
+                value={searchTerm}
+                onChange={e => {
+                  setSearchTerm(e.target.value)
+                  buscarUsuarios(e.target.value)
+                }}
+              />
+
+              {/* Resultados da busca global */}
+              {searching ? (
+                <div className="text-gray-400">Buscando...</div>
+              ) : searchResults.length > 0 && (
+                <div className="space-y-4 mb-8">
+                  {searchResults.map(usuario => (
+                    <div key={usuario.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg border border-sss-light">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                            <span className="text-lg">👤</span>
+                          </div>
+                          <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-sss-dark ${onlineIds.includes(usuario.id) ? 'bg-green-500' : 'bg-gray-500'}`}></span>
+                        </div>
+                        <div>
+                          <h3 className="text-sss-white font-semibold">{usuario.nome}</h3>
+                          <p className="text-gray-400 text-sm">{usuario.email}</p>
+                          <div className="flex items-center space-x-4 mt-1">
+                            <span className="text-xs text-gray-500">Nível {usuario.nivel}</span>
+                            <span className="text-xs text-sss-accent">{usuario.sementes} 🌱</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Se não for amigo, botão de adicionar */}
+                      {!amigos.some(a => a.id === usuario.id) && (
+                        <button onClick={() => enviarSolicitacao(usuario.id)} className="px-4 py-2 bg-sss-accent text-white rounded">Adicionar</button>
+                      )}
+                      {/* Se já for amigo, mostrar texto */}
+                      {amigos.some(a => a.id === usuario.id) && (
+                        <span className="text-xs text-green-400">Já é seu amigo</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Tabs */}
@@ -412,7 +553,7 @@ export default function Amigos() {
                                 <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
                                   <span className="text-lg">👤</span>
                                 </div>
-                                <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(amigo.status)} rounded-full border-2 border-sss-dark`}></div>
+                                <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-sss-dark ${onlineIds.includes(amigo.id) ? 'bg-green-500' : 'bg-gray-500'}`}></span>
                               </div>
                               
                               <div>
@@ -552,8 +693,11 @@ export default function Amigos() {
                           className="flex items-center justify-between p-4 bg-sss-dark rounded-lg border border-sss-light"
                         >
                           <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                              <span className="text-lg">👤</span>
+                            <div className="relative">
+                              <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                <span className="text-lg">👤</span>
+                              </div>
+                              <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-sss-dark ${onlineIds.includes(usuario.id) ? 'bg-green-500' : 'bg-gray-500'}`}></span>
                             </div>
                             
                             <div>
