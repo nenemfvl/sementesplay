@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       },
       orderBy: {
-        dataCriacao: 'desc'
+        data: 'desc' // Campo correto é 'data', não 'dataCriacao'
       },
       take: 10 // Limitar a 10 doações mais recentes
     })
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: doacao.id,
       usuario: doacao.doador.nome,
       valor: doacao.quantidade,
-      data: doacao.dataCriacao.toISOString().split('T')[0], // Formato YYYY-MM-DD
+      data: doacao.data.toISOString().split('T')[0], // Formato YYYY-MM-DD
       mensagem: doacao.mensagem || null,
       avatarUrl: doacao.doador.avatarUrl
     }))

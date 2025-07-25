@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             nivel: true
           }
         },
-        doacoes: {
+        doacoesRecebidas: {
           select: {
             id: true,
             quantidade: true
@@ -42,8 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Calcular estatísticas
-    const totalSementes = criador.doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
-    const numeroDoacoes = criador.doacoes.length
+    const totalSementes = criador.doacoesRecebidas.reduce((sum, doacao) => sum + doacao.quantidade, 0)
+    const numeroDoacoes = criador.doacoesRecebidas.length
 
     // Buscar posição no ranking
     const ranking = await prisma.$queryRaw`
@@ -58,6 +58,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const posicao = ranking.findIndex(item => item.id === id) + 1
 
+    // Parsear redes sociais do JSON string
+    let redesSociais = {}
+    try {
+      redesSociais = JSON.parse(criador.redesSociais || '{}')
+    } catch (e) {
+      redesSociais = {}
+    }
+
     // Formatar dados para o frontend
     const criadorFormatado = {
       id: criador.id,
@@ -66,14 +74,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       avatar: criador.usuario.avatarUrl,
       bio: criador.bio,
       sementes: totalSementes,
-      apoiadores: criador.seguidores || 0,
+      apoiadores: criador.apoiadores || 0,
       doacoes: numeroDoacoes,
       posicao: posicao,
-      redesSociais: {
-        youtube: criador.youtubeUrl,
-        twitch: criador.twitchUrl,
-        instagram: criador.instagramUrl
-      }
+      redesSociais: redesSociais
     }
 
     res.status(200).json({ criador: criadorFormatado })
