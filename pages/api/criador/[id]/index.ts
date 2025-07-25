@@ -101,7 +101,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({ criador: criadorFormatado })
   } catch (error) {
     console.error('Erro ao buscar dados do criador:', error)
-    console.error('Detalhes do erro:', error.message)
-    res.status(500).json({ error: 'Erro interno do servidor', details: error.message })
+    console.error('Detalhes do erro:', error instanceof Error ? error.message : String(error))
+    res.status(500).json({ 
+      error: 'Erro interno do servidor', 
+      details: error instanceof Error ? error.message : String(error) 
+    })
   }
 } 
