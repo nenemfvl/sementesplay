@@ -73,9 +73,9 @@ export default function Status() {
           </button>
           <Navbar />
         </header>
-        <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
-          {/* Contador de Sementes */}
-          <div className="flex flex-col items-center mb-16">
+        <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
+          {/* Contador de Sementes - bloco destacado */}
+          <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-gradient-to-r from-yellow-300/10 via-sss-accent/10 to-green-400/10 rounded-2xl shadow-lg py-10 mb-10">
             <span className="text-gray-400 text-base mb-2">Sementes em circulação</span>
             <div className="flex items-center gap-3">
               <span className="text-7xl md:text-8xl font-extrabold drop-shadow-2xl animate-pulse bg-gradient-to-r from-yellow-300 via-sss-accent to-green-400 bg-clip-text text-transparent transition-all duration-700 shadow-lg" style={{ textShadow: '0 0 32px #ffe066, 0 0 8px #fff' }}>
@@ -83,9 +83,11 @@ export default function Status() {
               </span>
               <span className="text-5xl md:text-6xl">🌱</span>
             </div>
-          </div>
-          {/* Notícias */}
-          <Noticias />
+          </section>
+          {/* Notícias alinhadas à esquerda, como no exemplo */}
+          <section className="w-full max-w-5xl mx-auto">
+            <Noticias />
+          </section>
           {/* Removido: Título, descrição, tabela de status e dica */}
         </main>
         {/* Footer minimalista centralizado */}
