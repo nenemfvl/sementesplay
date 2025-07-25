@@ -69,6 +69,26 @@ export default function Dashboard() {
             console.log('Criador encontrado via debug:', debugData.criador)
             setCriadorId(debugData.criador.id)
             return
+          } else if (debugData.usuario && debugData.usuario.nivel === 'criador') {
+            console.log('Usuário tem nível criador mas não existe na tabela Criador. Criando...')
+            
+            // Criar o registro de criador automaticamente
+            const criarResponse = await fetch('/api/criador/criar', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ usuarioId: user.id })
+            })
+            
+            if (criarResponse.ok) {
+              const criarData = await criarResponse.json()
+              console.log('Criador criado com sucesso:', criarData)
+              setCriadorId(criarData.criador.id)
+              return
+            } else {
+              console.error('Erro ao criar criador:', criarResponse.status)
+            }
           }
         }
         
