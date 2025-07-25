@@ -1,21 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
+import { auth } from '../../../lib/auth'
 
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Verificar autenticação
+  const user = auth.getUser();
+  if (!user) {
+    return res.status(401).json({ error: 'Usuário não autenticado' });
+  }
+
   if (req.method === 'GET') {
     try {
-      const { usuarioId } = req.query
-
-      if (!usuarioId) {
-        return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+      // Verificar se é criador para ver recados
+      if (user.nivel !== 'criador') {
+        return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem acessar recados.' });
       }
 
-      // Buscar recados recebidos pelo usuário
+      // Buscar recados recebidos pelo usuário criador
       const recados = await prisma.recado.findMany({
         where: {
-          destinatarioId: String(usuarioId)
+          destinatarioId: user.id
         },
         include: {
           remetente: {
@@ -52,15 +58,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { remetenteId, destinatarioId, titulo, mensagem } = req.body
+      const { destinatarioId, titulo, mensagem } = req.body
 
-      if (!remetenteId || !destinatarioId || !titulo || !mensagem) {
+      if (!destinatarioId || !titulo || !mensagem) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
       }
 
       const novoRecado = await prisma.recado.create({
         data: {
-          remetenteId: String(remetenteId),
+          remetenteId: user.id,
           destinatarioId: String(destinatarioId),
           titulo: String(titulo),
           mensagem: String(mensagem)

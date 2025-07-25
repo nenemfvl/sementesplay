@@ -1,9 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
+import { auth } from '../../../lib/auth'
 
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Verificar autenticação
+  const user = auth.getUser();
+  if (!user) {
+    return res.status(401).json({ error: 'Usuário não autenticado' });
+  }
+
   if (req.method === 'GET') {
     try {
       // Buscar enquetes ativas
@@ -68,15 +75,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { criadorId, pergunta, opcoes } = req.body
+      // Verificar se é criador para criar enquetes
+      if (user.nivel !== 'criador') {
+        return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem criar enquetes.' });
+      }
 
-      if (!criadorId || !pergunta || !opcoes || !Array.isArray(opcoes)) {
+      const { pergunta, opcoes } = req.body
+
+      if (!pergunta || !opcoes || !Array.isArray(opcoes)) {
         return res.status(400).json({ error: 'Dados inválidos' })
+      }
+
+      // Buscar o criador do usuário
+      const criador = await prisma.criador.findUnique({
+        where: { usuarioId: user.id }
+      });
+
+      if (!criador) {
+        return res.status(403).json({ error: 'Criador não encontrado' });
       }
 
       const novaEnquete = await prisma.enquete.create({
         data: {
-          criadorId: String(criadorId),
+          criadorId: criador.id,
           pergunta: String(pergunta),
           opcoes: JSON.stringify(opcoes),
           ativa: true

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
+import { auth } from '../lib/auth';
 
 type Conteudo = {
   id: string;
@@ -104,6 +105,32 @@ export default function PainelCriador() {
   const [integracoes, setIntegracoes] = useState<Integracoes>({});
   const [salvandoIntegracoes, setSalvandoIntegracoes] = useState(false);
   const [integracoesStatus, setIntegracoesStatus] = useState<'idle'|'salvo'>('idle');
+  const [authorized, setAuthorized] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Verificação de autenticação e autorização
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = auth.getUser();
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Verificar se o usuário é um criador
+      if (user.nivel !== 'criador') {
+        alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      setAuthorized(true);
+      setCheckingAuth(false);
+    };
+
+    checkAuth();
+  }, []);
+
   // Supondo que o perfil tem um campo id ou nome único
   const linkDivulgacao = perfil && (perfil.id || perfil.nome) ? `https://sementesplay.com/c/${perfil.id || perfil.nome}` : '';
 
@@ -122,7 +149,10 @@ export default function PainelCriador() {
   const conteudoFixado = conteudos.find((c: any) => c.fixado);
   const conteudosFiltrados = conteudos.filter((c: any) => (!categoriaFiltro || c.categoria === categoriaFiltro) && (!conteudoFixado || c.id !== conteudoFixado.id));
 
+  // Só carregar dados se estiver autorizado
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchConteudos() {
       setLoading(true);
       try {
@@ -135,9 +165,11 @@ export default function PainelCriador() {
       setLoading(false);
     }
     fetchConteudos();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchMissoes() {
       setLoadingMissoes(true);
       try {
@@ -162,9 +194,11 @@ export default function PainelCriador() {
     }
     fetchMissoes();
     fetchConquistas();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchDoacoes() {
       setLoadingDoacoes(true);
       try {
@@ -189,9 +223,11 @@ export default function PainelCriador() {
     }
     fetchDoacoes();
     fetchRanking();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchNotificacoes() {
       setLoadingNotificacoes(true);
       try {
@@ -204,9 +240,11 @@ export default function PainelCriador() {
       setLoadingNotificacoes(false);
     }
     fetchNotificacoes();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchPerfil() {
       setLoadingPerfil(true);
       try {
@@ -219,9 +257,11 @@ export default function PainelCriador() {
       setLoadingPerfil(false);
     }
     fetchPerfil();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchRecados() {
       setLoadingRecados(true);
       try {
@@ -234,9 +274,11 @@ export default function PainelCriador() {
       setLoadingRecados(false);
     }
     fetchRecados();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchEnquetes() {
       setLoadingEnquetes(true);
       try {
@@ -249,9 +291,11 @@ export default function PainelCriador() {
       setLoadingEnquetes(false);
     }
     fetchEnquetes();
-  }, []);
+  }, [authorized]);
 
   useEffect(() => {
+    if (!authorized) return;
+
     async function fetchIntegracoes() {
       try {
         const res = await fetch('/api/perfil/integracoes');
@@ -262,7 +306,7 @@ export default function PainelCriador() {
       }
     }
     fetchIntegracoes();
-  }, []);
+  }, [authorized]);
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
@@ -463,6 +507,20 @@ export default function PainelCriador() {
         link: `https://www.youtube.com/watch?v=${id}`
       };
     }
+    return null;
+  }
+
+  // Mostrar loading enquanto verifica autorização
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
+        <div className="text-sss-white text-xl">Verificando autorização...</div>
+      </div>
+    );
+  }
+
+  // Se não estiver autorizado, não renderizar nada (já foi redirecionado)
+  if (!authorized) {
     return null;
   }
 
