@@ -45,13 +45,13 @@ export default function Login() {
             console.log('Usuário salvo no localStorage:', data.usuario)
             const userLS = localStorage.getItem('sementesplay_user');
             console.log('Usuário no localStorage após login:', userLS);
-            window.location.href = '/perfil';
+            window.location.href = '/';
           } else {
             auth.setUser(data)
             console.log('Usuário salvo no localStorage (fallback):', data)
             const userLS = localStorage.getItem('sementesplay_user');
             console.log('Usuário no localStorage após login:', userLS);
-            window.location.href = '/perfil';
+            window.location.href = '/';
           }
         } else {
           console.log('Tentativa de salvar usuário fora do navegador!')
