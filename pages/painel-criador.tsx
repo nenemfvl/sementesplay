@@ -37,16 +37,7 @@ type Notificacao = {
   mensagem: string;
   data: string;
 };
-type Perfil = {
-  id?: string;
-  nome?: string;
-  fotoPerfil?: string;
-  banner?: string;
-  bio?: string;
-  descricao?: string;
-  tags?: string;
-  tema?: string;
-};
+
 type Recado = {
   id: string;
   usuarioNome: string;
@@ -86,10 +77,7 @@ export default function PainelCriador() {
   const [loadingNotificacoes, setLoadingNotificacoes] = useState(true);
   const [suporteMsg, setSuporteMsg] = useState('');
   const [suporteStatus, setSuporteStatus] = useState<'idle'|'enviando'|'enviado'>('idle');
-  const [perfil, setPerfil] = useState<Perfil>({});
-  const [loadingPerfil, setLoadingPerfil] = useState(true);
-  const [salvandoPerfil, setSalvandoPerfil] = useState(false);
-  const [perfilStatus, setPerfilStatus] = useState<'idle'|'salvo'>('idle');
+
   const [categoriaFiltro, setCategoriaFiltro] = useState('');
   const [recados, setRecados] = useState<Recado[]>([]);
   const [loadingRecados, setLoadingRecados] = useState(true);
@@ -131,8 +119,8 @@ export default function PainelCriador() {
     checkAuth();
   }, []);
 
-  // Supondo que o perfil tem um campo id ou nome único
-  const linkDivulgacao = perfil && (perfil.id || perfil.nome) ? `https://sementesplay.com/c/${perfil.id || perfil.nome}` : '';
+  // Link de divulgação temporário
+  const linkDivulgacao = '';
 
   // Estatísticas calculadas
   const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
@@ -242,22 +230,7 @@ export default function PainelCriador() {
     fetchNotificacoes();
   }, [authorized]);
 
-  useEffect(() => {
-    if (!authorized) return;
 
-    async function fetchPerfil() {
-      setLoadingPerfil(true);
-      try {
-        const res = await fetch('/api/perfil');
-        const data = await res.json();
-        setPerfil(data);
-      } catch {
-        setPerfil({});
-      }
-      setLoadingPerfil(false);
-    }
-    fetchPerfil();
-  }, [authorized]);
 
   useEffect(() => {
     if (!authorized) return;
@@ -384,21 +357,7 @@ export default function PainelCriador() {
     }
   }
 
-  async function handleSalvarPerfil(e: React.FormEvent) {
-    e.preventDefault();
-    setSalvandoPerfil(true);
-    try {
-      await fetch('/api/perfil', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(perfil),
-      });
-      setPerfilStatus('salvo');
-      setTimeout(() => setPerfilStatus('idle'), 2000);
-    } finally {
-      setSalvandoPerfil(false);
-    }
-  }
+
 
   async function handleResponderRecado(e: React.FormEvent, id: string) {
     e.preventDefault();
@@ -705,39 +664,7 @@ export default function PainelCriador() {
             )}
           </div>
         </section>
-        {/* Personalização do Perfil */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Personalização do Perfil</h2>
-            {loadingPerfil ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : (
-              <form onSubmit={handleSalvarPerfil} className="flex flex-col gap-2">
-                <div className="flex gap-4 items-center">
-                  <div>
-                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-1">
-                      {perfil.fotoPerfil ? <img src={perfil.fotoPerfil} alt="Foto de perfil" className="w-full h-full object-cover" /> : <span className="text-gray-400">Foto</span>}
-                    </div>
-                    <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="URL da foto" value={perfil.fotoPerfil||''} onChange={e => setPerfil(f => ({ ...f, fotoPerfil: e.target.value }))} />
-                  </div>
-                  <div className="flex-1">
-                    <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Banner (URL)" value={perfil.banner||''} onChange={e => setPerfil(f => ({ ...f, banner: e.target.value }))} />
-                    {perfil.banner && <img src={perfil.banner} alt="Banner" className="w-full h-16 object-cover rounded" />}
-                  </div>
-                </div>
-                <textarea className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Bio" value={perfil.bio||''} onChange={e => setPerfil(f => ({ ...f, bio: e.target.value }))} />
-                <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Descrição" value={perfil.descricao||''} onChange={e => setPerfil(f => ({ ...f, descricao: e.target.value }))} />
-                <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Tags/interesses (separados por vírgula)" value={perfil.tags||''} onChange={e => setPerfil(f => ({ ...f, tags: e.target.value }))} />
-                <div className="flex items-center gap-2">
-                  <label className="font-semibold">Tema/cor:</label>
-                  <input type="color" value={perfil.tema||'#22c55e'} onChange={e => setPerfil(f => ({ ...f, tema: e.target.value }))} />
-                </div>
-                <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoPerfil}>{salvandoPerfil ? 'Salvando...' : 'Salvar'}</button>
-                {perfilStatus==='salvo' && <span className="text-green-600 text-sm">Perfil salvo!</span>}
-              </form>
-            )}
-          </div>
-        </section>
+
         {/* Atalhos e widgets */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
@@ -894,7 +821,7 @@ export default function PainelCriador() {
         <section className="mb-8">
           <div className="bg-sss-medium rounded-lg p-4 border border-sss-light flex items-center gap-4 text-sss-white">
             <h2 className="text-lg font-bold flex-1">Exportar Dados do Perfil</h2>
-            <button className="bg-gray-700 text-white px-4 py-2 rounded font-semibold" onClick={() => exportarDados({ perfil, conteudos, doacoes, conquistas, missoes, enquetes, recados })}>
+            <button className="bg-gray-700 text-white px-4 py-2 rounded font-semibold" onClick={() => exportarDados({ conteudos, doacoes, conquistas, missoes, enquetes, recados })}>
               Baixar JSON
             </button>
           </div>
