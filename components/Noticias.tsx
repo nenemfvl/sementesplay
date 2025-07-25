@@ -31,7 +31,7 @@ export default function Noticias() {
           </a>
         </div>
         {/* Lista de notícias à direita */}
-        <div className="flex-1 w-full mt-8 md:mt-0">
+        <div className="flex-1 w-full mt-16 md:mt-12">
           {noticias.length === 0 ? (
             <div className="text-gray-400 text-center py-8">Nenhuma notícia no momento.</div>
           ) : (
