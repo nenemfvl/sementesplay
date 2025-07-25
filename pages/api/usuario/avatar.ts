@@ -33,7 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Arquivo não enviado' });
     }
     // Aqui você pode pegar o ID do usuário autenticado (exemplo simplificado)
-    const usuarioId = fields.usuarioId as string;
+    const usuarioIdField = fields.usuarioId;
+    const usuarioId = Array.isArray(usuarioIdField) ? usuarioIdField[0] : usuarioIdField;
     if (!usuarioId) {
       return res.status(400).json({ error: 'Usuário não autenticado' });
     }
