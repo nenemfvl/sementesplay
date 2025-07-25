@@ -29,7 +29,7 @@ const nextConfig = {
 
   // Configurações de imagens
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'res.cloudinary.com'],
     formats: ['image/webp', 'image/avif'],
   },
 
