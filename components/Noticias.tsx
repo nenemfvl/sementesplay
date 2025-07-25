@@ -14,12 +14,12 @@ export default function Noticias() {
             href="https://servers.fivem.net/"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full rounded-lg overflow-hidden bg-sss-medium"
+            className="block w-full rounded-lg overflow-hidden bg-sss-medium min-h-[192px]"
           >
             <img
               src="/images/fivem-banner.jpg"
               alt="FiveM Servers"
-              className="w-full h-48 object-cover object-center rounded-t-lg"
+              className="w-full h-full min-h-[192px] object-cover object-center rounded-t-lg block"
             />
             <div className="text-center py-2 bg-sss-medium rounded-b-lg">
               <div className="text-base font-bold text-sss-white mb-1">FiveM Servers</div>
