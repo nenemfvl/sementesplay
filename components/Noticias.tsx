@@ -1,6 +1,7 @@
 import React from 'react';
 import noticias from '../noticias';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 export default function Noticias() {
   return (
@@ -16,16 +17,18 @@ export default function Noticias() {
             rel="noopener noreferrer"
             className="block w-full rounded-lg overflow-hidden bg-sss-medium min-h-[192px]"
           >
-            <img
+            <Image
               src="/images/fivem-banner.jpg"
               alt="FiveM Servers"
+              width={400}
+              height={192}
               className="w-full h-full min-h-[192px] object-cover object-center rounded-t-lg block"
             />
             <div className="text-center py-2 bg-sss-medium rounded-b-lg">
               <div className="text-base font-bold text-sss-white mb-1">FiveM Servers</div>
               <div className="text-xs text-blue-200 underline flex items-center justify-center gap-1">
-                Aviso de CM
-                <svg width="14" height="14" fill="currentColor" className="inline-block"><path d="M12.293 4.293a1 1 0 0 1 1.414 1.414l-7 7a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L6 10.586l6.293-6.293z"/></svg>
+                Lista de cidades
+                <svg width="16" height="16" fill="currentColor" className="inline-block" viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.414l-9.293 9.293-1.414-1.414L17.586 5H14V3z"/><path d="M5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg>
               </div>
             </div>
           </a>
