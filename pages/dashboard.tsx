@@ -84,7 +84,9 @@ export default function Dashboard() {
             if (criarResponse.ok) {
               const criarData = await criarResponse.json()
               console.log('Criador criado com sucesso:', criarData)
+              console.log('ID do criador criado:', criarData.criador.id)
               setCriadorId(criarData.criador.id)
+              console.log('criadorId definido como:', criarData.criador.id)
               return
             } else {
               console.error('Erro ao criar criador:', criarResponse.status)
