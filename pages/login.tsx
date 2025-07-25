@@ -17,6 +17,9 @@ export default function Login() {
     e.preventDefault()
     setError(null)
 
+    // Log para garantir que está no navegador
+    console.log('window:', typeof window, window ? 'existe' : 'NÃO existe');
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -33,23 +36,26 @@ export default function Login() {
 
       if (response.ok) {
         // Salvar usuário na sessão (garante que sempre salva algo)
-        if (data.usuario) {
-          auth.setUser(data.usuario, data.token)
-          console.log('Usuário salvo no localStorage:', data.usuario)
-          // Confirmação extra
-          setTimeout(() => {
-            const userLS = localStorage.getItem('sementesplay_user');
-            console.log('Usuário no localStorage após login:', userLS);
-            window.location.href = '/';
-          }, 200);
+        if (typeof window !== 'undefined') {
+          if (data.usuario) {
+            auth.setUser(data.usuario, data.token)
+            console.log('Usuário salvo no localStorage:', data.usuario)
+            setTimeout(() => {
+              const userLS = localStorage.getItem('sementesplay_user');
+              console.log('Usuário no localStorage após login:', userLS);
+              window.location.href = '/';
+            }, 200);
+          } else {
+            auth.setUser(data)
+            console.log('Usuário salvo no localStorage (fallback):', data)
+            setTimeout(() => {
+              const userLS = localStorage.getItem('sementesplay_user');
+              console.log('Usuário no localStorage após login:', userLS);
+              window.location.href = '/';
+            }, 200);
+          }
         } else {
-          auth.setUser(data)
-          console.log('Usuário salvo no localStorage (fallback):', data)
-          setTimeout(() => {
-            const userLS = localStorage.getItem('sementesplay_user');
-            console.log('Usuário no localStorage após login:', userLS);
-            window.location.href = '/';
-          }, 200);
+          console.log('Tentativa de salvar usuário fora do navegador!')
         }
       } else {
         setError(data.error || 'Erro ao fazer login. Tente novamente.')
