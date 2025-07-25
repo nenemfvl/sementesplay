@@ -17,7 +17,7 @@ export default function Noticias() {
             className="block w-full rounded-lg overflow-hidden bg-sss-medium"
           >
             <img
-              src="https://forum.cfx.re/uploads/default/original/4X/2/7/2/272b1e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.png"
+              src="https://cdn.fivem.net/img/fivem-og.jpg"
               alt="FiveM Servers"
               className="w-full h-48 object-cover object-center rounded-t-lg"
             />
