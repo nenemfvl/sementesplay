@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
@@ -13,52 +13,125 @@ import {
   ShareIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { auth } from '../../lib/auth'
+
+interface Doacao {
+  id: string
+  usuario: string
+  valor: number
+  data: string
+  mensagem: string | null
+  avatarUrl?: string
+}
+
+interface Criador {
+  id: string
+  nome: string
+  nivel: string
+  avatar?: string
+  bio?: string
+  sementes: number
+  apoiadores: number
+  doacoes: number
+  posicao: number
+  redesSociais?: {
+    youtube?: string
+    twitch?: string
+    instagram?: string
+  }
+}
 
 export default function PerfilCriador() {
   const router = useRouter()
   const { id } = router.query
   const [valorDoacao, setValorDoacao] = useState('')
   const [mensagem, setMensagem] = useState('')
+  const [criador, setCriador] = useState<Criador | null>(null)
+  const [doacoesRecentes, setDoacoesRecentes] = useState<Doacao[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Dados mockados do criador
-  const criador = {
-    id: id || '1',
-    nome: 'JoãoGamer',
-    nivel: 'Supremo',
-    avatar: '🎮',
-    bio: 'Criador de conteúdo focado em FiveM e RP. Sempre trazendo o melhor conteúdo para a comunidade!',
-    sementes: 25000,
-    apoiadores: 150,
-    doacoes: 1250,
-    posicao: 1,
-    redesSociais: {
-      youtube: 'https://youtube.com/@joaogamer',
-      twitch: 'https://twitch.tv/joaogamer',
-      instagram: 'https://instagram.com/joaogamer'
-    },
-    doacoesRecentes: [
-      { id: 1, usuario: 'Maria123', valor: 500, data: '2024-01-15', mensagem: 'Conteúdo incrível!' },
-      { id: 2, usuario: 'Pedro456', valor: 200, data: '2024-01-14', mensagem: 'Continue assim!' },
-      { id: 3, usuario: 'Ana789', valor: 1000, data: '2024-01-13', mensagem: 'Muito bom!' }
-    ]
+  useEffect(() => {
+    if (id) {
+      fetchCriadorData()
+      fetchDoacoesRecentes()
+    }
+  }, [id])
+
+  const fetchCriadorData = async () => {
+    try {
+      const response = await fetch(`/api/criador/${id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setCriador(data.criador)
+      } else {
+        console.error('Erro ao buscar dados do criador')
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do criador:', error)
+    }
   }
 
-  const handleDoacao = (e: React.FormEvent) => {
+  const fetchDoacoesRecentes = async () => {
+    try {
+      const response = await fetch(`/api/criador/${id}/doacoes`)
+      if (response.ok) {
+        const data = await response.json()
+        setDoacoesRecentes(data.doacoes)
+      } else {
+        console.error('Erro ao buscar doações recentes')
+      }
+    } catch (error) {
+      console.error('Erro ao buscar doações recentes:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDoacao = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!valorDoacao) {
       alert('Por favor, digite um valor!')
       return
     }
+
+    // Verificar se o usuário está logado
+    const user = auth.getUser()
+    if (!user) {
+      alert('Você precisa estar logado para fazer uma doação!')
+      window.location.href = '/login'
+      return
+    }
     
-    console.log('Doação:', {
-      criador: criador.nome,
-      valor: parseInt(valorDoacao),
-      mensagem
-    })
-    
-    alert('Doação realizada com sucesso! 🌱')
-    setValorDoacao('')
-    setMensagem('')
+    try {
+      const response = await fetch('/api/doacoes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          doadorId: user.id,
+          criadorId: id,
+          quantidade: parseInt(valorDoacao),
+          mensagem: mensagem || null
+        })
+      })
+
+      if (response.ok) {
+        alert('Doação realizada com sucesso! 🌱')
+        setValorDoacao('')
+        setMensagem('')
+        // Recarregar as doações recentes
+        fetchDoacoesRecentes()
+        // Recarregar dados do criador para atualizar estatísticas
+        fetchCriadorData()
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || 'Erro ao realizar doação. Tente novamente.')
+      }
+    } catch (error) {
+      console.error('Erro ao fazer doação:', error)
+      alert('Erro ao realizar doação. Tente novamente.')
+    }
   }
 
   const getNivelColor = (nivel: string) => {
@@ -77,6 +150,22 @@ export default function PerfilCriador() {
       case 'Comum': return 'bg-orange-500/20'
       default: return 'bg-gray-500/20'
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
+        <div className="text-sss-white text-xl">Carregando...</div>
+      </div>
+    )
+  }
+
+  if (!criador) {
+    return (
+      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
+        <div className="text-sss-white text-xl">Criador não encontrado</div>
+      </div>
+    )
   }
 
   return (
@@ -98,87 +187,100 @@ export default function PerfilCriador() {
                 </Link>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                  <span className="text-lg">🌱</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-gray-300">Perfil do Criador</p>
-                </div>
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-sss-accent">SementesPLAY</h1>
+                <p className="text-gray-400">Perfil do Criador</p>
               </div>
+              
+              <div className="w-20"></div> {/* Espaçador */}
             </div>
           </div>
         </header>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-8"
           >
-            {/* Profile Header */}
-            <div className="bg-sss-medium rounded-lg p-8 border border-sss-light">
-              <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+            {/* Profile Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="bg-sss-medium rounded-2xl p-8 border border-sss-light mb-8"
+            >
+              <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
                 {/* Avatar */}
-                <motion.div
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  <div className="w-32 h-32 bg-sss-dark rounded-full flex items-center justify-center text-6xl mb-4">
-                    {criador.avatar}
+                <div className="relative">
+                  <div className="w-32 h-32 bg-sss-accent/20 rounded-full flex items-center justify-center text-4xl">
+                    {criador.avatar || '🎮'}
                   </div>
-                </motion.div>
+                  <div className="absolute -top-2 -right-2 bg-sss-accent text-white text-xs px-2 py-1 rounded-full font-bold">
+                    #{criador.posicao}
+                  </div>
+                </div>
 
                 {/* Info */}
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
+                <div className="flex-1 text-center lg:text-left">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4">
                     <h1 className="text-3xl font-bold text-sss-white">{criador.nome}</h1>
-                    <div className={`px-3 py-1 rounded-full text-sm font-medium ${getNivelBg(criador.nivel)} ${getNivelColor(criador.nivel)}`}>
-                      {criador.nivel}
-                    </div>
-                    <div className="flex items-center space-x-1 text-yellow-500">
-                      <StarIcon className="w-5 h-5" />
-                      <span className="text-sm font-medium">#{criador.posicao}</span>
+                    <div className="flex gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getNivelBg(criador.nivel)} ${getNivelColor(criador.nivel)}`}>
+                        {criador.nivel}
+                      </span>
+                      <span className="px-3 py-1 rounded-full text-sm font-semibold bg-sss-accent/20 text-sss-accent">
+                        #{criador.posicao}
+                      </span>
                     </div>
                   </div>
                   
-                  <p className="text-gray-300 mb-6 max-w-2xl">{criador.bio}</p>
-                  
+                  <p className="text-gray-300 mb-6 max-w-2xl">
+                    {criador.bio || 'Criador de conteúdo focado em FiveM e RP. Sempre trazendo o melhor conteúdo para a comunidade!'}
+                  </p>
+
                   {/* Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-sss-white">{criador.sementes.toLocaleString()}</p>
-                      <p className="text-gray-400 text-sm">Sementes</p>
+                      <div className="text-2xl font-bold text-sss-accent">{criador.sementes.toLocaleString()}</div>
+                      <div className="text-gray-400">Sementes</div>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-sss-white">{criador.apoiadores}</p>
-                      <p className="text-gray-400 text-sm">Apoiadores</p>
+                      <div className="text-2xl font-bold text-sss-accent">{criador.apoiadores}</div>
+                      <div className="text-gray-400">Apoiadores</div>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-sss-white">{criador.doacoes}</p>
-                      <p className="text-gray-400 text-sm">Doações</p>
+                      <div className="text-2xl font-bold text-sss-accent">{criador.doacoes}</div>
+                      <div className="text-gray-400">Doações</div>
                     </div>
                   </div>
 
                   {/* Social Links */}
-                  <div className="flex items-center justify-center md:justify-start space-x-4">
-                    <a href={criador.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400">
-                      YouTube
-                    </a>
-                    <a href={criador.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-purple-500 hover:text-purple-400">
-                      Twitch
-                    </a>
-                    <a href={criador.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-400">
-                      Instagram
-                    </a>
-                  </div>
+                  {criador.redesSociais && (
+                    <div className="flex justify-center lg:justify-start gap-4">
+                      {criador.redesSociais.youtube && (
+                        <a href={criador.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400">
+                          YouTube
+                        </a>
+                      )}
+                      {criador.redesSociais.twitch && (
+                        <a href={criador.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-purple-500 hover:text-purple-400">
+                          Twitch
+                        </a>
+                      )}
+                      {criador.redesSociais.instagram && (
+                        <a href={criador.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-400">
+                          Instagram
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
+            {/* Donation Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Donation Form */}
               <div className="lg:col-span-1">
@@ -253,25 +355,35 @@ export default function PerfilCriador() {
                 >
                   <h3 className="text-lg font-semibold text-sss-white mb-4">Doações Recentes</h3>
                   <div className="space-y-4">
-                    {criador.doacoesRecentes.map((doacao) => (
-                      <div key={doacao.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                            <UserIcon className="w-5 h-5 text-sss-accent" />
-                          </div>
-                          <div>
-                            <p className="text-sss-white font-medium">{doacao.usuario}</p>
-                            <p className="text-gray-400 text-sm">{doacao.data}</p>
-                            {doacao.mensagem && (
-                              <p className="text-gray-300 text-sm mt-1">"{doacao.mensagem}"</p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sss-accent font-semibold">{doacao.valor} Sementes</p>
-                        </div>
+                    {doacoesRecentes.length === 0 ? (
+                      <div className="text-center text-gray-400 py-8">
+                        Nenhuma doação ainda. Seja o primeiro a apoiar este criador! 🌱
                       </div>
-                    ))}
+                    ) : (
+                      doacoesRecentes.map((doacao) => (
+                        <div key={doacao.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                              {doacao.avatarUrl ? (
+                                <img src={doacao.avatarUrl} alt={doacao.usuario} className="w-10 h-10 rounded-full" />
+                              ) : (
+                                <UserIcon className="w-5 h-5 text-sss-accent" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-sss-white font-medium">{doacao.usuario}</p>
+                              <p className="text-gray-400 text-sm">{doacao.data}</p>
+                              {doacao.mensagem && (
+                                <p className="text-gray-300 text-sm mt-1">"{doacao.mensagem}"</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sss-accent font-semibold">{doacao.valor} Sementes</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </motion.div>
               </div>
