@@ -40,22 +40,18 @@ export default function Login() {
       if (response.ok) {
         // Salvar usuário na sessão (garante que sempre salva algo)
         if (typeof window !== 'undefined') {
-          if (data.usuario) {
+          if (data.usuario && data.token) {
             auth.setUser(data.usuario, data.token)
             console.log('Usuário salvo no localStorage:', data.usuario)
-            setTimeout(() => {
-              const userLS = localStorage.getItem('sementesplay_user');
-              console.log('Usuário no localStorage após login:', userLS);
-              window.location.href = '/';
-            }, 200);
+            const userLS = localStorage.getItem('sementesplay_user');
+            console.log('Usuário no localStorage após login:', userLS);
+            window.location.href = '/perfil';
           } else {
             auth.setUser(data)
             console.log('Usuário salvo no localStorage (fallback):', data)
-            setTimeout(() => {
-              const userLS = localStorage.getItem('sementesplay_user');
-              console.log('Usuário no localStorage após login:', userLS);
-              window.location.href = '/';
-            }, 200);
+            const userLS = localStorage.getItem('sementesplay_user');
+            console.log('Usuário no localStorage após login:', userLS);
+            window.location.href = '/perfil';
           }
         } else {
           console.log('Tentativa de salvar usuário fora do navegador!')
