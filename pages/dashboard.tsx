@@ -56,6 +56,23 @@ export default function Dashboard() {
     const fetchCriadorData = async () => {
       try {
         console.log('Buscando dados do criador para usuário:', user.id)
+        
+        // Primeiro, usar a API de debug para verificar
+        const debugResponse = await fetch(`/api/debug/criador?usuarioId=${user.id}`)
+        console.log('Debug response status:', debugResponse.status)
+        
+        if (debugResponse.ok) {
+          const debugData = await debugResponse.json()
+          console.log('Debug data:', debugData)
+          
+          if (debugData.existeCriador && debugData.criador) {
+            console.log('Criador encontrado via debug:', debugData.criador)
+            setCriadorId(debugData.criador.id)
+            return
+          }
+        }
+        
+        // Fallback para a API original
         const response = await fetch(`/api/criadores?usuarioId=${user.id}`)
         console.log('Resposta da API criadores:', response.status)
         
