@@ -27,6 +27,20 @@ const noticias = [
     data: '2025-07-10',
     link: '/painel-parceiro',
   },
+  {
+    id: 5,
+    titulo: 'Novas funcionalidades para parceiros',
+    descricao: 'Parceiros agora têm acesso a relatórios detalhados e notificações em tempo real no painel.',
+    data: '2025-07-10',
+    link: '/painel-parceiro',
+  },
+  {
+    id: 6,
+    titulo: 'Novas funcionalidades para parceiros',
+    descricao: 'Parceiros agora têm acesso a relatórios detalhados e notificações em tempo real no painel.',
+    data: '2025-07-10',
+    link: '/painel-parceiro',
+  },
 ];
 
 export default noticias; 
