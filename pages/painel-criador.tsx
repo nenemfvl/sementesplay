@@ -51,11 +51,7 @@ type Enquete = {
   opcoes: { id: string; texto: string; votos: number }[];
   data: string;
 };
-type Integracoes = {
-  youtube?: string;
-  twitch?: string;
-  discord?: string;
-};
+
 
 export default function PainelCriador() {
   const [conteudos, setConteudos] = useState<Conteudo[]>([]);
@@ -90,9 +86,7 @@ export default function PainelCriador() {
   const [salvandoEnquete, setSalvandoEnquete] = useState(false);
   const [enqueteStatus, setEnqueteStatus] = useState<'idle'|'salva'>('idle');
   const [copiado, setCopiado] = useState(false);
-  const [integracoes, setIntegracoes] = useState<Integracoes>({});
-  const [salvandoIntegracoes, setSalvandoIntegracoes] = useState(false);
-  const [integracoesStatus, setIntegracoesStatus] = useState<'idle'|'salvo'>('idle');
+
   const [authorized, setAuthorized] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
@@ -269,16 +263,7 @@ export default function PainelCriador() {
   useEffect(() => {
     if (!authorized) return;
 
-    async function fetchIntegracoes() {
-      try {
-        const res = await fetch('/api/perfil/integracoes');
-        const data = await res.json();
-        setIntegracoes(data);
-      } catch {
-        setIntegracoes({});
-      }
-    }
-    fetchIntegracoes();
+
   }, [authorized]);
 
   async function handleAddConteudo(e: React.FormEvent) {
@@ -400,21 +385,7 @@ export default function PainelCriador() {
     }
   }
 
-  async function handleSalvarIntegracoes(e: React.FormEvent) {
-    e.preventDefault();
-    setSalvandoIntegracoes(true);
-    try {
-      await fetch('/api/perfil/integracoes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(integracoes),
-      });
-      setIntegracoesStatus('salvo');
-      setTimeout(() => setIntegracoesStatus('idle'), 2000);
-    } finally {
-      setSalvandoIntegracoes(false);
-    }
-  }
+
 
   function getPreview(url: string) {
     if (!url) return null;
@@ -447,15 +418,7 @@ export default function PainelCriador() {
     setTimeout(() => setCopiado(false), 2000);
   }
 
-  function exportarDados(dados: any) {
-    const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'perfil-criador.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+
 
   function getYoutubeInfo(url: string) {
     const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
@@ -666,15 +629,7 @@ export default function PainelCriador() {
         </section>
 
         {/* Atalhos e widgets */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h3 className="font-bold mb-2">Personalização</h3>
-            <ul className="space-y-1">
-              <li><a href="#" className="text-sss-accent hover:underline">Editar perfil</a></li>
-              <li><a href="#" className="text-sss-accent hover:underline">Alterar foto/banner</a></li>
-              <li><a href="#" className="text-sss-accent hover:underline">Escolher tema</a></li>
-            </ul>
-          </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
             <h3 className="font-bold mb-2">Missões & Conquistas</h3>
             <ul className="space-y-1">
@@ -817,28 +772,7 @@ export default function PainelCriador() {
             )}
           </div>
         </section>
-        {/* Exportação de Dados do Perfil */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light flex items-center gap-4 text-sss-white">
-            <h2 className="text-lg font-bold flex-1">Exportar Dados do Perfil</h2>
-            <button className="bg-gray-700 text-white px-4 py-2 rounded font-semibold" onClick={() => exportarDados({ conteudos, doacoes, conquistas, missoes, enquetes, recados })}>
-              Baixar JSON
-            </button>
-          </div>
-        </section>
-        {/* Integrações Externas */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Integrações Externas</h2>
-            <form onSubmit={handleSalvarIntegracoes} className="flex flex-col gap-2 max-w-md">
-              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do YouTube" value={integracoes.youtube||''} onChange={e => setIntegracoes(f => ({...f, youtube: e.target.value}))} />
-              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do Twitch" value={integracoes.twitch||''} onChange={e => setIntegracoes(f => ({...f, twitch: e.target.value}))} />
-              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Token/ID do Discord" value={integracoes.discord||''} onChange={e => setIntegracoes(f => ({...f, discord: e.target.value}))} />
-              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoIntegracoes}>{salvandoIntegracoes ? 'Salvando...' : 'Salvar Integrações'}</button>
-              {integracoesStatus==='salvo' && <span className="text-green-600 text-sm">Integrações salvas!</span>}
-            </form>
-          </div>
-        </section>
+
       </main>
     </>
   );
