@@ -34,6 +34,20 @@ export default function Perfil() {
     setUser(currentUser)
     setAvatarUrl((currentUser as any).avatarUrl || null)
     loadStats()
+    // Buscar perfil autenticado com token
+    const token = localStorage.getItem('sementesplay_token');
+    fetch('/api/perfil', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.id) {
+          setUser(data)
+          setAvatarUrl(data.avatarUrl || null)
+          auth.setUser(data, token || undefined)
+        }
+      })
+      .catch(err => console.error('Erro ao buscar perfil autenticado:', err))
   }, [])
 
   const loadStats = async () => {
