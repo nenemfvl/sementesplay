@@ -17,7 +17,7 @@ export default function Noticias() {
             className="block w-full rounded-lg overflow-hidden bg-sss-medium"
           >
             <img
-              src="https://cdn.fivem.net/img/fivem-og.jpg"
+              src="/images/fivem-banner.jpg"
               alt="FiveM Servers"
               className="w-full h-48 object-cover object-center rounded-t-lg"
             />
