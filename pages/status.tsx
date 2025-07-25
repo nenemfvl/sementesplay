@@ -75,13 +75,13 @@ export default function Status() {
         </header>
         <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
           {/* Contador de Sementes */}
-          <div className="flex flex-col items-center mb-8">
-            <span className="text-gray-400 text-sm mb-1">Sementes em circulação</span>
-            <div className="flex items-center gap-2">
-              <span className="text-6xl md:text-7xl font-extrabold text-sss-accent drop-shadow-xl animate-pulse bg-gradient-to-r from-yellow-300 via-sss-accent to-green-400 bg-clip-text text-transparent transition-all duration-500">
+          <div className="flex flex-col items-center mb-16">
+            <span className="text-gray-400 text-base mb-2">Sementes em circulação</span>
+            <div className="flex items-center gap-3">
+              <span className="text-7xl md:text-8xl font-extrabold drop-shadow-2xl animate-pulse bg-gradient-to-r from-yellow-300 via-sss-accent to-green-400 bg-clip-text text-transparent transition-all duration-700 shadow-lg" style={{ textShadow: '0 0 32px #ffe066, 0 0 8px #fff' }}>
                 {totalSementes === null ? '...' : displaySementes.toLocaleString('pt-BR')}
               </span>
-              <span className="text-4xl md:text-5xl">🌱</span>
+              <span className="text-5xl md:text-6xl">🌱</span>
             </div>
           </div>
           {/* Notícias */}
