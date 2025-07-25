@@ -451,7 +451,7 @@ export default function Dashboard() {
                             <p className="text-gray-400 text-sm">Gerencie seu perfil e receba doações</p>
                           </div>
                           {criadorId ? (
-                            <Link href={`/criador/${criadorId}`} className="text-sss-accent hover:text-red-400">
+                            <Link href="/painel-criador" className="text-sss-accent hover:text-red-400">
                               Ver perfil
                             </Link>
                           ) : (
