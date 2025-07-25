@@ -15,12 +15,15 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
+import Image from 'next/image'
 
 export default function Perfil() {
   const [user, setUser] = useState<User | null>(null)
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
+  const [uploading, setUploading] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -29,6 +32,7 @@ export default function Perfil() {
       return
     }
     setUser(currentUser)
+    setAvatarUrl((currentUser as any).avatarUrl || null)
     loadStats()
   }, [])
 
@@ -69,6 +73,30 @@ export default function Perfil() {
         return 'text-orange-600'
       default:
         return 'text-gray-400'
+    }
+  }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !user) return
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('avatar', file)
+    formData.append('usuarioId', user.id)
+    setUploading(true)
+    try {
+      const res = await fetch('/api/usuario/avatar', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (res.ok && data.avatarUrl) {
+        setAvatarUrl(data.avatarUrl)
+        setUser({ ...(user as any), avatarUrl: data.avatarUrl })
+      }
+    } catch (err) {
+      alert('Erro ao fazer upload do avatar')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -125,8 +153,34 @@ export default function Perfil() {
             {/* Profile Header */}
             <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
               <div className="flex items-center space-x-6">
-                <div className="w-20 h-20 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                  <UserIcon className="w-10 h-10 text-sss-accent" />
+                <div className="w-20 h-20 bg-sss-accent/20 rounded-full flex items-center justify-center relative group">
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt="Avatar do usuário"
+                      width={80}
+                      height={80}
+                      className="rounded-full object-cover w-20 h-20"
+                    />
+                  ) : (
+                    <UserIcon className="w-10 h-10 text-sss-accent" />
+                  )}
+                  <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-sss-accent text-white rounded-full p-1 cursor-pointer shadow-lg group-hover:scale-110 transition-transform" title="Alterar foto">
+                    <PencilIcon className="w-5 h-5" />
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                      disabled={uploading}
+                    />
+                  </label>
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex-1">
