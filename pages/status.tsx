@@ -86,31 +86,7 @@ export default function Status() {
           </div>
           {/* Notícias */}
           <Noticias />
-          <h1 className="text-3xl font-bold text-sss-accent mb-4">Status do Sistema</h1>
-          <p className="text-gray-300 mb-8 text-center max-w-xl">Aqui você acompanha o funcionamento dos principais serviços do SementesPLAY. Em caso de instabilidade, consulte esta página antes de abrir um chamado de suporte.</p>
-          <div className="w-full max-w-2xl bg-sss-medium rounded-lg border border-sss-light p-6 mb-8">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="text-left text-gray-400 font-medium p-2">Serviço</th>
-                  <th className="text-left text-gray-400 font-medium p-2">Status</th>
-                  <th className="text-left text-gray-400 font-medium p-2">Descrição</th>
-                </tr>
-              </thead>
-              <tbody>
-                {statusList.map((item) => (
-                  <tr key={item.nome} className="border-b border-sss-light/30">
-                    <td className="p-2 text-sss-white font-semibold">{item.nome}</td>
-                    <td className="p-2">{getStatusIcon(item.status)}</td>
-                    <td className="p-2 text-gray-300">{item.descricao}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="max-w-xl bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded text-blue-200 text-sm">
-            <strong>Dica:</strong> Se algum serviço estiver instável ou fora do ar, aguarde alguns minutos e tente novamente. Persistindo o problema, entre em contato com o suporte pelo painel ou pelo e-mail suporte@sementesplay.com.
-          </div>
+          {/* Removido: Título, descrição, tabela de status e dica */}
         </main>
         {/* Footer minimalista centralizado */}
         <footer className="bg-black border-t border-sss-light mt-16">
