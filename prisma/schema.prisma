@@ -21,6 +21,7 @@ model Usuario {
   pontuacao       Int      @default(0)
   dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
+  avatarUrl       String?   // URL da foto de perfil do usuário
 
   // Relacionamentos
   criador              Criador?
