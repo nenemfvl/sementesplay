@@ -15,12 +15,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const form = new formidable.IncomingForm();
-  form.uploadDir = path.join(process.cwd(), 'public/avatars');
-  form.keepExtensions = true;
-  form.maxFileSize = 2 * 1024 * 1024; // 2MB
+  const form = formidable({
+    uploadDir: path.join(process.cwd(), 'public/avatars'),
+    keepExtensions: true,
+    maxFileSize: 2 * 1024 * 1024, // 2MB
+  });
 
-  await fs.mkdir(form.uploadDir, { recursive: true });
+  await fs.mkdir(path.join(process.cwd(), 'public/avatars'), { recursive: true });
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
