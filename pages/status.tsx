@@ -62,7 +62,7 @@ export default function Status() {
           <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-[#1a223a]/90 rounded-2xl shadow-lg py-10 mb-10">
             <span className="text-gray-400 text-base mb-2">Sementes em circulação</span>
             <div className="flex items-center gap-3">
-              <span className="text-7xl md:text-8xl font-extrabold text-[#ff5a7d] transition-all duration-700">
+              <span className="text-7xl md:text-8xl font-extrabold text-[#e94560] transition-all duration-700">
                 {totalSementes === null ? '...' : totalSementes.toLocaleString('pt-BR')}
               </span>
               <span className="text-5xl md:text-6xl">🌱</span>
