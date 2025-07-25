@@ -1,12 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import Head from 'next/head'
 import PWABanner from '../components/PWABanner'
 import OfflineIndicator from '../components/OfflineIndicator'
 import '../styles/globals.css'
+import { auth } from '../lib/auth'
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  useEffect(() => {
+    const user = auth.getUser()
+    if (!user) return
+    const ping = () => {
+      fetch('/api/chat/usuarios-online', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id })
+      })
+    }
+    ping()
+    const interval = setInterval(ping, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <SessionProvider session={session}>
       <Head>
