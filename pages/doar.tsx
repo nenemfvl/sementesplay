@@ -6,7 +6,8 @@ import {
   ArrowLeftIcon, 
   UserIcon, 
   CurrencyDollarIcon,
-  StarIcon
+  StarIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
@@ -19,6 +20,7 @@ export default function Doar() {
   const [user, setUser] = useState<User | null>(null)
   const [creators, setCreators] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -45,6 +47,12 @@ export default function Doar() {
   }
 
   const valorOptions = [50, 100, 200, 500, 1000]
+
+  // Filtrar criadores baseado na pesquisa
+  const filteredCreators = creators.filter(creator =>
+    creator.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    creator.nivel.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -150,35 +158,67 @@ export default function Doar() {
                   <label className="block text-sm font-medium text-sss-white mb-4">
                     Selecione um Criador
                   </label>
+                  
+                  {/* Barra de Pesquisa */}
+                  <div className="mb-4">
+                    <div className="relative">
+                      <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Pesquisar criadores por nome ou nível..."
+                        className="w-full pl-10 pr-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent focus:border-transparent"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    {searchTerm && (
+                      <p className="text-sm text-gray-400 mt-2">
+                        {filteredCreators.length} criador{filteredCreators.length !== 1 ? 'es' : ''} encontrado{filteredCreators.length !== 1 ? 's' : ''}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {creators.map((creator) => (
-                      <button
-                        key={creator.id}
-                        type="button"
-                        onClick={() => setSelectedCreator(creator.id.toString())}
-                        className={`p-4 rounded-lg border-2 transition-all ${
-                          selectedCreator === creator.id.toString()
-                            ? 'border-sss-accent bg-sss-accent/10'
-                            : 'border-sss-light bg-sss-dark hover:border-sss-accent/50'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="text-2xl">{creator.avatar}</div>
-                          <div className="flex-1 text-left">
-                            <div className="flex items-center space-x-2">
-                              <h3 className="font-semibold text-sss-white">{creator.nome}</h3>
-                              <div className="flex items-center space-x-1">
-                                {creator.nivel === 'Ouro' && <StarIcon className="w-4 h-4 text-yellow-500" />}
-                                {creator.nivel === 'Prata' && <StarIcon className="w-4 h-4 text-gray-400" />}
-                                {creator.nivel === 'Bronze' && <StarIcon className="w-4 h-4 text-orange-600" />}
+                    {filteredCreators.length > 0 ? (
+                      filteredCreators.map((creator) => (
+                        <button
+                          key={creator.id}
+                          type="button"
+                          onClick={() => setSelectedCreator(creator.id.toString())}
+                          className={`p-4 rounded-lg border-2 transition-all ${
+                            selectedCreator === creator.id.toString()
+                              ? 'border-sss-accent bg-sss-accent/10'
+                              : 'border-sss-light bg-sss-dark hover:border-sss-accent/50'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="text-2xl">{creator.avatar}</div>
+                            <div className="flex-1 text-left">
+                              <div className="flex items-center space-x-2">
+                                <h3 className="font-semibold text-sss-white">{creator.nome}</h3>
+                                <div className="flex items-center space-x-1">
+                                  {creator.nivel === 'Ouro' && <StarIcon className="w-4 h-4 text-yellow-500" />}
+                                  {creator.nivel === 'Prata' && <StarIcon className="w-4 h-4 text-gray-400" />}
+                                  {creator.nivel === 'Bronze' && <StarIcon className="w-4 h-4 text-orange-600" />}
+                                </div>
                               </div>
+                              <p className="text-sm text-gray-400">Nível {creator.nivel}</p>
+                              <p className="text-sm text-sss-accent">{creator.sementes} Sementes</p>
                             </div>
-                            <p className="text-sm text-gray-400">Nível {creator.nivel}</p>
-                            <p className="text-sm text-sss-accent">{creator.sementes} Sementes</p>
                           </div>
-                        </div>
-                      </button>
-                    ))}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center py-8">
+                        <p className="text-gray-400">Nenhum criador encontrado para "{searchTerm}"</p>
+                        <button
+                          type="button"
+                          onClick={() => setSearchTerm('')}
+                          className="mt-2 text-sss-accent hover:text-red-400 transition-colors"
+                        >
+                          Limpar pesquisa
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
