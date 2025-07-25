@@ -92,6 +92,7 @@ export default function Perfil() {
       if (res.ok && data.avatarUrl) {
         setAvatarUrl(data.avatarUrl)
         setUser({ ...(user as any), avatarUrl: data.avatarUrl })
+        auth.setUser({ ...(user as any), avatarUrl: data.avatarUrl }) // Garante persistência
       }
     } catch (err) {
       alert('Erro ao fazer upload do avatar')

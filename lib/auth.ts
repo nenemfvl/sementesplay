@@ -9,6 +9,7 @@ export interface User {
   dataCriacao?: string
   criador?: any
   parceiro?: any
+  avatarUrl?: string // Adicionado campo para URL do avatar
 }
 
 // Usuário de teste padrão
