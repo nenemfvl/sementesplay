@@ -35,24 +35,8 @@ export default function Status() {
       })
   }, [])
 
-  // Animação de contagem crescente
-  useEffect(() => {
-    if (totalSementes === null) return
-    let start = 0
-    const duration = 1200 // ms
-    const increment = Math.ceil(totalSementes / 60)
-    let current = 0
-    const step = () => {
-      current += increment
-      if (current >= totalSementes) {
-        setDisplaySementes(totalSementes)
-      } else {
-        setDisplaySementes(current)
-        requestAnimationFrame(step)
-      }
-    }
-    step()
-  }, [totalSementes])
+  // Remover animação de contagem crescente
+  // useEffect do contador removida
 
   return (
     <>
@@ -75,11 +59,11 @@ export default function Status() {
         </header>
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Contador de Sementes - bloco destacado */}
-          <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-gradient-to-r from-yellow-300/10 via-sss-accent/10 to-green-400/10 rounded-2xl shadow-lg py-10 mb-10">
+          <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-[#1a223a]/90 rounded-2xl shadow-lg py-10 mb-10">
             <span className="text-gray-400 text-base mb-2">Sementes em circulação</span>
             <div className="flex items-center gap-3">
-              <span className="text-7xl md:text-8xl font-extrabold drop-shadow-2xl animate-pulse bg-gradient-to-r from-yellow-300 via-sss-accent to-green-400 bg-clip-text text-transparent transition-all duration-700 shadow-lg" style={{ textShadow: '0 0 32px #ffe066, 0 0 8px #fff' }}>
-                {totalSementes === null ? '...' : displaySementes.toLocaleString('pt-BR')}
+              <span className="text-7xl md:text-8xl font-extrabold drop-shadow-2xl bg-gradient-to-r from-yellow-300 via-sss-accent to-green-400 bg-clip-text text-transparent transition-all duration-700 shadow-lg" style={{ textShadow: '0 0 32px #ffe066, 0 0 8px #fff' }}>
+                {totalSementes === null ? '...' : totalSementes.toLocaleString('pt-BR')}
               </span>
               <span className="text-5xl md:text-6xl">🌱</span>
             </div>
