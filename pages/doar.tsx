@@ -132,7 +132,8 @@ export default function Doar() {
         alert('Doação realizada com sucesso! 🌱')
         window.location.href = '/dashboard'
       } else {
-        alert(`Erro: ${data.error}`)
+        console.error('Erro na resposta da API:', data)
+        alert(`Erro: ${data.error || 'Erro interno do servidor'}`)
       }
     } catch (error) {
       console.error('Erro ao fazer doação:', error)

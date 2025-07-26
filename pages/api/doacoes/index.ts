@@ -45,8 +45,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { doadorId, criadorId, quantidade, mensagem } = req.body
+      
+      console.log('Dados recebidos:', { doadorId, criadorId, quantidade, mensagem })
 
       if (!doadorId || !criadorId || !quantidade) {
+        console.log('Campos obrigatórios não preenchidos')
         return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' })
       }
 
@@ -60,7 +63,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Processar doação em transação
+      console.log('Iniciando transação de doação...')
       const resultado = await prisma.$transaction(async (tx) => {
+        console.log('Criando doação...')
         // Criar doação
         const doacao = await tx.doacao.create({
           data: {
@@ -71,14 +76,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             data: new Date()
           }
         })
+        console.log('Doação criada:', doacao)
 
         // Deduzir sementes do doador
+        console.log('Deduzindo sementes do doador...')
         await tx.usuario.update({
           where: { id: String(doadorId) },
           data: { sementes: { decrement: quantidade } }
         })
+        console.log('Sementes deduzidas do doador')
 
         // Adicionar sementes ao criador
+        console.log('Adicionando sementes ao criador...')
         await tx.criador.update({
           where: { id: String(criadorId) },
           data: { 
@@ -86,8 +95,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             doacoes: { increment: 1 }
           }
         })
+        console.log('Sementes adicionadas ao criador')
 
         // Registrar histórico de sementes
+        console.log('Registrando histórico de sementes do doador...')
         await tx.semente.create({
           data: {
             usuarioId: String(doadorId),
@@ -96,23 +107,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             descricao: `Doação para criador ${criadorId}`
           }
         })
+        console.log('Histórico do doador registrado')
 
-        await tx.semente.create({
-          data: {
-            usuarioId: String(criadorId),
-            quantidade: quantidade,
-            tipo: 'recebida',
-            descricao: `Doação recebida de ${doadorId}`
-          }
+        // Buscar o usuário do criador para registrar o histórico
+        console.log('Buscando usuário do criador...')
+        const criador = await tx.criador.findUnique({
+          where: { id: String(criadorId) },
+          select: { usuarioId: true }
         })
+        console.log('Criador encontrado:', criador)
 
+        if (criador) {
+          console.log('Registrando histórico de sementes do criador...')
+          await tx.semente.create({
+            data: {
+              usuarioId: criador.usuarioId,
+              quantidade: quantidade,
+              tipo: 'recebida',
+              descricao: `Doação recebida de ${doadorId}`
+            }
+          })
+          console.log('Histórico do criador registrado')
+        } else {
+          console.log('Criador não encontrado para registrar histórico')
+        }
+
+        console.log('Transação concluída com sucesso')
         return doacao
       })
 
+      console.log('Resultado da transação:', resultado)
       return res.status(201).json(resultado)
     } catch (error) {
       console.error('Erro ao criar doação:', error)
-      return res.status(500).json({ error: 'Erro interno do servidor' })
+      console.error('Detalhes do erro:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      })
+      return res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      })
     }
   }
 
