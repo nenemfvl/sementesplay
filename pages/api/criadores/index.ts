@@ -92,6 +92,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             case '3':
             case 'supremo':
               return 'Supremo'
+            case 'criador-iniciante':
+              return 'Criador Iniciante'
+            case 'criador-comum':
+              return 'Criador Comum'
+            case 'criador-parceiro':
+              return 'Criador Parceiro'
+            case 'criador-supremo':
+              return 'Criador Supremo'
             case 'ouro':
               return 'Ouro'
             case 'prata':
