@@ -55,6 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Buscar criadores
+      console.log('Buscando criadores no banco...')
       const criadores = await prisma.criador.findMany({
         where,
         include: {
@@ -72,6 +73,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           dataCriacao: 'desc'
         }
       })
+      console.log('Criadores encontrados:', criadores.length)
+      console.log('Primeiro criador:', criadores[0])
 
       const criadoresFormatados: Criador[] = criadores.map((criador: any) => ({
         id: criador.id,
