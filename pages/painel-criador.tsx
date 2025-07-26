@@ -109,19 +109,19 @@ export default function PainelCriador() {
         return;
       }
 
-      // Buscar dados frescos da API para verificar se é criador
+      // Debug: verificar dados reais do usuário no Railway
       try {
-        const response = await fetch('/api/usuario/atual');
+        const response = await fetch('/api/debug/usuario');
         if (response.ok) {
           const data = await response.json();
-          console.log('Dados frescos da API:', data.usuario);
+          console.log('Dados reais do Railway:', data.usuario);
           
           // Verificar se é criador pelo tipo na tabela Usuario
           if (data.usuario.tipo === 'criador') {
             setAuthorized(true);
             setCheckingAuth(false);
           } else {
-            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+            alert(`Acesso negado. Seu tipo é: ${data.usuario.tipo}. Apenas criadores podem acessar o painel de criador.`);
             window.location.href = '/dashboard';
           }
         } else {
