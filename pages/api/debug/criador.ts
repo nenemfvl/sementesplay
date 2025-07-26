@@ -8,82 +8,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
-  const { usuarioId } = req.query
-
-  if (!usuarioId) {
-    return res.status(400).json({ error: 'usuarioId é obrigatório' })
-  }
-
   try {
-    console.log('Debug: Buscando criador para usuarioId:', usuarioId)
+    const { usuarioId } = req.query
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'usuarioId é obrigatório' })
+    }
 
     // Buscar usuário
     const usuario = await prisma.usuario.findUnique({
-      where: { id: String(usuarioId) },
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        nivel: true,
-        tipo: true
-      }
+      where: { id: String(usuarioId) }
     })
-
-    console.log('Debug: Usuário encontrado:', usuario)
 
     if (!usuario) {
-      return res.status(404).json({ error: 'Usuário não encontrado', usuarioId })
+      return res.status(404).json({ error: 'Usuário não encontrado' })
     }
 
-    // Buscar criador
+    // Verificar se existe registro na tabela criadores
     const criador = await prisma.criador.findUnique({
-      where: { usuarioId: String(usuarioId) },
-      select: {
-        id: true,
-        usuarioId: true,
-        nome: true,
-        bio: true,
-        categoria: true,
-        nivel: true,
-        dataCriacao: true
-      }
+      where: { usuarioId: String(usuarioId) }
     })
 
-    console.log('Debug: Criador encontrado:', criador)
+    // Se não existe criador mas o usuário tem nível criador, criar automaticamente
+    if (!criador && (usuario.nivel === 'criador' || usuario.tipo === 'criador')) {
+      const novoCriador = await prisma.criador.create({
+        data: {
+          usuarioId: usuario.id,
+          nome: usuario.nome,
+          bio: 'Criador de conteúdo da comunidade SementesPLAY',
+          categoria: 'Gaming',
+          redesSociais: '{}',
+          portfolio: '{}',
+          nivel: usuario.nivel,
+          sementes: usuario.sementes,
+          apoiadores: 0,
+          doacoes: 0
+        }
+      })
 
-    // Buscar todos os criadores para debug
-    const todosCriadores = await prisma.criador.findMany({
-      select: {
-        id: true,
-        usuarioId: true,
-        nome: true
-      }
-    })
-
-    console.log('Debug: Todos os criadores:', todosCriadores)
-
-    // Buscar todos os usuários com nível criador
-    const usuariosCriadores = await prisma.usuario.findMany({
-      where: { nivel: 'criador' },
-      select: {
-        id: true,
-        nome: true,
-        nivel: true
-      }
-    })
-
-    console.log('Debug: Usuários com nível criador:', usuariosCriadores)
+      return res.status(200).json({
+        success: true,
+        usuario,
+        criador: novoCriador,
+        existeCriador: true,
+        criadoAutomaticamente: true
+      })
+    }
 
     return res.status(200).json({
+      success: true,
       usuario,
       criador,
-      todosCriadores,
-      usuariosCriadores,
       existeCriador: !!criador,
-      usuarioId: String(usuarioId)
+      criadoAutomaticamente: false
     })
+
   } catch (error) {
-    console.error('Erro no debug:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor', details: error })
+    console.error('Erro ao verificar criador:', error)
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

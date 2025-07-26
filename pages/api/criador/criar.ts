@@ -8,67 +8,58 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
-  const { usuarioId } = req.body
-
-  if (!usuarioId) {
-    return res.status(400).json({ error: 'usuarioId é obrigatório' })
-  }
-
   try {
-    // Verificar se o usuário existe e tem nível criador
+    const { usuarioId } = req.body
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'usuarioId é obrigatório' })
+    }
+
+    // Verificar se já existe criador
+    const criadorExistente = await prisma.criador.findUnique({
+      where: { usuarioId: String(usuarioId) }
+    })
+
+    if (criadorExistente) {
+      return res.status(400).json({ 
+        error: 'Criador já existe',
+        criador: criadorExistente
+      })
+    }
+
+    // Buscar usuário
     const usuario = await prisma.usuario.findUnique({
-      where: { id: usuarioId }
+      where: { id: String(usuarioId) }
     })
 
     if (!usuario) {
       return res.status(404).json({ error: 'Usuário não encontrado' })
     }
 
-    if (usuario.nivel !== 'criador') {
-      return res.status(400).json({ error: 'Usuário não tem nível de criador' })
-    }
-
-    // Verificar se já existe um criador para este usuário
-    const criadorExistente = await prisma.criador.findUnique({
-      where: { usuarioId: usuarioId }
-    })
-
-    if (criadorExistente) {
-      return res.status(200).json({ 
-        message: 'Criador já existe',
-        criador: criadorExistente
-      })
-    }
-
-    // Criar o registro de criador
+    // Criar registro de criador
     const novoCriador = await prisma.criador.create({
       data: {
-        usuarioId: usuarioId,
+        usuarioId: usuario.id,
         nome: usuario.nome,
         bio: 'Criador de conteúdo da comunidade SementesPLAY',
-        categoria: 'geral',
-        redesSociais: JSON.stringify({
-          youtube: '',
-          twitch: '',
-          instagram: ''
-        }),
-        portfolio: JSON.stringify([]),
-        nivel: 'comum',
-        sementes: 0,
+        categoria: 'Gaming',
+        redesSociais: '{}',
+        portfolio: '{}',
+        nivel: usuario.nivel,
+        sementes: usuario.sementes,
         apoiadores: 0,
         doacoes: 0
       }
     })
 
-    console.log('Criador criado com sucesso:', novoCriador)
-
-    return res.status(201).json({
+    res.status(200).json({
+      success: true,
       message: 'Criador criado com sucesso',
       criador: novoCriador
     })
 
   } catch (error) {
     console.error('Erro ao criar criador:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 
