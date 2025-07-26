@@ -20,11 +20,10 @@ export default function CriadoresFavoritos() {
          // Carregar todos os criadores
      fetch('/api/ranking/criadores')
        .then(res => res.json())
-       .then(data => {
-         console.log('Dados dos criadores:', data.criadores)
-         setCriadores(data.criadores || [])
-         setLoading(false)
-       })
+               .then(data => {
+          setCriadores(data.criadores || [])
+          setLoading(false)
+        })
       .catch(error => {
         console.error('Erro ao carregar criadores:', error)
         setLoading(false)
@@ -122,10 +121,7 @@ export default function CriadoresFavoritos() {
 
                                  {/* Grid de criadores favoritos */}
                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                   {criadoresFavoritos.map((criador) => {
-                     console.log('Criador sendo renderizado:', criador)
-                     console.log('Sementes recebidas:', criador.sementesRecebidas)
-                     return (
+                   {criadoresFavoritos.map((criador) => (
                     <div key={criador.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
                       <div className="flex">
                         {/* Conteúdo Principal */}
