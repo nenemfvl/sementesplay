@@ -74,7 +74,7 @@ export default function Criadores() {
           avatar: criador.avatar,
           nivel: criador.nivel,
           nivelRanking: criador.nivelRanking,
-          sementes: criador.sementesRecebidas,
+          sementes: criador.sementes, // Sementes que o usuário tem no perfil
           sementesRecebidas: criador.sementesRecebidas,
           pontosMissoes: criador.pontosMissoes,
           pontosConquistas: criador.pontosConquistas,
