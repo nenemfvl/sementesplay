@@ -109,24 +109,21 @@ export default function PainelCriador() {
         return;
       }
 
-      // Verificar se o usuário é um criador
+      // Verificar se o usuário é um criador usando a API de perfil
       try {
-        const response = await fetch('/api/criador/verificar-acesso', {
-          credentials: 'include'
-        });
-
-        if (response.status === 403) {
-          alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
-          window.location.href = '/dashboard';
-          return;
+        const response = await fetch('/api/usuario/atual');
+        if (response.ok) {
+          const data = await response.json();
+          if (!data.usuario.criador) {
+            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+            window.location.href = '/dashboard';
+            return;
+          }
+          setAuthorized(true);
+          setCheckingAuth(false);
+        } else {
+          throw new Error('Erro ao carregar dados do usuário');
         }
-
-        if (!response.ok) {
-          throw new Error('Erro ao verificar autorização');
-        }
-
-        setAuthorized(true);
-        setCheckingAuth(false);
       } catch (error) {
         console.error('Erro ao verificar autorização:', error);
         alert('Erro ao verificar autorização. Tente novamente.');
