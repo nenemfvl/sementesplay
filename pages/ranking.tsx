@@ -505,7 +505,11 @@ export default function Ranking() {
                               {getPosicaoIcon(item.posicao)}
                             </div>
                             <div className="flex items-center space-x-3">
-                              <span className="text-2xl">{item.avatar}</span>
+                              {item.avatar && item.avatar.startsWith('http') ? (
+                                <img src={item.avatar} alt={item.nome} className="w-12 h-12 rounded-full object-cover" />
+                              ) : (
+                                <span className="text-2xl">{item.avatar}</span>
+                              )}
                               <div>
                                 <h4 className="text-sss-white font-semibold">{item.nome}</h4>
                                 <div className="flex items-center space-x-2 text-sm text-gray-400">
@@ -581,7 +585,13 @@ export default function Ranking() {
                   <div className="flex items-center justify-center w-16 h-16 rounded-full bg-sss-dark mx-auto mb-4">
                     {getPosicaoIcon(selectedItem.posicao)}
                   </div>
-                  <span className="text-4xl mb-2 block">{selectedItem.avatar}</span>
+                  <span className="text-4xl mb-2 block">
+                    {selectedItem.avatar && selectedItem.avatar.startsWith('http') ? (
+                      <img src={selectedItem.avatar} alt={selectedItem.nome} className="w-16 h-16 rounded-full object-cover mx-auto" />
+                    ) : (
+                      selectedItem.avatar
+                    )}
+                  </span>
                   <h3 className="text-xl font-bold text-sss-white mb-2">
                     {selectedItem.nome}
                   </h3>
