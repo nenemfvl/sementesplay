@@ -117,7 +117,7 @@ export default function PainelCriador() {
           console.log('Dados reais do Railway:', data.usuario);
           
                              // Verificar se é criador pelo nível na tabela Usuario
-                   if (data.usuario.nivel === 'criador' || data.usuario.nivel === 'supremo') {
+                   if (data.usuario.nivel === 'criador-comum' || data.usuario.nivel === 'criador-parceiro' || data.usuario.nivel === 'criador-supremo') {
                      setAuthorized(true);
                      setCheckingAuth(false);
                    } else {
