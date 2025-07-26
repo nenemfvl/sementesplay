@@ -6,19 +6,6 @@ import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 
-const statusList = [
-  { nome: 'Cashback', status: 'ok', descricao: 'Sistema de cashback funcionando normalmente.' },
-  { nome: 'Repasses de Parceiros', status: 'ok', descricao: 'Repasses sendo processados normalmente.' },
-  { nome: 'Fundo de Sementes', status: 'ok', descricao: 'Distribuição do fundo de sementes ativa.' },
-  { nome: 'Pagamentos', status: 'ok', descricao: 'Pagamentos e carteiras operando normalmente.' },
-  { nome: 'Notificações', status: 'ok', descricao: 'Envio de notificações funcionando.' },
-  { nome: 'Painel do Usuário', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
-  { nome: 'Painel do Parceiro', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
-  { nome: 'Painel Admin', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
-  { nome: 'Sistema de Missões', status: 'ok', descricao: 'Missões e recompensas ativas.' },
-  { nome: 'Sistema de Conquistas', status: 'ok', descricao: 'Conquistas e badges funcionando.' },
-]
-
 const redes = [
   { nome: 'Todos', valor: 'todos', icon: null },
   { nome: 'Twitch', valor: 'twitch', icon: <FaTwitch /> },
