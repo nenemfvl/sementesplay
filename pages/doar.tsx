@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar'
 import Image from 'next/image'
-import { FaHeart, FaRegHeart } from 'react-icons/fa'
+
 
 export default function Doar() {
   const [selectedCreator, setSelectedCreator] = useState('')
@@ -23,7 +23,7 @@ export default function Doar() {
   const [creators, setCreators] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
+
 
   useEffect(() => {
     loadUserData()
@@ -37,13 +37,7 @@ export default function Doar() {
     }
   }, [])
 
-  // Carregar favoritos do localStorage
-  useEffect(() => {
-    const favoritosSalvos = localStorage.getItem('criadoresFavoritos')
-    if (favoritosSalvos) {
-      setFavoritos(new Set(JSON.parse(favoritosSalvos)))
-    }
-  }, [])
+
 
   const loadUserData = async () => {
     try {
@@ -96,19 +90,7 @@ export default function Doar() {
     creator.nivel.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const toggleFavorito = (criadorId: string) => {
-    setFavoritos(prev => {
-      const novosFavoritos = new Set(prev)
-      if (novosFavoritos.has(criadorId)) {
-        novosFavoritos.delete(criadorId)
-      } else {
-        novosFavoritos.add(criadorId)
-      }
-      // Salvar no localStorage
-      localStorage.setItem('criadoresFavoritos', JSON.stringify(Array.from(novosFavoritos)))
-      return novosFavoritos
-    })
-  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -342,25 +324,7 @@ export default function Doar() {
                               )}
                             </div>
                             
-                                                         {/* Botão Favoritar - Canto Superior Direito */}
-                             <button
-                               onClick={(e) => {
-                                 e.preventDefault();
-                                 e.stopPropagation();
-                                 toggleFavorito(creator.id);
-                               }}
-                               onMouseDown={(e) => {
-                                 e.preventDefault();
-                                 e.stopPropagation();
-                               }}
-                               className="text-lg hover:scale-110 transition-transform flex-shrink-0 z-10 relative"
-                             >
-                               {favoritos.has(creator.id) ? (
-                                 <FaHeart className="text-red-500" />
-                               ) : (
-                                 <FaRegHeart className="text-gray-400 hover:text-red-500" />
-                               )}
-                             </button>
+                             
                           </div>
                         </button>
                       ))
