@@ -109,24 +109,12 @@ export default function PainelCriador() {
         return;
       }
 
-      // Verificar se o usuário é um criador usando a API de perfil
-      try {
-        const response = await fetch('/api/usuario/atual');
-        if (response.ok) {
-          const data = await response.json();
-          if (!data.usuario.criador) {
-            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
-            window.location.href = '/dashboard';
-            return;
-          }
-          setAuthorized(true);
-          setCheckingAuth(false);
-        } else {
-          throw new Error('Erro ao carregar dados do usuário');
-        }
-      } catch (error) {
-        console.error('Erro ao verificar autorização:', error);
-        alert('Erro ao verificar autorização. Tente novamente.');
+      // Verificar se o usuário é um criador pelo tipo
+      if (user.tipo === 'criador') {
+        setAuthorized(true);
+        setCheckingAuth(false);
+      } else {
+        alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
         window.location.href = '/dashboard';
       }
     };
