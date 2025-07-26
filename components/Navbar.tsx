@@ -4,17 +4,52 @@ import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon, ChevronDownIcon } fr
 import { auth, User } from '../lib/auth';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 
+interface UserWithCriador extends User {
+  criador?: {
+    id: string;
+    nome: string;
+    bio: string;
+    categoria: string;
+    nivel: string;
+    sementes: number;
+    apoiadores: number;
+    doacoes: any[];
+    redesSociais: any;
+    portfolio: any;
+    dataCriacao: string;
+  };
+}
+
 export default function Navbar() {
   const router = useRouter();
   console.log('Navbar asPath:', router.asPath);
-  const [user, setUser] = React.useState<User | null>(null);
+  const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setUser(auth.getUser());
-    }
+    const loadUserData = async () => {
+      if (typeof window !== 'undefined') {
+        const currentUser = auth.getUser();
+        if (currentUser) {
+          try {
+            // Buscar dados completos do usuário incluindo se é criador
+            const response = await fetch('/api/usuario/atual');
+            if (response.ok) {
+              const data = await response.json();
+              setUser(data.usuario);
+            } else {
+              setUser(currentUser as UserWithCriador);
+            }
+          } catch (error) {
+            console.error('Erro ao carregar dados do usuário:', error);
+            setUser(currentUser as UserWithCriador);
+          }
+        }
+      }
+    };
+
+    loadUserData();
   }, []);
 
   // Fechar dropdowns quando clicar fora
@@ -81,6 +116,9 @@ export default function Navbar() {
             Buscar Criadores
           </a>
           <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
+          {user?.criador && (
+            <a href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</a>
+          )}
           <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
       </div>
