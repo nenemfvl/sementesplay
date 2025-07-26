@@ -191,21 +191,22 @@ export default function Criadores() {
 
   const handleEnviarPergunta = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim() || !criadorDetalhes) return
+    if (!perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim() || !criadorDetalhes || !user) return
 
     console.log('🔍 [FRONTEND] Enviando pergunta:', {
       criadorDetalhes,
       usuarioId: criadorDetalhes.usuarioId,
       titulo: perguntaForm.titulo,
-      mensagem: perguntaForm.mensagem
+      mensagem: perguntaForm.mensagem,
+      userToken: user.id
     })
 
     setEnviandoPergunta(true)
     setPerguntaStatus('enviando')
 
     try {
-      // Obter token do localStorage
-      const token = localStorage.getItem('sementesplay_token') || user?.id
+      // Usar o ID do usuário como token de autenticação
+      const token = user.id
       
       const response = await fetch('/api/recados', {
         method: 'POST',
