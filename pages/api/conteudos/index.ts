@@ -6,8 +6,17 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
+      const { criadorId } = req.query
+      
+      // Construir filtros
+      const where: any = {}
+      if (criadorId) {
+        where.criadorId = String(criadorId)
+      }
+      
       // Buscar conteúdos
       const conteudos = await prisma.conteudo.findMany({
+        where,
         include: {
           criador: {
             include: {

@@ -13,15 +13,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
+      const { criadorId } = req.query
+      
+      // Construir filtros
+      const where: any = {
+        ativa: true,
+        OR: [
+          { dataFim: null },
+          { dataFim: { gt: new Date() } }
+        ]
+      }
+      
+      if (criadorId) {
+        where.criadorId = String(criadorId)
+      }
+      
       // Buscar enquetes ativas
       const enquetes = await prisma.enquete.findMany({
-        where: {
-          ativa: true,
-          OR: [
-            { dataFim: null },
-            { dataFim: { gt: new Date() } }
-          ]
-        },
+        where,
         include: {
           criador: {
             select: {
