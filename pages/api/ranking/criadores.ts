@@ -9,27 +9,98 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Buscar ranking de criadores baseado no total de doações recebidas
-    const ranking = await prisma.$queryRaw`
-      SELECT 
-        c.id,
-        u.nome,
-        c.categoria,
-        c.nivelAtual,
-        c.seguidores,
-        COUNT(d.id) as numeroDoacoes,
-        COALESCE(SUM(d.quantidade), 0) as totalDoacoes
-      FROM criadores c
-      JOIN usuarios u ON c.usuarioId = u.id
-      LEFT JOIN doacoes d ON c.id = d.criadorId
-      GROUP BY c.id, u.nome, c.categoria, c.nivelAtual, c.seguidores
-      ORDER BY totalDoacoes DESC, c.seguidores DESC
-      LIMIT 50
-    `
+    // Buscar todos os criadores com suas doações recebidas
+    const criadores = await prisma.usuario.findMany({
+      where: {
+        nivel: {
+          in: ['criador', 'parceiro', 'supremo']
+        }
+      },
+      include: {
+        doacoesRecebidas: true,
+        missaoUsuarios: {
+          where: {
+            concluida: true
+          }
+        },
+        conquistaUsuarios: {
+          where: {
+            desbloqueada: true
+          }
+        }
+      }
+    })
 
-    return res.status(200).json({ ranking })
+    // Calcular pontuação composta para cada criador
+    const criadoresComPontuacao = criadores.map(criador => {
+      // Pontuação base: sementes recebidas (1 semente = 1 ponto)
+      const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+      
+      // Pontos extras por missões completadas (10 pontos por missão)
+      const pontosMissoes = criador.missaoUsuarios.length * 10
+      
+      // Pontos extras por conquistas desbloqueadas (20 pontos por conquista)
+      const pontosConquistas = criador.conquistaUsuarios.length * 20
+      
+      // Pontos do campo pontuacao do usuário (se existir)
+      const pontosUsuario = criador.pontuacao || 0
+      
+      // Pontuação total composta
+      const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
+
+      return {
+        id: criador.id,
+        nome: criador.nome,
+        email: criador.email,
+        avatar: criador.avatar,
+        nivel: criador.nivel,
+        sementesRecebidas,
+        pontosMissoes,
+        pontosConquistas,
+        pontosUsuario,
+        pontuacaoTotal,
+        totalDoacoes: criador.doacoesRecebidas.length,
+        missoesCompletadas: criador.missaoUsuarios.length,
+        conquistasDesbloqueadas: criador.conquistaUsuarios.length
+      }
+    })
+
+    // Ordenar por pontuação total (maior para menor)
+    criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
+
+    // Definir nível dinâmico por posição no ranking
+    const rankingComNivel = criadoresComPontuacao.map((criador, index) => {
+      const posicao = index + 1
+      let nivelRanking = 'comum'
+      
+      if (posicao <= 50) {
+        nivelRanking = 'supremo'
+      } else if (posicao <= 100) {
+        nivelRanking = 'parceiro'
+      } else if (posicao <= 150) {
+        nivelRanking = 'criador'
+      } else {
+        nivelRanking = 'comum'
+      }
+
+      return {
+        ...criador,
+        posicao,
+        nivelRanking
+      }
+    })
+
+    // Retornar apenas os top 200 criadores
+    const topCriadores = rankingComNivel.slice(0, 200)
+
+    res.status(200).json({
+      success: true,
+      criadores: topCriadores,
+      total: topCriadores.length
+    })
+
   } catch (error) {
     console.error('Erro ao buscar ranking de criadores:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

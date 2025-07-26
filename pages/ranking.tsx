@@ -24,10 +24,18 @@ interface RankingItem {
   id: string
   nome: string
   avatar: string
-  nivel: number
+  nivel: string
+  nivelRanking?: string
   sementes: number
+  sementesRecebidas?: number
+  pontosMissoes?: number
+  pontosConquistas?: number
+  pontosUsuario?: number
+  pontuacaoTotal?: number
   doacoes: number
   criadoresApoiados: number
+  missoesCompletadas?: number
+  conquistasDesbloqueadas?: number
   posicao: number
   categoria: 'doador' | 'criador' | 'missao' | 'social'
   periodo: 'diario' | 'semanal' | 'mensal' | 'total'
@@ -89,10 +97,45 @@ export default function Ranking() {
 
   const loadRanking = async () => {
     try {
-      const response = await fetch(`/api/ranking?categoria=${selectedCategoria}&periodo=${selectedPeriodo}`)
-      const data = await response.json()
-      if (response.ok) {
-        setRanking(data.ranking)
+      let response
+      if (selectedCategoria === 'criador') {
+        // Usar a nova API de ranking de criadores com pontuação composta
+        response = await fetch('/api/ranking/criadores')
+        const data = await response.json()
+        if (response.ok && data.success) {
+          // Converter dados da API de criadores para o formato do ranking
+          const rankingCriadores = data.criadores.map((criador: any) => ({
+            id: criador.id,
+            nome: criador.nome,
+            avatar: criador.avatar,
+            nivel: criador.nivel,
+            nivelRanking: criador.nivelRanking,
+            sementes: criador.sementesRecebidas,
+            sementesRecebidas: criador.sementesRecebidas,
+            pontosMissoes: criador.pontosMissoes,
+            pontosConquistas: criador.pontosConquistas,
+            pontosUsuario: criador.pontosUsuario,
+            pontuacaoTotal: criador.pontuacaoTotal,
+            doacoes: criador.totalDoacoes,
+            criadoresApoiados: 0,
+            missoesCompletadas: criador.missoesCompletadas,
+            conquistasDesbloqueadas: criador.conquistasDesbloqueadas,
+            posicao: criador.posicao,
+            categoria: 'criador' as const,
+            periodo: selectedPeriodo as any,
+            badge: criador.nivelRanking,
+            icone: '🎭',
+            cor: 'text-purple-500'
+          }))
+          setRanking(rankingCriadores)
+        }
+      } else {
+        // Usar API original para outras categorias
+        response = await fetch(`/api/ranking?categoria=${selectedCategoria}&periodo=${selectedPeriodo}`)
+        const data = await response.json()
+        if (response.ok) {
+          setRanking(data.ranking)
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar ranking:', error)
@@ -479,19 +522,38 @@ export default function Ranking() {
                           
                           <div className="text-right">
                             <div className="flex items-center space-x-4">
-                              <div className="text-center">
-                                <p className="text-sss-accent font-bold text-lg">{formatarNumero(item.sementes)}</p>
-                                <p className="text-gray-400 text-sm">Sementes</p>
-                              </div>
-                              <div className="text-center">
-                                <p className="text-sss-white font-semibold">{formatarNumero(item.doacoes)}</p>
-                                <p className="text-gray-400 text-sm">Doações</p>
-                              </div>
-                              {item.categoria === 'doador' && (
-                                <div className="text-center">
-                                  <p className="text-sss-white font-semibold">{item.criadoresApoiados}</p>
-                                  <p className="text-gray-400 text-sm">Criadores</p>
-                                </div>
+                              {item.categoria === 'criador' ? (
+                                <>
+                                  <div className="text-center">
+                                    <p className="text-sss-accent font-bold text-lg">{formatarNumero(item.pontuacaoTotal || 0)}</p>
+                                    <p className="text-gray-400 text-sm">Pontos</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-sss-white font-semibold">{formatarNumero(item.sementesRecebidas || 0)}</p>
+                                    <p className="text-gray-400 text-sm">Sementes</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-sss-white font-semibold">{formatarNumero(item.doacoes)}</p>
+                                    <p className="text-gray-400 text-sm">Doações</p>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="text-center">
+                                    <p className="text-sss-accent font-bold text-lg">{formatarNumero(item.sementes)}</p>
+                                    <p className="text-gray-400 text-sm">Sementes</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-sss-white font-semibold">{formatarNumero(item.doacoes)}</p>
+                                    <p className="text-gray-400 text-sm">Doações</p>
+                                  </div>
+                                  {item.categoria === 'doador' && (
+                                    <div className="text-center">
+                                      <p className="text-sss-white font-semibold">{item.criadoresApoiados}</p>
+                                      <p className="text-gray-400 text-sm">Criadores</p>
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </div>
                           </div>
@@ -529,26 +591,55 @@ export default function Ranking() {
                 <div className="space-y-4">
                   <div className="bg-sss-dark rounded-lg p-4">
                     <h4 className="text-sss-white font-semibold mb-3">Estatísticas</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-center">
-                        <p className="text-sss-accent font-bold text-lg">{formatarNumero(selectedItem.sementes)}</p>
-                        <p className="text-gray-400">Sementes</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.doacoes)}</p>
-                        <p className="text-gray-400">Doações</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sss-white font-semibold">{selectedItem.nivel}</p>
-                        <p className="text-gray-400">Nível</p>
-                      </div>
-                      {selectedItem.categoria === 'doador' && (
+                    {selectedItem.categoria === 'criador' ? (
+                      <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="text-center">
-                          <p className="text-sss-white font-semibold">{selectedItem.criadoresApoiados}</p>
-                          <p className="text-gray-400">Criadores Apoiados</p>
+                          <p className="text-sss-accent font-bold text-lg">{formatarNumero(selectedItem.pontuacaoTotal || 0)}</p>
+                          <p className="text-gray-400">Pontuação Total</p>
                         </div>
-                      )}
-                    </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.sementesRecebidas || 0)}</p>
+                          <p className="text-gray-400">Sementes Recebidas</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.doacoes)}</p>
+                          <p className="text-gray-400">Total de Doações</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{selectedItem.missoesCompletadas || 0}</p>
+                          <p className="text-gray-400">Missões Completadas</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{selectedItem.conquistasDesbloqueadas || 0}</p>
+                          <p className="text-gray-400">Conquistas</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{selectedItem.pontosUsuario || 0}</p>
+                          <p className="text-gray-400">Pontos Extras</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="text-center">
+                          <p className="text-sss-accent font-bold text-lg">{formatarNumero(selectedItem.sementes)}</p>
+                          <p className="text-gray-400">Sementes</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.doacoes)}</p>
+                          <p className="text-gray-400">Doações</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sss-white font-semibold">{selectedItem.nivel}</p>
+                          <p className="text-gray-400">Nível</p>
+                        </div>
+                        {selectedItem.categoria === 'doador' && (
+                          <div className="text-center">
+                            <p className="text-sss-white font-semibold">{selectedItem.criadoresApoiados}</p>
+                            <p className="text-gray-400">Criadores Apoiados</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {selectedItem.badge && (
