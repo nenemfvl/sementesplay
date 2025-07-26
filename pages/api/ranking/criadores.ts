@@ -70,6 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       switch (nivel) {
         case 'comum':
           return 'Comum'
+        case 'criador-iniciante':
+          return 'Criador Iniciante'
         case 'criador-comum':
           return 'Criador Comum'
         case 'criador-parceiro':

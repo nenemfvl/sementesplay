@@ -66,9 +66,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         novoNivel = 'criador-supremo'
       } else if (posicao <= 100) {
         novoNivel = 'criador-parceiro'
-      } else {
-        // Todos os criadores no ranking devem ter nível de criador
+      } else if (posicao <= 150) {
         novoNivel = 'criador-comum'
+      } else {
+        // Criadores fora do top 150 são iniciantes
+        novoNivel = 'criador-iniciante'
       }
 
       // Atualizar no banco

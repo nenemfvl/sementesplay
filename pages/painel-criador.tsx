@@ -110,7 +110,7 @@ export default function PainelCriador() {
       }
 
       // Verificação simplificada usando localStorage
-      if (user.nivel === 'criador-comum' || user.nivel === 'criador-parceiro' || user.nivel === 'criador-supremo') {
+      if (user.nivel === 'criador-iniciante' || user.nivel === 'criador-comum' || user.nivel === 'criador-parceiro' || user.nivel === 'criador-supremo') {
         setAuthorized(true);
         setCheckingAuth(false);
       } else {
