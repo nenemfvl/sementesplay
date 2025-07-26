@@ -158,13 +158,8 @@ export default function Criadores() {
         {/* Header */}
         <header className="bg-sss-medium shadow-lg border-b border-sss-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <span className="inline-flex items-center text-sss-accent">
-                  <TrophyIcon className="w-5 h-5 mr-2" />
-                  Ranking de Criadores
-                </span>
-              </div>
+            <div className="flex justify-end items-center py-4">
+              {/* Removido o cabeçalho lateral esquerdo */}
               <div className="flex items-center space-x-4">
                 <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
                   <TrophyIcon className="w-5 h-5 text-purple-500" />
