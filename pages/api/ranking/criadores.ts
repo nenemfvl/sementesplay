@@ -68,21 +68,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Mapear nível do banco para nome descritivo
     const mapearNivel = (nivel: string) => {
       switch (nivel) {
-        case '1':
         case 'comum':
           return 'Comum'
-        case '2':
+        case 'criador-comum':
+          return 'Criador Comum'
+        case 'criador-parceiro':
+          return 'Criador Parceiro'
+        case 'criador-supremo':
+          return 'Criador Supremo'
         case 'parceiro':
           return 'Parceiro'
-        case '3':
         case 'supremo':
           return 'Supremo'
-        case 'ouro':
-          return 'Ouro'
-        case 'prata':
-          return 'Prata'
-        case 'bronze':
-          return 'Bronze'
         default:
           return 'Comum'
       }
