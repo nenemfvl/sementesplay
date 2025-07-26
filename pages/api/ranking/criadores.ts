@@ -43,22 +43,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Pontuação total composta
       const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
 
-      return {
-        id: criador.usuario.id,
-        nome: criador.usuario.nome,
-        email: criador.usuario.email,
-        avatar: criador.usuario.avatarUrl || '👤',
-        nivel: criador.usuario.nivel,
-        sementesRecebidas,
-        pontosMissoes,
-        pontosConquistas,
-        pontosUsuario,
-        pontuacaoTotal,
-        totalDoacoes: criador.doacoesRecebidas.length,
-        missoesCompletadas: criador.usuario.missaoUsuarios.length,
-        conquistasDesbloqueadas: criador.usuario.conquistas.length,
-        redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
-      }
+              return {
+          id: criador.usuario.id,
+          nome: criador.usuario.nome,
+          email: criador.usuario.email,
+          avatar: criador.usuario.avatarUrl || '👤',
+          nivel: criador.usuario.nivel,
+          sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
+          sementesRecebidas,
+          pontosMissoes,
+          pontosConquistas,
+          pontosUsuario,
+          pontuacaoTotal,
+          totalDoacoes: criador.doacoesRecebidas.length,
+          missoesCompletadas: criador.usuario.missaoUsuarios.length,
+          conquistasDesbloqueadas: criador.usuario.conquistas.length,
+          redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
+        }
     })
 
     // Ordenar por pontuação total (maior para menor)
