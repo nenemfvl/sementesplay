@@ -78,14 +78,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: { nivel: novoNivel }
       })
 
-      atualizacoes.push({
-        id: criador.id,
-        nome: criador.nome,
-        posicao,
-        nivelAnterior: criador.nivel,
-        nivelNovo: novoNivel,
-        pontuacao: criador.pontuacaoTotal
-      })
+             // Buscar o nível atual do usuário
+       const usuarioAtual = await prisma.usuario.findUnique({
+         where: { id: criador.id },
+         select: { nivel: true }
+       })
+
+       atualizacoes.push({
+         id: criador.id,
+         nome: criador.nome,
+         posicao,
+         nivelAnterior: usuarioAtual?.nivel || 'comum',
+         nivelNovo: novoNivel,
+         pontuacao: criador.pontuacaoTotal
+       })
     }
 
     console.log(`Níveis atualizados para ${atualizacoes.length} criadores`)
