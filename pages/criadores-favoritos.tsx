@@ -133,7 +133,7 @@ export default function CriadoresFavoritos() {
                           />
                           <div className="flex-1">
                             <div className="font-bold text-sss-white">{criador.nome}</div>
-                            <div className="text-sm text-gray-400">{criador.totalDoacoes || 0} sementes</div>
+                                                         <div className="text-sm text-gray-400">{criador.sementesRecebidas || 0} sementes</div>
                           </div>
                         </div>
                         
