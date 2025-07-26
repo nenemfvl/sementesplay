@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 concluida: true
               }
             },
-            conquistaUsuarios: true
+            conquistas: true
           }
         },
         doacoesRecebidas: true
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const pontosMissoes = criador.usuario.missaoUsuarios.length * 10
       
       // Pontos extras por conquistas desbloqueadas (20 pontos por conquista)
-      const pontosConquistas = criador.usuario.conquistaUsuarios.length * 20
+      const pontosConquistas = criador.usuario.conquistas.length * 20
       
       // Pontos do campo pontuacao do usuário (se existir)
       const pontosUsuario = criador.usuario.pontuacao || 0
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         pontuacaoTotal,
         totalDoacoes: criador.doacoesRecebidas.length,
         missoesCompletadas: criador.usuario.missaoUsuarios.length,
-        conquistasDesbloqueadas: criador.usuario.conquistaUsuarios.length
+        conquistasDesbloqueadas: criador.usuario.conquistas.length
       }
     })
 
