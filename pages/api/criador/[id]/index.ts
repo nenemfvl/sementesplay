@@ -185,6 +185,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Formatar dados para o frontend
     const criadorFormatado = {
       id: criador.id,
+      usuarioId: criador.usuarioId, // Adicionando o usuarioId
       nome: criador.usuario.nome,
       nivel: criador.usuario.nivel,
       avatar: criador.usuario.avatarUrl,
