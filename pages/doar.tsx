@@ -57,15 +57,10 @@ export default function Doar() {
 
   const loadCreators = async () => {
     try {
-      console.log('Carregando criadores...')
       const response = await fetch('/api/criadores')
-      console.log('Status da resposta:', response.status)
       const data = await response.json()
-      console.log('Resposta da API:', data)
       if (response.ok) {
         setCreators(data.criadores || [])
-        console.log('Criadores carregados:', data.criadores?.length || 0)
-        console.log('Primeiro criador:', data.criadores?.[0])
       } else {
         console.error('Erro na resposta da API:', data)
       }
