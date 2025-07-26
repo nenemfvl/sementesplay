@@ -193,9 +193,8 @@ export default function CriadoresFavoritos() {
                           )}
                         </div>
                       </div>
-                                         </div>
-                   )
-                   })}
+                    </div>
+                   ))}
                  </div>
 
                 {/* Botão para ver todos os criadores */}
