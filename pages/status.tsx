@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, TrophyIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
-import { FaTwitch, FaYoutube, FaTiktok, FaInstagram } from 'react-icons/fa'
+import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 
 const redes = [
@@ -34,6 +34,7 @@ export default function Status() {
   const [rankingMissoesConquistas, setRankingMissoesConquistas] = useState<any[]>([])
   const [categoriaRanking, setCategoriaRanking] = useState('geral')
   const [loadingRanking, setLoadingRanking] = useState(false)
+  const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const router = useRouter()
 
   useEffect(() => {
@@ -87,6 +88,18 @@ export default function Status() {
 
   // Remover animação de contagem crescente
   // useEffect do contador removida
+
+  const toggleFavorito = (criadorId: string) => {
+    setFavoritos(prev => {
+      const novosFavoritos = new Set(prev)
+      if (novosFavoritos.has(criadorId)) {
+        novosFavoritos.delete(criadorId)
+      } else {
+        novosFavoritos.add(criadorId)
+      }
+      return novosFavoritos
+    })
+  }
 
   return (
     <>
@@ -288,51 +301,77 @@ export default function Status() {
             <div className="w-full max-w-5xl mx-auto">
                              {/* Destaque Top 1 */}
                {top1 && (
-                 <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
-                   {/* Conteúdo Principal */}
-                   <div className="flex items-center flex-1">
-                     <img src={top1.avatar || '/default-avatar.png'} alt={top1.nome} className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6" />
-                     <div className="flex-1 flex flex-col items-start">
-                       <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
-                       <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
-                       <button className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
-                     </div>
-                   </div>
-                                       {/* Redes Sociais - Borda Direita */}
-                    {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
-                      <div className="flex flex-row gap-3 ml-4 mt-24">
-                       {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
-                       {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
-                       {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
-                       {top1.redesSociais.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform"><FaInstagram /></a>}
-                     </div>
-                   )}
+                                   <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
+                    {/* Conteúdo Principal */}
+                    <div className="flex items-center flex-1">
+                      <img src={top1.avatar || '/default-avatar.png'} alt={top1.nome} className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6" />
+                      <div className="flex-1 flex flex-col items-start">
+                        <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
+                        <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
+                        <button className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
+                      </div>
+                    </div>
+                    {/* Botão Favoritar - Canto Superior Direito */}
+                    <div className="flex flex-col items-end gap-4">
+                      <button
+                        onClick={() => toggleFavorito(top1.id)}
+                        className="text-2xl hover:scale-110 transition-transform"
+                      >
+                        {favoritos.has(top1.id) ? (
+                          <FaHeart className="text-red-500" />
+                        ) : (
+                          <FaRegHeart className="text-gray-400 hover:text-red-500" />
+                        )}
+                      </button>
+                      {/* Redes Sociais - Borda Direita */}
+                      {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
+                        <div className="flex flex-row gap-3">
+                         {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
+                         {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
+                         {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
+                         {top1.redesSociais.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform"><FaInstagram /></a>}
+                       </div>
+                      )}
+                    </div>
                  </div>
                )}
                              {/* Lista dos demais criadores */}
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                  {outros.map((c, i) => (
-                   <div key={c.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
-                     <div className="flex">
-                       {/* Conteúdo Principal */}
-                       <div className="flex items-center flex-1">
-                         <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3" />
-                         <div className="flex-1">
-                           <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
-                           <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
-                         </div>
-                       </div>
-                                               {/* Redes Sociais - Borda Direita */}
-                        {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
-                          <div className="flex flex-row gap-2 ml-3 mt-12">
-                           {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
-                           {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
-                           {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
-                           {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform"><FaInstagram /></a>}
-                         </div>
-                       )}
-                     </div>
-                   </div>
+                                       <div key={c.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                      <div className="flex">
+                        {/* Conteúdo Principal */}
+                        <div className="flex items-center flex-1">
+                          <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3" />
+                          <div className="flex-1">
+                            <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
+                            <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
+                          </div>
+                        </div>
+                        {/* Botão Favoritar e Redes Sociais - Borda Direita */}
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            onClick={() => toggleFavorito(c.id)}
+                            className="text-lg hover:scale-110 transition-transform"
+                          >
+                            {favoritos.has(c.id) ? (
+                              <FaHeart className="text-red-500" />
+                            ) : (
+                              <FaRegHeart className="text-gray-400 hover:text-red-500" />
+                            )}
+                          </button>
+                          {/* Redes Sociais */}
+                          {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
+                            <div className="flex flex-row gap-2">
+                             {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
+                             {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
+                             {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
+                             {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform"><FaInstagram /></a>}
+                           </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                  ))}
                </div>
             </div>
