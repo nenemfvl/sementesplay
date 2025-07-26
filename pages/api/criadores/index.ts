@@ -127,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           avatar: criador.usuario.avatarUrl || '/avatars/default.jpg',
           categoria: criador.categoria || 'Geral',
           status: 'ativo',
-          nivel: mapearNivel(criador.nivel),
+          nivel: mapearNivel(criador.usuario.nivel),
           seguidores: criador.apoiadores || 0,
           doacoesRecebidas: criador.doacoes || 0,
           totalSementes: criador.usuario.sementes,
