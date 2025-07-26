@@ -61,6 +61,10 @@ export default function Criadores() {
   const [conteudos, setConteudos] = useState<any[]>([])
   const [enquetes, setEnquetes] = useState<any[]>([])
   const [loadingDetalhes, setLoadingDetalhes] = useState(false)
+  const [showPerguntaForm, setShowPerguntaForm] = useState(false)
+  const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
+  const [enviandoPergunta, setEnviandoPergunta] = useState(false)
+  const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -182,6 +186,46 @@ export default function Criadores() {
       console.error('Erro ao carregar detalhes:', error)
     } finally {
       setLoadingDetalhes(false)
+    }
+  }
+
+  const handleEnviarPergunta = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim() || !criadorDetalhes) return
+
+    setEnviandoPergunta(true)
+    setPerguntaStatus('enviando')
+
+    try {
+      const response = await fetch('/api/recados', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          destinatarioId: criadorDetalhes.usuarioId,
+          titulo: perguntaForm.titulo,
+          mensagem: perguntaForm.mensagem
+        })
+      })
+
+      if (response.ok) {
+        setPerguntaStatus('enviado')
+        setPerguntaForm({ titulo: '', mensagem: '' })
+        setShowPerguntaForm(false)
+        setTimeout(() => setPerguntaStatus('idle'), 3000)
+      } else {
+        const data = await response.json()
+        console.error('Erro ao enviar pergunta:', data)
+        setPerguntaStatus('erro')
+        setTimeout(() => setPerguntaStatus('idle'), 3000)
+      }
+    } catch (error) {
+      console.error('Erro ao enviar pergunta:', error)
+      setPerguntaStatus('erro')
+      setTimeout(() => setPerguntaStatus('idle'), 3000)
+    } finally {
+      setEnviandoPergunta(false)
     }
   }
 
@@ -616,6 +660,87 @@ export default function Criadores() {
                           </div>
                         ) : (
                           <p className="text-gray-400 text-sm text-center py-4">Nenhuma enquete ativa no momento</p>
+                        )}
+                      </div>
+
+                      {/* Caixa de Perguntas do Usuário */}
+                      <div className="bg-sss-dark rounded-lg p-6">
+                        <h4 className="text-sss-white font-semibold mb-4 flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                          Enviar Pergunta
+                        </h4>
+                        
+                        {!showPerguntaForm ? (
+                          <button
+                            onClick={() => setShowPerguntaForm(true)}
+                            className="w-full bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition"
+                          >
+                            Fazer Pergunta para {criadorDetalhes?.nome}
+                          </button>
+                        ) : (
+                          <form onSubmit={handleEnviarPergunta} className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-sss-white mb-2">
+                                Título da Pergunta
+                              </label>
+                              <input
+                                type="text"
+                                value={perguntaForm.titulo}
+                                onChange={(e) => setPerguntaForm(prev => ({ ...prev, titulo: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 bg-sss-medium text-sss-white border-sss-light placeholder-gray-400"
+                                placeholder="Digite o título da sua pergunta..."
+                                required
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-sss-white mb-2">
+                                Sua Pergunta
+                              </label>
+                              <textarea
+                                value={perguntaForm.mensagem}
+                                onChange={(e) => setPerguntaForm(prev => ({ ...prev, mensagem: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 bg-sss-medium text-sss-white border-sss-light placeholder-gray-400"
+                                placeholder="Digite sua pergunta aqui..."
+                                rows={4}
+                                required
+                              />
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <button
+                                type="submit"
+                                disabled={enviandoPergunta || !perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim()}
+                                className="flex-1 bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition disabled:opacity-50"
+                              >
+                                {enviandoPergunta ? 'Enviando...' : 'Enviar Pergunta'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowPerguntaForm(false)
+                                  setPerguntaForm({ titulo: '', mensagem: '' })
+                                }}
+                                className="px-4 py-2 border border-sss-light text-sss-white rounded hover:bg-sss-medium transition"
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                            
+                            {perguntaStatus === 'enviado' && (
+                              <div className="text-green-500 text-sm text-center">
+                                ✅ Pergunta enviada com sucesso!
+                              </div>
+                            )}
+                            
+                            {perguntaStatus === 'erro' && (
+                              <div className="text-red-500 text-sm text-center">
+                                ❌ Erro ao enviar pergunta. Tente novamente.
+                              </div>
+                            )}
+                          </form>
                         )}
                       </div>
                     </div>
