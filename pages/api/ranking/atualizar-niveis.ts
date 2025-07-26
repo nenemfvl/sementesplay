@@ -63,11 +63,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       
       // Definir nível baseado na posição
       if (posicao <= 50) {
-        novoNivel = 'supremo'
+        novoNivel = 'criador-supremo'
       } else if (posicao <= 100) {
-        novoNivel = 'parceiro'
+        novoNivel = 'criador-parceiro'
       } else if (posicao <= 150) {
-        novoNivel = 'criador'
+        novoNivel = 'criador-comum'
       } else {
         novoNivel = 'comum'
       }
