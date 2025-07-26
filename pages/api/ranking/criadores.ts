@@ -10,24 +10,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Buscar todos os criadores com suas doações recebidas
-    const criadores = await prisma.usuario.findMany({
-      where: {
-        nivel: {
-          in: ['criador', 'parceiro', 'supremo']
-        }
-      },
+    const criadores = await prisma.criador.findMany({
       include: {
-        doacoesRecebidas: true,
-        missaoUsuarios: {
-          where: {
-            concluida: true
+        usuario: {
+          include: {
+            missaoUsuarios: {
+              where: {
+                concluida: true
+              }
+            },
+            conquistaUsuarios: true
           }
         },
-        conquistaUsuarios: {
-          where: {
-            desbloqueada: true
-          }
-        }
+        doacoesRecebidas: true
       }
     })
 
@@ -37,31 +32,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
       
       // Pontos extras por missões completadas (10 pontos por missão)
-      const pontosMissoes = criador.missaoUsuarios.length * 10
+      const pontosMissoes = criador.usuario.missaoUsuarios.length * 10
       
       // Pontos extras por conquistas desbloqueadas (20 pontos por conquista)
-      const pontosConquistas = criador.conquistaUsuarios.length * 20
+      const pontosConquistas = criador.usuario.conquistaUsuarios.length * 20
       
       // Pontos do campo pontuacao do usuário (se existir)
-      const pontosUsuario = criador.pontuacao || 0
+      const pontosUsuario = criador.usuario.pontuacao || 0
       
       // Pontuação total composta
       const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
 
       return {
-        id: criador.id,
-        nome: criador.nome,
-        email: criador.email,
-        avatar: criador.avatar,
-        nivel: criador.nivel,
+        id: criador.usuario.id,
+        nome: criador.usuario.nome,
+        email: criador.usuario.email,
+        avatar: criador.usuario.avatarUrl || '👤',
+        nivel: criador.usuario.nivel,
         sementesRecebidas,
         pontosMissoes,
         pontosConquistas,
         pontosUsuario,
         pontuacaoTotal,
         totalDoacoes: criador.doacoesRecebidas.length,
-        missoesCompletadas: criador.missaoUsuarios.length,
-        conquistasDesbloqueadas: criador.conquistaUsuarios.length
+        missoesCompletadas: criador.usuario.missaoUsuarios.length,
+        conquistasDesbloqueadas: criador.usuario.conquistaUsuarios.length
       }
     })
 
