@@ -155,23 +155,7 @@ export default function Criadores() {
       </Head>
       <Navbar />
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-end items-center py-4">
-              {/* Removido o cabeçalho lateral esquerdo */}
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
-                  <TrophyIcon className="w-5 h-5 text-purple-500" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-gray-300">Ranking de Criadores</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Header REMOVIDO */}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-8">
