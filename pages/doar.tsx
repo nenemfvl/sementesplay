@@ -342,20 +342,25 @@ export default function Doar() {
                               )}
                             </div>
                             
-                            {/* Botão Favoritar - Canto Superior Direito */}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleFavorito(creator.id);
-                              }}
-                              className="text-lg hover:scale-110 transition-transform flex-shrink-0"
-                            >
-                              {favoritos.has(creator.id) ? (
-                                <FaHeart className="text-red-500" />
-                              ) : (
-                                <FaRegHeart className="text-gray-400 hover:text-red-500" />
-                              )}
-                            </button>
+                                                         {/* Botão Favoritar - Canto Superior Direito */}
+                             <button
+                               onClick={(e) => {
+                                 e.preventDefault();
+                                 e.stopPropagation();
+                                 toggleFavorito(creator.id);
+                               }}
+                               onMouseDown={(e) => {
+                                 e.preventDefault();
+                                 e.stopPropagation();
+                               }}
+                               className="text-lg hover:scale-110 transition-transform flex-shrink-0 z-10 relative"
+                             >
+                               {favoritos.has(creator.id) ? (
+                                 <FaHeart className="text-red-500" />
+                               ) : (
+                                 <FaRegHeart className="text-gray-400 hover:text-red-500" />
+                               )}
+                             </button>
                           </div>
                         </button>
                       ))
