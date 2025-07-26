@@ -109,34 +109,58 @@ export default function PainelCriador() {
         return;
       }
 
-      // Verificar se o usuário é um criador buscando dados completos
+      // Verificar se o usuário é um criador usando múltiplas estratégias
       try {
-        const response = await fetch('/api/usuario/atual');
+        // Estratégia 1: Verificar se o usuário tem tipo 'criador'
+        if (user.tipo === 'criador') {
+          setAuthorized(true);
+          setCheckingAuth(false);
+          return;
+        }
+
+        // Estratégia 2: API de usuário atual
+        const response = await fetch('/api/usuario/atual', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
         if (response.ok) {
           const data = await response.json();
-          if (!data.usuario.criador) {
-            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
-            window.location.href = '/dashboard';
-            return;
-          }
-        } else {
-          // Fallback: verificar se tem registro de criador
-          const criadorResponse = await fetch(`/api/criadores/${user.id}`);
-          if (!criadorResponse.ok) {
-            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
-            window.location.href = '/dashboard';
+          if (data.usuario && data.usuario.criador) {
+            setAuthorized(true);
+            setCheckingAuth(false);
             return;
           }
         }
+
+        // Estratégia 3: API de criadores específica
+        const criadorResponse = await fetch(`/api/criadores/${user.id}`, {
+          credentials: 'include'
+        });
+        
+        if (criadorResponse.ok) {
+          setAuthorized(true);
+          setCheckingAuth(false);
+          return;
+        }
+
+        // Se nenhuma estratégia funcionou, negar acesso
+        alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+        window.location.href = '/dashboard';
+        
       } catch (error) {
         console.error('Erro ao verificar autorização:', error);
-        alert('Erro ao verificar autorização. Tente novamente.');
-        window.location.href = '/dashboard';
-        return;
+        // Em caso de erro, permitir acesso se o usuário tem tipo 'criador'
+        if (user.tipo === 'criador') {
+          setAuthorized(true);
+          setCheckingAuth(false);
+        } else {
+          alert('Erro ao verificar autorização. Tente novamente.');
+          window.location.href = '/dashboard';
+        }
       }
-
-      setAuthorized(true);
-      setCheckingAuth(false);
     };
 
     checkAuth();
