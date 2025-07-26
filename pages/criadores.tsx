@@ -314,8 +314,8 @@ export default function Criadores() {
                                  <p className="text-gray-400 text-sm">Pontos</p>
                                </div>
                                <div className="text-center">
-                                 <p className="text-sss-white font-semibold">{formatarNumero(item.sementes || 0)}</p>
-                                 <p className="text-gray-400 text-sm">Sementes</p>
+                                 <p className="text-sss-white font-semibold">{formatarNumero(item.sementesRecebidas || 0)}</p>
+                                 <p className="text-gray-400 text-sm">Sementes Recebidas</p>
                                </div>
                                <div className="text-center">
                                  <p className="text-sss-white font-semibold">{formatarNumero(item.doacoes)}</p>
