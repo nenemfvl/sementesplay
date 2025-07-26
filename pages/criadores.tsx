@@ -244,11 +244,6 @@ export default function Criadores() {
                                  <h4 className="text-sss-white font-semibold">{item.nome}</h4>
                                  <div className="flex items-center space-x-2 text-sm text-gray-400">
                                    <span>Nível {item.nivel}</span>
-                                   {item.badge && (
-                                     <span className={`px-2 py-1 rounded-full text-xs ${item.cor}`}>
-                                       {item.badge}
-                                     </span>
-                                   )}
                                  </div>
                                  {/* Redes Sociais */}
                                  {item.redesSociais && Object.keys(item.redesSociais).length > 0 && (
