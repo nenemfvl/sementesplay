@@ -35,10 +35,15 @@ export default function Doar() {
 
   const loadCreators = async () => {
     try {
+      console.log('Carregando criadores...')
       const response = await fetch('/api/criadores')
       const data = await response.json()
+      console.log('Resposta da API:', data)
       if (response.ok) {
-        setCreators(data.criadores)
+        setCreators(data.criadores || [])
+        console.log('Criadores carregados:', data.criadores?.length || 0)
+      } else {
+        console.error('Erro na resposta da API:', data)
       }
     } catch (error) {
       console.error('Erro ao carregar criadores:', error)
@@ -179,7 +184,11 @@ export default function Doar() {
                     )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {filteredCreators.length > 0 ? (
+                    {loading ? (
+                      <div className="col-span-2 text-center py-8">
+                        <p className="text-gray-400">Carregando criadores...</p>
+                      </div>
+                    ) : filteredCreators.length > 0 ? (
                       filteredCreators.map((creator) => (
                                                  <button
                            key={creator.id}
@@ -221,7 +230,7 @@ export default function Doar() {
                                 </div>
                               </div>
                               <p className="text-sm text-gray-400">Nível {creator.nivel}</p>
-                              <p className="text-sm text-sss-accent">{creator.sementes} Sementes</p>
+                              <p className="text-sm text-sss-accent">{creator.totalSementes || 0} Sementes</p>
                             </div>
                           </div>
                         </button>
