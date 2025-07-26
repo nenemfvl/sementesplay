@@ -43,7 +43,7 @@ export default function CriadoresFavoritos() {
     setFavoritos(novosFavoritos)
     
     // Salvar no localStorage
-    localStorage.setItem('criadoresFavoritos', JSON.stringify([...novosFavoritos]))
+    localStorage.setItem('criadoresFavoritos', JSON.stringify(Array.from(novosFavoritos)))
   }
 
   if (loading) {
