@@ -385,6 +385,7 @@ model Missao {
   titulo      String
   descricao   String
   tipo        String // diaria, semanal, especial
+  objetivo    Int // quantidade necessária para completar
   recompensa  Int // sementes, pontos, etc.
   ativa       Boolean   @default(true)
   dataInicio  DateTime  @default(now())

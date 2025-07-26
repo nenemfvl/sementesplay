@@ -42,7 +42,7 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
       switch (tipoAcao) {
         case 'doacao':
           novoProgresso += 1 // Contar número de doações
-          if (novoProgresso >= missao.recompensa && !concluida) {
+          if (novoProgresso >= missao.objetivo && !concluida) {
             concluida = true
             // Criar conquista se a missão for completada
             await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
@@ -51,7 +51,7 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
         case 'valor_doacao':
           if (valor) {
             novoProgresso += valor // Somar valor das doações
-            if (novoProgresso >= missao.recompensa && !concluida) {
+            if (novoProgresso >= missao.objetivo && !concluida) {
               concluida = true
               await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
             }

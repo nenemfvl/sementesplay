@@ -103,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const proximasConquistas = missoesUsuario.map(m => ({
       nome: m.missao.titulo,
       descricao: m.missao.descricao,
-      progresso: m.concluida ? 100 : Math.min((m.progresso / m.missao.recompensa) * 100, 100)
+      progresso: m.concluida ? 100 : Math.min((m.progresso / m.missao.objetivo) * 100, 100)
     }))
 
     // Conquistas reais do usuário

@@ -12,6 +12,7 @@ async function criarMissoesPadrao() {
         titulo: 'Primeira Doação',
         descricao: 'Faça sua primeira doação para um criador',
         tipo: 'doacao',
+        objetivo: 1,
         recompensa: 50,
         ativa: true
       },
@@ -19,6 +20,7 @@ async function criarMissoesPadrao() {
         titulo: 'Doador Frequente',
         descricao: 'Faça 10 doações para criadores',
         tipo: 'doacao',
+        objetivo: 10,
         recompensa: 200,
         ativa: true
       },
@@ -26,6 +28,7 @@ async function criarMissoesPadrao() {
         titulo: 'Apoiador de Criadores',
         descricao: 'Apoie 5 criadores diferentes',
         tipo: 'criadores_apoiados',
+        objetivo: 5,
         recompensa: 300,
         ativa: true
       },
@@ -33,6 +36,7 @@ async function criarMissoesPadrao() {
         titulo: 'Doador Generoso',
         descricao: 'Doe um total de 1000 Sementes',
         tipo: 'valor_doacao',
+        objetivo: 1000,
         recompensa: 500,
         ativa: true
       }
