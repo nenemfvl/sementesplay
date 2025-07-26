@@ -328,9 +328,9 @@ export default function Status() {
                           <FaRegHeart className="text-gray-400 hover:text-red-500" />
                         )}
                       </button>
-                      {/* Redes Sociais - Borda Direita */}
-                      {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
-                        <div className="flex flex-row gap-3">
+                                             {/* Redes Sociais - Borda Direita */}
+                       {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
+                         <div className="flex flex-row gap-3 mt-8">
                          {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
                          {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
                          {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
@@ -365,9 +365,9 @@ export default function Status() {
                               <FaRegHeart className="text-gray-400 hover:text-red-500" />
                             )}
                           </button>
-                          {/* Redes Sociais */}
-                          {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
-                            <div className="flex flex-row gap-2">
+                                                     {/* Redes Sociais */}
+                           {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
+                             <div className="flex flex-row gap-2 mt-4">
                              {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
                              {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
                              {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
