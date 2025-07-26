@@ -7,7 +7,10 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Verificar autenticação
   const user = auth.getUser();
+  console.log('🔍 [RECADOS] Usuário autenticado:', user ? { id: user.id, nome: user.nome, nivel: user.nivel } : 'NÃO AUTENTICADO');
+  
   if (!user) {
+    console.log('❌ [RECADOS] Usuário não autenticado');
     return res.status(401).json({ error: 'Usuário não autenticado' });
   }
 
@@ -15,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       // Verificar se é criador para ver recados
       if (user.nivel !== 'criador') {
+        console.log('❌ [RECADOS] Acesso negado - usuário não é criador:', user.nivel);
         return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem acessar recados.' });
       }
 
@@ -51,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       return res.status(200).json({ recados: recadosFormatados })
     } catch (error) {
-      console.error('Erro ao buscar recados:', error)
+      console.error('❌ [RECADOS] Erro ao buscar recados:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
     }
   }
@@ -59,10 +63,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { destinatarioId, titulo, mensagem } = req.body
+      console.log('📝 [RECADOS] Tentando enviar recado:', { destinatarioId, titulo, mensagem });
 
       if (!destinatarioId || !titulo || !mensagem) {
+        console.log('❌ [RECADOS] Campos obrigatórios faltando:', { destinatarioId, titulo, mensagem });
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
       }
+
+      // Verificar se o destinatário existe
+      const destinatario = await prisma.usuario.findUnique({
+        where: { id: String(destinatarioId) }
+      });
+
+      if (!destinatario) {
+        console.log('❌ [RECADOS] Destinatário não encontrado:', destinatarioId);
+        return res.status(404).json({ error: 'Destinatário não encontrado' });
+      }
+
+      console.log('✅ [RECADOS] Destinatário encontrado:', destinatario.nome);
 
       const novoRecado = await prisma.recado.create({
         data: {
@@ -73,9 +91,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
+      console.log('✅ [RECADOS] Recado criado com sucesso:', novoRecado.id);
       return res.status(201).json({ recado: novoRecado })
     } catch (error) {
-      console.error('Erro ao enviar recado:', error)
+      console.error('❌ [RECADOS] Erro ao enviar recado:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })
     }
   }

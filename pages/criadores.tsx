@@ -193,6 +193,13 @@ export default function Criadores() {
     e.preventDefault()
     if (!perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim() || !criadorDetalhes) return
 
+    console.log('🔍 [FRONTEND] Enviando pergunta:', {
+      criadorDetalhes,
+      usuarioId: criadorDetalhes.usuarioId,
+      titulo: perguntaForm.titulo,
+      mensagem: perguntaForm.mensagem
+    })
+
     setEnviandoPergunta(true)
     setPerguntaStatus('enviando')
 
@@ -209,19 +216,23 @@ export default function Criadores() {
         })
       })
 
+      console.log('📡 [FRONTEND] Resposta da API:', response.status, response.statusText)
+
       if (response.ok) {
+        const data = await response.json()
+        console.log('✅ [FRONTEND] Pergunta enviada com sucesso:', data)
         setPerguntaStatus('enviado')
         setPerguntaForm({ titulo: '', mensagem: '' })
         setShowPerguntaForm(false)
         setTimeout(() => setPerguntaStatus('idle'), 3000)
       } else {
         const data = await response.json()
-        console.error('Erro ao enviar pergunta:', data)
+        console.error('❌ [FRONTEND] Erro ao enviar pergunta:', data)
         setPerguntaStatus('erro')
         setTimeout(() => setPerguntaStatus('idle'), 3000)
       }
     } catch (error) {
-      console.error('Erro ao enviar pergunta:', error)
+      console.error('❌ [FRONTEND] Erro ao enviar pergunta:', error)
       setPerguntaStatus('erro')
       setTimeout(() => setPerguntaStatus('idle'), 3000)
     } finally {
