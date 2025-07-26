@@ -283,12 +283,6 @@ export default function Dashboard() {
               <p className="text-sm text-gray-400">Top doadores e criadores</p>
             </Link>
 
-            <Link href="/perfil" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
-              <UserIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
-              <h3 className="font-semibold">Meu Perfil</h3>
-              <p className="text-sm text-gray-400">Estatísticas e conquistas</p>
-            </Link>
-
             <Link href="/missoes" className="bg-sss-medium hover:bg-sss-light border border-sss-light text-sss-white p-4 rounded-lg text-center transition-colors">
               <TrophyIcon className="w-8 h-8 mx-auto mb-2 text-sss-accent" />
               <h3 className="font-semibold">Missões</h3>
