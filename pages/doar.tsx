@@ -24,14 +24,36 @@ export default function Doar() {
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    const currentUser = auth.getUser()
-    if (!currentUser) {
-      window.location.href = '/login'
-      return
-    }
-    setUser(currentUser)
+    loadUserData()
     loadCreators()
   }, [])
+
+  const loadUserData = async () => {
+    try {
+      const response = await fetch('/api/usuario/atual')
+      if (response.ok) {
+        const data = await response.json()
+        setUser(data.usuario)
+      } else {
+        // Fallback para dados locais se a API falhar
+        const currentUser = auth.getUser()
+        if (!currentUser) {
+          window.location.href = '/login'
+          return
+        }
+        setUser(currentUser)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error)
+      // Fallback para dados locais
+      const currentUser = auth.getUser()
+      if (!currentUser) {
+        window.location.href = '/login'
+        return
+      }
+      setUser(currentUser)
+    }
+  }
 
   const loadCreators = async () => {
     try {

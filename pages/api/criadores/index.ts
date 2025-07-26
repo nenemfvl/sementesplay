@@ -65,7 +65,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               nome: true,
               email: true,
               sementes: true,
-              dataCriacao: true
+              dataCriacao: true,
+              avatarUrl: true,
+              nivel: true,
+              tipo: true
             }
           }
         },
