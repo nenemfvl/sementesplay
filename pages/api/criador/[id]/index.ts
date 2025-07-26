@@ -24,11 +24,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Token de autenticação necessário' })
       }
 
-      // Buscar o criador para verificar se existe
-      const criador = await prisma.criador.findUnique({
+      // Buscar o criador pelo ID do usuário ou ID do criador
+      let criador = await prisma.criador.findUnique({
         where: { id },
         include: { usuario: true }
       })
+
+      // Se não encontrou pelo ID direto, tenta buscar pelo usuarioId
+      if (!criador) {
+        criador = await prisma.criador.findUnique({
+          where: { usuarioId: id },
+          include: { usuario: true }
+        })
+      }
 
       if (!criador) {
         return res.status(404).json({ error: 'Criador não encontrado' })
@@ -46,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const criadorAtualizado = await prisma.criador.update({
-        where: { id },
+        where: { id: criador.id },
         data: dadosAtualizados,
         include: {
           usuario: {
@@ -91,8 +99,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('API criador: Buscando criador com ID:', id)
 
   try {
-    // Buscar o criador com dados básicos primeiro
-    const criador = await prisma.criador.findUnique({
+    // Buscar o criador pelo ID do usuário ou ID do criador
+    let criador = await prisma.criador.findUnique({
       where: { id },
       include: {
         usuario: {
@@ -106,6 +114,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     })
+
+    // Se não encontrou pelo ID direto, tenta buscar pelo usuarioId
+    if (!criador) {
+      criador = await prisma.criador.findUnique({
+        where: { usuarioId: id },
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              avatarUrl: true,
+              nivel: true
+            }
+          }
+        }
+      })
+    }
 
     console.log('API criador: Criador encontrado:', criador ? 'SIM' : 'NÃO')
 
