@@ -124,6 +124,7 @@ export default function CriadoresFavoritos() {
                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                    {criadoresFavoritos.map((criador) => {
                      console.log('Criador sendo renderizado:', criador)
+                     console.log('Sementes recebidas:', criador.sementesRecebidas)
                      return (
                     <div key={criador.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
                       <div className="flex">
