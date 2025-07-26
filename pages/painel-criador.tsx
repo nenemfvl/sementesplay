@@ -116,14 +116,14 @@ export default function PainelCriador() {
           const data = await response.json();
           console.log('Dados reais do Railway:', data.usuario);
           
-          // Verificar se é criador pelo tipo na tabela Usuario
-          if (data.usuario.tipo === 'criador') {
-            setAuthorized(true);
-            setCheckingAuth(false);
-          } else {
-            alert(`Acesso negado. Seu tipo é: ${data.usuario.tipo}. Apenas criadores podem acessar o painel de criador.`);
-            window.location.href = '/dashboard';
-          }
+                             // Verificar se é criador pelo nível na tabela Usuario
+                   if (data.usuario.nivel === 'criador') {
+                     setAuthorized(true);
+                     setCheckingAuth(false);
+                   } else {
+                     alert(`Acesso negado. Seu nível é: ${data.usuario.nivel}. Apenas criadores podem acessar o painel de criador.`);
+                     window.location.href = '/dashboard';
+                   }
         } else {
           throw new Error('Erro ao buscar dados do usuário');
         }

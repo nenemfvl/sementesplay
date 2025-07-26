@@ -116,7 +116,7 @@ export default function Navbar() {
             Buscar Criadores
           </a>
           <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
-          {user?.criador && (
+          {user?.nivel === 'criador' && (
             <a href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</a>
           )}
           <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
