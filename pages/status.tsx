@@ -308,7 +308,12 @@ export default function Status() {
                       <div className="flex-1 flex flex-col items-start">
                         <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
                         <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
-                        <button className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
+                        <button 
+                          onClick={() => router.push('/doar')}
+                          className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                        >
+                          Doar
+                        </button>
                       </div>
                     </div>
                     {/* Botão Favoritar - Canto Superior Direito */}
