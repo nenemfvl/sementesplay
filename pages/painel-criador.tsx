@@ -109,14 +109,27 @@ export default function PainelCriador() {
         return;
       }
 
-      console.log('User data:', user); // Debug
-
-      // Verificar se o usuário é um criador pelo tipo
-      if (user.tipo === 'criador' || user.nivel === 'criador') {
-        setAuthorized(true);
-        setCheckingAuth(false);
-      } else {
-        alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+      // Buscar dados frescos da API para verificar se é criador
+      try {
+        const response = await fetch('/api/usuario/atual');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Dados frescos da API:', data.usuario);
+          
+          // Verificar se é criador pelos dados frescos
+          if (data.usuario.criador || data.usuario.tipo === 'criador') {
+            setAuthorized(true);
+            setCheckingAuth(false);
+          } else {
+            alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+            window.location.href = '/dashboard';
+          }
+        } else {
+          throw new Error('Erro ao buscar dados do usuário');
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao verificar autorização. Tente novamente.');
         window.location.href = '/dashboard';
       }
     };
