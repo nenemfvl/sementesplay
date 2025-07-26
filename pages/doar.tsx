@@ -26,6 +26,13 @@ export default function Doar() {
   useEffect(() => {
     loadUserData()
     loadCreators()
+    
+    // Verificar se há um criador pré-selecionado na URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const criadorId = urlParams.get('criador')
+    if (criadorId) {
+      setSelectedCreator(criadorId)
+    }
   }, [])
 
   const loadUserData = async () => {
