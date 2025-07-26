@@ -31,6 +31,7 @@ export default function Navbar() {
     const loadUserData = async () => {
       if (typeof window !== 'undefined') {
         const currentUser = auth.getUser();
+        console.log('Usuário carregado na navbar:', currentUser);
         if (currentUser) {
           setUser(currentUser as UserWithCriador);
         }
