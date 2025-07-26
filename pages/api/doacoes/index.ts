@@ -53,10 +53,12 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
           novoProgresso += 1 // Contar número de doações
           console.log('Novo progresso após doação:', novoProgresso, 'objetivo:', missao.objetivo)
           if (novoProgresso >= missao.objetivo && !concluida) {
-            console.log('Missão completada! Criando conquista...')
+            console.log('Missão completada! Criando conquista e dando recompensa...')
             concluida = true
             // Criar conquista se a missão for completada
             await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
+            // Dar recompensa da missão
+            await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
           }
           break
         case 'valor_doacao':
@@ -64,9 +66,11 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
             novoProgresso += valor // Somar valor das doações
             console.log('Novo progresso após valor:', novoProgresso, 'objetivo:', missao.objetivo)
             if (novoProgresso >= missao.objetivo && !concluida) {
-              console.log('Missão completada! Criando conquista...')
+              console.log('Missão completada! Criando conquista e dando recompensa...')
               concluida = true
               await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
+              // Dar recompensa da missão
+              await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
             }
           }
           break
@@ -86,6 +90,41 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
     }
   } catch (error) {
     console.error('Erro ao atualizar missões:', error)
+  }
+}
+
+// Função para dar recompensa da missão
+async function darRecompensaMissao(tx: any, usuarioId: string, recompensa: number, tituloMissao: string, emblema?: string) {
+  try {
+    if (recompensa > 0) {
+      console.log('Dando recompensa de', recompensa, 'sementes para missão:', tituloMissao)
+      
+      // Adicionar sementes ao usuário
+      await tx.usuario.update({
+        where: { id: usuarioId },
+        data: { sementes: { increment: recompensa } }
+      })
+      
+      // Registrar histórico de sementes
+      await tx.semente.create({
+        data: {
+          usuarioId: usuarioId,
+          quantidade: recompensa,
+          tipo: 'recompensa_missao',
+          descricao: `Recompensa da missão: ${tituloMissao}`
+        }
+      })
+    }
+    
+    if (emblema) {
+      console.log('Dando emblema', emblema, 'para missão:', tituloMissao)
+      // Aqui você pode adicionar lógica para salvar o emblema do usuário
+      // Por exemplo, criar uma tabela de emblemas do usuário
+    }
+    
+    console.log('Recompensa dada com sucesso!')
+  } catch (error) {
+    console.error('Erro ao dar recompensa:', error)
   }
 }
 

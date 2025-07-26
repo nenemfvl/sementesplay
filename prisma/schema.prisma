@@ -387,6 +387,7 @@ model Missao {
   tipo        String // diaria, semanal, especial
   objetivo    Int // quantidade necessária para completar
   recompensa  Int // sementes, pontos, etc.
+  emblema     String? // emblema como recompensa
   ativa       Boolean   @default(true)
   dataInicio  DateTime  @default(now())
   dataFim     DateTime?
