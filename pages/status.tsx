@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, TrophyIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram } from 'react-icons/fa'
@@ -15,6 +15,8 @@ const statusList = [
   { nome: 'Painel do Usuário', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
   { nome: 'Painel do Parceiro', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
   { nome: 'Painel Admin', status: 'ok', descricao: 'Acesso e funcionalidades normais.' },
+  { nome: 'Sistema de Missões', status: 'ok', descricao: 'Missões e recompensas ativas.' },
+  { nome: 'Sistema de Conquistas', status: 'ok', descricao: 'Conquistas e badges funcionando.' },
 ]
 
 const redes = [
@@ -23,6 +25,12 @@ const redes = [
   { nome: 'YouTube', valor: 'youtube', icon: <FaYoutube /> },
   { nome: 'TikTok', valor: 'tiktok', icon: <FaTiktok /> },
   { nome: 'Instagram', valor: 'instagram', icon: <FaInstagram /> },
+]
+
+const categoriasRanking = [
+  { id: 'geral', nome: 'Geral', icone: '🏆', descricao: 'Missões + Conquistas' },
+  { id: 'missoes', nome: 'Missões', icone: '🎯', descricao: 'Missões Completadas' },
+  { id: 'conquistas', nome: 'Conquistas', icone: '⭐', descricao: 'Conquistas Desbloqueadas' },
 ]
 
 function getStatusIcon(status: string) {
@@ -36,6 +44,9 @@ export default function Status() {
   const [displaySementes, setDisplaySementes] = useState(0)
   const [filtroRede, setFiltroRede] = useState('todos')
   const [criadores, setCriadores] = useState<any[]>([])
+  const [rankingMissoesConquistas, setRankingMissoesConquistas] = useState<any[]>([])
+  const [categoriaRanking, setCategoriaRanking] = useState('geral')
+  const [loadingRanking, setLoadingRanking] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -53,6 +64,25 @@ export default function Status() {
       .then(res => res.json())
       .then(data => setCriadores(data.ranking || []))
   }, [])
+
+  useEffect(() => {
+    loadRankingMissoesConquistas()
+  }, [categoriaRanking])
+
+  const loadRankingMissoesConquistas = async () => {
+    setLoadingRanking(true)
+    try {
+      const response = await fetch(`/api/ranking/missoes-conquistas?tipo=${categoriaRanking}`)
+      if (response.ok) {
+        const data = await response.json()
+        setRankingMissoesConquistas(data.ranking || [])
+      }
+    } catch (error) {
+      console.error('Erro ao carregar ranking:', error)
+    } finally {
+      setLoadingRanking(false)
+    }
+  }
 
   // Função para filtrar criadores pela rede social
   const criadoresFiltrados = filtroRede === 'todos'
@@ -97,10 +127,166 @@ export default function Status() {
               <span className="text-5xl md:text-6xl">🌱</span>
             </div>
           </section>
+
+          {/* Status do Sistema */}
+          <section className="w-full max-w-5xl mx-auto mb-10">
+            <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">Status do Sistema</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {statusList.map((item, index) => (
+                <div key={index} className="bg-sss-medium rounded-xl p-4 flex items-center gap-3 shadow-md">
+                  {getStatusIcon(item.status)}
+                  <div>
+                    <h3 className="font-semibold text-sss-white">{item.nome}</h3>
+                    <p className="text-sm text-gray-400">{item.descricao}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* Notícias alinhadas à esquerda, como no exemplo */}
-          <section className="w-full max-w-5xl mx-auto">
+          <section className="w-full max-w-5xl mx-auto mb-10">
             <Noticias />
           </section>
+
+          {/* Ranking de Missões e Conquistas */}
+          <section className="w-full max-w-5xl mx-auto mb-10">
+            <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">🏆 Ranking de Missões e Conquistas</h2>
+            
+            {/* Filtros de categoria */}
+            <div className="flex justify-center mb-6">
+              <div className="flex bg-sss-medium rounded-xl p-1">
+                {categoriasRanking.map((categoria) => (
+                  <button
+                    key={categoria.id}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                      categoriaRanking === categoria.id
+                        ? 'bg-sss-accent text-white'
+                        : 'text-gray-400 hover:text-sss-white'
+                    }`}
+                    onClick={() => setCategoriaRanking(categoria.id)}
+                  >
+                    <span className="mr-2">{categoria.icone}</span>
+                    {categoria.nome}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {loadingRanking ? (
+              <div className="text-center text-gray-400 py-8">Carregando ranking...</div>
+            ) : rankingMissoesConquistas.length === 0 ? (
+              <div className="text-center text-gray-400 py-8">Nenhum ranking disponível.</div>
+            ) : (
+              <div className="space-y-4">
+                {/* Top 3 Destaque */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  {rankingMissoesConquistas.slice(0, 3).map((item, index) => (
+                    <div key={item.id} className={`bg-gradient-to-br rounded-2xl p-6 shadow-lg ${
+                      index === 0 ? 'from-yellow-900/60 to-sss-dark border border-yellow-400' :
+                      index === 1 ? 'from-gray-700/60 to-sss-dark border border-gray-400' :
+                      'from-orange-900/60 to-sss-dark border border-orange-400'
+                    }`}>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className={`text-2xl ${item.cor}`}>{item.icone}</span>
+                        <span className="text-sm bg-sss-accent text-white px-3 py-1 rounded-full font-bold">
+                          {index + 1}º Lugar
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold text-sss-white mb-2">{item.nome}</h3>
+                      <div className="text-sm text-gray-400 mb-3">{item.badge}</div>
+                      
+                      {categoriaRanking === 'geral' && (
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Missões:</span>
+                            <span className="text-sss-white">{item.missoes}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Conquistas:</span>
+                            <span className="text-sss-white">{item.conquistas}</span>
+                          </div>
+                          <div className="flex justify-between font-bold">
+                            <span className="text-gray-400">Total:</span>
+                            <span className="text-sss-accent">{item.total}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {categoriaRanking === 'missoes' && (
+                        <div className="text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Missões:</span>
+                            <span className="text-sss-accent font-bold">{item.totalMissoes}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {categoriaRanking === 'conquistas' && (
+                        <div className="text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Conquistas:</span>
+                            <span className="text-sss-accent font-bold">{item.totalConquistas}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Lista dos demais */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {rankingMissoesConquistas.slice(3).map((item) => (
+                    <div key={item.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className={`text-xl ${item.cor}`}>{item.icone}</span>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-sss-white">{item.posicao}º {item.nome}</h4>
+                          <p className="text-sm text-gray-400">{item.badge}</p>
+                        </div>
+                      </div>
+                      
+                      {categoriaRanking === 'geral' && (
+                        <div className="text-sm space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Missões:</span>
+                            <span className="text-sss-white">{item.missoes}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Conquistas:</span>
+                            <span className="text-sss-white">{item.conquistas}</span>
+                          </div>
+                          <div className="flex justify-between font-bold">
+                            <span className="text-gray-400">Total:</span>
+                            <span className="text-sss-accent">{item.total}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {categoriaRanking === 'missoes' && (
+                        <div className="text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Missões:</span>
+                            <span className="text-sss-accent font-bold">{item.totalMissoes}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {categoriaRanking === 'conquistas' && (
+                        <div className="text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Conquistas:</span>
+                            <span className="text-sss-accent font-bold">{item.totalConquistas}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+
           {/* Barra de filtro de redes sociais */}
           <div className="w-full max-w-5xl mx-auto mt-8 mb-6">
             <div className="flex border-b border-blue-900">
