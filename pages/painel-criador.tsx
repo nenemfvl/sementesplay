@@ -90,6 +90,16 @@ export default function PainelCriador() {
   const [authorized, setAuthorized] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
+  // Estados para redes sociais
+  const [redesSociais, setRedesSociais] = useState({
+    youtube: '',
+    twitch: '',
+    instagram: '',
+    tiktok: ''
+  })
+  const [salvandoRedes, setSalvandoRedes] = useState(false)
+  const [redesStatus, setRedesStatus] = useState<'idle'|'salvando'|'salvo'>('idle')
+
   // Verificação de autenticação e autorização
   useEffect(() => {
     const checkAuth = async () => {
@@ -260,11 +270,59 @@ export default function PainelCriador() {
     fetchEnquetes();
   }, [authorized]);
 
+  // Carregar dados do criador (incluindo redes sociais)
   useEffect(() => {
     if (!authorized) return;
 
-
+    async function fetchCriador() {
+      try {
+        const user = auth.getUser();
+        if (user) {
+          const res = await fetch(`/api/criador/${user.id}`);
+          const data = await res.json();
+          if (data.criador && data.criador.redesSociais) {
+            setRedesSociais(data.criador.redesSociais);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados do criador:', error);
+      }
+    }
+    fetchCriador();
   }, [authorized]);
+
+  async function handleSalvarRedesSociais(e: React.FormEvent) {
+    e.preventDefault();
+    setSalvandoRedes(true);
+    setRedesStatus('salvando');
+    
+    try {
+      const user = auth.getUser();
+      if (!user) return;
+
+      const token = localStorage.getItem('sementesplay_token');
+      const res = await fetch(`/api/criador/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ redesSociais })
+      });
+
+      if (res.ok) {
+        setRedesStatus('salvo');
+        setTimeout(() => setRedesStatus('idle'), 3000);
+      } else {
+        alert('Erro ao salvar redes sociais');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar redes sociais:', error);
+      alert('Erro ao salvar redes sociais');
+    } finally {
+      setSalvandoRedes(false);
+    }
+  }
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
@@ -676,6 +734,71 @@ export default function PainelCriador() {
             <ul className="space-y-1">
               <li><a href="#" className="text-red-700 hover:underline">Enviar sugestão</a></li>
             </ul>
+          </div>
+        </section>
+        {/* Configuração de Redes Sociais */}
+        <section className="mb-8">
+          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
+            <h2 className="text-lg font-bold mb-4">Configurar Redes Sociais</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
+            </p>
+            <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">YouTube</label>
+                  <input
+                    type="url"
+                    placeholder="https://youtube.com/@seucanal"
+                    value={redesSociais.youtube}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
+                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Twitch</label>
+                  <input
+                    type="url"
+                    placeholder="https://twitch.tv/seucanal"
+                    value={redesSociais.twitch}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
+                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Instagram</label>
+                  <input
+                    type="url"
+                    placeholder="https://instagram.com/seuperfil"
+                    value={redesSociais.instagram}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
+                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">TikTok</label>
+                  <input
+                    type="url"
+                    placeholder="https://tiktok.com/@seuperfil"
+                    value={redesSociais.tiktok}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
+                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <button
+                  type="submit"
+                  disabled={salvandoRedes}
+                  className="bg-sss-accent text-white px-6 py-2 rounded font-semibold hover:bg-green-700 transition disabled:opacity-50"
+                >
+                  {salvandoRedes ? 'Salvando...' : 'Salvar Redes Sociais'}
+                </button>
+                {redesStatus === 'salvo' && (
+                  <span className="text-green-500 text-sm">Redes sociais salvas com sucesso!</span>
+                )}
+              </div>
+            </form>
           </div>
         </section>
         {/* Enquetes para Seguidores */}

@@ -56,7 +56,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         pontuacaoTotal,
         totalDoacoes: criador.doacoesRecebidas.length,
         missoesCompletadas: criador.usuario.missaoUsuarios.length,
-        conquistasDesbloqueadas: criador.usuario.conquistas.length
+        conquistasDesbloqueadas: criador.usuario.conquistas.length,
+        redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
       }
     })
 

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'PUT') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
@@ -14,6 +14,80 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'ID do criador é obrigatório' })
   }
 
+  if (req.method === 'PUT') {
+    try {
+      const { redesSociais, bio } = req.body
+
+      // Verificar se o usuário está autenticado e é o próprio criador
+      const token = req.headers.authorization?.replace('Bearer ', '')
+      if (!token) {
+        return res.status(401).json({ error: 'Token de autenticação necessário' })
+      }
+
+      // Buscar o criador para verificar se existe
+      const criador = await prisma.criador.findUnique({
+        where: { id },
+        include: { usuario: true }
+      })
+
+      if (!criador) {
+        return res.status(404).json({ error: 'Criador não encontrado' })
+      }
+
+      // Atualizar os dados do criador
+      const dadosAtualizados: any = {}
+      
+      if (redesSociais) {
+        dadosAtualizados.redesSociais = JSON.stringify(redesSociais)
+      }
+      
+      if (bio) {
+        dadosAtualizados.bio = bio
+      }
+
+      const criadorAtualizado = await prisma.criador.update({
+        where: { id },
+        data: dadosAtualizados,
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              avatarUrl: true,
+              nivel: true
+            }
+          }
+        }
+      })
+
+      // Parsear redes sociais para retorno
+      let redesSociaisFormatadas = {}
+      try {
+        redesSociaisFormatadas = JSON.parse(criadorAtualizado.redesSociais || '{}')
+      } catch (e) {
+        redesSociaisFormatadas = {}
+      }
+
+      res.status(200).json({
+        success: true,
+        criador: {
+          id: criadorAtualizado.id,
+          nome: criadorAtualizado.usuario.nome,
+          nivel: criadorAtualizado.usuario.nivel,
+          avatar: criadorAtualizado.usuario.avatarUrl,
+          bio: criadorAtualizado.bio,
+          redesSociais: redesSociaisFormatadas
+        }
+      })
+    } catch (error) {
+      console.error('Erro ao atualizar criador:', error)
+      res.status(500).json({ error: 'Erro interno do servidor' })
+    }
+    return
+  }
+
+  // Método GET (código existente)
   console.log('API criador: Buscando criador com ID:', id)
 
   try {

@@ -49,7 +49,7 @@ export default function Status() {
   useEffect(() => {
     fetch('/api/ranking/criadores')
       .then(res => res.json())
-      .then(data => setCriadores(data.ranking || []))
+      .then(data => setCriadores(data.criadores || []))
   }, [])
 
   useEffect(() => {
@@ -74,7 +74,11 @@ export default function Status() {
   // Função para filtrar criadores pela rede social
   const criadoresFiltrados = filtroRede === 'todos'
     ? criadores
-    : criadores.filter(c => c.redeSocial === filtroRede)
+    : criadores.filter(c => {
+        if (!c.redesSociais) return false
+        const redes = typeof c.redesSociais === 'string' ? JSON.parse(c.redesSociais) : c.redesSociais
+        return redes[filtroRede] && redes[filtroRede].trim() !== ''
+      })
 
   // Top 1
   const top1 = criadoresFiltrados[0]
