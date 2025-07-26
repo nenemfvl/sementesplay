@@ -254,6 +254,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Sementes insuficientes' })
       }
 
+      // Verificar se o doador é um criador tentando doar para si mesmo
+      const criadorDoador = await prisma.criador.findFirst({
+        where: { usuarioId: String(doadorId) }
+      })
+
+      if (criadorDoador && criadorDoador.id === String(criadorId)) {
+        return res.status(400).json({ error: 'Você não pode doar sementes para si mesmo' })
+      }
+
       // Processar doação em transação
       console.log('Iniciando transação de doação...')
       const resultado = await prisma.$transaction(async (tx) => {

@@ -84,11 +84,17 @@ export default function Doar() {
 
   const valorOptions = [50, 100, 200, 500, 1000]
 
-  // Filtrar criadores baseado na pesquisa
-  const filteredCreators = creators.filter(creator =>
-    creator.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    creator.nivel.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filtrar criadores baseado na pesquisa e excluir o próprio usuário se for criador
+  const filteredCreators = creators.filter(creator => {
+    // Excluir o próprio usuário se ele for um criador
+    if (user?.criador && user.criador.id === creator.id) {
+      return false
+    }
+    
+    // Filtrar por pesquisa
+    return creator.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           creator.nivel.toLowerCase().includes(searchTerm.toLowerCase())
+  })
 
 
 
@@ -101,6 +107,12 @@ export default function Doar() {
 
     if (!user) {
       alert('Usuário não encontrado!')
+      return
+    }
+
+    // Verificar se o usuário é um criador tentando doar para si mesmo
+    if (user.criador && user.criador.id === selectedCreator) {
+      alert('Você não pode doar sementes para si mesmo!')
       return
     }
 
