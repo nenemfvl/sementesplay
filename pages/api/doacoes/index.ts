@@ -3,6 +3,120 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+// Função para atualizar missões e conquistas
+async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: string, valor?: number) {
+  try {
+    // Buscar missões ativas relacionadas à ação
+    const missoes = await tx.missao.findMany({
+      where: {
+        ativa: true,
+        tipo: tipoAcao
+      }
+    })
+
+    for (const missao of missoes) {
+      // Verificar se o usuário já tem progresso nesta missão
+      let missaoUsuario = await tx.missaoUsuario.findFirst({
+        where: {
+          missaoId: missao.id,
+          usuarioId: usuarioId
+        }
+      })
+
+      if (!missaoUsuario) {
+        // Criar novo progresso
+        missaoUsuario = await tx.missaoUsuario.create({
+          data: {
+            missaoId: missao.id,
+            usuarioId: usuarioId,
+            progresso: 0,
+            concluida: false
+          }
+        })
+      }
+
+      // Atualizar progresso baseado no tipo de ação
+      let novoProgresso = missaoUsuario.progresso
+      let concluida = missaoUsuario.concluida
+
+      switch (tipoAcao) {
+        case 'doacao':
+          novoProgresso += 1 // Contar número de doações
+          if (novoProgresso >= missao.recompensa && !concluida) {
+            concluida = true
+            // Criar conquista se a missão for completada
+            await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
+          }
+          break
+        case 'valor_doacao':
+          if (valor) {
+            novoProgresso += valor // Somar valor das doações
+            if (novoProgresso >= missao.recompensa && !concluida) {
+              concluida = true
+              await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
+            }
+          }
+          break
+      }
+
+      // Atualizar missão do usuário
+      await tx.missaoUsuario.update({
+        where: { id: missaoUsuario.id },
+        data: {
+          progresso: novoProgresso,
+          concluida: concluida,
+          dataConclusao: concluida && !missaoUsuario.concluida ? new Date() : missaoUsuario.dataConclusao
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar missões:', error)
+  }
+}
+
+// Função para criar conquista se necessário
+async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMissao: string) {
+  try {
+    // Mapear missões para conquistas
+    const mapeamentoConquistas: { [key: string]: string } = {
+      'Primeira Doação': 'Primeira Doação',
+      'Doador Frequente': 'Doador Frequente',
+      'Apoiador de Criadores': 'Apoiador de Criadores'
+    }
+
+    const nomeConquista = mapeamentoConquistas[tituloMissao]
+    if (!nomeConquista) return
+
+    // Buscar conquista
+    const conquista = await tx.conquista.findFirst({
+      where: { titulo: nomeConquista }
+    })
+
+    if (conquista) {
+      // Verificar se o usuário já tem esta conquista
+      const conquistaExistente = await tx.conquistaUsuario.findFirst({
+        where: {
+          conquistaId: conquista.id,
+          usuarioId: usuarioId
+        }
+      })
+
+      if (!conquistaExistente) {
+        // Criar conquista para o usuário
+        await tx.conquistaUsuario.create({
+          data: {
+            conquistaId: conquista.id,
+            usuarioId: usuarioId,
+            dataConquista: new Date()
+          }
+        })
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao criar conquista:', error)
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
@@ -131,6 +245,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else {
           console.log('Criador não encontrado para registrar histórico')
         }
+
+        // Atualizar missões e conquistas do doador
+        console.log('Atualizando missões e conquistas...')
+        await atualizarMissoesConquistas(tx, String(doadorId), 'doacao', quantidade)
+        console.log('Missões e conquistas atualizadas')
 
         console.log('Transação concluída com sucesso')
         return doacao

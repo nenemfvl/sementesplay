@@ -46,6 +46,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       take: 10
     })
 
+    // Buscar missões do usuário
+    const missoesUsuario = await prisma.missaoUsuario.findMany({
+      where: {
+        usuarioId: String(usuarioId)
+      },
+      include: {
+        missao: true
+      },
+      orderBy: {
+        dataConclusao: 'desc'
+      }
+    })
+
+    // Buscar conquistas do usuário
+    const conquistasUsuario = await prisma.conquistaUsuario.findMany({
+      where: {
+        usuarioId: String(usuarioId)
+      },
+      include: {
+        conquista: true
+      },
+      orderBy: {
+        dataConquista: 'desc'
+      }
+    })
+
     // Calcular totais
     const totalDoacoes = doacoes.reduce((sum, d) => sum + d.quantidade, 0)
     const criadoresApoiados = new Set(doacoes.map(d => d.criadorId)).size
@@ -60,51 +86,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...cashbacks.map(c => ({
         descricao: `Resgatou ${c.valor} Sementes do código ${c.codigoParceiro}`,
         data: c.data.toLocaleDateString('pt-BR')
+      })),
+      ...missoesUsuario.filter(m => m.concluida).map(m => ({
+        descricao: `Completou a missão: ${m.missao.titulo}`,
+        data: m.dataConclusao?.toLocaleDateString('pt-BR') || new Date().toLocaleDateString('pt-BR')
+      })),
+      ...conquistasUsuario.map(c => ({
+        descricao: `Desbloqueou a conquista: ${c.conquista.titulo}`,
+        data: c.dataConquista.toLocaleDateString('pt-BR')
       }))
     ].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()).slice(0, 5)
 
-    // Próximas conquistas (mockadas por enquanto)
-    const proximasConquistas = [
-      {
-        nome: 'Primeira Doação',
-        descricao: 'Faça sua primeira doação',
-        progresso: doacoes.length > 0 ? 100 : 0
-      },
-      {
-        nome: 'Doador Frequente',
-        descricao: 'Faça 10 doações',
-        progresso: Math.min((doacoes.length / 10) * 100, 100)
-      },
-      {
-        nome: 'Apoiador de Criadores',
-        descricao: 'Apoie 5 criadores diferentes',
-        progresso: Math.min((criadoresApoiados / 5) * 100, 100)
-      }
-    ]
+    // Próximas conquistas baseadas em missões ativas
+    const proximasConquistas = missoesUsuario.map(m => ({
+      nome: m.missao.titulo,
+      descricao: m.missao.descricao,
+      progresso: m.concluida ? 100 : Math.min((m.progresso / m.missao.recompensa) * 100, 100)
+    }))
 
-    // Conquistas (mockadas por enquanto)
-    const conquistas = [
-      {
-        nome: 'Primeira Doação',
-        descricao: 'Realizou sua primeira doação',
-        desbloqueada: doacoes.length > 0
-      },
-      {
-        nome: 'Doador Frequente',
-        descricao: 'Realizou 10 doações',
-        desbloqueada: doacoes.length >= 10
-      },
-      {
-        nome: 'Apoiador de Criadores',
-        descricao: 'Apoiou 5 criadores diferentes',
-        desbloqueada: criadoresApoiados >= 5
-      },
-      {
-        nome: 'Cashback Master',
-        descricao: 'Resgatou 5 códigos de cashback',
-        desbloqueada: cashbacksResgatados >= 5
-      }
-    ]
+    // Conquistas reais do usuário
+    const conquistas = conquistasUsuario.map(c => ({
+      nome: c.conquista.titulo,
+      descricao: c.conquista.descricao,
+      desbloqueada: true,
+      dataConquista: c.dataConquista
+    }))
 
     // Histórico de doações
     const historicoDoacoes = doacoes.map(d => ({
