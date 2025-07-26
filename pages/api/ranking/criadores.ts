@@ -64,25 +64,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Ordenar por pontuação total (maior para menor)
     criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
 
-    // Definir nível dinâmico por posição no ranking
+    // Mapear nível do banco para nome descritivo
+    const mapearNivel = (nivel: string) => {
+      switch (nivel) {
+        case '1':
+        case 'comum':
+          return 'Comum'
+        case '2':
+        case 'parceiro':
+          return 'Parceiro'
+        case '3':
+        case 'supremo':
+          return 'Supremo'
+        case 'ouro':
+          return 'Ouro'
+        case 'prata':
+          return 'Prata'
+        case 'bronze':
+          return 'Bronze'
+        default:
+          return 'Comum'
+      }
+    }
+
+    // Definir nível dinâmico por posição no ranking (apenas para badge)
     const rankingComNivel = criadoresComPontuacao.map((criador, index) => {
       const posicao = index + 1
       let nivelRanking = 'comum'
       
       if (posicao <= 50) {
-        nivelRanking = 'supremo'
+        nivelRanking = 'Supremo'
       } else if (posicao <= 100) {
-        nivelRanking = 'parceiro'
+        nivelRanking = 'Parceiro'
       } else if (posicao <= 150) {
-        nivelRanking = 'criador'
+        nivelRanking = 'Criador'
       } else {
-        nivelRanking = 'comum'
+        nivelRanking = 'Comum'
       }
 
       return {
         ...criador,
         posicao,
-        nivelRanking
+        nivelRanking,
+        nivel: mapearNivel(criador.nivel) // Usar o nível real do banco
       }
     })
 
