@@ -204,9 +204,9 @@ export default function Doar() {
                          >
                            <div className="flex items-center space-x-3">
                                                            <div className="w-12 h-12 rounded-full overflow-hidden bg-sss-accent/20 flex items-center justify-center">
-                                {creator.avatar ? (
+                                {creator.avatar && creator.avatar !== '/avatars/default.jpg' ? (
                                   <Image
-                                    src={creator.avatar.replace('http://', 'https://')}
+                                    src={creator.avatar.startsWith('http') ? creator.avatar : `https://sementesplay.vercel.app${creator.avatar}`}
                                     alt={`Avatar de ${creator.nome}`}
                                     width={48}
                                     height={48}
@@ -218,8 +218,8 @@ export default function Doar() {
                                     }}
                                   />
                                 ) : null}
-                                <div className={`text-2xl ${creator.avatar ? 'hidden' : ''}`}>
-                                  {creator.avatar || '👤'}
+                                <div className={`text-2xl ${creator.avatar && creator.avatar !== '/avatars/default.jpg' ? 'hidden' : ''}`}>
+                                  👤
                                 </div>
                               </div>
                             <div className="flex-1 text-left">

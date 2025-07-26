@@ -76,35 +76,72 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Criadores encontrados:', criadores.length)
       console.log('Primeiro criador:', criadores[0])
 
-      const criadoresFormatados: Criador[] = criadores.map((criador: any) => ({
-        id: criador.id,
-        nome: criador.usuario.nome,
-        email: criador.usuario.email,
-        bio: criador.bio || 'Criador de conteúdo da comunidade SementesPLAY',
-        avatar: '/avatars/default.jpg',
-        categoria: criador.categoria || 'geral',
-        status: 'ativo',
-        nivel: criador.nivel || '1',
-        seguidores: criador.apoiadores || 0,
-        doacoesRecebidas: criador.doacoes || 0,
-        totalSementes: criador.usuario.sementes,
-        dataCriacao: criador.usuario.dataCriacao,
-        dataAprovacao: criador.dataCriacao,
-        redesSociais: {
+      const criadoresFormatados: Criador[] = criadores.map((criador: any) => {
+        // Mapear nível numérico para nome descritivo
+        const mapearNivel = (nivel: string) => {
+          switch (nivel) {
+            case '1':
+            case 'comum':
+              return 'Comum'
+            case '2':
+            case 'parceiro':
+              return 'Parceiro'
+            case '3':
+            case 'supremo':
+              return 'Supremo'
+            case 'ouro':
+              return 'Ouro'
+            case 'prata':
+              return 'Prata'
+            case 'bronze':
+              return 'Bronze'
+            default:
+              return 'Comum'
+          }
+        }
+
+        // Processar redes sociais se existirem
+        let redesSociais = {
           youtube: '',
           twitch: '',
           instagram: ''
-        },
-        estatisticas: {
-          visualizacoes: 0,
-          likes: 0,
-          comentarios: 0,
-          compartilhamentos: 0
-        },
-        conteudos: [],
-        avaliacao: 0,
-        tags: []
-      }))
+        }
+        
+        try {
+          if (criador.redesSociais) {
+            const redes = JSON.parse(criador.redesSociais)
+            redesSociais = { ...redesSociais, ...redes }
+          }
+        } catch (error) {
+          console.log('Erro ao processar redes sociais:', error)
+        }
+
+        return {
+          id: criador.id,
+          nome: criador.usuario.nome,
+          email: criador.usuario.email,
+          bio: criador.bio || 'Criador de conteúdo da comunidade SementesPLAY',
+          avatar: criador.usuario.avatarUrl || '/avatars/default.jpg',
+          categoria: criador.categoria || 'Geral',
+          status: 'ativo',
+          nivel: mapearNivel(criador.nivel),
+          seguidores: criador.apoiadores || 0,
+          doacoesRecebidas: criador.doacoes || 0,
+          totalSementes: criador.usuario.sementes,
+          dataCriacao: criador.usuario.dataCriacao,
+          dataAprovacao: criador.dataCriacao,
+          redesSociais,
+          estatisticas: {
+            visualizacoes: 0,
+            likes: 0,
+            comentarios: 0,
+            compartilhamentos: 0
+          },
+          conteudos: [],
+          avaliacao: 0,
+          tags: []
+        }
+      })
 
       return res.status(200).json({
         success: true,
