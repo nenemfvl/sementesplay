@@ -10,6 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { usuarioId } = req.query
+    
+    console.log('API /api/perfil/stats chamada com usuarioId:', usuarioId)
 
     if (!usuarioId) {
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
@@ -126,7 +128,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: c.data.toLocaleDateString('pt-BR')
     }))
 
-    return res.status(200).json({
+    const responseData = {
       totalDoacoes,
       criadoresApoiados,
       cashbacksResgatados,
@@ -135,7 +137,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       conquistas,
       historicoDoacoes,
       historicoCashback
-    })
+    }
+    
+    console.log('Dados retornados pela API:', responseData)
+    
+    return res.status(200).json(responseData)
   } catch (error) {
     console.error('Erro ao buscar estatísticas do perfil:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })

@@ -41,7 +41,7 @@ export default function Perfil() {
     }
     setUser(currentUser)
     setAvatarUrl((currentUser as any).avatarUrl || null)
-    loadStats()
+    
     // Buscar perfil autenticado com token
     const token = localStorage.getItem('sementesplay_token');
     fetch('/api/perfil', {
@@ -69,6 +69,13 @@ export default function Perfil() {
       })
       .catch(err => console.error('Erro ao buscar sessão autenticada:', err))
   }, [])
+
+  // Carregar estatísticas quando o usuário estiver definido
+  useEffect(() => {
+    if (user) {
+      loadStats()
+    }
+  }, [user])
 
   const loadStats = async () => {
     try {
