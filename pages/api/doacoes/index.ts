@@ -6,6 +6,8 @@ const prisma = new PrismaClient()
 // Função para atualizar missões e conquistas
 async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: string, valor?: number) {
   try {
+    console.log('Atualizando missões para usuário:', usuarioId, 'tipo:', tipoAcao, 'valor:', valor)
+    
     // Buscar missões ativas relacionadas à ação
     const missoes = await tx.missao.findMany({
       where: {
@@ -14,7 +16,11 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
       }
     })
 
+    console.log('Missões encontradas:', missoes.length)
+
     for (const missao of missoes) {
+      console.log('Processando missão:', missao.titulo, 'objetivo:', missao.objetivo)
+      
       // Verificar se o usuário já tem progresso nesta missão
       let missaoUsuario = await tx.missaoUsuario.findFirst({
         where: {
@@ -24,6 +30,7 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
       })
 
       if (!missaoUsuario) {
+        console.log('Criando novo progresso para missão:', missao.titulo)
         // Criar novo progresso
         missaoUsuario = await tx.missaoUsuario.create({
           data: {
@@ -35,6 +42,8 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
         })
       }
 
+      console.log('Progresso atual:', missaoUsuario.progresso, 'concluída:', missaoUsuario.concluida)
+
       // Atualizar progresso baseado no tipo de ação
       let novoProgresso = missaoUsuario.progresso
       let concluida = missaoUsuario.concluida
@@ -42,7 +51,9 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
       switch (tipoAcao) {
         case 'doacao':
           novoProgresso += 1 // Contar número de doações
+          console.log('Novo progresso após doação:', novoProgresso, 'objetivo:', missao.objetivo)
           if (novoProgresso >= missao.objetivo && !concluida) {
+            console.log('Missão completada! Criando conquista...')
             concluida = true
             // Criar conquista se a missão for completada
             await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
@@ -51,7 +62,9 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
         case 'valor_doacao':
           if (valor) {
             novoProgresso += valor // Somar valor das doações
+            console.log('Novo progresso após valor:', novoProgresso, 'objetivo:', missao.objetivo)
             if (novoProgresso >= missao.objetivo && !concluida) {
+              console.log('Missão completada! Criando conquista...')
               concluida = true
               await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
             }
@@ -68,6 +81,8 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
           dataConclusao: concluida && !missaoUsuario.concluida ? new Date() : missaoUsuario.dataConclusao
         }
       })
+      
+      console.log('Missão atualizada - progresso:', novoProgresso, 'concluída:', concluida)
     }
   } catch (error) {
     console.error('Erro ao atualizar missões:', error)
@@ -77,6 +92,8 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
 // Função para criar conquista se necessário
 async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMissao: string) {
   try {
+    console.log('Tentando criar conquista para missão:', tituloMissao, 'usuário:', usuarioId)
+    
     // Mapear missões para conquistas
     const mapeamentoConquistas: { [key: string]: string } = {
       'Primeira Doação': 'Primeira Doação',
@@ -85,12 +102,19 @@ async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMiss
     }
 
     const nomeConquista = mapeamentoConquistas[tituloMissao]
-    if (!nomeConquista) return
+    console.log('Nome da conquista mapeada:', nomeConquista)
+    
+    if (!nomeConquista) {
+      console.log('Nenhuma conquista mapeada para missão:', tituloMissao)
+      return
+    }
 
     // Buscar conquista
     const conquista = await tx.conquista.findFirst({
       where: { titulo: nomeConquista }
     })
+
+    console.log('Conquista encontrada:', conquista)
 
     if (conquista) {
       // Verificar se o usuário já tem esta conquista
@@ -101,16 +125,24 @@ async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMiss
         }
       })
 
+      console.log('Conquista existente para usuário:', conquistaExistente)
+
       if (!conquistaExistente) {
+        console.log('Criando nova conquista para usuário...')
         // Criar conquista para o usuário
-        await tx.conquistaUsuario.create({
+        const novaConquista = await tx.conquistaUsuario.create({
           data: {
             conquistaId: conquista.id,
             usuarioId: usuarioId,
             dataConquista: new Date()
           }
         })
+        console.log('Conquista criada com sucesso:', novaConquista)
+      } else {
+        console.log('Usuário já possui esta conquista')
       }
+    } else {
+      console.log('Conquista não encontrada no banco de dados:', nomeConquista)
     }
   } catch (error) {
     console.error('Erro ao criar conquista:', error)
