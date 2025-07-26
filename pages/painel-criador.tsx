@@ -109,10 +109,29 @@ export default function PainelCriador() {
         return;
       }
 
-      // Verificação simplificada - permitir acesso se o usuário existe
-      // A verificação de criador será feita pelo backend nas APIs
-      setAuthorized(true);
-      setCheckingAuth(false);
+      // Verificar se o usuário é um criador
+      try {
+        const response = await fetch('/api/criador/verificar-acesso', {
+          credentials: 'include'
+        });
+
+        if (response.status === 403) {
+          alert('Acesso negado. Apenas criadores podem acessar o painel de criador.');
+          window.location.href = '/dashboard';
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Erro ao verificar autorização');
+        }
+
+        setAuthorized(true);
+        setCheckingAuth(false);
+      } catch (error) {
+        console.error('Erro ao verificar autorização:', error);
+        alert('Erro ao verificar autorização. Tente novamente.');
+        window.location.href = '/dashboard';
+      }
     };
 
     checkAuth();
