@@ -141,13 +141,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error('Erro ao criar doação:', error)
       console.error('Detalhes do erro:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+        stack: error instanceof Error ? error.stack : undefined,
+        name: error instanceof Error ? error.name : 'Unknown'
       })
       return res.status(500).json({ 
         error: 'Erro interno do servidor',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
       })
     }
   }
