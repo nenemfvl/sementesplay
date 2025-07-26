@@ -204,10 +204,14 @@ export default function Criadores() {
     setPerguntaStatus('enviando')
 
     try {
+      // Obter token do localStorage
+      const token = localStorage.getItem('sementesplay_token') || user?.id
+      
       const response = await fetch('/api/recados', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           destinatarioId: criadorDetalhes.usuarioId,
