@@ -32,19 +32,7 @@ export default function Navbar() {
       if (typeof window !== 'undefined') {
         const currentUser = auth.getUser();
         if (currentUser) {
-          try {
-            // Buscar dados completos do usuário incluindo se é criador
-            const response = await fetch('/api/usuario/atual');
-            if (response.ok) {
-              const data = await response.json();
-              setUser(data.usuario);
-            } else {
-              setUser(currentUser as UserWithCriador);
-            }
-          } catch (error) {
-            console.error('Erro ao carregar dados do usuário:', error);
-            setUser(currentUser as UserWithCriador);
-          }
+          setUser(currentUser as UserWithCriador);
         }
       }
     };
