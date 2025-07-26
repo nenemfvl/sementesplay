@@ -94,7 +94,8 @@ export default function Criadores() {
           periodo: 'total' as any,
           badge: criador.nivelRanking,
           icone: '🎭',
-          cor: 'text-purple-500'
+          cor: 'text-purple-500',
+          redesSociais: criador.redesSociais || {}
         }))
         setRanking(rankingCriadores)
       }
