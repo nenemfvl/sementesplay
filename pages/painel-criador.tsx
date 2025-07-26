@@ -116,8 +116,8 @@ export default function PainelCriador() {
           const data = await response.json();
           console.log('Dados frescos da API:', data.usuario);
           
-          // Verificar se é criador (tem registro na tabela Criador)
-          if (data.usuario.criador) {
+          // Verificar se é criador pelo tipo na tabela Usuario
+          if (data.usuario.tipo === 'criador') {
             setAuthorized(true);
             setCheckingAuth(false);
           } else {
