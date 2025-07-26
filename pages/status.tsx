@@ -317,7 +317,7 @@ export default function Status() {
           <div className="flex justify-center mt-8">
             <button
               className="flex items-center gap-2 border border-gray-500 rounded-xl px-6 py-3 text-white text-lg font-medium hover:border-sss-accent hover:text-sss-accent transition-colors"
-              onClick={() => router.push('/ranking')}
+              onClick={() => router.push('/criadores')}
             >
               <PlusIcon className="w-5 h-5 mr-2" />
               Ver Classificação
