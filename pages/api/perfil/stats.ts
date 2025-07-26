@@ -74,6 +74,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    // Buscar emblemas do usuário
+    const emblemasUsuario = await prisma.emblemaUsuario.findMany({
+      where: {
+        usuarioId: String(usuarioId)
+      },
+      orderBy: {
+        dataConquista: 'desc'
+      }
+    })
+
     // Calcular totais
     const totalDoacoes = doacoes.reduce((sum, d) => sum + d.quantidade, 0)
     const criadoresApoiados = new Set(doacoes.map(d => d.criadorId)).size
@@ -128,6 +138,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: c.data.toLocaleDateString('pt-BR')
     }))
 
+    // Emblemas do usuário
+    const emblemas = emblemasUsuario.map(e => ({
+      emblema: e.emblema,
+      titulo: e.titulo,
+      dataConquista: e.dataConquista
+    }))
+
     const responseData = {
       totalDoacoes,
       criadoresApoiados,
@@ -135,6 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       atividadesRecentes,
       proximasConquistas,
       conquistas,
+      emblemas,
       historicoDoacoes,
       historicoCashback
     }

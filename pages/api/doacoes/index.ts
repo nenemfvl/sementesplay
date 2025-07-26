@@ -118,8 +118,15 @@ async function darRecompensaMissao(tx: any, usuarioId: string, recompensa: numbe
     
     if (emblema) {
       console.log('Dando emblema', emblema, 'para missão:', tituloMissao)
-      // Aqui você pode adicionar lógica para salvar o emblema do usuário
-      // Por exemplo, criar uma tabela de emblemas do usuário
+      // Salvar emblema do usuário
+      await tx.emblemaUsuario.create({
+        data: {
+          usuarioId: usuarioId,
+          emblema: emblema,
+          titulo: tituloMissao
+        }
+      })
+      console.log('Emblema salvo com sucesso!')
     }
     
     console.log('Recompensa dada com sucesso!')

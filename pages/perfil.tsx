@@ -532,7 +532,7 @@ export default function Perfil() {
                     transition={{ duration: 0.3 }}
                   >
                     <h3 className="text-lg font-semibold text-sss-white mb-4">Conquistas</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                       {stats?.conquistas?.map((conquista: any, index: number) => (
                         <div key={index} className={`p-4 rounded-lg border ${
                           conquista.desbloqueada 
@@ -554,6 +554,23 @@ export default function Perfil() {
                           </div>
                         </div>
                       ))}
+                    </div>
+
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Emblemas</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {stats?.emblemas?.map((emblema: any, index: number) => (
+                        <div key={index} className="p-4 rounded-lg border bg-sss-accent/10 border-sss-accent text-center">
+                          <div className="text-4xl mb-2">{emblema.emblema}</div>
+                          <p className="text-sss-white font-semibold text-sm">{emblema.titulo}</p>
+                          <p className="text-gray-400 text-xs">{emblema.dataConquista?.toLocaleDateString('pt-BR')}</p>
+                        </div>
+                      ))}
+                      {(!stats?.emblemas || stats.emblemas.length === 0) && (
+                        <div className="col-span-2 md:col-span-4 text-center py-8">
+                          <p className="text-gray-400">Nenhum emblema conquistado ainda</p>
+                          <p className="text-gray-500 text-sm">Complete missões para ganhar emblemas!</p>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
