@@ -286,46 +286,55 @@ export default function Status() {
             <div className="w-full max-w-5xl mx-auto text-center text-gray-400 py-8">Nenhum criador encontrado para este filtro.</div>
           ) : (
             <div className="w-full max-w-5xl mx-auto">
-              {/* Destaque Top 1 */}
-              {top1 && (
-                <div className="flex flex-col md:flex-row items-center bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
-                  <img src={top1.avatar || '/default-avatar.png'} alt={top1.nome} className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6" />
-                  <div className="flex-1 flex flex-col items-center md:items-start">
-                    <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
-                    <h2 className="text-2xl font-bold text-sss-white mb-1">{top1.nome}</h2>
-                    <div className="flex gap-2 mb-2">
-                      {top1.redesSociais?.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
-                      {top1.redesSociais?.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
-                      {top1.redesSociais?.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
-                      {top1.redesSociais?.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform"><FaInstagram /></a>}
-                    </div>
-                    <button className="mt-2 bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
-                  </div>
-                </div>
-              )}
-              {/* Lista dos demais criadores */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {outros.map((c, i) => (
-                  <div key={c.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
-                    <div className="flex items-center gap-4 mb-3">
-                      <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400" />
-                      <div className="flex-1">
-                        <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
-                        <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
-                      </div>
-                    </div>
-                    {/* Redes Sociais */}
-                    {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
-                      <div className="flex gap-2 justify-center">
-                        {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
-                        {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
-                        {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
-                        {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform"><FaInstagram /></a>}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                             {/* Destaque Top 1 */}
+               {top1 && (
+                 <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
+                   {/* Redes Sociais - Borda Esquerda */}
+                   {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
+                     <div className="flex flex-col gap-3 mr-4">
+                       {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
+                       {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
+                       {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
+                       {top1.redesSociais.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform"><FaInstagram /></a>}
+                     </div>
+                   )}
+                   {/* Conteúdo Principal */}
+                   <div className="flex items-center flex-1">
+                     <img src={top1.avatar || '/default-avatar.png'} alt={top1.nome} className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6" />
+                     <div className="flex-1 flex flex-col items-start">
+                       <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
+                       <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
+                       <button className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Patrocinar</button>
+                     </div>
+                   </div>
+                 </div>
+               )}
+                             {/* Lista dos demais criadores */}
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                 {outros.map((c, i) => (
+                   <div key={c.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                     <div className="flex">
+                       {/* Redes Sociais - Borda Esquerda */}
+                       {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
+                         <div className="flex flex-col gap-2 mr-3">
+                           {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
+                           {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
+                           {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
+                           {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform"><FaInstagram /></a>}
+                         </div>
+                       )}
+                       {/* Conteúdo Principal */}
+                       <div className="flex items-center flex-1">
+                         <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3" />
+                         <div className="flex-1">
+                           <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
+                           <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 ))}
+               </div>
             </div>
           )}
           {/* Botão Ver Classificação */}
