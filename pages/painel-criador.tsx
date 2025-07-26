@@ -109,8 +109,10 @@ export default function PainelCriador() {
         return;
       }
 
+      console.log('User data:', user); // Debug
+
       // Verificar se o usuário é um criador pelo tipo
-      if (user.tipo === 'criador') {
+      if (user.tipo === 'criador' || user.nivel === 'criador') {
         setAuthorized(true);
         setCheckingAuth(false);
       } else {
