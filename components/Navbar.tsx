@@ -119,6 +119,10 @@ export default function Navbar() {
           {user?.nivel === 'criador' && (
             <a href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</a>
           )}
+          {/* Debug: mostrar nível do usuário */}
+          {user && (
+            <span className="text-xs text-gray-500">Debug: {user.nivel}</span>
+          )}
           <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
       </div>
