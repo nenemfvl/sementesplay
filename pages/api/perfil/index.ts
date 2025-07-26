@@ -18,7 +18,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!usuario) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
-    const { senha, ...usuarioSemSenha } = usuario;
+
+    // Se o usuário for um criador, incluir as sementes do criador
+    let usuarioComSementes = { ...usuario };
+    if (usuario.criador) {
+      usuarioComSementes.sementes = usuario.criador.sementes;
+    }
+
+    const { senha, ...usuarioSemSenha } = usuarioComSementes;
     return res.status(200).json(usuarioSemSenha);
   }
   if (req.method === 'POST') {

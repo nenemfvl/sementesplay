@@ -77,6 +77,51 @@ export default function Perfil() {
     }
   }, [user])
 
+  // Atualizar perfil periodicamente para manter sementes atualizadas
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user) {
+        const token = localStorage.getItem('sementesplay_token');
+        fetch('/api/perfil', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.id) {
+              setUser(data)
+              auth.setUser(data, token || undefined)
+            }
+          })
+          .catch(err => console.error('Erro ao atualizar perfil:', err))
+      }
+    }, 30000) // Atualizar a cada 30 segundos
+
+    return () => clearInterval(interval)
+  }, [user])
+
+  // Atualizar perfil quando a página ganhar foco
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user) {
+        const token = localStorage.getItem('sementesplay_token');
+        fetch('/api/perfil', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.id) {
+              setUser(data)
+              auth.setUser(data, token || undefined)
+            }
+          })
+          .catch(err => console.error('Erro ao atualizar perfil:', err))
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [user])
+
   const loadStats = async () => {
     try {
       const response = await fetch(`/api/perfil/stats?usuarioId=${user?.id}`)
