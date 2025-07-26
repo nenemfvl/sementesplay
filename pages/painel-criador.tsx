@@ -109,27 +109,12 @@ export default function PainelCriador() {
         return;
       }
 
-      // Debug: verificar dados reais do usuário no Railway
-      try {
-        const response = await fetch('/api/debug/usuario');
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Dados reais do Railway:', data.usuario);
-          
-                             // Verificar se é criador pelo nível na tabela Usuario
-                   if (data.usuario.nivel === 'criador-comum' || data.usuario.nivel === 'criador-parceiro' || data.usuario.nivel === 'criador-supremo') {
-                     setAuthorized(true);
-                     setCheckingAuth(false);
-                   } else {
-                     alert(`Acesso negado. Seu nível é: ${data.usuario.nivel}. Apenas criadores podem acessar o painel de criador.`);
-                     window.location.href = '/dashboard';
-                   }
-        } else {
-          throw new Error('Erro ao buscar dados do usuário');
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-        alert('Erro ao verificar autorização. Tente novamente.');
+      // Verificação simplificada usando localStorage
+      if (user.nivel === 'criador-comum' || user.nivel === 'criador-parceiro' || user.nivel === 'criador-supremo') {
+        setAuthorized(true);
+        setCheckingAuth(false);
+      } else {
+        alert(`Acesso negado. Seu nível é: ${user.nivel || 'desconhecido'}. Apenas criadores podem acessar o painel de criador.`);
         window.location.href = '/dashboard';
       }
     };
