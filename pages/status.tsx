@@ -128,22 +128,6 @@ export default function Status() {
             </div>
           </section>
 
-          {/* Status do Sistema */}
-          <section className="w-full max-w-5xl mx-auto mb-10">
-            <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">Status do Sistema</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {statusList.map((item, index) => (
-                <div key={index} className="bg-sss-medium rounded-xl p-4 flex items-center gap-3 shadow-md">
-                  {getStatusIcon(item.status)}
-                  <div>
-                    <h3 className="font-semibold text-sss-white">{item.nome}</h3>
-                    <p className="text-sm text-gray-400">{item.descricao}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* Notícias alinhadas à esquerda, como no exemplo */}
           <section className="w-full max-w-5xl mx-auto mb-10">
             <Noticias />
