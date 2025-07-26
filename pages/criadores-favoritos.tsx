@@ -17,13 +17,14 @@ export default function CriadoresFavoritos() {
       setFavoritos(new Set(JSON.parse(favoritosSalvos)))
     }
 
-    // Carregar todos os criadores
-    fetch('/api/ranking/criadores')
-      .then(res => res.json())
-      .then(data => {
-        setCriadores(data.criadores || [])
-        setLoading(false)
-      })
+         // Carregar todos os criadores
+     fetch('/api/ranking/criadores')
+       .then(res => res.json())
+       .then(data => {
+         console.log('Dados dos criadores:', data.criadores)
+         setCriadores(data.criadores || [])
+         setLoading(false)
+       })
       .catch(error => {
         console.error('Erro ao carregar criadores:', error)
         setLoading(false)
@@ -119,9 +120,11 @@ export default function CriadoresFavoritos() {
                   Você tem {criadoresFavoritos.length} criador{criadoresFavoritos.length !== 1 ? 'es' : ''} favoritado{criadoresFavoritos.length !== 1 ? 's' : ''}
                 </p>
 
-                {/* Grid de criadores favoritos */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {criadoresFavoritos.map((criador) => (
+                                 {/* Grid de criadores favoritos */}
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                   {criadoresFavoritos.map((criador) => {
+                     console.log('Criador sendo renderizado:', criador)
+                     return (
                     <div key={criador.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
                       <div className="flex">
                         {/* Conteúdo Principal */}
@@ -193,9 +196,10 @@ export default function CriadoresFavoritos() {
                           )}
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                                         </div>
+                   )
+                   })}
+                 </div>
 
                 {/* Botão para ver todos os criadores */}
                 <div className="flex justify-center mt-8">
