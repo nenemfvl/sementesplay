@@ -57,6 +57,14 @@ export default function Status() {
     loadRankingMissoesConquistas()
   }, [categoriaRanking])
 
+  // Carregar favoritos do localStorage
+  useEffect(() => {
+    const favoritosSalvos = localStorage.getItem('criadoresFavoritos')
+    if (favoritosSalvos) {
+      setFavoritos(new Set(JSON.parse(favoritosSalvos)))
+    }
+  }, [])
+
   const loadRankingMissoesConquistas = async () => {
     setLoadingRanking(true)
     try {
@@ -97,6 +105,8 @@ export default function Status() {
       } else {
         novosFavoritos.add(criadorId)
       }
+      // Salvar no localStorage
+      localStorage.setItem('criadoresFavoritos', JSON.stringify(Array.from(novosFavoritos)))
       return novosFavoritos
     })
   }
@@ -381,16 +391,23 @@ export default function Status() {
                </div>
             </div>
           )}
-          {/* Botão Ver Classificação */}
-          <div className="flex justify-center mt-8">
-            <button
-              className="flex items-center gap-2 border border-gray-500 rounded-xl px-6 py-3 text-white text-lg font-medium hover:border-sss-accent hover:text-sss-accent transition-colors"
-              onClick={() => router.push('/criadores')}
-            >
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Ver Classificação
-            </button>
-          </div>
+                     {/* Botões de Navegação */}
+           <div className="flex justify-center gap-4 mt-8">
+             <button
+               className="flex items-center gap-2 border border-gray-500 rounded-xl px-6 py-3 text-white text-lg font-medium hover:border-sss-accent hover:text-sss-accent transition-colors"
+               onClick={() => router.push('/criadores')}
+             >
+               <PlusIcon className="w-5 h-5 mr-2" />
+               Ver Classificação
+             </button>
+             <button
+               className="flex items-center gap-2 bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-xl text-lg font-medium transition-colors"
+               onClick={() => router.push('/criadores-favoritos')}
+             >
+               <FaHeart className="w-5 h-5 mr-2" />
+               Criadores Favoritos ({favoritos.size})
+             </button>
+           </div>
         </main>
         {/* Footer minimalista centralizado */}
         <footer className="bg-black border-t border-sss-light mt-16">
