@@ -1,12 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
-import { auth } from '../../../lib/auth'
 
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Verificar autenticação
-  const user = auth.getUser();
+  // Verificar autenticação via token
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token de autenticação necessário' });
+  }
+
+  const token = authHeader.replace('Bearer ', '')
+  
+  // Buscar usuário pelo token (ID do usuário)
+  const user = await prisma.usuario.findUnique({
+    where: { id: token }
+  });
+
   if (!user) {
     return res.status(401).json({ error: 'Usuário não autenticado' });
   }

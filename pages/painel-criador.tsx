@@ -241,7 +241,12 @@ export default function PainelCriador() {
     async function fetchRecados() {
       setLoadingRecados(true);
       try {
-        const res = await fetch('/api/recados');
+        const token = localStorage.getItem('sementesplay_token');
+        const res = await fetch('/api/recados', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const data = await res.json();
         setRecados(data);
       } catch {
@@ -258,7 +263,12 @@ export default function PainelCriador() {
     async function fetchEnquetes() {
       setLoadingEnquetes(true);
       try {
-        const res = await fetch('/api/enquetes');
+        const token = localStorage.getItem('sementesplay_token');
+        const res = await fetch('/api/enquetes', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const data = await res.json();
         setEnquetes(data);
       } catch {
