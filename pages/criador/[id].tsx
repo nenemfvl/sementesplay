@@ -666,8 +666,8 @@ export default function CriadorPerfil() {
                   <div className="space-y-4">
                     {recados.map((recado) => (
                       <div key={recado.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
-                        <h4 className="text-sss-white font-semibold mb-2">{recado.titulo}</h4>
-                        <p className="text-gray-300 mb-3">{recado.mensagem}</p>
+                        <h4 className="text-sss-white font-semibold mb-2">{recado.mensagem}</h4>
+                        <p className="text-gray-300 mb-3">De: {recado.remetenteNome || 'Usuário'}</p>
                         {recado.resposta && (
                           <div className="bg-sss-light rounded-lg p-3 mt-3">
                             <p className="text-sss-accent font-semibold text-sm mb-1">Resposta:</p>
