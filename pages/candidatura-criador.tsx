@@ -141,6 +141,7 @@ export default function CandidaturaCriador() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user?.id}`
         },
         body: JSON.stringify({
           ...formData,
