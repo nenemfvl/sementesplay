@@ -692,24 +692,30 @@ export default function PainelCriador() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Tipo</label>
-                <input 
+                <select 
                   required 
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Ex: vídeo, live, post" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={form.tipo} 
                   onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} 
-                />
+                >
+                  <option value="">Selecione o tipo</option>
+                  <option value="live">Live</option>
+                  <option value="video">Video</option>
+                </select>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Categoria</label>
-                <input 
+                <select 
                   required 
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Categoria do conteúdo" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={form.categoria} 
                   onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} 
-                />
+                >
+                  <option value="">Selecione uma categoria</option>
+                  <option value="gamer">Gamer</option>
+                  <option value="life">Life</option>
+                </select>
               </div>
               
               <div className="flex gap-3 pt-4">
