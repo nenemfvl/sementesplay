@@ -13,31 +13,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'ID do conteúdo é obrigatório' })
       }
 
-      // Incrementar visualizações
-      const conteudo = await prisma.conteudo.update({
-        where: { id: String(id) },
-        data: {
-          visualizacoes: {
-            increment: 1
-          }
-        }
-      })
-
-      // Registrar visualização do usuário (se autenticado)
+      // Verificar se o usuário já visualizou este conteúdo
+      let jaVisualizou = false
       if (userId) {
         try {
-          await prisma.interacaoConteudo.upsert({
+          const visualizacaoExistente = await (prisma as any).interacaoConteudo.findUnique({
             where: {
               conteudoId_usuarioId_tipo: {
                 conteudoId: String(id),
                 usuarioId: userId,
                 tipo: 'visualizacao'
               }
-            },
-            update: {
-              data: new Date()
-            },
-            create: {
+            }
+          })
+          jaVisualizou = !!visualizacaoExistente
+        } catch (error) {
+          console.error('Erro ao verificar visualização existente:', error)
+        }
+      }
+
+      // Só incrementar visualizações se o usuário ainda não visualizou
+      let conteudo
+      if (!jaVisualizou) {
+        conteudo = await prisma.conteudo.update({
+          where: { id: String(id) },
+          data: {
+            visualizacoes: {
+              increment: 1
+            }
+          }
+        })
+      } else {
+        // Buscar o conteúdo sem incrementar
+        conteudo = await prisma.conteudo.findUnique({
+          where: { id: String(id) }
+        })
+      }
+
+      // Registrar visualização do usuário (se autenticado e ainda não visualizou)
+      if (userId && !jaVisualizou) {
+        try {
+          await (prisma as any).interacaoConteudo.create({
+            data: {
               conteudoId: String(id),
               usuarioId: userId,
               tipo: 'visualizacao'
@@ -51,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       return res.status(200).json({ 
         success: true, 
-        visualizacoes: conteudo.visualizacoes 
+        visualizacoes: conteudo?.visualizacoes || 0
       })
     } catch (error) {
       console.error('Erro ao registrar visualização:', error)
