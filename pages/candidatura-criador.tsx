@@ -28,7 +28,6 @@ interface CandidaturaData {
     twitter?: string
   }
   portfolio: {
-    descricao: string
     links: string[]
   }
   experiencia: string
@@ -45,7 +44,6 @@ export default function CandidaturaCriador() {
     bio: '',
     redesSociais: {},
     portfolio: {
-      descricao: '',
       links: []
     },
     experiencia: '',
