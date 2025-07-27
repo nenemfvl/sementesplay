@@ -358,6 +358,7 @@ model Conteudo {
   plataforma        String // youtube, twitch, instagram, tiktok, etc.
   visualizacoes     Int      @default(0)
   curtidas          Int      @default(0)
+  dislikes          Int      @default(0)
   compartilhamentos Int      @default(0)
 
   criador     Criador      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
@@ -387,7 +388,7 @@ model InteracaoConteudo {
   id          String   @id @default(cuid())
   conteudoId  String
   usuarioId   String
-  tipo        String   // "visualizacao" ou "curtida"
+  tipo        String   // "visualizacao", "curtida" ou "dislike"
   data        DateTime @default(now())
 
   conteudo Conteudo @relation(fields: [conteudoId], references: [id], onDelete: Cascade)

@@ -211,6 +211,33 @@ export default function Criadores() {
     }
   }
 
+  const darDislike = async (conteudoId: string) => {
+    if (!user) return
+    
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/dislike`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        // Só atualiza se realmente incrementou
+        if (data.dislikes > 0) {
+          setConteudos(prev => prev.map(c => 
+            c.id === conteudoId 
+              ? { ...c, dislikes: data.dislikes }
+              : c
+          ))
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao dar dislike:', error)
+    }
+  }
+
   const carregarDetalhesCriador = async (usuarioId: string) => {
     setLoadingDetalhes(true)
     try {
@@ -740,7 +767,13 @@ export default function Criadores() {
               >
                 ❤️ {formatarNumero(conteudo.likes || 0)}
               </span>
-              <span>💬 {formatarNumero(conteudo.comentarios?.length || 0)}</span>
+              <span 
+                className="cursor-pointer hover:text-red-400 transition-colors"
+                onClick={() => darDislike(conteudo.id)}
+                title="Dislike"
+              >
+                👎 {formatarNumero(conteudo.dislikes || 0)}
+              </span>
             </div>
                                   </div>
                                 </div>
