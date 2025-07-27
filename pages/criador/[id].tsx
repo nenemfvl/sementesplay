@@ -95,7 +95,7 @@ export default function CriadorPerfil() {
   const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
   const [enviandoPergunta, setEnviandoPergunta] = useState(false)
   const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
-  const [conteudosInteracao, setConteudosInteracao] = useState<{[key: string]: { curtido: boolean, visualizado: boolean }>>({})
+  const [conteudosInteracao, setConteudosInteracao] = useState<Record<string, { curtido: boolean, visualizado: boolean }>>({})
 
   useEffect(() => {
     const currentUser = auth.getUser()
