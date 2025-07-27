@@ -105,10 +105,10 @@ export default function CriadorPerfil() {
   }, [router])
 
   useEffect(() => {
-    if (id) {
+    if (id && user) {
       carregarDetalhesCriador(id as string)
     }
-  }, [id])
+  }, [id, user])
 
   const carregarDetalhesCriador = async (criadorId: string) => {
     setLoading(true)
@@ -121,33 +121,48 @@ export default function CriadorPerfil() {
         setCriador(data.criador)
         
         // Carregar conteúdos do criador
-        const responseConteudos = await fetch(`/api/conteudos?criadorId=${criadorId}`)
-        const dataConteudos = await responseConteudos.json()
-        
-        if (responseConteudos.ok) {
-          setConteudos(dataConteudos.conteudos || [])
+        try {
+          const responseConteudos = await fetch(`/api/conteudos?criadorId=${criadorId}`)
+          const dataConteudos = await responseConteudos.json()
+          
+          if (responseConteudos.ok) {
+            setConteudos(dataConteudos.conteudos || [])
+          }
+        } catch (error) {
+          console.error('Erro ao carregar conteúdos:', error)
+          setConteudos([])
         }
 
         // Carregar enquetes do criador (com autenticação)
         if (user) {
-          const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`, {
-            headers: {
-              'Authorization': `Bearer ${user.id}`
+          try {
+            const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`, {
+              headers: {
+                'Authorization': `Bearer ${user.id}`
+              }
+            })
+            const dataEnquetes = await responseEnquetes.json()
+            
+            if (responseEnquetes.ok) {
+              setEnquetes(dataEnquetes.enquetes || [])
             }
-          })
-          const dataEnquetes = await responseEnquetes.json()
-          
-          if (responseEnquetes.ok) {
-            setEnquetes(dataEnquetes.enquetes || [])
+          } catch (error) {
+            console.error('Erro ao carregar enquetes:', error)
+            setEnquetes([])
           }
         }
 
         // Carregar recados públicos do criador
-        const responseRecados = await fetch(`/api/recados/publicos/${data.criador.usuarioId}`)
-        const dataRecados = await responseRecados.json()
-        
-        if (responseRecados.ok) {
-          setRecados(dataRecados.recados || [])
+        try {
+          const responseRecados = await fetch(`/api/recados/publicos/${data.criador.usuarioId}`)
+          const dataRecados = await responseRecados.json()
+          
+          if (responseRecados.ok) {
+            setRecados(dataRecados.recados || [])
+          }
+        } catch (error) {
+          console.error('Erro ao carregar recados:', error)
+          setRecados([])
         }
       }
     } catch (error) {
