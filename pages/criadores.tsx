@@ -256,6 +256,13 @@ export default function Criadores() {
 
   const rankingFiltrado = filtrarRanking()
 
+  // Garante que 'conteudos' é sempre um array, mesmo se vier como objeto da API
+  useEffect(() => {
+    if (conteudos && !Array.isArray(conteudos) && (conteudos as any).conteudos) {
+      setConteudos((conteudos as any).conteudos);
+    }
+  }, [conteudos]);
+
   if (!user) {
     return null
   }
