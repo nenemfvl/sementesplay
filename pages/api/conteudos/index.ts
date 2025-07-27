@@ -49,30 +49,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      const conteudosFormatados = conteudos.map(conteudo => ({
-        id: conteudo.id,
-        titulo: conteudo.titulo,
-        descricao: conteudo.descricao,
-        tipo: conteudo.tipo,
-        url: conteudo.url,
-        thumbnail: conteudo.preview || '/thumbnails/default.jpg',
-        visualizacoes: conteudo.visualizacoes,
-        likes: conteudo.curtidas,
-        dataCriacao: conteudo.dataPublicacao,
-        criador: {
-          id: conteudo.criador.usuario.id,
-          nome: conteudo.criador.usuario.nome,
-          email: conteudo.criador.usuario.email
-        },
-        comentarios: conteudo.comentarios.map(comentario => ({
-          id: comentario.id,
-          texto: comentario.texto,
-          usuario: comentario.usuario.nome,
-          dataCriacao: comentario.data
-        })),
-        tags: [], // Mockado por enquanto
-        categoria: conteudo.categoria
-      }))
+      const getYoutubeId = (url: string) => {
+        const match = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/)
+        return match ? match[1] : null
+      }
+
+      const conteudosFormatados = conteudos.map(conteudo => {
+        let thumbnail = conteudo.preview
+        if (!thumbnail && conteudo.url && conteudo.tipo === 'video' && conteudo.url.includes('youtube')) {
+          const ytId = getYoutubeId(conteudo.url)
+          if (ytId) {
+            thumbnail = `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
+          }
+        }
+        return {
+          id: conteudo.id,
+          titulo: conteudo.titulo,
+          descricao: conteudo.descricao,
+          tipo: conteudo.tipo,
+          url: conteudo.url,
+          thumbnail: thumbnail || '/thumbnails/default.jpg',
+          visualizacoes: conteudo.visualizacoes,
+          likes: conteudo.curtidas,
+          dataCriacao: conteudo.dataPublicacao,
+          criador: {
+            id: conteudo.criador.usuario.id,
+            nome: conteudo.criador.usuario.nome,
+            email: conteudo.criador.usuario.email
+          },
+          comentarios: conteudo.comentarios.map(comentario => ({
+            id: comentario.id,
+            texto: comentario.texto,
+            usuario: comentario.usuario.nome,
+            dataCriacao: comentario.data
+          })),
+          tags: [], // Mockado por enquanto
+          categoria: conteudo.categoria
+        }
+      })
 
       return res.status(200).json({ conteudos: conteudosFormatados })
     } catch (error) {
