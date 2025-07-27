@@ -128,12 +128,18 @@ export default function CriadorPerfil() {
           setConteudos(dataConteudos.conteudos || [])
         }
 
-        // Carregar enquetes do criador
-        const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`)
-        const dataEnquetes = await responseEnquetes.json()
-        
-        if (responseEnquetes.ok) {
-          setEnquetes(dataEnquetes.enquetes || [])
+        // Carregar enquetes do criador (com autenticação)
+        if (user) {
+          const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`, {
+            headers: {
+              'Authorization': `Bearer ${user.id}`
+            }
+          })
+          const dataEnquetes = await responseEnquetes.json()
+          
+          if (responseEnquetes.ok) {
+            setEnquetes(dataEnquetes.enquetes || [])
+          }
         }
 
         // Carregar recados públicos do criador
