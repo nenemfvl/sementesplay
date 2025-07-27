@@ -61,7 +61,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         mensagem: recado.mensagem,
         lido: recado.lido,
         dataEnvio: recado.dataEnvio,
-        dataLeitura: recado.dataLeitura
+        dataLeitura: recado.dataLeitura,
+        resposta: recado.resposta,
+        dataResposta: recado.dataResposta
       }))
 
       return res.status(200).json({ recados: recadosFormatados })

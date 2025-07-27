@@ -241,15 +241,21 @@ export default function PainelCriador() {
     async function fetchRecados() {
       setLoadingRecados(true);
       try {
-        const token = localStorage.getItem('sementesplay_token');
+        const user = auth.getUser();
+        if (!user) {
+          setRecados([]);
+          return;
+        }
+        
         const res = await fetch('/api/recados', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${user.id}`
           }
         });
         const data = await res.json();
-        setRecados(data);
-      } catch {
+        setRecados(data.recados || []);
+      } catch (error) {
+        console.error('Erro ao buscar recados:', error);
         setRecados([]);
       }
       setLoadingRecados(false);
@@ -263,15 +269,21 @@ export default function PainelCriador() {
     async function fetchEnquetes() {
       setLoadingEnquetes(true);
       try {
-        const token = localStorage.getItem('sementesplay_token');
+        const user = auth.getUser();
+        if (!user) {
+          setEnquetes([]);
+          return;
+        }
+        
         const res = await fetch('/api/enquetes', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${user.id}`
           }
         });
         const data = await res.json();
-        setEnquetes(data);
-      } catch {
+        setEnquetes(data.enquetes || []);
+      } catch (error) {
+        console.error('Erro ao buscar enquetes:', error);
         setEnquetes([]);
       }
       setLoadingEnquetes(false);
@@ -309,12 +321,11 @@ export default function PainelCriador() {
       const user = auth.getUser();
       if (!user) return;
 
-      const token = localStorage.getItem('sementesplay_token');
       const res = await fetch(`/api/criador/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${user.id}`
         },
         body: JSON.stringify({ redesSociais })
       });
@@ -415,15 +426,23 @@ export default function PainelCriador() {
     e.preventDefault();
     setRespostaStatus(s => ({...s, [id]: 'enviando'}));
     try {
+      const user = auth.getUser();
+      if (!user) return;
+
       await fetch('/api/recados/responder', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
         body: JSON.stringify({ id, resposta: resposta[id] }),
       });
       setRespostaStatus(s => ({...s, [id]: 'enviado'}));
       setRecados(rs => rs.map(r => r.id === id ? { ...r, resposta: resposta[id] } : r));
       setResposta(r => ({...r, [id]: ''}));
       setRespondendo(null);
+    } catch (error) {
+      console.error('Erro ao responder recado:', error);
     } finally {
       setTimeout(() => setRespostaStatus(s => ({...s, [id]: ''})), 2000);
     }
@@ -433,9 +452,15 @@ export default function PainelCriador() {
     e.preventDefault();
     setSalvandoEnquete(true);
     try {
+      const user = auth.getUser();
+      if (!user) return;
+
       await fetch('/api/enquetes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
         body: JSON.stringify({
           pergunta: novaEnquete.pergunta,
           opcoes: novaEnquete.opcoes.filter(Boolean)
@@ -445,8 +470,15 @@ export default function PainelCriador() {
       setNovaEnquete({pergunta:'', opcoes:['','']});
       setTimeout(() => setEnqueteStatus('idle'), 2000);
       // Atualizar lista
-      const res = await fetch('/api/enquetes');
-      setEnquetes(await res.json());
+      const res = await fetch('/api/enquetes', {
+        headers: {
+          'Authorization': `Bearer ${user.id}`
+        }
+      });
+      const data = await res.json();
+      setEnquetes(data.enquetes || []);
+    } catch (error) {
+      console.error('Erro ao criar enquete:', error);
     } finally {
       setSalvandoEnquete(false);
     }
