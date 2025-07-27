@@ -1,6 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import { auth } from '../lib/auth';
+import { 
+  ChartBarIcon, 
+  VideoCameraIcon, 
+  TrophyIcon, 
+  HeartIcon, 
+  ShareIcon, 
+  EyeIcon,
+  PlusIcon,
+  CogIcon,
+  BellIcon,
+  ChatBubbleLeftRightIcon,
+  QuestionMarkCircleIcon,
+  LinkIcon,
+  QrCodeIcon,
+  ClipboardDocumentIcon,
+  CheckIcon,
+  XMarkIcon,
+  PencilIcon,
+  TrashIcon,
+  MapPinIcon
+} from '@heroicons/react/24/outline';
 
 type Conteudo = {
   id: string;
@@ -608,8 +629,11 @@ export default function PainelCriador() {
   // Mostrar loading enquanto verifica autorização
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
-        <div className="text-sss-white text-xl">Verificando autorização...</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <div className="text-white text-lg font-medium">Verificando autorização...</div>
+        </div>
       </div>
     );
   }
@@ -624,414 +648,772 @@ export default function PainelCriador() {
       <Head>
         <title>Painel do Criador | SementesPLAY</title>
       </Head>
+      
       {/* Modal de adicionar conteúdo */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <form onSubmit={editando ? handleEditConteudo : handleAddConteudo} className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col gap-3">
-            <h2 className="text-xl font-bold mb-2">Editar Conteúdo</h2>
-            <input ref={tituloRef} required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Título" value={form.titulo} onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} />
-            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="URL" value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))} />
-            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Tipo (ex: vídeo, live)" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} />
-            <input required className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Categoria" value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} />
-            <div className="flex gap-2 mt-2">
-              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition" disabled={saving}>{saving ? 'Salvando...' : (editando ? 'Salvar' : 'Adicionar')}</button>
-              <button type="button" className="bg-gray-300 px-4 py-2 rounded" onClick={() => { setShowModal(false); setEditando(null); }} disabled={saving}>Cancelar</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">
+                {editando ? 'Editar Conteúdo' : 'Adicionar Conteúdo'}
+              </h2>
+              <button 
+                onClick={() => { setShowModal(false); setEditando(null); }}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
             </div>
-          </form>
+            
+            <form onSubmit={editando ? handleEditConteudo : handleAddConteudo} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Título</label>
+                <input 
+                  ref={tituloRef}
+                  required 
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  placeholder="Título do conteúdo" 
+                  value={form.titulo} 
+                  onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">URL</label>
+                <input 
+                  required 
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  placeholder="Link do conteúdo" 
+                  value={form.url} 
+                  onChange={e => setForm(f => ({ ...f, url: e.target.value }))} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Tipo</label>
+                <input 
+                  required 
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  placeholder="Ex: vídeo, live, post" 
+                  value={form.tipo} 
+                  onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Categoria</label>
+                <input 
+                  required 
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  placeholder="Categoria do conteúdo" 
+                  value={form.categoria} 
+                  onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} 
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckIcon className="w-4 h-4" />
+                      {editando ? 'Salvar' : 'Adicionar'}
+                    </>
+                  )}
+                </button>
+                <button 
+                  type="button" 
+                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors" 
+                  onClick={() => { setShowModal(false); setEditando(null); }} 
+                  disabled={saving}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
-      <main className="max-w-6xl mx-auto px-4 py-8 bg-sss-dark min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Painel do Criador</h1>
-        {/* Estatísticas principais */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
-            <span className="text-lg font-semibold">Visualizações</span>
-            <span className="text-2xl font-bold text-green-600">{!loading ? totalVisualizacoes : '--'}</span>
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
-            <span className="text-lg font-semibold">Curtidas</span>
-            <span className="text-2xl font-bold text-pink-500">{!loading ? totalCurtidas : '--'}</span>
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
-            <span className="text-lg font-semibold">Dislikes</span>
-            <span className="text-2xl font-bold text-red-500">{!loading ? totalDislikes : '--'}</span>
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
-            <span className="text-lg font-semibold">Compartilhamentos</span>
-            <span className="text-2xl font-bold text-yellow-500">{!loading ? totalCompartilhamentos : '--'}</span>
-          </div>
-        </section>
-        {/* Gestão de Conteúdos */}
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-bold">Seus Conteúdos</h2>
-            <button className="bg-sss-accent text-white px-4 py-2 rounded font-semibold hover:bg-green-700 transition" onClick={() => setShowModal(true)}>Adicionar Conteúdo</button>
-          </div>
-          {categorias.length > 0 && (
-            <div className="mb-2 flex gap-2 items-center">
-              <span className="font-semibold">Filtrar por categoria:</span>
-              <select className="border rounded px-2 py-1" value={categoriaFiltro} onChange={e => setCategoriaFiltro(e.target.value)}>
-                <option value="">Todas</option>
-                {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
-            </div>
-          )}
-          {conteudoFixado && (
-            <div className="border-2 border-yellow-400 bg-yellow-50 rounded p-3 mb-4">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-lg">📌 {conteudoFixado.titulo}</span>
-                <button className="text-xs text-yellow-700 underline" onClick={() => handleFixarConteudo(conteudoFixado.id, false)}>Desfixar</button>
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+        {/* Header */}
+        <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                    <VideoCameraIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h1 className="text-xl font-bold text-white">Painel do Criador</h1>
+                </div>
               </div>
-              <span className="text-sm text-gray-500">{conteudoFixado.dataPublicacao ? new Date(conteudoFixado.dataPublicacao).toLocaleDateString() : ''}</span>
-              {getPreview((conteudoFixado as any).url)}
+              
+              <button 
+                onClick={() => setShowModal(true)}
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 shadow-lg"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Adicionar Conteúdo
+              </button>
             </div>
-          )}
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white min-h-[120px]">
-            {loading ? (
-              <div className="text-gray-400 text-center">Carregando...</div>
-            ) : conteudos && conteudos.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {conteudosFiltrados.map((c) => {
-                  const yt = getYoutubeInfo((c as any).url);
-                  return (
-                    <div key={c.id} className="border rounded p-3 flex flex-col gap-2 bg-sss-medium border-sss-light text-sss-white">
-                      {yt ? (
+          </div>
+        </div>
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Estatísticas principais */}
+          <section className="mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:bg-blue-500/30 transition-all">
+                    <EyeIcon className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-white">{!loading ? totalVisualizacoes.toLocaleString() : '--'}</div>
+                    <div className="text-sm text-blue-300">Visualizações</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-blue-500/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full" style={{width: `${Math.min((totalVisualizacoes / 1000) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-pink-500/10 to-pink-600/10 backdrop-blur-sm rounded-2xl p-6 border border-pink-500/20 hover:border-pink-500/40 transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center group-hover:bg-pink-500/30 transition-all">
+                    <HeartIcon className="w-6 h-6 text-pink-400" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-white">{!loading ? totalCurtidas.toLocaleString() : '--'}</div>
+                    <div className="text-sm text-pink-300">Curtidas</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-pink-500/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-pink-400 to-pink-600 rounded-full" style={{width: `${Math.min((totalCurtidas / 100) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 backdrop-blur-sm rounded-2xl p-6 border border-red-500/20 hover:border-red-500/40 transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center group-hover:bg-red-500/30 transition-all">
+                    <XMarkIcon className="w-6 h-6 text-red-400" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-white">{!loading ? totalDislikes.toLocaleString() : '--'}</div>
+                    <div className="text-sm text-red-300">Dislikes</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-red-500/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full" style={{width: `${Math.min((totalDislikes / 50) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center group-hover:bg-yellow-500/30 transition-all">
+                    <ShareIcon className="w-6 h-6 text-yellow-400" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-white">{!loading ? totalCompartilhamentos.toLocaleString() : '--'}</div>
+                    <div className="text-sm text-yellow-300">Compartilhamentos</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-yellow-500/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full" style={{width: `${Math.min((totalCompartilhamentos / 100) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Gestão de Conteúdos */}
+          <section className="mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <VideoCameraIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Seus Conteúdos</h2>
+                      <p className="text-sm text-gray-400">Gerencie seus vídeos, lives e posts</p>
+                    </div>
+                  </div>
+                  
+                  {categorias.length > 0 && (
+                    <div className="flex items-center space-x-3">
+                      <span className="text-sm text-gray-300">Filtrar:</span>
+                      <select 
+                        className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                        value={categoriaFiltro} 
+                        onChange={e => setCategoriaFiltro(e.target.value)}
+                      >
+                        <option value="">Todas as categorias</option>
+                        {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Conteúdo fixado */}
+              {conteudoFixado && (
+                <div className="mx-6 mt-6 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                                             <MapPinIcon className="w-5 h-5 text-yellow-400" />
+                      <span className="font-semibold text-lg text-white">Conteúdo Fixado</span>
+                    </div>
+                    <button 
+                      className="text-yellow-400 hover:text-yellow-300 text-sm underline transition-colors" 
+                      onClick={() => handleFixarConteudo(conteudoFixado.id, false)}
+                    >
+                      Desfixar
+                    </button>
+                  </div>
+                  <div className="text-sm text-gray-300 mb-3">{conteudoFixado.titulo}</div>
+                  <div className="text-xs text-gray-400">
+                    {conteudoFixado.dataPublicacao ? new Date(conteudoFixado.dataPublicacao).toLocaleDateString() : ''}
+                  </div>
+                  {getPreview((conteudoFixado as any).url)}
+                </div>
+              )}
+
+              <div className="p-6">
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                    <span className="ml-3 text-gray-400">Carregando conteúdos...</span>
+                  </div>
+                ) : conteudos && conteudos.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {conteudosFiltrados.map((c) => {
+                      const yt = getYoutubeInfo((c as any).url);
+                      return (
+                        <div key={c.id} className="bg-gray-700/50 rounded-xl overflow-hidden hover:bg-gray-700/70 transition-all duration-300 group border border-gray-600 hover:border-gray-500">
+                          {yt ? (
+                            <div className="relative">
+                              <img src={yt.thumbnail} alt={c.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                  Assistir no YouTube
+                                </a>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-gray-400 group-hover:from-gray-500 group-hover:to-gray-600 transition-all">
+                              <VideoCameraIcon className="w-12 h-12" />
+                            </div>
+                          )}
+                          
+                          <div className="p-4">
+                            <a href={(c as any).url} target="_blank" rel="noopener" className="text-lg font-bold text-white hover:text-green-400 transition-colors line-clamp-2">
+                              {c.titulo}
+                            </a>
+                            
+                            <div className="flex items-center justify-between mt-3">
+                              <span className="text-xs bg-gray-600 text-gray-300 px-2 py-1 rounded-full">{c.tipo}</span>
+                              <span className="text-xs text-gray-400">
+                                {c.dataPublicacao ? new Date(c.dataPublicacao).toLocaleDateString() : ''}
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-600">
+                              <div className="flex space-x-2">
+                                <button 
+                                  className="text-blue-400 hover:text-blue-300 transition-colors p-1" 
+                                  onClick={() => { setEditando(c); setForm({ titulo: c.titulo, url: (c as any).url || '', tipo: c.tipo, categoria: (c as any).categoria || '' }); setShowModal(true); }}
+                                  title="Editar"
+                                >
+                                  <PencilIcon className="w-4 h-4" />
+                                </button>
+                                <button 
+                                  className="text-red-400 hover:text-red-300 transition-colors p-1" 
+                                  onClick={() => handleRemoverConteudo(c.id)}
+                                  title="Remover"
+                                >
+                                  <TrashIcon className="w-4 h-4" />
+                                </button>
+                                <button 
+                                  className="text-yellow-400 hover:text-yellow-300 transition-colors p-1" 
+                                  onClick={() => handleFixarConteudo(c.id, true)} 
+                                  disabled={!!conteudoFixado}
+                                  title="Fixar"
+                                >
+                                                                     <MapPinIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                              
+                              {!yt && (
+                                <a href={(c as any).url} target="_blank" rel="noopener" className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors">
+                                  Ver conteúdo
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <VideoCameraIcon className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-400 mb-2">Nenhum conteúdo cadastrado</h3>
+                    <p className="text-gray-500 mb-6">Comece adicionando seu primeiro conteúdo para aparecer aqui</p>
+                    <button 
+                      onClick={() => setShowModal(true)}
+                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 mx-auto"
+                    >
+                      <PlusIcon className="w-4 h-4" />
+                      Adicionar Primeiro Conteúdo
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Grid de seções */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Missões e Conquistas */}
+            <div className="space-y-6">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-700">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                      <TrophyIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Missões</h2>
+                      <p className="text-sm text-gray-400">Complete missões para ganhar recompensas</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {loadingMissoes ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                      <span className="ml-3 text-gray-400">Carregando...</span>
+                    </div>
+                  ) : Array.isArray(missoes) && missoes.length > 0 ? (
+                    <div className="space-y-3">
+                      {missoes.map(m => (
+                        <div key={m.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                          <div className="font-semibold text-white mb-2">{m.titulo}</div>
+                          <div className="text-sm text-gray-400">{m.descricao}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <TrophyIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
+                      <p className="text-gray-400">Nenhuma missão disponível no momento</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-700">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
+                      <TrophyIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Conquistas</h2>
+                      <p className="text-sm text-gray-400">Suas conquistas e badges</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {loadingConquistas ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+                      <span className="ml-3 text-gray-400">Carregando...</span>
+                    </div>
+                  ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
+                    <div className="space-y-3">
+                      {conquistas.map(c => (
+                        <div key={c.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                          <div className="font-semibold text-white mb-2">{c.titulo}</div>
+                          <div className="text-sm text-gray-400">{c.descricao}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <TrophyIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
+                      <p className="text-gray-400">Nenhuma conquista desbloqueada ainda</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Histórico de Doações e Ranking */}
+            <div className="space-y-6">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-700">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                      <HeartIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Histórico de Doações</h2>
+                      <p className="text-sm text-gray-400">Doações recebidas dos seus fãs</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {loadingDoacoes ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
+                      <span className="ml-3 text-gray-400">Carregando...</span>
+                    </div>
+                  ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {doacoes.map(d => (
+                        <div key={d.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-bold text-green-400">{d.quantidade} sementes</span>
+                            <span className="text-xs text-gray-400">
+                              {d.data ? new Date(d.data).toLocaleDateString() : ''}
+                            </span>
+                          </div>
+                          {d.mensagem && (
+                            <div className="text-sm text-gray-300 mb-2 italic">"{d.mensagem}"</div>
+                          )}
+                          {d.doador && (
+                            <div className="text-xs text-gray-400">De: {d.doador.nome}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <HeartIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
+                      <p className="text-gray-400">Nenhuma doação recebida ainda</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-700">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <ChartBarIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Ranking de Doadores</h2>
+                      <p className="text-sm text-gray-400">Seus maiores apoiadores</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {loadingRanking ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+                      <span className="ml-3 text-gray-400">Carregando...</span>
+                    </div>
+                  ) : Array.isArray(ranking) && ranking.length > 0 ? (
+                    <div className="space-y-3">
+                      {ranking.map((d, i) => (
+                        <div key={d.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                {i + 1}
+                              </div>
+                              <span className="font-semibold text-white">{d.nome}</span>
+                            </div>
+                            <span className="text-green-400 font-bold">{d.total} sementes</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <ChartBarIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
+                      <p className="text-gray-400">Nenhum doador no ranking ainda</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Seções adicionais continuam com o mesmo padrão moderno */}
+          {/* Atalhos e widgets */}
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h3 className="font-bold text-white mb-2">Missões & Conquistas</h3>
+                <ul className="space-y-1">
+                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ver missões</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ver conquistas</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h3 className="font-bold text-white mb-2">Monetização</h3>
+                <ul className="space-y-1">
+                  <li><a href="#" className="text-sss-accent hover:underline text-white">Histórico de doações</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ranking de doadores</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-white">Metas de arrecadação</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Notificações e suporte */}
+          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h3 className="font-bold text-white mb-2">Notificações</h3>
+                {loadingNotificacoes ? (
+                  <span className="text-gray-400">Carregando...</span>
+                ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
+                  <ul className="space-y-2">
+                    {notificacoes.map(n => (
+                      <li key={n.id} className="border rounded p-2">
+                        <span className="font-semibold text-white">{n.titulo}</span>
+                        <div className="text-sm text-gray-400">{n.mensagem}</div>
+                        <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="text-gray-400">Nenhuma notificação recente.</span>
+                )}
+              </div>
+            </div>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h3 className="font-bold text-white mb-2">Suporte & Feedback</h3>
+                <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
+                  <textarea className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
+                  <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
+                  {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
+                </form>
+                <ul className="space-y-1">
+                  <li><a href="#" className="text-red-700 hover:underline text-white">Enviar sugestão</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Configuração de Redes Sociais */}
+          <section className="mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-lg font-bold text-white mb-4">Configurar Redes Sociais</h2>
+                <p className="text-sm text-gray-400 mb-4">
+                  Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
+                </p>
+                <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">YouTube</label>
+                      <input
+                        type="url"
+                        placeholder="https://youtube.com/@seucanal"
+                        value={redesSociais.youtube}
+                        onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Twitch</label>
+                      <input
+                        type="url"
+                        placeholder="https://twitch.tv/seucanal"
+                        value={redesSociais.twitch}
+                        onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Instagram</label>
+                      <input
+                        type="url"
+                        placeholder="https://instagram.com/seuperfil"
+                        value={redesSociais.instagram}
+                        onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">TikTok</label>
+                      <input
+                        type="url"
+                        placeholder="https://tiktok.com/@seuperfil"
+                        value={redesSociais.tiktok}
+                        onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="submit"
+                      disabled={salvandoRedes}
+                      className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {salvandoRedes ? (
                         <>
-                          <img src={yt.thumbnail} alt={c.titulo} className="rounded w-full max-h-48 object-cover mb-2" />
-                          <a href={yt.link} target="_blank" rel="noopener" className="text-lg font-bold hover:underline">{c.titulo}</a>
-                          <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded w-fit">{c.tipo}</span>
-                          <a href={yt.link} target="_blank" rel="noopener" className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded font-semibold w-fit">Assistir no YouTube</a>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          Salvando...
                         </>
                       ) : (
                         <>
-                          <div className="w-full h-32 bg-gray-700 rounded flex items-center justify-center text-gray-400">Preview</div>
-                          <a href={(c as any).url} target="_blank" rel="noopener" className="text-lg font-bold hover:underline">{c.titulo}</a>
-                          <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded w-fit">{c.tipo}</span>
-                          <a href={(c as any).url} target="_blank" rel="noopener" className="mt-2 bg-sss-accent hover:bg-green-700 text-white px-4 py-1 rounded font-semibold w-fit">Ver conteúdo</a>
+                          <CheckIcon className="w-4 h-4" />
+                          Salvar Redes Sociais
                         </>
                       )}
-                      <div className="flex gap-2 mt-2">
-                        <button className="text-blue-400 hover:underline text-sm" onClick={() => { setEditando(c); setForm({ titulo: c.titulo, url: (c as any).url || '', tipo: c.tipo, categoria: (c as any).categoria || '' }); setShowModal(true); }}>Editar</button>
-                        <button className="text-red-400 hover:underline text-sm" onClick={() => handleRemoverConteudo(c.id)}>Remover</button>
-                        <button className="text-yellow-400 hover:underline text-sm" onClick={() => handleFixarConteudo(c.id, true)} disabled={!!conteudoFixado}>Fixar</button>
-                      </div>
-                    </div>
-                  );
-                })}
+                    </button>
+                    {redesStatus === 'salvo' && (
+                      <span className="text-green-500 text-sm">Redes sociais salvas com sucesso!</span>
+                    )}
+                  </div>
+                </form>
               </div>
-            ) : (
-              <span className="text-gray-400">Nenhum conteúdo cadastrado ainda.</span>
-            )}
-          </div>
-        </section>
-        {/* Missões e Conquistas */}
-        <section className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Missões</h2>
-            {loadingMissoes ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(missoes) && missoes.length > 0 ? (
-              <ul className="space-y-2">
-                {missoes.map(m => (
-                  <li key={m.id} className="border rounded p-2">
-                    <span className="font-semibold">{m.titulo}</span>
-                    <div className="text-sm text-gray-500">{m.descricao}</div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma missão disponível.</span>
-            )}
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Conquistas</h2>
-            {loadingConquistas ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
-              <ul className="space-y-2">
-                {conquistas.map(c => (
-                  <li key={c.id} className="border rounded p-2">
-                    <span className="font-semibold">{c.titulo}</span>
-                    <div className="text-sm text-gray-500">{c.descricao}</div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma conquista disponível.</span>
-            )}
-          </div>
-        </section>
-        {/* Histórico de Doações e Ranking de Doadores */}
-        <section className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Histórico de Doações</h2>
-            {loadingDoacoes ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
-              <ul className="space-y-2">
-                {doacoes.map(d => (
-                  <li key={d.id} className="border rounded p-2 flex flex-col">
-                    <span className="font-semibold">{d.quantidade} sementes</span>
-                    <span className="text-xs text-gray-500">{d.data ? new Date(d.data).toLocaleDateString() : ''}</span>
-                    {d.mensagem && <span className="text-sm text-gray-700">"{d.mensagem}"</span>}
-                    {d.doador && <span className="text-xs text-gray-400">Doador: {d.doador.nome}</span>}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma doação recebida ainda.</span>
-            )}
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Ranking de Doadores</h2>
-            {loadingRanking ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(ranking) && ranking.length > 0 ? (
-              <ol className="space-y-2 list-decimal list-inside">
-                {ranking.map((d, i) => (
-                  <li key={d.id} className="border rounded p-2 flex justify-between items-center">
-                    <span className="font-semibold">{d.nome}</span>
-                    <span className="text-green-700 font-bold">{d.total} sementes</span>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <span className="text-gray-400">Nenhum doador no ranking ainda.</span>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
 
-        {/* Atalhos e widgets */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h3 className="font-bold mb-2">Missões & Conquistas</h3>
-            <ul className="space-y-1">
-              <li><a href="#" className="text-sss-accent hover:underline">Ver missões</a></li>
-              <li><a href="#" className="text-sss-accent hover:underline">Ver conquistas</a></li>
-            </ul>
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h3 className="font-bold mb-2">Monetização</h3>
-            <ul className="space-y-1">
-              <li><a href="#" className="text-sss-accent hover:underline">Histórico de doações</a></li>
-              <li><a href="#" className="text-sss-accent hover:underline">Ranking de doadores</a></li>
-              <li><a href="#" className="text-sss-accent hover:underline">Metas de arrecadação</a></li>
-            </ul>
-          </div>
-        </section>
-        {/* Notificações e suporte */}
-        <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h3 className="font-bold mb-2">Notificações</h3>
-            {loadingNotificacoes ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
-              <ul className="space-y-2">
-                {notificacoes.map(n => (
-                  <li key={n.id} className="border rounded p-2">
-                    <span className="font-semibold">{n.titulo}</span>
-                    <div className="text-sm text-gray-500">{n.mensagem}</div>
-                    <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma notificação recente.</span>
-            )}
-          </div>
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h3 className="font-bold mb-2">Suporte & Feedback</h3>
-            <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
-              <textarea className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
-              <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded font-semibold" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
-              {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
-            </form>
-            <ul className="space-y-1">
-              <li><a href="#" className="text-red-700 hover:underline">Enviar sugestão</a></li>
-            </ul>
-          </div>
-        </section>
-        {/* Configuração de Redes Sociais */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-4">Configurar Redes Sociais</h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
-            </p>
-            <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">YouTube</label>
-                  <input
-                    type="url"
-                    placeholder="https://youtube.com/@seucanal"
-                    value={redesSociais.youtube}
-                    onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
-                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Twitch</label>
-                  <input
-                    type="url"
-                    placeholder="https://twitch.tv/seucanal"
-                    value={redesSociais.twitch}
-                    onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
-                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Instagram</label>
-                  <input
-                    type="url"
-                    placeholder="https://instagram.com/seuperfil"
-                    value={redesSociais.instagram}
-                    onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
-                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">TikTok</label>
-                  <input
-                    type="url"
-                    placeholder="https://tiktok.com/@seuperfil"
-                    value={redesSociais.tiktok}
-                    onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
-                    className="w-full border rounded px-3 py-2 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  disabled={salvandoRedes}
-                  className="bg-sss-accent text-white px-6 py-2 rounded font-semibold hover:bg-green-700 transition disabled:opacity-50"
-                >
-                  {salvandoRedes ? 'Salvando...' : 'Salvar Redes Sociais'}
-                </button>
-                {redesStatus === 'salvo' && (
-                  <span className="text-green-500 text-sm">Redes sociais salvas com sucesso!</span>
+          {/* Enquetes para Seguidores */}
+          <section className="mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-lg font-bold text-white mb-2">Enquetes para Seguidores</h2>
+                <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
+                  <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
+                  {novaEnquete.opcoes.map((op, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all flex-1" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
+                      {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
+                    </div>
+                  ))}
+                  <button type="button" className="text-sss-accent underline w-fit text-white" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
+                  <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded-lg font-semibold mt-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
+                  {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
+                </form>
+                {loadingEnquetes ? (
+                  <span className="text-gray-400">Carregando...</span>
+                ) : Array.isArray(enquetes) && enquetes.length > 0 ? (
+                  <ul className="space-y-2">
+                    {enquetes.map(e => (
+                      <li key={e.id} className="border rounded p-2">
+                        <div className="font-semibold text-white mb-1">{e.pergunta}</div>
+                        <ul className="ml-4">
+                          {e.opcoes.map(o => (
+                            <li key={o.id} className="flex justify-between items-center">
+                              <span className="text-gray-300">{o.texto}</span>
+                              <span className="text-xs text-gray-400">{o.votos} votos</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <span className="text-xs text-gray-400">{e.data ? new Date(e.data).toLocaleDateString() : ''}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="text-gray-400">Nenhuma enquete criada ainda.</span>
                 )}
               </div>
-            </form>
-          </div>
-        </section>
-        {/* Enquetes para Seguidores */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Enquetes para Seguidores</h2>
-            <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
-              <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light placeholder-gray-400" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
-              {novaEnquete.opcoes.map((op, i) => (
-                <div key={i} className="flex gap-2 items-center">
-                  <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1 placeholder-gray-400" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
-                  {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
-                </div>
-              ))}
-              <button type="button" className="text-sss-accent underline w-fit" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
-              <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded font-semibold mt-2" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
-              {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
-            </form>
-            {loadingEnquetes ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(enquetes) && enquetes.length > 0 ? (
-              <ul className="space-y-2">
-                {enquetes.map(e => (
-                  <li key={e.id} className="border rounded p-2">
-                    <div className="font-semibold mb-1">{e.pergunta}</div>
-                    <ul className="ml-4">
-                      {e.opcoes.map(o => (
-                        <li key={o.id} className="flex justify-between items-center">
-                          <span>{o.texto}</span>
-                          <span className="text-xs text-gray-500">{o.votos} votos</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <span className="text-xs text-gray-400">{e.data ? new Date(e.data).toLocaleDateString() : ''}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma enquete criada ainda.</span>
-            )}
-          </div>
-        </section>
-        {/* Caixa de Perguntas/Recados dos Fãs */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white">
-            <h2 className="text-lg font-bold mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
-            {loadingRecados ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(recados) && recados.length > 0 ? (
-              <ul className="space-y-2">
-                {recados.map(r => (
-                  <li key={r.id} className="border rounded p-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">{r.usuarioNome}</span>
-                      <span className="text-xs text-gray-400">{r.data ? new Date(r.data).toLocaleDateString() : ''}</span>
-                    </div>
-                    <div className="text-gray-700 mb-1">{r.mensagem}</div>
-                    {r.resposta ? (
-                      <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
-                    ) : respondendo === r.id ? (
-                      <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
-                        <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1 placeholder-gray-400" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
-                        <button type="submit" className="bg-green-600 text-white px-3 py-1 rounded font-semibold" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
-                        <button type="button" className="bg-gray-300 px-3 py-1 rounded" onClick={() => setRespondendo(null)}>Cancelar</button>
-                        {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
-                      </form>
-                    ) : (
-                      <button className="text-sss-accent hover:underline text-sm mt-1" onClick={() => setRespondendo(r.id)}>Responder</button>
-                    )}
-                    {r.resposta && (
-                      <div className="flex gap-2 mt-2">
-                        <button 
-                          onClick={() => handleTogglePublico(r.id, !r.publico)}
-                          disabled={toggleStatus[r.id] === 'alterando'}
-                          className={`text-xs px-2 py-1 rounded ${
-                            r.publico 
-                              ? 'bg-green-600 text-white' 
-                              : 'bg-gray-600 text-white'
-                          } hover:opacity-80 transition disabled:opacity-50`}
-                        >
-                          {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
-                           toggleStatus[r.id] === 'alterado' ? 'Alterado!' :
-                           r.publico ? 'Público' : 'Privado'}
-                        </button>
-                        {toggleStatus[r.id] === 'erro' && (
-                          <span className="text-red-500 text-xs">Erro!</span>
+            </div>
+          </section>
+
+          {/* Caixa de Perguntas/Recados dos Fãs */}
+          <section className="mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-lg font-bold text-white mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
+                {loadingRecados ? (
+                  <span className="text-gray-400">Carregando...</span>
+                ) : Array.isArray(recados) && recados.length > 0 ? (
+                  <ul className="space-y-2">
+                    {recados.map(r => (
+                      <li key={r.id} className="border rounded p-2">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-white">{r.usuarioNome}</span>
+                          <span className="text-xs text-gray-400">{r.data ? new Date(r.data).toLocaleDateString() : ''}</span>
+                        </div>
+                        <div className="text-gray-300 mb-1">{r.mensagem}</div>
+                        {r.resposta ? (
+                          <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
+                        ) : respondendo === r.id ? (
+                          <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
+                            <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all flex-1" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
+                            <button type="submit" className="bg-green-600 text-white px-3 py-1 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
+                            <button type="button" className="bg-gray-600 text-white px-3 py-1 rounded-lg transition-colors" onClick={() => setRespondendo(null)}>Cancelar</button>
+                            {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
+                          </form>
+                        ) : (
+                          <button className="text-sss-accent hover:underline text-sm mt-1 text-white" onClick={() => setRespondendo(r.id)}>Responder</button>
                         )}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhum recado recebido ainda.</span>
-            )}
-          </div>
-        </section>
-        {/* Geração de Links Personalizados para Divulgação */}
-        <section className="mb-8">
-          <div className="bg-sss-medium rounded-lg p-4 border border-sss-light flex flex-col md:flex-row items-center gap-6 text-sss-white">
-            <div className="flex-1">
-              <h2 className="text-lg font-bold mb-2">Link Personalizado para Divulgação</h2>
-              {linkDivulgacao ? (
-                <div className="flex items-center gap-2 mb-2">
-                  <input className="border rounded px-2 py-1 bg-sss-dark text-sss-white border-sss-light flex-1" value={linkDivulgacao} readOnly />
-                  <button className="bg-sss-accent text-white px-3 py-1 rounded font-semibold" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
-                </div>
-              ) : (
-                <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
+                        {r.resposta && (
+                          <div className="flex gap-2 mt-2">
+                            <button 
+                              onClick={() => handleTogglePublico(r.id, !r.publico)}
+                              disabled={toggleStatus[r.id] === 'alterando'}
+                              className={`text-xs px-2 py-1 rounded-lg transition-colors ${
+                                r.publico 
+                                  ? 'bg-green-600 text-white' 
+                                  : 'bg-gray-600 text-white'
+                              } hover:opacity-80 disabled:opacity-50`}
+                            >
+                              {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
+                               toggleStatus[r.id] === 'alterado' ? 'Alterado!' :
+                               r.publico ? 'Público' : 'Privado'}
+                            </button>
+                            {toggleStatus[r.id] === 'erro' && (
+                              <span className="text-red-500 text-xs">Erro!</span>
+                            )}
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="text-gray-400">Nenhum recado recebido ainda.</span>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Geração de Links Personalizados para Divulgação */}
+          <section className="mb-8">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 flex flex-col md:flex-row items-center gap-6 p-6 text-white">
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-white mb-2">Link Personalizado para Divulgação</h2>
+                {linkDivulgacao ? (
+                  <div className="flex items-center gap-2 mb-2">
+                    <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white flex-1" value={linkDivulgacao} readOnly />
+                    <button className="bg-sss-accent text-white px-3 py-1 rounded-lg font-semibold transition-colors" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
+                  </div>
+                ) : (
+                  <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
+                )}
+              </div>
+              {linkDivulgacao && (
+                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(linkDivulgacao)}`} alt="QR Code" className="rounded" />
               )}
             </div>
-            {linkDivulgacao && (
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(linkDivulgacao)}`} alt="QR Code" className="rounded" />
-            )}
-          </div>
-        </section>
+          </section>
 
-      </main>
+        </main>
+      </div>
     </>
   );
 } 
