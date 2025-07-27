@@ -130,8 +130,8 @@ export default function PainelCriador() {
 
   // Estatísticas calculadas
   const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
-  const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).curtidas || 0, 0) : 0;
-  const totalComentarios = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).comentarios || 0, 0) : 0;
+  const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).likes || 0, 0) : 0;
+  const totalComentarios = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + ((c as any).comentarios?.length || 0), 0) : 0;
   const totalCompartilhamentos = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).compartilhamentos || 0, 0) : 0;
 
   function handleFixarConteudo(id: string, fixar: boolean) {
@@ -150,7 +150,13 @@ export default function PainelCriador() {
     async function fetchConteudos() {
       setLoading(true);
       try {
-        const res = await fetch('/api/conteudos');
+        const user = auth.getUser();
+        if (!user) {
+          setConteudos([]);
+          return;
+        }
+        
+        const res = await fetch(`/api/conteudos?criadorId=${user.id}`);
         const data = await res.json();
         setConteudos(Array.isArray(data) ? data : (data?.conteudos || []));
       } catch (e) {
