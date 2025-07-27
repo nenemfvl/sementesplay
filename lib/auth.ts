@@ -17,7 +17,7 @@ const defaultUser: User = {
   id: '1',
   nome: 'Usuário Teste',
   email: 'teste@sementesplay.com',
-  tipo: 'doador',
+  tipo: 'usuario',
   sementes: 1000,
   nivel: '5',
   pontuacao: 500,

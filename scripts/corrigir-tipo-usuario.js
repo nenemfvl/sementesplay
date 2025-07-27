@@ -32,11 +32,11 @@ async function corrigirTipoUsuario() {
     console.log(`  Tipo atual: ${candidatura.usuario.tipo}`)
     console.log(`  Nível atual: ${candidatura.usuario.nivel}`)
     
-    // Corrigir tipo para 'comum'
+    // Corrigir tipo para 'usuario'
     const usuarioAtualizado = await prisma.usuario.update({
       where: { id: candidatura.usuarioId },
       data: { 
-        tipo: 'comum'
+        tipo: 'usuario'
       },
       select: {
         id: true,
@@ -52,8 +52,8 @@ async function corrigirTipoUsuario() {
     console.log(`  Novo tipo: ${usuarioAtualizado.tipo}`)
     console.log(`  Nível: ${usuarioAtualizado.nivel}`)
     
-    console.log('\n✅ Tipo do usuário corrigido para "comum"!')
-    console.log('Agora o usuário mantém o tipo "comum" e apenas o nível determina as permissões.')
+    console.log('\n✅ Tipo do usuário corrigido para "usuario"!')
+    console.log('Agora o usuário mantém o tipo "usuario" e apenas o nível determina as permissões.')
     
   } catch (error) {
     console.error('❌ Erro:', error)

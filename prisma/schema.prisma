@@ -15,7 +15,7 @@ model Usuario {
   nome            String
   email           String   @unique
   senha           String
-  tipo            String   @default("comum") // comum, criador, parceiro
+  tipo            String   @default("usuario") // usuario, criador, parceiro
   sementes        Int      @default(0)
   nivel           String   @default("comum") // comum, parceiro, supremo, criador-comum, criador-parceiro, criador-supremo
   pontuacao       Int      @default(0)
