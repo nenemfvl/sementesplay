@@ -11,7 +11,9 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   ArrowLeftIcon,
-  StarIcon
+  StarIcon,
+  ClockIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
@@ -36,6 +38,13 @@ interface CandidaturaData {
   disponibilidade: string
 }
 
+interface CandidaturaExistente {
+  id: string
+  status: 'pendente' | 'aprovada' | 'rejeitada'
+  dataCandidatura: string
+  observacoes?: string
+}
+
 export default function CandidaturaCriador() {
   const [user, setUser] = useState<User | null>(null)
   const [formData, setFormData] = useState<CandidaturaData>({
@@ -54,8 +63,8 @@ export default function CandidaturaCriador() {
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [portfolioLinks, setPortfolioLinks] = useState([''])
-
-
+  const [candidaturaExistente, setCandidaturaExistente] = useState<CandidaturaExistente | null>(null)
+  const [verificandoCandidatura, setVerificandoCandidatura] = useState(true)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -70,7 +79,32 @@ export default function CandidaturaCriador() {
       nome: currentUser.nome,
       email: currentUser.email
     }))
+
+    // Verificar se já existe uma candidatura
+    verificarCandidaturaExistente(currentUser.id)
   }, [])
+
+  const verificarCandidaturaExistente = async (userId: string) => {
+    try {
+      const response = await fetch(`/api/criadores/candidaturas/status?usuarioId=${userId}`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.candidatura) {
+          setCandidaturaExistente(data.candidatura)
+          
+          // Se foi aprovada, redirecionar para o painel criador
+          if (data.candidatura.status === 'aprovada') {
+            window.location.href = '/painel-criador'
+            return
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao verificar candidatura:', error)
+    } finally {
+      setVerificandoCandidatura(false)
+    }
+  }
 
   const handleInputChange = (field: keyof CandidaturaData, value: any) => {
     setFormData(prev => ({
@@ -412,6 +446,116 @@ export default function CandidaturaCriador() {
     </div>
   )
 
+  const renderStatusCandidatura = () => {
+    if (!candidaturaExistente) return null
+
+    const getStatusIcon = () => {
+      switch (candidaturaExistente.status) {
+        case 'pendente':
+          return <ClockIcon className="w-8 h-8 text-yellow-500" />
+        case 'aprovada':
+          return <CheckCircleIcon className="w-8 h-8 text-green-500" />
+        case 'rejeitada':
+          return <XCircleIcon className="w-8 h-8 text-red-500" />
+        default:
+          return <ClockIcon className="w-8 h-8 text-gray-500" />
+      }
+    }
+
+    const getStatusText = () => {
+      switch (candidaturaExistente.status) {
+        case 'pendente':
+          return 'Candidatura em Análise'
+        case 'aprovada':
+          return 'Candidatura Aprovada!'
+        case 'rejeitada':
+          return 'Candidatura Rejeitada'
+        default:
+          return 'Status Desconhecido'
+      }
+    }
+
+    const getStatusDescription = () => {
+      switch (candidaturaExistente.status) {
+        case 'pendente':
+          return 'Sua candidatura está sendo analisada pela nossa equipe. Você receberá uma notificação em breve.'
+        case 'aprovada':
+          return 'Parabéns! Sua candidatura foi aprovada. Você agora tem acesso ao painel criador.'
+        case 'rejeitada':
+          return candidaturaExistente.observacoes || 'Infelizmente sua candidatura não foi aprovada. Você pode tentar novamente.'
+        default:
+          return ''
+      }
+    }
+
+    const getActionButton = () => {
+      switch (candidaturaExistente.status) {
+        case 'pendente':
+          return (
+            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+              <p className="text-yellow-200 text-sm">
+                Aguarde a análise da nossa equipe. Você será notificado por email.
+              </p>
+            </div>
+          )
+        case 'aprovada':
+          return (
+            <Link href="/painel-criador" className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+              <CheckCircleIcon className="w-5 h-5 mr-2" />
+              Acessar Painel Criador
+            </Link>
+          )
+        case 'rejeitada':
+          return (
+            <div className="space-y-4">
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                <p className="text-red-200 text-sm">
+                  {candidaturaExistente.observacoes || 'Sua candidatura não foi aprovada. Revise os critérios e tente novamente.'}
+                </p>
+              </div>
+              <button 
+                onClick={() => setCandidaturaExistente(null)}
+                className="inline-flex items-center px-6 py-3 bg-sss-accent hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+              >
+                Tentar Novamente
+              </button>
+            </div>
+          )
+        default:
+          return null
+      }
+    }
+
+    return (
+      <div className="bg-sss-medium rounded-lg p-8 border border-sss-light">
+        <div className="text-center space-y-4">
+          {getStatusIcon()}
+          <h2 className="text-2xl font-bold text-sss-white">{getStatusText()}</h2>
+          <p className="text-gray-300 max-w-md mx-auto">{getStatusDescription()}</p>
+          
+          <div className="text-sm text-gray-400">
+            Candidatura enviada em: {new Date(candidaturaExistente.dataCandidatura).toLocaleDateString('pt-BR')}
+          </div>
+          
+          <div className="mt-6">
+            {getActionButton()}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (verificandoCandidatura) {
+    return (
+      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sss-accent mx-auto mb-4"></div>
+          <p className="text-sss-white">Verificando candidatura...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen bg-sss-dark flex items-center justify-center">
@@ -493,12 +637,15 @@ export default function CandidaturaCriador() {
               </div>
             </div>
 
-            {/* Form */}
-            <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-              {currentStep === 1 && renderStep1()}
-              {currentStep === 2 && renderStep2()}
-              {currentStep === 3 && renderStep3()}
-              {currentStep === 4 && renderStep4()}
+            {/* Status da Candidatura Existente ou Formulário */}
+            {candidaturaExistente ? (
+              renderStatusCandidatura()
+            ) : (
+              <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                {currentStep === 1 && renderStep1()}
+                {currentStep === 2 && renderStep2()}
+                {currentStep === 3 && renderStep3()}
+                {currentStep === 4 && renderStep4()}
 
               {/* Navigation */}
               <div className="flex justify-between mt-8">

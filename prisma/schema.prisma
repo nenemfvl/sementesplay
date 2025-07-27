@@ -15,9 +15,9 @@ model Usuario {
   nome            String
   email           String   @unique
   senha           String
-  tipo            String   @default("usuario") // usuario, criador, parceiro
+  tipo            String   @default("usuario") // sempre "usuario" (nunca muda)
   sementes        Int      @default(0)
-  nivel           String   @default("comum") // comum, parceiro, supremo, criador-comum, criador-parceiro, criador-supremo
+  nivel           String   @default("comum") // comum, criador-iniciante, criador-comum, criador-parceiro, criador-supremo, parceiro, 5
   pontuacao       Int      @default(0)
   dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
