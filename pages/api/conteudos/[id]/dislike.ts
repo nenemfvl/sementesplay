@@ -10,71 +10,81 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { id } = req.query
-    const token = req.headers.authorization?.replace('Bearer ', '')
+    const { userId } = req.body
 
-    if (!token) {
-      return res.status(401).json({ error: 'Token não fornecido' })
+    if (!id) {
+      return res.status(400).json({ error: 'ID do conteúdo é obrigatório' })
     }
 
-    // Buscar usuário pelo token
-    const usuario = await prisma.usuario.findUnique({
-      where: { id: token }
-    })
-
-    if (!usuario) {
-      return res.status(401).json({ error: 'Usuário não encontrado' })
+    if (!userId) {
+      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
     }
 
-    // Verificar se já existe interação de dislike
-    const interacaoExistente = await prisma.interacaoConteudo.findUnique({
+    // Verificar se o usuário já deu dislike
+    const dislikeExistente = await prisma.interacaoConteudo.findUnique({
       where: {
         conteudoId_usuarioId_tipo: {
-          conteudoId: id as string,
-          usuarioId: usuario.id,
+          conteudoId: String(id),
+          usuarioId: userId,
           tipo: 'dislike'
         }
       }
     })
 
-    if (interacaoExistente) {
-      return res.status(200).json({ 
-        message: 'Dislike já registrado',
-        dislikes: 0 
-      })
-    }
+    let disliked = false
+    let conteudo
 
-    // Criar interação e incrementar dislikes em uma transação
-    const resultado = await prisma.$transaction(async (tx) => {
-      // Criar interação
-      await tx.interacaoConteudo.create({
-        data: {
-          conteudoId: id as string,
-          usuarioId: usuario.id,
-          tipo: 'dislike',
-          data: new Date()
+    if (dislikeExistente) {
+      // Remover dislike
+      await prisma.interacaoConteudo.delete({
+        where: {
+          conteudoId_usuarioId_tipo: {
+            conteudoId: String(id),
+            usuarioId: userId,
+            tipo: 'dislike'
+          }
         }
       })
 
-      // Incrementar dislikes no conteúdo
-      const conteudoAtualizado = await tx.conteudo.update({
-        where: { id: id as string },
+      // Decrementar dislikes
+      conteudo = await prisma.conteudo.update({
+        where: { id: String(id) },
+        data: {
+          dislikes: {
+            decrement: 1
+          }
+        }
+      })
+    } else {
+      // Adicionar dislike
+      await prisma.interacaoConteudo.create({
+        data: {
+          conteudoId: String(id),
+          usuarioId: userId,
+          tipo: 'dislike'
+        }
+      })
+
+      disliked = true
+
+      // Incrementar dislikes
+      conteudo = await prisma.conteudo.update({
+        where: { id: String(id) },
         data: {
           dislikes: {
             increment: 1
           }
         }
       })
+    }
 
-      return conteudoAtualizado
-    })
-
-    res.status(200).json({ 
-      message: 'Dislike registrado com sucesso',
-      dislikes: resultado.dislikes 
+    return res.status(200).json({
+      disliked,
+      dislikes: conteudo.dislikes
     })
 
   } catch (error) {
-    console.error('Erro ao registrar dislike:', error)
-    res.status(500).json({ error: 'Erro interno do servidor' })
+    console.error('Erro ao processar dislike:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

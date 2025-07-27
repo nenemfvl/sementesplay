@@ -96,7 +96,7 @@ export default function CriadorPerfil() {
   const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
   const [enviandoPergunta, setEnviandoPergunta] = useState(false)
   const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
-  const [conteudosInteracao, setConteudosInteracao] = useState<Record<string, { curtido: boolean, visualizado: boolean }>>({})
+  const [conteudosInteracao, setConteudosInteracao] = useState<Record<string, { curtido: boolean, visualizado: boolean, disliked: boolean }>>({})
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -307,6 +307,41 @@ export default function CriadorPerfil() {
       }
     } catch (error) {
       console.error('Erro ao curtir/descurtir:', error)
+    }
+  }
+
+  const handleDislike = async (conteudoId: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Evitar que o clique propague para o card
+    if (!user) return
+
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/dislike`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ userId: user.id })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Atualizar estado local
+        setConteudosInteracao(prev => ({
+          ...prev,
+          [conteudoId]: { ...prev[conteudoId], disliked: data.disliked }
+        }))
+
+        // Atualizar contador de dislikes
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, dislikes: data.dislikes }
+            : conteudo
+        ))
+      }
+    } catch (error) {
+      console.error('Erro ao dar/remover dislike:', error)
     }
   }
 
@@ -599,10 +634,20 @@ export default function CriadorPerfil() {
                                 }`} />
                                 {formatarNumero(conteudo.curtidas)}
                               </button>
-                              <span className="flex items-center">
-                                <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
-                                {formatarNumero(conteudo.comentarios)}
-                              </span>
+                                                             <button
+                                 onClick={(e) => handleDislike(conteudo.id, e)}
+                                 className={`flex items-center transition-colors ${
+                                   conteudosInteracao[conteudo.id]?.disliked 
+                                     ? 'text-red-500' 
+                                     : 'text-gray-400 hover:text-red-500'
+                                 }`}
+                                 title={conteudosInteracao[conteudo.id]?.disliked ? 'Remover dislike' : 'Dislike'}
+                               >
+                                 <HandThumbDownIcon className={`w-4 h-4 mr-1 ${
+                                   conteudosInteracao[conteudo.id]?.disliked ? 'fill-current' : ''
+                                 }`} />
+                                 {formatarNumero(conteudo.dislikes)}
+                               </button>
                             </div>
                             <span>{formatarData(conteudo.data)}</span>
                           </div>
