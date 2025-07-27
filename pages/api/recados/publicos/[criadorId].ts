@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const recadosFormatados = recadosPublicos.map((recado: any) => ({
       id: recado.id,
-      pergunta: recado.titulo,
+      pergunta: recado.mensagem,
       resposta: recado.resposta,
       dataResposta: recado.dataResposta,
       remetenteNome: recado.remetente.nome
