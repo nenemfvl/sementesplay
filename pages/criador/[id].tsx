@@ -95,6 +95,7 @@ export default function CriadorPerfil() {
   const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
   const [enviandoPergunta, setEnviandoPergunta] = useState(false)
   const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
+  const [conteudosInteracao, setConteudosInteracao] = useState<{[key: string]: { curtido: boolean, visualizado: boolean }>>({})
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -227,6 +228,73 @@ export default function CriadorPerfil() {
       month: '2-digit',
       year: 'numeric'
     })
+  }
+
+  const handleVisualizar = async (conteudoId: string) => {
+    if (!user) return
+
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ userId: user.id })
+      })
+
+      if (response.ok) {
+        // Atualizar estado local
+        setConteudosInteracao(prev => ({
+          ...prev,
+          [conteudoId]: { ...prev[conteudoId], visualizado: true }
+        }))
+
+        // Atualizar contador de visualizações
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, visualizacoes: conteudo.visualizacoes + 1 }
+            : conteudo
+        ))
+      }
+    } catch (error) {
+      console.error('Erro ao registrar visualização:', error)
+    }
+  }
+
+  const handleCurtir = async (conteudoId: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Evitar que o clique propague para o card
+    if (!user) return
+
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/curtir`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ userId: user.id })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Atualizar estado local
+        setConteudosInteracao(prev => ({
+          ...prev,
+          [conteudoId]: { ...prev[conteudoId], curtido: data.curtido }
+        }))
+
+        // Atualizar contador de curtidas
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, curtidas: data.curtidas }
+            : conteudo
+        ))
+      }
+    } catch (error) {
+      console.error('Erro ao curtir/descurtir:', error)
+    }
   }
 
   if (loading) {
@@ -450,11 +518,14 @@ export default function CriadorPerfil() {
                 ) : (
                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      {conteudos.map((conteudo) => (
-                       <div 
-                         key={conteudo.id} 
-                         className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light cursor-pointer hover:border-sss-accent transition-all duration-200 hover:scale-[1.02] group"
-                         onClick={() => window.open(conteudo.url, '_blank')}
-                       >
+                                               <div 
+                          key={conteudo.id} 
+                          className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light cursor-pointer hover:border-sss-accent transition-all duration-200 hover:scale-[1.02] group"
+                          onClick={() => {
+                            handleVisualizar(conteudo.id)
+                            window.open(conteudo.url, '_blank')
+                          }}
+                        >
                          {/* Thumbnail */}
                          <div className="relative h-48 bg-sss-medium">
                            {conteudo.thumbnail && conteudo.thumbnail !== '/thumbnails/default.jpg' ? (
@@ -496,20 +567,30 @@ export default function CriadorPerfil() {
                              </span>
                            </div>
                            <div className="flex items-center justify-between text-sm text-gray-400">
-                             <div className="flex items-center space-x-4">
-                               <span className="flex items-center">
-                                 <EyeIcon className="w-4 h-4 mr-1" />
-                                 {formatarNumero(conteudo.visualizacoes)}
-                               </span>
-                               <span className="flex items-center">
-                                 <HandThumbUpIcon className="w-4 h-4 mr-1" />
-                                 {formatarNumero(conteudo.curtidas)}
-                               </span>
-                               <span className="flex items-center">
-                                 <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
-                                 {formatarNumero(conteudo.comentarios)}
-                               </span>
-                             </div>
+                                                         <div className="flex items-center space-x-4">
+                              <span className="flex items-center">
+                                <EyeIcon className="w-4 h-4 mr-1" />
+                                {formatarNumero(conteudo.visualizacoes)}
+                              </span>
+                              <button
+                                onClick={(e) => handleCurtir(conteudo.id, e)}
+                                className={`flex items-center transition-colors ${
+                                  conteudosInteracao[conteudo.id]?.curtido 
+                                    ? 'text-sss-accent' 
+                                    : 'text-gray-400 hover:text-sss-accent'
+                                }`}
+                                title={conteudosInteracao[conteudo.id]?.curtido ? 'Descurtir' : 'Curtir'}
+                              >
+                                <HandThumbUpIcon className={`w-4 h-4 mr-1 ${
+                                  conteudosInteracao[conteudo.id]?.curtido ? 'fill-current' : ''
+                                }`} />
+                                {formatarNumero(conteudo.curtidas)}
+                              </button>
+                              <span className="flex items-center">
+                                <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
+                                {formatarNumero(conteudo.comentarios)}
+                              </span>
+                            </div>
                              <span>{formatarData(conteudo.data)}</span>
                            </div>
                          </div>
