@@ -30,7 +30,8 @@ interface Criador {
   nivel: string
   avatar?: string
   bio?: string
-  sementes: number
+  sementes: number // Sementes disponíveis
+  sementesRecebidas?: number // Total de sementes recebidas em doações
   apoiadores: number
   doacoes: number
   posicao: number
@@ -261,7 +262,7 @@ export default function PerfilCriador() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-sss-accent">{criador.sementes.toLocaleString()}</div>
-                      <div className="text-gray-400">Sementes</div>
+                      <div className="text-gray-400">Sementes Disponíveis</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-sss-accent">{criador.apoiadores}</div>

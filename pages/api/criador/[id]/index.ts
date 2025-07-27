@@ -109,7 +109,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             nome: true,
             email: true,
             avatarUrl: true,
-            nivel: true
+            nivel: true,
+            sementes: true // Adicionando sementes do usuário
           }
         }
       }
@@ -126,7 +127,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               nome: true,
               email: true,
               avatarUrl: true,
-              nivel: true
+              nivel: true,
+              sementes: true // Adicionando sementes do usuário
             }
           }
         }
@@ -154,10 +156,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('API criador: Doações encontradas:', doacoes.length)
 
     // Calcular estatísticas
-    const totalSementes = doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
+    const totalSementesRecebidas = doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
     const numeroDoacoes = doacoes.length
+    const sementesDisponiveis = criador.usuario.sementes // Saldo real do usuário
 
-    console.log('API criador: Estatísticas calculadas - Sementes:', totalSementes, 'Doações:', numeroDoacoes)
+    console.log('API criador: Estatísticas calculadas - Sementes Recebidas:', totalSementesRecebidas, 'Sementes Disponíveis:', sementesDisponiveis, 'Doações:', numeroDoacoes)
 
     // Buscar posição no ranking de forma mais simples
     const ranking = await prisma.criador.findMany({
@@ -190,7 +193,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       nivel: criador.usuario.nivel,
       avatar: criador.usuario.avatarUrl,
       bio: criador.bio,
-      sementes: totalSementes,
+      sementes: sementesDisponiveis, // Usando sementes disponíveis do usuário
+      sementesRecebidas: totalSementesRecebidas, // Total de sementes recebidas em doações
       apoiadores: criador.apoiadores || 0,
       doacoes: numeroDoacoes,
       posicao: posicao,

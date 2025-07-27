@@ -276,7 +276,7 @@ export default function Buscar() {
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                               <p className="text-sss-accent font-semibold">{criador.sementes.toLocaleString()}</p>
-                              <p className="text-gray-400">Sementes</p>
+                              <p className="text-gray-400">Sementes Disponíveis</p>
                             </div>
                             <div>
                               <p className="text-sss-accent font-semibold">{criador.apoiadores}</p>

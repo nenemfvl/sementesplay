@@ -324,7 +324,7 @@ export default function Perfil() {
 
                 <div className="text-right">
                   <div className="text-3xl font-bold text-sss-accent">{user.sementes}</div>
-                  <div className="text-sm text-gray-400">Sementes</div>
+                  <div className="text-sm text-gray-400">Sementes Disponíveis</div>
                 </div>
               </div>
             </div>

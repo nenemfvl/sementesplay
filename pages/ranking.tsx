@@ -545,7 +545,7 @@ export default function Ranking() {
                                 <>
                                   <div className="text-center">
                                     <p className="text-sss-accent font-bold text-lg">{formatarNumero(item.sementes)}</p>
-                                    <p className="text-gray-400 text-sm">Sementes</p>
+                                    <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
                                   </div>
                                   <div className="text-center">
                                     <p className="text-sss-white font-semibold">{formatarNumero(item.doacoes)}</p>
@@ -632,7 +632,7 @@ export default function Ranking() {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="text-center">
                           <p className="text-sss-accent font-bold text-lg">{formatarNumero(selectedItem.sementes)}</p>
-                          <p className="text-gray-400">Sementes</p>
+                          <p className="text-gray-400">Sementes Disponíveis</p>
                         </div>
                         <div className="text-center">
                           <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.doacoes)}</p>
