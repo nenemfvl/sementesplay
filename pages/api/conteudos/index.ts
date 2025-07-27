@@ -70,15 +70,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           url: conteudo.url,
           thumbnail: thumbnail || '/thumbnails/default.jpg',
           visualizacoes: conteudo.visualizacoes,
-          curtidas: conteudo.curtidas,
-          dislikes: (conteudo as any).dislikes || 0,
-          data: conteudo.dataPublicacao.toISOString(),
+          likes: conteudo.curtidas,
+          dataCriacao: conteudo.dataPublicacao,
           criador: {
             id: conteudo.criador.usuario.id,
             nome: conteudo.criador.usuario.nome,
             email: conteudo.criador.usuario.email
           },
-          comentarios: conteudo.comentarios.length,
+          comentarios: conteudo.comentarios.map(comentario => ({
+            id: comentario.id,
+            texto: comentario.texto,
+            usuario: comentario.usuario.nome,
+            dataCriacao: comentario.data
+          })),
           tags: [], // Mockado por enquanto
           categoria: conteudo.categoria
         }

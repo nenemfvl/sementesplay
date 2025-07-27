@@ -744,8 +744,8 @@ export default function PainelCriador() {
                 >
                   Cancelar
                 </button>
-              </div>
-            </form>
+            </div>
+          </form>
           </div>
         </div>
       )}
@@ -778,19 +778,19 @@ export default function PainelCriador() {
         </div>
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Estatísticas principais */}
+        {/* Estatísticas principais */}
           <section className="mb-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:bg-blue-500/30 transition-all">
                     <EyeIcon className="w-6 h-6 text-blue-400" />
-                  </div>
+          </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-sss-white">{!loading ? totalVisualizacoes.toLocaleString() : '--'}</div>
                     <div className="text-sm text-blue-300">Visualizações</div>
-                  </div>
-                </div>
+          </div>
+          </div>
                 <div className="h-1 bg-blue-500/20 rounded-full overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full" style={{width: `${Math.min((totalVisualizacoes / 1000) * 100, 100)}%`}}></div>
                 </div>
@@ -840,25 +840,25 @@ export default function PainelCriador() {
                   <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full" style={{width: `${Math.min((totalCompartilhamentos / 100) * 100, 100)}%`}}></div>
                 </div>
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Gestão de Conteúdos */}
-          <section className="mb-8">
+        {/* Gestão de Conteúdos */}
+        <section className="mb-8">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6 border-b border-sss-light">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                       <VideoCameraIcon className="w-5 h-5 text-sss-white" />
-                    </div>
+          </div>
                     <div>
                       <h2 className="text-xl font-bold text-sss-white">Seus Conteúdos</h2>
                       <p className="text-sm text-gray-400">Gerencie seus vídeos, lives e posts</p>
                     </div>
                   </div>
                   
-                  {categorias.length > 0 && (
+          {categorias.length > 0 && (
                     <div className="flex items-center space-x-3">
                       <span className="text-sm text-gray-300">Filtrar:</span>
                       <select 
@@ -867,21 +867,21 @@ export default function PainelCriador() {
                         onChange={e => setCategoriaFiltro(e.target.value)}
                       >
                         <option value="">Todas as categorias</option>
-                        {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                      </select>
-                    </div>
-                  )}
+                {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+            </div>
+          )}
                 </div>
               </div>
 
               {/* Conteúdo fixado */}
-              {conteudoFixado && (
+          {conteudoFixado && (
                 <div className="mx-6 mt-6 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                                              <MapPinIcon className="w-5 h-5 text-yellow-400" />
                       <span className="font-semibold text-lg text-sss-white">Conteúdo Fixado</span>
-                    </div>
+              </div>
                     <button 
                       className="text-yellow-400 hover:text-yellow-300 text-sm underline transition-colors" 
                       onClick={() => handleFixarConteudo(conteudoFixado.id, false)}
@@ -893,23 +893,23 @@ export default function PainelCriador() {
                   <div className="text-xs text-gray-400">
                     {conteudoFixado.dataPublicacao ? new Date(conteudoFixado.dataPublicacao).toLocaleDateString() : ''}
                   </div>
-                  {getPreview((conteudoFixado as any).url)}
-                </div>
-              )}
+              {getPreview((conteudoFixado as any).url)}
+            </div>
+          )}
 
               <div className="p-6">
-                {loading ? (
+            {loading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
                     <span className="ml-3 text-gray-400">Carregando conteúdos...</span>
                   </div>
-                ) : conteudos && conteudos.length > 0 ? (
+            ) : conteudos && conteudos.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {conteudosFiltrados.map((c) => {
-                      const yt = getYoutubeInfo((c as any).url);
-                      return (
+                {conteudosFiltrados.map((c) => {
+                  const yt = getYoutubeInfo((c as any).url);
+                  return (
                         <div key={c.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
-                          {yt ? (
+                      {yt ? (
                             <div className="relative">
                               <img src={yt.thumbnail} alt={c.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
                               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -968,12 +968,12 @@ export default function PainelCriador() {
                                 </a>
                               )}
                             </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
                   <div className="text-center py-12">
                     <VideoCameraIcon className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-400 mb-2">Nenhum conteúdo cadastrado</h3>
@@ -988,12 +988,12 @@ export default function PainelCriador() {
                   </div>
                 )}
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
           {/* Grid de seções */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Missões e Conquistas */}
+        {/* Missões e Conquistas */}
             <div className="space-y-6">
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
                 <div className="p-6 border-b border-sss-light">
@@ -1008,14 +1008,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-                  {loadingMissoes ? (
+            {loadingMissoes ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-                  ) : Array.isArray(missoes) && missoes.length > 0 ? (
+            ) : Array.isArray(missoes) && missoes.length > 0 ? (
                     <div className="space-y-3">
-                      {missoes.map(m => (
+                {missoes.map(m => (
                         <div key={m.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="font-semibold text-sss-white mb-2">{m.titulo}</div>
                           <div className="text-sm text-gray-400">{m.descricao}</div>
@@ -1027,8 +1027,8 @@ export default function PainelCriador() {
                       <TrophyIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhuma missão disponível no momento</p>
                     </div>
-                  )}
-                </div>
+            )}
+          </div>
               </div>
 
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
@@ -1044,14 +1044,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-                  {loadingConquistas ? (
+            {loadingConquistas ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-                  ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
+            ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
                     <div className="space-y-3">
-                      {conquistas.map(c => (
+                {conquistas.map(c => (
                         <div key={c.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="font-semibold text-sss-white mb-2">{c.titulo}</div>
                           <div className="text-sm text-gray-400">{c.descricao}</div>
@@ -1063,8 +1063,8 @@ export default function PainelCriador() {
                       <TrophyIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhuma conquista desbloqueada ainda</p>
                     </div>
-                  )}
-                </div>
+            )}
+          </div>
               </div>
             </div>
 
@@ -1083,14 +1083,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-                  {loadingDoacoes ? (
+            {loadingDoacoes ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-                  ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
+            ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {doacoes.map(d => (
+                {doacoes.map(d => (
                         <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-bold text-green-400">{d.quantidade} sementes</span>
@@ -1112,8 +1112,8 @@ export default function PainelCriador() {
                       <HeartIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhuma doação recebida ainda</p>
                     </div>
-                  )}
-                </div>
+            )}
+          </div>
               </div>
 
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
@@ -1129,14 +1129,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-                  {loadingRanking ? (
+            {loadingRanking ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-                  ) : Array.isArray(ranking) && ranking.length > 0 ? (
+            ) : Array.isArray(ranking) && ranking.length > 0 ? (
                     <div className="space-y-3">
-                      {ranking.map((d, i) => (
+                {ranking.map((d, i) => (
                         <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -1155,128 +1155,128 @@ export default function PainelCriador() {
                       <ChartBarIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhum doador no ranking ainda</p>
                     </div>
-                  )}
-                </div>
+            )}
+          </div>
               </div>
             </div>
           </div>
 
           {/* Seções adicionais continuam com o mesmo padrão moderno */}
-          {/* Atalhos e widgets */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Atalhos e widgets */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h3 className="font-bold text-sss-white mb-2">Missões & Conquistas</h3>
-                <ul className="space-y-1">
+            <ul className="space-y-1">
                   <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver missões</a></li>
                   <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver conquistas</a></li>
-                </ul>
-              </div>
+            </ul>
+          </div>
             </div>
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h3 className="font-bold text-sss-white mb-2">Monetização</h3>
-                <ul className="space-y-1">
+            <ul className="space-y-1">
                   <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Histórico de doações</a></li>
                   <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ranking de doadores</a></li>
                   <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Metas de arrecadação</a></li>
-                </ul>
+            </ul>
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Notificações e suporte */}
-          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Notificações e suporte */}
+        <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h3 className="font-bold text-sss-white mb-2">Notificações</h3>
-                {loadingNotificacoes ? (
-                  <span className="text-gray-400">Carregando...</span>
-                ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
-                  <ul className="space-y-2">
-                    {notificacoes.map(n => (
-                      <li key={n.id} className="border rounded p-2">
+            {loadingNotificacoes ? (
+              <span className="text-gray-400">Carregando...</span>
+            ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
+              <ul className="space-y-2">
+                {notificacoes.map(n => (
+                  <li key={n.id} className="border rounded p-2">
                         <span className="font-semibold text-sss-white">{n.titulo}</span>
                         <div className="text-sm text-gray-400">{n.mensagem}</div>
-                        <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="text-gray-400">Nenhuma notificação recente.</span>
-                )}
-              </div>
+                    <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className="text-gray-400">Nenhuma notificação recente.</span>
+            )}
+          </div>
             </div>
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h3 className="font-bold text-sss-white mb-2">Suporte & Feedback</h3>
-                <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
+            <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
                   <textarea className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
                   <button type="submit" className="bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
-                  {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
-                </form>
-                <ul className="space-y-1">
+              {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
+            </form>
+            <ul className="space-y-1">
                   <li><a href="#" className="text-red-700 hover:underline text-sss-white">Enviar sugestão</a></li>
-                </ul>
+            </ul>
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Configuração de Redes Sociais */}
-          <section className="mb-8">
+        {/* Configuração de Redes Sociais */}
+        <section className="mb-8">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h2 className="text-lg font-bold text-sss-white mb-4">Configurar Redes Sociais</h2>
-                <p className="text-sm text-gray-400 mb-4">
-                  Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
-                </p>
-                <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+            <p className="text-sm text-gray-400 mb-4">
+              Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
+            </p>
+            <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">YouTube</label>
-                      <input
-                        type="url"
-                        placeholder="https://youtube.com/@seucanal"
-                        value={redesSociais.youtube}
-                        onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
+                  <input
+                    type="url"
+                    placeholder="https://youtube.com/@seucanal"
+                    value={redesSociais.youtube}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
                         className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div>
+                  />
+                </div>
+                <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">Twitch</label>
-                      <input
-                        type="url"
-                        placeholder="https://twitch.tv/seucanal"
-                        value={redesSociais.twitch}
-                        onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
+                  <input
+                    type="url"
+                    placeholder="https://twitch.tv/seucanal"
+                    value={redesSociais.twitch}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
                         className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div>
+                  />
+                </div>
+                <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">Instagram</label>
-                      <input
-                        type="url"
-                        placeholder="https://instagram.com/seuperfil"
-                        value={redesSociais.instagram}
-                        onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
+                  <input
+                    type="url"
+                    placeholder="https://instagram.com/seuperfil"
+                    value={redesSociais.instagram}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
                         className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div>
+                  />
+                </div>
+                <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">TikTok</label>
-                      <input
-                        type="url"
-                        placeholder="https://tiktok.com/@seuperfil"
-                        value={redesSociais.tiktok}
-                        onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
+                  <input
+                    type="url"
+                    placeholder="https://tiktok.com/@seuperfil"
+                    value={redesSociais.tiktok}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
                         className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="submit"
-                      disabled={salvandoRedes}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <button
+                  type="submit"
+                  disabled={salvandoRedes}
                       className="bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {salvandoRedes ? (
@@ -1290,138 +1290,138 @@ export default function PainelCriador() {
                           Salvar Redes Sociais
                         </>
                       )}
-                    </button>
-                    {redesStatus === 'salvo' && (
-                      <span className="text-green-500 text-sm">Redes sociais salvas com sucesso!</span>
-                    )}
-                  </div>
-                </form>
+                </button>
+                {redesStatus === 'salvo' && (
+                  <span className="text-green-500 text-sm">Redes sociais salvas com sucesso!</span>
+                )}
               </div>
-            </div>
-          </section>
+            </form>
+              </div>
+          </div>
+        </section>
 
-          {/* Enquetes para Seguidores */}
-          <section className="mb-8">
+        {/* Enquetes para Seguidores */}
+        <section className="mb-8">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h2 className="text-lg font-bold text-sss-white mb-2">Enquetes para Seguidores</h2>
-                <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
+            <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
                   <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
-                  {novaEnquete.opcoes.map((op, i) => (
-                    <div key={i} className="flex gap-2 items-center">
+              {novaEnquete.opcoes.map((op, i) => (
+                <div key={i} className="flex gap-2 items-center">
                       <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all flex-1" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
-                      {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
-                    </div>
-                  ))}
+                  {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
+                </div>
+              ))}
                   <button type="button" className="text-sss-accent underline w-fit text-sss-white" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
                   <button type="submit" className="bg-sss-accent text-sss-white px-4 py-2 rounded-lg font-semibold mt-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
-                  {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
-                </form>
-                {loadingEnquetes ? (
-                  <span className="text-gray-400">Carregando...</span>
-                ) : Array.isArray(enquetes) && enquetes.length > 0 ? (
-                  <ul className="space-y-2">
-                    {enquetes.map(e => (
-                      <li key={e.id} className="border rounded p-2">
+              {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
+            </form>
+            {loadingEnquetes ? (
+              <span className="text-gray-400">Carregando...</span>
+            ) : Array.isArray(enquetes) && enquetes.length > 0 ? (
+              <ul className="space-y-2">
+                {enquetes.map(e => (
+                  <li key={e.id} className="border rounded p-2">
                         <div className="font-semibold text-sss-white mb-1">{e.pergunta}</div>
-                        <ul className="ml-4">
-                          {e.opcoes.map(o => (
-                            <li key={o.id} className="flex justify-between items-center">
+                    <ul className="ml-4">
+                      {e.opcoes.map(o => (
+                        <li key={o.id} className="flex justify-between items-center">
                               <span className="text-gray-300">{o.texto}</span>
                               <span className="text-xs text-gray-400">{o.votos} votos</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <span className="text-xs text-gray-400">{e.data ? new Date(e.data).toLocaleDateString() : ''}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="text-gray-400">Nenhuma enquete criada ainda.</span>
-                )}
+                        </li>
+                      ))}
+                    </ul>
+                    <span className="text-xs text-gray-400">{e.data ? new Date(e.data).toLocaleDateString() : ''}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className="text-gray-400">Nenhuma enquete criada ainda.</span>
+            )}
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Caixa de Perguntas/Recados dos Fãs */}
-          <section className="mb-8">
+        {/* Caixa de Perguntas/Recados dos Fãs */}
+        <section className="mb-8">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
                 <h2 className="text-lg font-bold text-sss-white mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
-                {loadingRecados ? (
-                  <span className="text-gray-400">Carregando...</span>
-                ) : Array.isArray(recados) && recados.length > 0 ? (
-                  <ul className="space-y-2">
-                    {recados.map(r => (
-                      <li key={r.id} className="border rounded p-2">
-                        <div className="flex justify-between items-center">
+            {loadingRecados ? (
+              <span className="text-gray-400">Carregando...</span>
+            ) : Array.isArray(recados) && recados.length > 0 ? (
+              <ul className="space-y-2">
+                {recados.map(r => (
+                  <li key={r.id} className="border rounded p-2">
+                    <div className="flex justify-between items-center">
                           <span className="font-semibold text-sss-white">{r.usuarioNome}</span>
-                          <span className="text-xs text-gray-400">{r.data ? new Date(r.data).toLocaleDateString() : ''}</span>
-                        </div>
+                      <span className="text-xs text-gray-400">{r.data ? new Date(r.data).toLocaleDateString() : ''}</span>
+                    </div>
                         <div className="text-gray-300 mb-1">{r.mensagem}</div>
-                        {r.resposta ? (
-                          <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
-                        ) : respondendo === r.id ? (
-                          <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
+                    {r.resposta ? (
+                      <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
+                    ) : respondendo === r.id ? (
+                      <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
                             <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all flex-1" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
                             <button type="submit" className="bg-green-600 text-sss-white px-3 py-1 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
                             <button type="button" className="bg-gray-600 text-sss-white px-3 py-1 rounded-lg transition-colors" onClick={() => setRespondendo(null)}>Cancelar</button>
-                            {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
-                          </form>
-                        ) : (
+                        {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
+                      </form>
+                    ) : (
                           <button className="text-sss-accent hover:underline text-sm mt-1 text-sss-white" onClick={() => setRespondendo(r.id)}>Responder</button>
-                        )}
-                        {r.resposta && (
-                          <div className="flex gap-2 mt-2">
-                            <button 
-                              onClick={() => handleTogglePublico(r.id, !r.publico)}
-                              disabled={toggleStatus[r.id] === 'alterando'}
+                    )}
+                    {r.resposta && (
+                      <div className="flex gap-2 mt-2">
+                        <button 
+                          onClick={() => handleTogglePublico(r.id, !r.publico)}
+                          disabled={toggleStatus[r.id] === 'alterando'}
                               className={`text-xs px-2 py-1 rounded-lg transition-colors ${
-                                r.publico 
+                            r.publico 
                                   ? 'bg-green-600 text-sss-white' 
                                   : 'bg-gray-600 text-sss-white'
                               } hover:opacity-80 disabled:opacity-50`}
-                            >
-                              {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
-                               toggleStatus[r.id] === 'alterado' ? 'Alterado!' :
-                               r.publico ? 'Público' : 'Privado'}
-                            </button>
-                            {toggleStatus[r.id] === 'erro' && (
-                              <span className="text-red-500 text-xs">Erro!</span>
-                            )}
-                          </div>
+                        >
+                          {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
+                           toggleStatus[r.id] === 'alterado' ? 'Alterado!' :
+                           r.publico ? 'Público' : 'Privado'}
+                        </button>
+                        {toggleStatus[r.id] === 'erro' && (
+                          <span className="text-red-500 text-xs">Erro!</span>
                         )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="text-gray-400">Nenhum recado recebido ainda.</span>
-                )}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className="text-gray-400">Nenhum recado recebido ainda.</span>
+            )}
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Geração de Links Personalizados para Divulgação */}
-          <section className="mb-8">
+        {/* Geração de Links Personalizados para Divulgação */}
+        <section className="mb-8">
             <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light flex flex-col md:flex-row items-center gap-6 p-6 text-sss-white">
-              <div className="flex-1">
+            <div className="flex-1">
                 <h2 className="text-lg font-bold text-sss-white mb-2">Link Personalizado para Divulgação</h2>
-                {linkDivulgacao ? (
-                  <div className="flex items-center gap-2 mb-2">
+              {linkDivulgacao ? (
+                <div className="flex items-center gap-2 mb-2">
                     <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white flex-1" value={linkDivulgacao} readOnly />
                     <button className="bg-sss-accent text-sss-white px-3 py-1 rounded-lg font-semibold transition-colors" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
-                  </div>
-                ) : (
-                  <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
-                )}
-              </div>
-              {linkDivulgacao && (
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(linkDivulgacao)}`} alt="QR Code" className="rounded" />
+                </div>
+              ) : (
+                <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
               )}
             </div>
-          </section>
+            {linkDivulgacao && (
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(linkDivulgacao)}`} alt="QR Code" className="rounded" />
+            )}
+          </div>
+        </section>
 
-        </main>
+      </main>
       </div>
     </>
   );
