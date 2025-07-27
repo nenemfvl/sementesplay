@@ -63,6 +63,7 @@ interface Conteudo {
   curtidas: number
   dislikes: number
   comentarios: number
+  thumbnail: string
 }
 
 interface Enquete {
@@ -449,32 +450,56 @@ export default function CriadorPerfil() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {conteudos.map((conteudo) => (
-                      <div key={conteudo.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
-                        <h4 className="text-sss-white font-semibold mb-2">{conteudo.titulo}</h4>
-                        <div className="flex items-center space-x-4 text-sm text-gray-400 mb-3">
-                          <span className="px-2 py-1 bg-sss-accent text-white rounded text-xs">
-                            {conteudo.tipo}
-                          </span>
-                          <span className="px-2 py-1 bg-sss-light text-sss-white rounded text-xs">
-                            {conteudo.categoria}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-gray-400">
-                          <div className="flex items-center space-x-4">
-                            <span className="flex items-center">
-                              <EyeIcon className="w-4 h-4 mr-1" />
-                              {formatarNumero(conteudo.visualizacoes)}
-                            </span>
-                            <span className="flex items-center">
-                              <HandThumbUpIcon className="w-4 h-4 mr-1" />
-                              {formatarNumero(conteudo.curtidas)}
-                            </span>
-                            <span className="flex items-center">
-                              <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
-                              {formatarNumero(conteudo.comentarios)}
+                      <div key={conteudo.id} className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light">
+                        {/* Thumbnail */}
+                        <div className="relative h-48 bg-sss-medium">
+                          {conteudo.thumbnail && conteudo.thumbnail !== '/thumbnails/default.jpg' ? (
+                            <img 
+                              src={conteudo.thumbnail} 
+                              alt={conteudo.titulo}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = '/thumbnails/default.jpg'
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <PlayIcon className="w-16 h-16 text-gray-500" />
+                            </div>
+                          )}
+                          {/* Overlay com tipo */}
+                          <div className="absolute top-2 left-2">
+                            <span className="px-2 py-1 bg-sss-accent text-white rounded text-xs font-medium">
+                              {conteudo.tipo}
                             </span>
                           </div>
-                          <span>{formatarData(conteudo.data)}</span>
+                        </div>
+                        
+                        {/* Conteúdo do card */}
+                        <div className="p-4">
+                          <h4 className="text-sss-white font-semibold mb-2 line-clamp-2">{conteudo.titulo}</h4>
+                          <div className="flex items-center space-x-2 text-sm text-gray-400 mb-3">
+                            <span className="px-2 py-1 bg-sss-light text-sss-white rounded text-xs">
+                              {conteudo.categoria}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm text-gray-400">
+                            <div className="flex items-center space-x-4">
+                              <span className="flex items-center">
+                                <EyeIcon className="w-4 h-4 mr-1" />
+                                {formatarNumero(conteudo.visualizacoes)}
+                              </span>
+                              <span className="flex items-center">
+                                <HandThumbUpIcon className="w-4 h-4 mr-1" />
+                                {formatarNumero(conteudo.curtidas)}
+                              </span>
+                              <span className="flex items-center">
+                                <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
+                                {formatarNumero(conteudo.comentarios)}
+                              </span>
+                            </div>
+                            <span>{formatarData(conteudo.data)}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
