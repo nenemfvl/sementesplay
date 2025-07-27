@@ -74,11 +74,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      // Atualizar tipo e nível do usuário
+      // Atualizar apenas o nível do usuário (tipo permanece 'comum')
       await prisma.usuario.update({
         where: { id: candidatura.usuarioId },
         data: { 
-          tipo: 'criador',
           nivel: 'criador-iniciante'
         }
       })
