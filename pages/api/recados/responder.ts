@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // Verificar se é criador para responder recados
-  if (user.nivel !== 'criador') {
+  if (!user.nivel.includes('criador')) {
     console.log('❌ [RECADOS-RESPONDER] Acesso negado - usuário não é criador:', user.nivel);
     return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem responder recados.' });
   }
