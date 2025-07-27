@@ -244,16 +244,18 @@ export default function CriadorPerfil() {
       })
 
       if (response.ok) {
+        const data = await response.json()
+        
         // Atualizar estado local
         setConteudosInteracao(prev => ({
           ...prev,
           [conteudoId]: { ...prev[conteudoId], visualizado: true }
         }))
 
-        // Atualizar contador de visualizações
+        // Atualizar contador de visualizações com o valor retornado pela API
         setConteudos(prev => prev.map(conteudo => 
           conteudo.id === conteudoId 
-            ? { ...conteudo, visualizacoes: conteudo.visualizacoes + 1 }
+            ? { ...conteudo, visualizacoes: data.visualizacoes }
             : conteudo
         ))
       }
