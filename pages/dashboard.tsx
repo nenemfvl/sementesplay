@@ -39,6 +39,13 @@ export default function Dashboard() {
   const [criadorId, setCriadorId] = useState<string | null>(null)
   const [minhasPerguntas, setMinhasPerguntas] = useState<any[]>([])
   const [loadingPerguntas, setLoadingPerguntas] = useState(false)
+  const [candidaturas, setCandidaturas] = useState<any[]>([])
+  const [loadingCandidaturas, setLoadingCandidaturas] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterStatus, setFilterStatus] = useState('todos')
+  const [selectedCandidatura, setSelectedCandidatura] = useState<any | null>(null)
+  const [showModal, setShowModal] = useState(false)
+  const [observacoes, setObservacoes] = useState('')
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -53,6 +60,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
     setLoadingData(true)
+    
+    // Carregar candidaturas se for admin
+    if (Number(user.nivel) >= 5 && activeTab === 'admin-candidaturas') {
+      loadCandidaturas()
+    }
     
     // Buscar dados do criador se o usuário for um criador
     const fetchCriadorData = async () => {
@@ -195,6 +207,110 @@ export default function Dashboard() {
 
   const recentDonations = stats.historicoDoacoes || []
 
+  // Funções para candidaturas
+  const loadCandidaturas = async () => {
+    if (Number(user?.nivel) < 5) return
+    
+    setLoadingCandidaturas(true)
+    try {
+      const response = await fetch('/api/admin/candidaturas')
+      const data = await response.json()
+      if (response.ok) {
+        setCandidaturas(data.candidaturas)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar candidaturas:', error)
+    } finally {
+      setLoadingCandidaturas(false)
+    }
+  }
+
+  const filtrarCandidaturas = () => {
+    return candidaturas.filter(candidatura => {
+      const matchSearch = candidatura.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         candidatura.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         candidatura.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchStatus = filterStatus === 'todos' || candidatura.status === filterStatus
+      
+      return matchSearch && matchStatus
+    })
+  }
+
+  const aprovarCandidatura = async (candidaturaId: string) => {
+    try {
+      const response = await fetch(`/api/admin/candidaturas/${candidaturaId}/aprovar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ observacoes })
+      })
+
+      if (response.ok) {
+        alert('Candidatura aprovada com sucesso!')
+        loadCandidaturas()
+        setShowModal(false)
+        setObservacoes('')
+      } else {
+        const data = await response.json()
+        alert(`Erro: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao aprovar candidatura:', error)
+      alert('Erro ao aprovar candidatura')
+    }
+  }
+
+  const rejeitarCandidatura = async (candidaturaId: string) => {
+    if (!observacoes.trim()) {
+      alert('Por favor, informe o motivo da rejeição.')
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/candidaturas/${candidaturaId}/rejeitar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ observacoes })
+      })
+
+      if (response.ok) {
+        alert('Candidatura rejeitada com sucesso!')
+        loadCandidaturas()
+        setShowModal(false)
+        setObservacoes('')
+      } else {
+        const data = await response.json()
+        alert(`Erro: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao rejeitar candidatura:', error)
+      alert('Erro ao rejeitar candidatura')
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pendente': return 'bg-yellow-100 text-yellow-800'
+      case 'aprovada': return 'bg-green-100 text-green-800'
+      case 'rejeitada': return 'bg-red-100 text-red-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pendente': return '⏳'
+      case 'aprovada': return '✅'
+      case 'rejeitada': return '❌'
+      default: return '⏳'
+    }
+  }
+
+  const candidaturasFiltradas = filtrarCandidaturas()
+
   const tabs = [
     { id: 'overview', label: 'Visão Geral', icon: ChartBarIcon },
     { id: 'donations', label: 'Minhas Doações', icon: HeartIcon },
@@ -203,6 +319,7 @@ export default function Dashboard() {
     { id: 'perguntas', label: 'Minhas Perguntas', icon: ChatBubbleLeftIcon },
     { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
     { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon },
+    ...(Number(user?.nivel) >= 5 ? [{ id: 'admin-candidaturas', label: 'Candidaturas', icon: ShieldCheckIcon }] : []),
   ]
 
   return (
@@ -680,6 +797,184 @@ export default function Dashboard() {
                   )}
                 </div>
               )}
+              {activeTab === 'admin-candidaturas' && (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-xl font-bold text-sss-white">Candidaturas de Criadores</h3>
+                      <p className="text-gray-400">Revisar e gerenciar candidaturas pendentes</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sss-white font-semibold">{candidaturasFiltradas.length} candidaturas</p>
+                      <p className="text-gray-400 text-sm">
+                        {candidaturas.filter(c => c.status === 'pendente').length} pendentes
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Filters */}
+                  <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Buscar
+                        </label>
+                        <div className="relative">
+                          <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Nome, email ou categoria..."
+                            className="w-full pl-10 pr-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Status
+                        </label>
+                        <select
+                          value={filterStatus}
+                          onChange={(e) => setFilterStatus(e.target.value)}
+                          className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                        >
+                          <option value="todos">Todos os status</option>
+                          <option value="pendente">Pendente</option>
+                          <option value="aprovada">Aprovada</option>
+                          <option value="rejeitada">Rejeitada</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-end">
+                        <button
+                          onClick={loadCandidaturas}
+                          disabled={loadingCandidaturas}
+                          className="w-full px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors flex items-center justify-center space-x-2"
+                        >
+                          {loadingCandidaturas ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <span>Carregando...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Atualizar</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Table */}
+                  <div className="bg-sss-medium rounded-lg border border-sss-light overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-sss-light">
+                        <thead className="bg-sss-dark">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                              Candidato
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                              Categoria
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                              Status
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                              Data
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                              Ações
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-sss-medium divide-y divide-sss-light">
+                          {candidaturasFiltradas.length === 0 ? (
+                            <tr>
+                              <td colSpan={5} className="px-6 py-4 text-center text-gray-400">
+                                {loadingCandidaturas ? 'Carregando candidaturas...' : 'Nenhuma candidatura encontrada'}
+                              </td>
+                            </tr>
+                          ) : (
+                            candidaturasFiltradas.map((candidatura) => (
+                              <tr key={candidatura.id} className="hover:bg-sss-dark transition-colors">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="flex items-center">
+                                    <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                      <UserIcon className="w-5 h-5 text-sss-accent" />
+                                    </div>
+                                    <div className="ml-4">
+                                      <div className="text-sm font-medium text-sss-white">
+                                        {candidatura.nome}
+                                      </div>
+                                      <div className="text-sm text-gray-400">
+                                        {candidatura.email}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-sss-white">{candidatura.categoria}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(candidatura.status)}`}>
+                                    <span className="mr-1">{getStatusIcon(candidatura.status)}</span>
+                                    {candidatura.status.charAt(0).toUpperCase() + candidatura.status.slice(1)}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                  {new Date(candidatura.dataCandidatura).toLocaleDateString('pt-BR')}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                  <div className="flex space-x-2">
+                                    <button
+                                      onClick={() => {
+                                        setSelectedCandidatura(candidatura)
+                                        setShowModal(true)
+                                      }}
+                                      className="text-blue-400 hover:text-blue-300"
+                                      title="Ver detalhes"
+                                    >
+                                      👁️
+                                    </button>
+                                    {candidatura.status === 'pendente' && (
+                                      <>
+                                        <button
+                                          onClick={() => {
+                                            setSelectedCandidatura(candidatura)
+                                            setShowModal(true)
+                                          }}
+                                          className="text-green-400 hover:text-green-300"
+                                          title="Aprovar"
+                                        >
+                                          ✅
+                                        </button>
+                                        <button
+                                          onClick={() => {
+                                            setSelectedCandidatura(candidatura)
+                                            setShowModal(true)
+                                          }}
+                                          className="text-red-400 hover:text-red-300"
+                                          title="Rejeitar"
+                                        >
+                                          ❌
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
               {activeTab === 'painel-parceiro' && (
                 <div className="bg-white rounded-lg p-2">
                   <PainelParceiro />
@@ -689,6 +984,142 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Candidatura */}
+      {showModal && selectedCandidatura && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-sss-medium rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-sss-white">Detalhes da Candidatura</h3>
+                  <p className="text-gray-400">{selectedCandidatura.nome} - {selectedCandidatura.email}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowModal(false)
+                    setSelectedCandidatura(null)
+                    setObservacoes('')
+                  }}
+                  className="text-gray-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Biografia</label>
+                  <div className="bg-sss-dark rounded-lg p-3 text-sss-white">
+                    {selectedCandidatura.bio}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Experiência</label>
+                  <div className="bg-sss-dark rounded-lg p-3 text-sss-white">
+                    {selectedCandidatura.experiencia}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Motivação</label>
+                  <div className="bg-sss-dark rounded-lg p-3 text-sss-white">
+                    {selectedCandidatura.motivacao}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Metas</label>
+                  <div className="bg-sss-dark rounded-lg p-3 text-sss-white">
+                    {selectedCandidatura.metas}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Disponibilidade</label>
+                  <div className="bg-sss-dark rounded-lg p-3 text-sss-white">
+                    {selectedCandidatura.disponibilidade}
+                  </div>
+                </div>
+
+                {selectedCandidatura.redesSociais && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Redes Sociais</label>
+                    <div className="bg-sss-dark rounded-lg p-3">
+                      {(() => {
+                        try {
+                          const redes = JSON.parse(selectedCandidatura.redesSociais)
+                          return Object.entries(redes).map(([rede, url]) => {
+                            if (url && typeof url === 'string') {
+                              return (
+                                <div key={rede} className="flex items-center space-x-2 mb-2">
+                                  <span className="text-gray-400 text-sm capitalize">{rede}:</span>
+                                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 text-sm">
+                                    {url}
+                                  </a>
+                                </div>
+                              )
+                            }
+                            return null
+                          })
+                        } catch (error) {
+                          return <div className="text-gray-400 text-sm">Erro ao carregar redes sociais</div>
+                        }
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+                {selectedCandidatura.status === 'pendente' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Observações / Motivo
+                    </label>
+                    <textarea
+                      value={observacoes}
+                      onChange={(e) => setObservacoes(e.target.value)}
+                      rows={3}
+                      className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                      placeholder="Adicione observações sobre a candidatura..."
+                    />
+                  </div>
+                )}
+
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    onClick={() => {
+                      setShowModal(false)
+                      setSelectedCandidatura(null)
+                      setObservacoes('')
+                    }}
+                    className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    Fechar
+                  </button>
+                  {selectedCandidatura.status === 'pendente' && (
+                    <>
+                      <button
+                        onClick={() => aprovarCandidatura(selectedCandidatura.id)}
+                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                      >
+                        Aprovar
+                      </button>
+                      <button
+                        onClick={() => rejeitarCandidatura(selectedCandidatura.id)}
+                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                      >
+                        Rejeitar
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer minimalista centralizado */}
       <footer className="bg-black border-t border-sss-light mt-16">
         <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col items-center">
