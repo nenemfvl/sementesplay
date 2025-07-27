@@ -76,10 +76,28 @@ export default function AdminCandidaturas() {
 
   const loadCandidaturas = async () => {
     try {
-      const response = await fetch('/api/admin/candidaturas')
+      // Obter usuário atual e criar token
+      const currentUser = auth.getUser()
+      if (!currentUser) {
+        console.error('Usuário não autenticado')
+        return
+      }
+
+      // Criar token simples (base64 do JSON do usuário)
+      const token = Buffer.from(JSON.stringify(currentUser)).toString('base64')
+      
+      const response = await fetch('/api/admin/candidaturas', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
       const data = await response.json()
       if (response.ok) {
         setCandidaturas(data.candidaturas)
+      } else {
+        console.error('Erro na API:', data.error)
       }
     } catch (error) {
       console.error('Erro ao carregar candidaturas:', error)
@@ -102,10 +120,19 @@ export default function AdminCandidaturas() {
 
   const aprovarCandidatura = async (candidaturaId: string) => {
     try {
+      const currentUser = auth.getUser()
+      if (!currentUser) {
+        alert('Usuário não autenticado')
+        return
+      }
+
+      const token = Buffer.from(JSON.stringify(currentUser)).toString('base64')
+      
       const response = await fetch(`/api/admin/candidaturas/${candidaturaId}/aprovar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ observacoes })
       })
@@ -132,10 +159,19 @@ export default function AdminCandidaturas() {
     }
 
     try {
+      const currentUser = auth.getUser()
+      if (!currentUser) {
+        alert('Usuário não autenticado')
+        return
+      }
+
+      const token = Buffer.from(JSON.stringify(currentUser)).toString('base64')
+      
       const response = await fetch(`/api/admin/candidaturas/${candidaturaId}/rejeitar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ observacoes })
       })
