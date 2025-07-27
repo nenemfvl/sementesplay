@@ -152,7 +152,7 @@ export default function PainelCriador() {
 
   // Estatísticas calculadas
   const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
-  const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).likes || 0, 0) : 0;
+  const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).curtidas || 0, 0) : 0;
   const totalDislikes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + ((c as any).dislikes || 0), 0) : 0;
   const totalCompartilhamentos = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).compartilhamentos || 0, 0) : 0;
 
