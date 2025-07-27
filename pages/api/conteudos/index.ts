@@ -81,5 +81,64 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  if (req.method === 'POST') {
+    try {
+      const { criadorId, titulo, url, tipo, categoria, descricao, plataforma } = req.body;
+      if (!criadorId || !titulo || !url || !tipo || !categoria) {
+        return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
+      }
+      const novo = await prisma.conteudo.create({
+        data: {
+          criadorId,
+          titulo,
+          url,
+          tipo,
+          categoria,
+          descricao: descricao || '',
+          plataforma: plataforma || '',
+        }
+      });
+      return res.status(201).json(novo);
+    } catch (error) {
+      console.error('Erro ao criar conteúdo:', error);
+      return res.status(500).json({ error: 'Erro ao criar conteúdo' });
+    }
+  }
+
+  if (req.method === 'PUT') {
+    try {
+      const { id, criadorId, titulo, url, tipo, categoria, descricao, plataforma } = req.body;
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' });
+      const atualizado = await prisma.conteudo.update({
+        where: { id },
+        data: {
+          criadorId,
+          titulo,
+          url,
+          tipo,
+          categoria,
+          descricao,
+          plataforma,
+        }
+      });
+      return res.status(200).json(atualizado);
+    } catch (error) {
+      console.error('Erro ao atualizar conteúdo:', error);
+      return res.status(500).json({ error: 'Erro ao atualizar conteúdo' });
+    }
+  }
+
+  if (req.method === 'DELETE') {
+    try {
+      const { id } = req.body;
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' });
+      await prisma.conteudo.delete({ where: { id } });
+      return res.status(204).end();
+    } catch (error) {
+      console.error('Erro ao remover conteúdo:', error);
+      return res.status(500).json({ error: 'Erro ao remover conteúdo' });
+    }
+  }
+
   return res.status(405).json({ error: 'Método não permitido' })
 } 
