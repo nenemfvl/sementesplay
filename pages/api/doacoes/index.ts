@@ -198,14 +198,34 @@ async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMiss
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
+      // Verificar autenticação via token Bearer
+      const authHeader = req.headers.authorization
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Token de autenticação não fornecido' })
+      }
+
+      const userId = authHeader.replace('Bearer ', '')
+      
+      // Verificar se o usuário existe
+      const user = await prisma.usuario.findUnique({
+        where: { id: userId }
+      })
+
+      if (!user) {
+        return res.status(401).json({ error: 'Usuário não encontrado' })
+      }
+
       const { doadorId, criadorId } = req.query
 
-      // Construir filtros
-      const where: any = {}
-      if (doadorId) where.doadorId = String(doadorId)
+      // Construir filtros - SEMPRE filtrar pelo usuário logado
+      const where: any = {
+        doadorId: userId // Apenas doações do usuário logado
+      }
+      
+      // Se especificado criadorId, filtrar por criador também
       if (criadorId) where.criadorId = String(criadorId)
 
-      // Buscar doações
+      // Buscar doações do usuário logado
       const doacoes = await prisma.doacao.findMany({
         where,
         include: {
