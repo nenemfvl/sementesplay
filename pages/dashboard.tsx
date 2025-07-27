@@ -37,6 +37,8 @@ export default function Dashboard() {
   const [criadores, setCriadores] = useState<any[]>([])
   const [cashbackData, setCashbackData] = useState<any>(null)
   const [criadorId, setCriadorId] = useState<string | null>(null)
+  const [minhasPerguntas, setMinhasPerguntas] = useState<any[]>([])
+  const [loadingPerguntas, setLoadingPerguntas] = useState(false)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -131,6 +133,24 @@ export default function Dashboard() {
         // Buscar dados do criador separadamente
         await fetchCriadorData()
         
+        // Buscar perguntas enviadas pelo usuário
+        setLoadingPerguntas(true)
+        try {
+          const perguntasResponse = await fetch('/api/recados/enviados', {
+            headers: {
+              'Authorization': `Bearer ${user.id}`
+            }
+          })
+          if (perguntasResponse.ok) {
+            const perguntasData = await perguntasResponse.json()
+            setMinhasPerguntas(perguntasData.recados || [])
+          }
+        } catch (error) {
+          console.error('Erro ao carregar perguntas:', error)
+        } finally {
+          setLoadingPerguntas(false)
+        }
+        
         setLoadingData(false)
       } catch (error) {
         console.error('Erro ao carregar dados:', error)
@@ -180,6 +200,7 @@ export default function Dashboard() {
     { id: 'donations', label: 'Minhas Doações', icon: HeartIcon },
     { id: 'creators', label: 'Criadores', icon: UserIcon },
     { id: 'cashback', label: 'Cashback', icon: GiftIcon },
+    { id: 'perguntas', label: 'Minhas Perguntas', icon: ChatBubbleLeftIcon },
     { id: 'painel-criador', label: 'Painel Criador', icon: StarIcon },
     { id: 'painel-parceiro', label: 'Painel Parceiro', icon: BuildingOfficeIcon },
   ]
@@ -602,6 +623,61 @@ export default function Dashboard() {
               {activeTab === 'painel-criador' && (
                 <div className="bg-white rounded-lg p-2">
                   <PainelCriador />
+                </div>
+              )}
+              {activeTab === 'perguntas' && (
+                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                  <h3 className="text-xl font-bold text-sss-white mb-6">Minhas Perguntas Enviadas</h3>
+                  
+                  {loadingPerguntas ? (
+                    <div className="text-gray-400 text-center py-8">Carregando perguntas...</div>
+                  ) : minhasPerguntas.length === 0 ? (
+                    <div className="text-gray-400 text-center py-8">
+                      <ChatBubbleLeftIcon className="w-12 h-12 mx-auto mb-4 text-gray-500" />
+                      <p>Você ainda não enviou nenhuma pergunta para criadores.</p>
+                      <p className="text-sm mt-2">Acesse a página de criadores para fazer perguntas!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {minhasPerguntas.map((pergunta) => (
+                        <div key={pergunta.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="text-sss-white font-semibold">{pergunta.titulo}</h4>
+                              <p className="text-sm text-gray-400">Para: {pergunta.destinatarioNome}</p>
+                            </div>
+                            <span className="text-xs text-gray-500">
+                              {new Date(pergunta.dataEnvio).toLocaleDateString('pt-BR')}
+                            </span>
+                          </div>
+                          
+                          <div className="mb-3">
+                            <p className="text-gray-300">{pergunta.mensagem}</p>
+                          </div>
+                          
+                          {pergunta.resposta ? (
+                            <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span className="text-green-400 text-sm font-medium">Resposta recebida</span>
+                                <span className="text-xs text-gray-500">
+                                  {new Date(pergunta.dataResposta).toLocaleDateString('pt-BR')}
+                                </span>
+                              </div>
+                              <p className="text-green-300">{pergunta.resposta}</p>
+                            </div>
+                          ) : (
+                            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-3">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                <span className="text-yellow-400 text-sm">Aguardando resposta...</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               {activeTab === 'painel-parceiro' && (
