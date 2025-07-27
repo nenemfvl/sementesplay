@@ -17,13 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let jaVisualizou = false
       if (userId) {
         try {
-          const visualizacaoExistente = await (prisma as any).interacaoConteudo.findUnique({
+          const visualizacaoExistente = await (prisma as any).interacaoConteudo.findFirst({
             where: {
-              conteudoId_usuarioId_tipo: {
-                conteudoId: String(id),
-                usuarioId: userId,
-                tipo: 'visualizacao'
-              }
+              conteudoId: String(id),
+              usuarioId: userId,
+              tipo: 'visualizacao'
             }
           })
           jaVisualizou = !!visualizacaoExistente

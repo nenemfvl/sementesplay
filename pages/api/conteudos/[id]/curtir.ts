@@ -14,26 +14,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Verificar se o usuário já curtiu este conteúdo
-      const curtidaExistente = await prisma.interacaoConteudo.findUnique({
+      const curtidaExistente = await (prisma as any).interacaoConteudo.findFirst({
         where: {
-          conteudoId_usuarioId_tipo: {
-            conteudoId: String(id),
-            usuarioId: userId,
-            tipo: 'curtida'
-          }
+          conteudoId: String(id),
+          usuarioId: userId,
+          tipo: 'curtida'
         }
       })
 
       if (curtidaExistente) {
         // Se já curtiu, remove a curtida
         await prisma.$transaction([
-          prisma.interacaoConteudo.delete({
+          (prisma as any).interacaoConteudo.delete({
             where: {
-              conteudoId_usuarioId_tipo: {
-                conteudoId: String(id),
-                usuarioId: userId,
-                tipo: 'curtida'
-              }
+              id: curtidaExistente.id
             }
           }),
           prisma.conteudo.update({
@@ -54,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } else {
         // Se não curtiu, adiciona a curtida
         await prisma.$transaction([
-          prisma.interacaoConteudo.create({
+          (prisma as any).interacaoConteudo.create({
             data: {
               conteudoId: String(id),
               usuarioId: userId,

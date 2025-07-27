@@ -21,13 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Verificar se o usuário já deu dislike
-    const dislikeExistente = await prisma.interacaoConteudo.findUnique({
+    const dislikeExistente = await (prisma as any).interacaoConteudo.findFirst({
       where: {
-        conteudoId_usuarioId_tipo: {
-          conteudoId: String(id),
-          usuarioId: userId,
-          tipo: 'dislike'
-        }
+        conteudoId: String(id),
+        usuarioId: userId,
+        tipo: 'dislike'
       }
     })
 
@@ -36,13 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (dislikeExistente) {
       // Remover dislike
-      await prisma.interacaoConteudo.delete({
+      await (prisma as any).interacaoConteudo.delete({
         where: {
-          conteudoId_usuarioId_tipo: {
-            conteudoId: String(id),
-            usuarioId: userId,
-            tipo: 'dislike'
-          }
+          id: dislikeExistente.id
         }
       })
 
@@ -57,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     } else {
       // Adicionar dislike
-      await prisma.interacaoConteudo.create({
+      await (prisma as any).interacaoConteudo.create({
         data: {
           conteudoId: String(id),
           usuarioId: userId,
