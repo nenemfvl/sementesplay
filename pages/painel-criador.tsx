@@ -217,9 +217,19 @@ export default function PainelCriador() {
     async function fetchDoacoes() {
       setLoadingDoacoes(true);
       try {
-        const res = await fetch('/api/doacoes');
+        const user = auth.getUser();
+        if (!user) {
+          setDoacoes([]);
+          return;
+        }
+        
+        const res = await fetch('/api/criador/doacoes-recebidas', {
+          headers: {
+            'Authorization': `Bearer ${user.id}`
+          }
+        });
         const data = await res.json();
-        setDoacoes(Array.isArray(data) ? data : (data?.doacoes || []));
+        setDoacoes(Array.isArray(data) ? data : []);
       } catch {
         setDoacoes([]);
       }
