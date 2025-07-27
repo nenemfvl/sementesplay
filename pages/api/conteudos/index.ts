@@ -72,6 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           visualizacoes: conteudo.visualizacoes || 0,
           curtidas: conteudo.curtidas || 0,
           dislikes: (conteudo as any).dislikes || 0,
+          compartilhamentos: (conteudo as any).compartilhamentos || 0,
           comentarios: conteudo.comentarios ? conteudo.comentarios.length : 0,
           thumbnail: thumbnail || '/thumbnails/default.jpg'
         }
