@@ -6,8 +6,15 @@ async function atualizarNiveis() {
   console.log('🔄 Iniciando atualização automática de níveis...')
 
   try {
-    // Buscar todos os criadores com suas doações recebidas
+    // Buscar apenas criadores com níveis específicos (excluindo admin nível 5)
     const criadores = await prisma.criador.findMany({
+      where: {
+        usuario: {
+          nivel: {
+            in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
+          }
+        }
+      },
       include: {
         usuario: {
           include: {

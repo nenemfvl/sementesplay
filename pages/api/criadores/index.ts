@@ -54,10 +54,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where.usuarioId = String(usuarioId)
       }
 
-      // Buscar criadores
+      // Buscar apenas criadores com níveis específicos (excluindo admin nível 5)
       console.log('Buscando criadores no banco...')
       const criadores = await prisma.criador.findMany({
-        where,
+        where: {
+          ...where,
+          usuario: {
+            nivel: {
+              in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
+            }
+          }
+        },
         include: {
           usuario: {
             select: {
