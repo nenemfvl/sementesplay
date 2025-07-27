@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const conteudosFormatados = conteudos.map(conteudo => {
-        let thumbnail = conteudo.preview
+        let thumbnail = conteudo.preview || null
         if (!thumbnail && conteudo.url && conteudo.tipo === 'video' && conteudo.url.includes('youtube')) {
           const ytId = getYoutubeId(conteudo.url)
           if (ytId) {
@@ -64,27 +64,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         return {
           id: conteudo.id,
-          titulo: conteudo.titulo,
-          descricao: conteudo.descricao,
-          tipo: conteudo.tipo,
-          url: conteudo.url,
-          thumbnail: thumbnail || '/thumbnails/default.jpg',
-          visualizacoes: conteudo.visualizacoes,
-          likes: conteudo.curtidas,
-          dataCriacao: conteudo.dataPublicacao,
-          criador: {
-            id: conteudo.criador.usuario.id,
-            nome: conteudo.criador.usuario.nome,
-            email: conteudo.criador.usuario.email
-          },
-          comentarios: conteudo.comentarios.map(comentario => ({
-            id: comentario.id,
-            texto: comentario.texto,
-            usuario: comentario.usuario.nome,
-            dataCriacao: comentario.data
-          })),
-          tags: [], // Mockado por enquanto
-          categoria: conteudo.categoria
+          titulo: conteudo.titulo || '',
+          url: conteudo.url || '',
+          tipo: conteudo.tipo || '',
+          categoria: conteudo.categoria || '',
+          data: conteudo.dataPublicacao ? conteudo.dataPublicacao.toISOString() : new Date().toISOString(),
+          visualizacoes: conteudo.visualizacoes || 0,
+          curtidas: conteudo.curtidas || 0,
+          dislikes: (conteudo as any).dislikes || 0,
+          comentarios: conteudo.comentarios ? conteudo.comentarios.length : 0,
+          thumbnail: thumbnail || '/thumbnails/default.jpg'
         }
       })
 
