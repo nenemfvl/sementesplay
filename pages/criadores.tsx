@@ -60,6 +60,7 @@ export default function Criadores() {
   const [criadorDetalhes, setCriadorDetalhes] = useState<any>(null)
   const [conteudos, setConteudos] = useState<any[]>([])
   const [enquetes, setEnquetes] = useState<any[]>([])
+  const [perguntasPublicas, setPerguntasPublicas] = useState<any[]>([])
   const [loadingDetalhes, setLoadingDetalhes] = useState(false)
   const [showPerguntaForm, setShowPerguntaForm] = useState(false)
   const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
@@ -181,6 +182,14 @@ export default function Criadores() {
       
       if (responseEnquetes.ok) {
         setEnquetes(dataEnquetes.enquetes || [])
+      }
+
+      // Carregar perguntas públicas do criador
+      const responsePerguntas = await fetch(`/api/recados/publicos/${criadorId}`)
+      const dataPerguntas = await responsePerguntas.json()
+      
+      if (responsePerguntas.ok) {
+        setPerguntasPublicas(dataPerguntas.recados || [])
       }
     } catch (error) {
       console.error('Erro ao carregar detalhes:', error)
@@ -676,6 +685,36 @@ export default function Criadores() {
                           </div>
                         ) : (
                           <p className="text-gray-400 text-sm text-center py-4">Nenhuma enquete ativa no momento</p>
+                        )}
+                      </div>
+
+                      {/* Perguntas Públicas Respondidas */}
+                      <div className="bg-sss-dark rounded-lg p-6">
+                        <h4 className="text-sss-white font-semibold mb-4 flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                          Perguntas Respondidas
+                        </h4>
+                        {perguntasPublicas.length > 0 ? (
+                          <div className="space-y-3">
+                            {perguntasPublicas.slice(0, 3).map((pergunta: any) => (
+                              <div key={pergunta.id} className="bg-sss-medium rounded-lg p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-gray-400 text-xs">{pergunta.remetenteNome}</span>
+                                  <span className="text-gray-500 text-xs">
+                                    {new Date(pergunta.dataResposta).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                <h5 className="text-sss-white font-medium text-sm mb-2">{pergunta.pergunta}</h5>
+                                <div className="bg-green-900/20 border-l-4 border-green-500 p-2 rounded">
+                                  <p className="text-green-300 text-sm">{pergunta.resposta}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-400 text-sm text-center py-4">Nenhuma pergunta respondida publicamente</p>
                         )}
                       </div>
 

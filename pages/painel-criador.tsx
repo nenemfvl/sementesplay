@@ -44,6 +44,7 @@ type Recado = {
   mensagem: string;
   data: string;
   resposta?: string;
+  publico?: boolean;
 };
 type Enquete = {
   id: string;
@@ -80,6 +81,7 @@ export default function PainelCriador() {
   const [resposta, setResposta] = useState<{[id:string]:string}>({});
   const [respondendo, setRespondendo] = useState<string|null>(null);
   const [respostaStatus, setRespostaStatus] = useState<{[id:string]:string}>({});
+  const [toggleStatus, setToggleStatus] = useState<{[id:string]:string}>({});
   const [enquetes, setEnquetes] = useState<Enquete[]>([]);
   const [loadingEnquetes, setLoadingEnquetes] = useState(true);
   const [novaEnquete, setNovaEnquete] = useState<{pergunta:string, opcoes:string[]}>({pergunta:'', opcoes:['','']});
@@ -445,6 +447,32 @@ export default function PainelCriador() {
       console.error('Erro ao responder recado:', error);
     } finally {
       setTimeout(() => setRespostaStatus(s => ({...s, [id]: ''})), 2000);
+    }
+  }
+
+  async function handleTogglePublico(id: string, publico: boolean) {
+    setToggleStatus(s => ({...s, [id]: 'alterando'}));
+    try {
+      const user = auth.getUser();
+      if (!user) return;
+
+      await fetch('/api/recados/toggle-publico', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ id, publico }),
+      });
+      
+      setToggleStatus(s => ({...s, [id]: 'alterado'}));
+      setRecados(rs => rs.map(r => r.id === id ? { ...r, publico } : r));
+      
+      setTimeout(() => setToggleStatus(s => ({...s, [id]: ''})), 2000);
+    } catch (error) {
+      console.error('Erro ao alterar visibilidade:', error);
+      setToggleStatus(s => ({...s, [id]: 'erro'}));
+      setTimeout(() => setToggleStatus(s => ({...s, [id]: ''})), 2000);
     }
   }
 
@@ -908,6 +936,26 @@ export default function PainelCriador() {
                       </form>
                     ) : (
                       <button className="text-sss-accent hover:underline text-sm mt-1" onClick={() => setRespondendo(r.id)}>Responder</button>
+                    )}
+                    {r.resposta && (
+                      <div className="flex gap-2 mt-2">
+                        <button 
+                          onClick={() => handleTogglePublico(r.id, !r.publico)}
+                          disabled={toggleStatus[r.id] === 'alterando'}
+                          className={`text-xs px-2 py-1 rounded ${
+                            r.publico 
+                              ? 'bg-green-600 text-white' 
+                              : 'bg-gray-600 text-white'
+                          } hover:opacity-80 transition disabled:opacity-50`}
+                        >
+                          {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
+                           toggleStatus[r.id] === 'alterado' ? 'Alterado!' :
+                           r.publico ? 'Público' : 'Privado'}
+                        </button>
+                        {toggleStatus[r.id] === 'erro' && (
+                          <span className="text-red-500 text-xs">Erro!</span>
+                        )}
+                      </div>
                     )}
                   </li>
                 ))}

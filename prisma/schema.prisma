@@ -537,6 +537,7 @@ model Recado {
   dataLeitura    DateTime?
   resposta       String?
   dataResposta   DateTime?
+  publico        Boolean   @default(false)
 
   remetente    Usuario @relation("RemetenteRecado", fields: [remetenteId], references: [id], onDelete: Cascade)
   destinatario Usuario @relation("DestinatarioRecado", fields: [destinatarioId], references: [id], onDelete: Cascade)
