@@ -42,6 +42,7 @@ model Usuario {
   conquistas           ConquistaUsuario[]
   emblemas             EmblemaUsuario[]
   comentarios          Comentario[]
+  interacoes          InteracaoConteudo[]
   amizades             Amizade[]             @relation("UsuarioAmizade")
   amizadesRecebidas    Amizade[]             @relation("AmigoUsuario")
   conversas1           Conversa[]            @relation("Usuario1Conversa")
@@ -361,6 +362,7 @@ model Conteudo {
 
   criador     Criador      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
   comentarios Comentario[]
+  interacoes  InteracaoConteudo[]
 
   @@map("conteudos")
 }
@@ -379,6 +381,20 @@ model Comentario {
   respostaA Comentario?  @relation("RespostaComentario", fields: [respostaAId], references: [id])
 
   @@map("comentarios")
+}
+
+model InteracaoConteudo {
+  id          String   @id @default(cuid())
+  conteudoId  String
+  usuarioId   String
+  tipo        String   // "visualizacao" ou "curtida"
+  data        DateTime @default(now())
+
+  conteudo Conteudo @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  usuario  Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([conteudoId, usuarioId, tipo])
+  @@map("interacoes_conteudo")
 }
 
 model Missao {

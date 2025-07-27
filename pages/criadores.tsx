@@ -158,18 +158,26 @@ export default function Criadores() {
   }
 
   const registrarVisualizacao = async (conteudoId: string) => {
+    if (!user) return
+    
     try {
       const response = await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        }
       })
       if (response.ok) {
-        // Atualizar o estado local se necessário
-        setConteudos(prev => prev.map(c => 
-          c.id === conteudoId 
-            ? { ...c, visualizacoes: (c.visualizacoes || 0) + 1 }
-            : c
-        ))
+        const data = await response.json()
+        // Só atualiza se realmente incrementou
+        if (data.visualizacoes > 0) {
+          setConteudos(prev => prev.map(c => 
+            c.id === conteudoId 
+              ? { ...c, visualizacoes: data.visualizacoes }
+              : c
+          ))
+        }
       }
     } catch (error) {
       console.error('Erro ao registrar visualização:', error)
@@ -177,18 +185,26 @@ export default function Criadores() {
   }
 
   const curtirConteudo = async (conteudoId: string) => {
+    if (!user) return
+    
     try {
       const response = await fetch(`/api/conteudos/${conteudoId}/curtir`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        }
       })
       if (response.ok) {
-        // Atualizar o estado local
-        setConteudos(prev => prev.map(c => 
-          c.id === conteudoId 
-            ? { ...c, likes: (c.likes || 0) + 1 }
-            : c
-        ))
+        const data = await response.json()
+        // Só atualiza se realmente incrementou
+        if (data.curtidas > 0) {
+          setConteudos(prev => prev.map(c => 
+            c.id === conteudoId 
+              ? { ...c, likes: data.curtidas }
+              : c
+          ))
+        }
       }
     } catch (error) {
       console.error('Erro ao curtir conteúdo:', error)
