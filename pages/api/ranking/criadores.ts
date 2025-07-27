@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
 
               return {
-          id: criador.usuario.id,
+          id: criador.id,
           nome: criador.usuario.nome,
           email: criador.usuario.email,
           avatar: criador.usuario.avatarUrl || '👤',
