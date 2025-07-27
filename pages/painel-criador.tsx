@@ -305,6 +305,7 @@ export default function PainelCriador() {
           const res = await fetch(`/api/criador/${user.id}`);
           const data = await res.json();
           if (data.criador) {
+            // O criadorId correto é data.criador.id
             setCriadorId(data.criador.id);
             if (data.criador.redesSociais) {
               setRedesSociais(data.criador.redesSociais);
