@@ -36,10 +36,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         disponibilidade
       } = req.body
 
-      // Validações básicas
-      if (!nome || !email || !bio || !categoria) {
-        return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' })
-      }
+             // Validações básicas
+       if (!nome || !email || !bio) {
+         return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' })
+       }
 
       if (bio.length < 50) {
         return res.status(400).json({ error: 'Biografia deve ter pelo menos 50 caracteres' })
@@ -76,36 +76,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Você já é um criador aprovado' })
       }
 
-      // Criar candidatura
-      const candidatura = await prisma.candidaturaCriador.create({
-        data: {
-          usuarioId: user.id,
-          nome,
-          email,
-          bio,
-          categoria,
-          redesSociais: JSON.stringify(redesSociais),
-          portfolio: JSON.stringify(portfolio),
-          experiencia,
-          motivacao,
-          metas,
-          disponibilidade,
-          status: 'pendente',
-          dataCandidatura: new Date()
-        }
-      })
+             // Criar candidatura
+       const candidatura = await prisma.candidaturaCriador.create({
+         data: {
+           usuarioId: user.id,
+           nome,
+           email,
+           bio,
+           categoria: 'Streamer', // Categoria padrão
+           redesSociais: JSON.stringify(redesSociais),
+           portfolio: JSON.stringify(portfolio),
+           experiencia,
+           motivacao,
+           metas,
+           disponibilidade,
+           status: 'pendente',
+           dataCandidatura: new Date()
+         }
+       })
 
-      // Log da ação
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId: user.id,
-          acao: 'CANDIDATURA_CRIADOR',
-          detalhes: `Candidatura enviada para categoria: ${categoria}`,
-          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
-          userAgent: req.headers['user-agent'] || '',
-          nivel: 'info'
-        }
-      })
+             // Log da ação
+       await prisma.logAuditoria.create({
+         data: {
+           usuarioId: user.id,
+           acao: 'CANDIDATURA_CRIADOR',
+           detalhes: 'Candidatura enviada para criador',
+           ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+           userAgent: req.headers['user-agent'] || '',
+           nivel: 'info'
+         }
+       })
 
       res.status(201).json({ 
         message: 'Candidatura enviada com sucesso',
