@@ -632,7 +632,7 @@ export default function PainelCriador() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <div className="text-white text-lg font-medium">Verificando autorização...</div>
+          <div className="text-sss-white text-lg font-medium">Verificando autorização...</div>
         </div>
       </div>
     );
@@ -652,14 +652,14 @@ export default function PainelCriador() {
       {/* Modal de adicionar conteúdo */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl">
+          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-md border border-sss-light shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-sss-white">
                 {editando ? 'Editar Conteúdo' : 'Adicionar Conteúdo'}
               </h2>
               <button 
                 onClick={() => { setShowModal(false); setEditando(null); }}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 hover:text-sss-white transition-colors"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -671,7 +671,7 @@ export default function PainelCriador() {
                 <input 
                   ref={tituloRef}
                   required 
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   placeholder="Título do conteúdo" 
                   value={form.titulo} 
                   onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} 
@@ -682,7 +682,7 @@ export default function PainelCriador() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">URL</label>
                 <input 
                   required 
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   placeholder="Link do conteúdo" 
                   value={form.url} 
                   onChange={e => setForm(f => ({ ...f, url: e.target.value }))} 
@@ -693,7 +693,7 @@ export default function PainelCriador() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Tipo</label>
                 <input 
                   required 
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   placeholder="Ex: vídeo, live, post" 
                   value={form.tipo} 
                   onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} 
@@ -704,7 +704,7 @@ export default function PainelCriador() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Categoria</label>
                 <input 
                   required 
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   placeholder="Categoria do conteúdo" 
                   value={form.categoria} 
                   onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} 
@@ -714,12 +714,12 @@ export default function PainelCriador() {
               <div className="flex gap-3 pt-4">
                 <button 
                   type="submit" 
-                  className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                  className="flex-1 bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
                   disabled={saving}
                 >
                   {saving ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
                       Salvando...
                     </>
                   ) : (
@@ -731,7 +731,7 @@ export default function PainelCriador() {
                 </button>
                 <button 
                   type="button" 
-                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors" 
+                  className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
                   onClick={() => { setShowModal(false); setEditando(null); }} 
                   disabled={saving}
                 >
@@ -743,23 +743,23 @@ export default function PainelCriador() {
         </div>
       )}
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="min-h-screen bg-sss-dark">
         {/* Header */}
-        <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-40">
+        <div className="bg-sss-medium/50 backdrop-blur-sm border-b border-sss-light sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
-                    <VideoCameraIcon className="w-5 h-5 text-white" />
+                    <VideoCameraIcon className="w-5 h-5 text-sss-white" />
                   </div>
-                  <h1 className="text-xl font-bold text-white">Painel do Criador</h1>
+                  <h1 className="text-xl font-bold text-sss-white">Painel do Criador</h1>
                 </div>
               </div>
               
               <button 
                 onClick={() => setShowModal(true)}
-                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 shadow-lg"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-sss-white px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 shadow-lg"
               >
                 <PlusIcon className="w-4 h-4" />
                 Adicionar Conteúdo
@@ -778,7 +778,7 @@ export default function PainelCriador() {
                     <EyeIcon className="w-6 h-6 text-blue-400" />
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-white">{!loading ? totalVisualizacoes.toLocaleString() : '--'}</div>
+                    <div className="text-2xl font-bold text-sss-white">{!loading ? totalVisualizacoes.toLocaleString() : '--'}</div>
                     <div className="text-sm text-blue-300">Visualizações</div>
                   </div>
                 </div>
@@ -793,7 +793,7 @@ export default function PainelCriador() {
                     <HeartIcon className="w-6 h-6 text-pink-400" />
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-white">{!loading ? totalCurtidas.toLocaleString() : '--'}</div>
+                    <div className="text-2xl font-bold text-sss-white">{!loading ? totalCurtidas.toLocaleString() : '--'}</div>
                     <div className="text-sm text-pink-300">Curtidas</div>
                   </div>
                 </div>
@@ -808,7 +808,7 @@ export default function PainelCriador() {
                     <XMarkIcon className="w-6 h-6 text-red-400" />
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-white">{!loading ? totalDislikes.toLocaleString() : '--'}</div>
+                    <div className="text-2xl font-bold text-sss-white">{!loading ? totalDislikes.toLocaleString() : '--'}</div>
                     <div className="text-sm text-red-300">Dislikes</div>
                   </div>
                 </div>
@@ -823,7 +823,7 @@ export default function PainelCriador() {
                     <ShareIcon className="w-6 h-6 text-yellow-400" />
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-white">{!loading ? totalCompartilhamentos.toLocaleString() : '--'}</div>
+                    <div className="text-2xl font-bold text-sss-white">{!loading ? totalCompartilhamentos.toLocaleString() : '--'}</div>
                     <div className="text-sm text-yellow-300">Compartilhamentos</div>
                   </div>
                 </div>
@@ -836,15 +836,15 @@ export default function PainelCriador() {
 
           {/* Gestão de Conteúdos */}
           <section className="mb-8">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-700">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+              <div className="p-6 border-b border-sss-light">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <VideoCameraIcon className="w-5 h-5 text-white" />
+                      <VideoCameraIcon className="w-5 h-5 text-sss-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Seus Conteúdos</h2>
+                      <h2 className="text-xl font-bold text-sss-white">Seus Conteúdos</h2>
                       <p className="text-sm text-gray-400">Gerencie seus vídeos, lives e posts</p>
                     </div>
                   </div>
@@ -853,7 +853,7 @@ export default function PainelCriador() {
                     <div className="flex items-center space-x-3">
                       <span className="text-sm text-gray-300">Filtrar:</span>
                       <select 
-                        className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                        className="bg-sss-light border border-sss-light rounded-lg px-3 py-2 text-sss-white text-sm focus:ring-2 focus:ring-sss-accent focus:border-transparent" 
                         value={categoriaFiltro} 
                         onChange={e => setCategoriaFiltro(e.target.value)}
                       >
@@ -871,7 +871,7 @@ export default function PainelCriador() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                                              <MapPinIcon className="w-5 h-5 text-yellow-400" />
-                      <span className="font-semibold text-lg text-white">Conteúdo Fixado</span>
+                      <span className="font-semibold text-lg text-sss-white">Conteúdo Fixado</span>
                     </div>
                     <button 
                       className="text-yellow-400 hover:text-yellow-300 text-sm underline transition-colors" 
@@ -899,12 +899,12 @@ export default function PainelCriador() {
                     {conteudosFiltrados.map((c) => {
                       const yt = getYoutubeInfo((c as any).url);
                       return (
-                        <div key={c.id} className="bg-gray-700/50 rounded-xl overflow-hidden hover:bg-gray-700/70 transition-all duration-300 group border border-gray-600 hover:border-gray-500">
+                        <div key={c.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
                           {yt ? (
                             <div className="relative">
                               <img src={yt.thumbnail} alt={c.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
                               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
                                   Assistir no YouTube
                                 </a>
                               </div>
@@ -916,7 +916,7 @@ export default function PainelCriador() {
                           )}
                           
                           <div className="p-4">
-                            <a href={(c as any).url} target="_blank" rel="noopener" className="text-lg font-bold text-white hover:text-green-400 transition-colors line-clamp-2">
+                            <a href={(c as any).url} target="_blank" rel="noopener" className="text-lg font-bold text-sss-white hover:text-green-400 transition-colors line-clamp-2">
                               {c.titulo}
                             </a>
                             
@@ -927,7 +927,7 @@ export default function PainelCriador() {
                               </span>
                             </div>
                             
-                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-600">
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
                               <div className="flex space-x-2">
                                 <button 
                                   className="text-blue-400 hover:text-blue-300 transition-colors p-1" 
@@ -954,7 +954,7 @@ export default function PainelCriador() {
                               </div>
                               
                               {!yt && (
-                                <a href={(c as any).url} target="_blank" rel="noopener" className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors">
+                                <a href={(c as any).url} target="_blank" rel="noopener" className="bg-green-600 hover:bg-green-700 text-sss-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors">
                                   Ver conteúdo
                                 </a>
                               )}
@@ -971,7 +971,7 @@ export default function PainelCriador() {
                     <p className="text-gray-500 mb-6">Comece adicionando seu primeiro conteúdo para aparecer aqui</p>
                     <button 
                       onClick={() => setShowModal(true)}
-                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 mx-auto"
+                      className="bg-gradient-to-r from-green-500 to-green-600 text-sss-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2 mx-auto"
                     >
                       <PlusIcon className="w-4 h-4" />
                       Adicionar Primeiro Conteúdo
@@ -986,14 +986,14 @@ export default function PainelCriador() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Missões e Conquistas */}
             <div className="space-y-6">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
-                <div className="p-6 border-b border-gray-700">
+              <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+                <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                      <TrophyIcon className="w-5 h-5 text-white" />
+                      <TrophyIcon className="w-5 h-5 text-sss-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Missões</h2>
+                      <h2 className="text-xl font-bold text-sss-white">Missões</h2>
                       <p className="text-sm text-gray-400">Complete missões para ganhar recompensas</p>
                     </div>
                   </div>
@@ -1007,8 +1007,8 @@ export default function PainelCriador() {
                   ) : Array.isArray(missoes) && missoes.length > 0 ? (
                     <div className="space-y-3">
                       {missoes.map(m => (
-                        <div key={m.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
-                          <div className="font-semibold text-white mb-2">{m.titulo}</div>
+                        <div key={m.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
+                          <div className="font-semibold text-sss-white mb-2">{m.titulo}</div>
                           <div className="text-sm text-gray-400">{m.descricao}</div>
                         </div>
                       ))}
@@ -1022,14 +1022,14 @@ export default function PainelCriador() {
                 </div>
               </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
-                <div className="p-6 border-b border-gray-700">
+              <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+                <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
-                      <TrophyIcon className="w-5 h-5 text-white" />
+                      <TrophyIcon className="w-5 h-5 text-sss-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Conquistas</h2>
+                      <h2 className="text-xl font-bold text-sss-white">Conquistas</h2>
                       <p className="text-sm text-gray-400">Suas conquistas e badges</p>
                     </div>
                   </div>
@@ -1043,8 +1043,8 @@ export default function PainelCriador() {
                   ) : Array.isArray(conquistas) && conquistas.length > 0 ? (
                     <div className="space-y-3">
                       {conquistas.map(c => (
-                        <div key={c.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
-                          <div className="font-semibold text-white mb-2">{c.titulo}</div>
+                        <div key={c.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
+                          <div className="font-semibold text-sss-white mb-2">{c.titulo}</div>
                           <div className="text-sm text-gray-400">{c.descricao}</div>
                         </div>
                       ))}
@@ -1061,14 +1061,14 @@ export default function PainelCriador() {
 
             {/* Histórico de Doações e Ranking */}
             <div className="space-y-6">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
-                <div className="p-6 border-b border-gray-700">
+              <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+                <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                      <HeartIcon className="w-5 h-5 text-white" />
+                      <HeartIcon className="w-5 h-5 text-sss-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Histórico de Doações</h2>
+                      <h2 className="text-xl font-bold text-sss-white">Histórico de Doações</h2>
                       <p className="text-sm text-gray-400">Doações recebidas dos seus fãs</p>
                     </div>
                   </div>
@@ -1082,7 +1082,7 @@ export default function PainelCriador() {
                   ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
                     <div className="space-y-3 max-h-64 overflow-y-auto">
                       {doacoes.map(d => (
-                        <div key={d.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                        <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-bold text-green-400">{d.quantidade} sementes</span>
                             <span className="text-xs text-gray-400">
@@ -1107,14 +1107,14 @@ export default function PainelCriador() {
                 </div>
               </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
-                <div className="p-6 border-b border-gray-700">
+              <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+                <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <ChartBarIcon className="w-5 h-5 text-white" />
+                      <ChartBarIcon className="w-5 h-5 text-sss-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Ranking de Doadores</h2>
+                      <h2 className="text-xl font-bold text-sss-white">Ranking de Doadores</h2>
                       <p className="text-sm text-gray-400">Seus maiores apoiadores</p>
                     </div>
                   </div>
@@ -1128,13 +1128,13 @@ export default function PainelCriador() {
                   ) : Array.isArray(ranking) && ranking.length > 0 ? (
                     <div className="space-y-3">
                       {ranking.map((d, i) => (
-                        <div key={d.id} className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+                        <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
-                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-sss-white font-bold text-sm">
                                 {i + 1}
                               </div>
-                              <span className="font-semibold text-white">{d.nome}</span>
+                              <span className="font-semibold text-sss-white">{d.nome}</span>
                             </div>
                             <span className="text-green-400 font-bold">{d.total} sementes</span>
                           </div>
@@ -1155,22 +1155,22 @@ export default function PainelCriador() {
           {/* Seções adicionais continuam com o mesmo padrão moderno */}
           {/* Atalhos e widgets */}
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h3 className="font-bold text-white mb-2">Missões & Conquistas</h3>
+                <h3 className="font-bold text-sss-white mb-2">Missões & Conquistas</h3>
                 <ul className="space-y-1">
-                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ver missões</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ver conquistas</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver missões</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver conquistas</a></li>
                 </ul>
               </div>
             </div>
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h3 className="font-bold text-white mb-2">Monetização</h3>
+                <h3 className="font-bold text-sss-white mb-2">Monetização</h3>
                 <ul className="space-y-1">
-                  <li><a href="#" className="text-sss-accent hover:underline text-white">Histórico de doações</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-white">Ranking de doadores</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-white">Metas de arrecadação</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Histórico de doações</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ranking de doadores</a></li>
+                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Metas de arrecadação</a></li>
                 </ul>
               </div>
             </div>
@@ -1178,16 +1178,16 @@ export default function PainelCriador() {
 
           {/* Notificações e suporte */}
           <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h3 className="font-bold text-white mb-2">Notificações</h3>
+                <h3 className="font-bold text-sss-white mb-2">Notificações</h3>
                 {loadingNotificacoes ? (
                   <span className="text-gray-400">Carregando...</span>
                 ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
                   <ul className="space-y-2">
                     {notificacoes.map(n => (
                       <li key={n.id} className="border rounded p-2">
-                        <span className="font-semibold text-white">{n.titulo}</span>
+                        <span className="font-semibold text-sss-white">{n.titulo}</span>
                         <div className="text-sm text-gray-400">{n.mensagem}</div>
                         <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
                       </li>
@@ -1198,16 +1198,16 @@ export default function PainelCriador() {
                 )}
               </div>
             </div>
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h3 className="font-bold text-white mb-2">Suporte & Feedback</h3>
+                <h3 className="font-bold text-sss-white mb-2">Suporte & Feedback</h3>
                 <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
-                  <textarea className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
-                  <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
+                  <textarea className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
+                  <button type="submit" className="bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
                   {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
                 </form>
                 <ul className="space-y-1">
-                  <li><a href="#" className="text-red-700 hover:underline text-white">Enviar sugestão</a></li>
+                  <li><a href="#" className="text-red-700 hover:underline text-sss-white">Enviar sugestão</a></li>
                 </ul>
               </div>
             </div>
@@ -1215,9 +1215,9 @@ export default function PainelCriador() {
 
           {/* Configuração de Redes Sociais */}
           <section className="mb-8">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h2 className="text-lg font-bold text-white mb-4">Configurar Redes Sociais</h2>
+                <h2 className="text-lg font-bold text-sss-white mb-4">Configurar Redes Sociais</h2>
                 <p className="text-sm text-gray-400 mb-4">
                   Configure suas redes sociais para aparecer no ranking da página de status e permitir que seus fãs te encontrem.
                 </p>
@@ -1230,7 +1230,7 @@ export default function PainelCriador() {
                         placeholder="https://youtube.com/@seucanal"
                         value={redesSociais.youtube}
                         onChange={(e) => setRedesSociais(prev => ({ ...prev, youtube: e.target.value }))}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                        className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                       />
                     </div>
                     <div>
@@ -1240,7 +1240,7 @@ export default function PainelCriador() {
                         placeholder="https://twitch.tv/seucanal"
                         value={redesSociais.twitch}
                         onChange={(e) => setRedesSociais(prev => ({ ...prev, twitch: e.target.value }))}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                        className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                       />
                     </div>
                     <div>
@@ -1250,7 +1250,7 @@ export default function PainelCriador() {
                         placeholder="https://instagram.com/seuperfil"
                         value={redesSociais.instagram}
                         onChange={(e) => setRedesSociais(prev => ({ ...prev, instagram: e.target.value }))}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                        className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                       />
                     </div>
                     <div>
@@ -1260,7 +1260,7 @@ export default function PainelCriador() {
                         placeholder="https://tiktok.com/@seuperfil"
                         value={redesSociais.tiktok}
                         onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                        className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                       />
                     </div>
                   </div>
@@ -1268,7 +1268,7 @@ export default function PainelCriador() {
                     <button
                       type="submit"
                       disabled={salvandoRedes}
-                      className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {salvandoRedes ? (
                         <>
@@ -1293,19 +1293,19 @@ export default function PainelCriador() {
 
           {/* Enquetes para Seguidores */}
           <section className="mb-8">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h2 className="text-lg font-bold text-white mb-2">Enquetes para Seguidores</h2>
+                <h2 className="text-lg font-bold text-sss-white mb-2">Enquetes para Seguidores</h2>
                 <form onSubmit={handleCriarEnquete} className="flex flex-col gap-2 mb-4">
-                  <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
+                  <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" placeholder="Pergunta da enquete" value={novaEnquete.pergunta} onChange={e => setNovaEnquete(f => ({...f, pergunta: e.target.value}))} />
                   {novaEnquete.opcoes.map((op, i) => (
                     <div key={i} className="flex gap-2 items-center">
-                      <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all flex-1" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
+                      <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all flex-1" placeholder={`Opção ${i+1}`} value={op} onChange={e => setNovaEnquete(f => ({...f, opcoes: f.opcoes.map((o, j) => j===i ? e.target.value : o)}))} />
                       {novaEnquete.opcoes.length > 2 && <button type="button" className="text-red-600" onClick={() => setNovaEnquete(f => ({...f, opcoes: f.opcoes.filter((_,j) => j!==i)}))}>Remover</button>}
                     </div>
                   ))}
-                  <button type="button" className="text-sss-accent underline w-fit text-white" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
-                  <button type="submit" className="bg-sss-accent text-white px-4 py-2 rounded-lg font-semibold mt-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
+                  <button type="button" className="text-sss-accent underline w-fit text-sss-white" onClick={() => setNovaEnquete(f => ({...f, opcoes: [...f.opcoes, '']}))}>Adicionar opção</button>
+                  <button type="submit" className="bg-sss-accent text-sss-white px-4 py-2 rounded-lg font-semibold mt-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={salvandoEnquete || !novaEnquete.pergunta.trim() || novaEnquete.opcoes.filter(Boolean).length<2}>{salvandoEnquete ? 'Salvando...' : 'Criar Enquete'}</button>
                   {enqueteStatus==='salva' && <span className="text-green-600 text-sm">Enquete criada!</span>}
                 </form>
                 {loadingEnquetes ? (
@@ -1314,7 +1314,7 @@ export default function PainelCriador() {
                   <ul className="space-y-2">
                     {enquetes.map(e => (
                       <li key={e.id} className="border rounded p-2">
-                        <div className="font-semibold text-white mb-1">{e.pergunta}</div>
+                        <div className="font-semibold text-sss-white mb-1">{e.pergunta}</div>
                         <ul className="ml-4">
                           {e.opcoes.map(o => (
                             <li key={o.id} className="flex justify-between items-center">
@@ -1336,9 +1336,9 @@ export default function PainelCriador() {
 
           {/* Caixa de Perguntas/Recados dos Fãs */}
           <section className="mb-8">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 overflow-hidden">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
               <div className="p-6">
-                <h2 className="text-lg font-bold text-white mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
+                <h2 className="text-lg font-bold text-sss-white mb-2">Caixa de Perguntas/Recados dos Fãs</h2>
                 {loadingRecados ? (
                   <span className="text-gray-400">Carregando...</span>
                 ) : Array.isArray(recados) && recados.length > 0 ? (
@@ -1346,7 +1346,7 @@ export default function PainelCriador() {
                     {recados.map(r => (
                       <li key={r.id} className="border rounded p-2">
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold text-white">{r.usuarioNome}</span>
+                          <span className="font-semibold text-sss-white">{r.usuarioNome}</span>
                           <span className="text-xs text-gray-400">{r.data ? new Date(r.data).toLocaleDateString() : ''}</span>
                         </div>
                         <div className="text-gray-300 mb-1">{r.mensagem}</div>
@@ -1354,13 +1354,13 @@ export default function PainelCriador() {
                           <div className="text-green-700 text-sm">Resposta: {r.resposta}</div>
                         ) : respondendo === r.id ? (
                           <form onSubmit={e => handleResponderRecado(e, r.id)} className="flex gap-2 mt-1">
-                            <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all flex-1" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
-                            <button type="submit" className="bg-green-600 text-white px-3 py-1 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
-                            <button type="button" className="bg-gray-600 text-white px-3 py-1 rounded-lg transition-colors" onClick={() => setRespondendo(null)}>Cancelar</button>
+                            <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all flex-1" placeholder="Digite sua resposta..." value={resposta[r.id]||''} onChange={e => setResposta(s => ({...s, [r.id]: e.target.value}))} />
+                            <button type="submit" className="bg-green-600 text-sss-white px-3 py-1 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={!resposta[r.id]||respostaStatus[r.id]==='enviando'}>{respostaStatus[r.id]==='enviando' ? 'Enviando...' : 'Responder'}</button>
+                            <button type="button" className="bg-gray-600 text-sss-white px-3 py-1 rounded-lg transition-colors" onClick={() => setRespondendo(null)}>Cancelar</button>
                             {respostaStatus[r.id]==='enviado' && <span className="text-green-600 text-xs ml-2">Enviado!</span>}
                           </form>
                         ) : (
-                          <button className="text-sss-accent hover:underline text-sm mt-1 text-white" onClick={() => setRespondendo(r.id)}>Responder</button>
+                          <button className="text-sss-accent hover:underline text-sm mt-1 text-sss-white" onClick={() => setRespondendo(r.id)}>Responder</button>
                         )}
                         {r.resposta && (
                           <div className="flex gap-2 mt-2">
@@ -1369,8 +1369,8 @@ export default function PainelCriador() {
                               disabled={toggleStatus[r.id] === 'alterando'}
                               className={`text-xs px-2 py-1 rounded-lg transition-colors ${
                                 r.publico 
-                                  ? 'bg-green-600 text-white' 
-                                  : 'bg-gray-600 text-white'
+                                  ? 'bg-green-600 text-sss-white' 
+                                  : 'bg-gray-600 text-sss-white'
                               } hover:opacity-80 disabled:opacity-50`}
                             >
                               {toggleStatus[r.id] === 'alterando' ? 'Alterando...' : 
@@ -1394,13 +1394,13 @@ export default function PainelCriador() {
 
           {/* Geração de Links Personalizados para Divulgação */}
           <section className="mb-8">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 flex flex-col md:flex-row items-center gap-6 p-6 text-white">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light flex flex-col md:flex-row items-center gap-6 p-6 text-sss-white">
               <div className="flex-1">
-                <h2 className="text-lg font-bold text-white mb-2">Link Personalizado para Divulgação</h2>
+                <h2 className="text-lg font-bold text-sss-white mb-2">Link Personalizado para Divulgação</h2>
                 {linkDivulgacao ? (
                   <div className="flex items-center gap-2 mb-2">
-                    <input className="border rounded px-2 py-1 bg-gray-700 border-gray-600 rounded-lg text-white flex-1" value={linkDivulgacao} readOnly />
-                    <button className="bg-sss-accent text-white px-3 py-1 rounded-lg font-semibold transition-colors" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
+                    <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white flex-1" value={linkDivulgacao} readOnly />
+                    <button className="bg-sss-accent text-sss-white px-3 py-1 rounded-lg font-semibold transition-colors" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
                   </div>
                 ) : (
                   <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
