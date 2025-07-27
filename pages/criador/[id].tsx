@@ -1,413 +1,608 @@
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { 
-  HeartIcon, 
-  ArrowLeftIcon, 
+  ArrowLeftIcon,
+  TrophyIcon,
   StarIcon,
-  UserIcon,
-  CurrencyDollarIcon,
+  FireIcon,
   CalendarIcon,
+  ChartBarIcon,
+  UserIcon,
+  HeartIcon,
+  CurrencyDollarIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  ArrowDownTrayIcon,
+  PlayIcon,
+  EyeIcon,
+  ThumbUpIcon,
+  ThumbDownIcon,
   ChatBubbleLeftIcon,
-  ShareIcon
+  PaperAirplaneIcon
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import { auth } from '../../lib/auth'
+import { auth, User } from '../../lib/auth'
+import Navbar from '../../components/Navbar'
 
-interface Doacao {
-  id: string
-  usuario: string
-  valor: number
-  data: string
-  mensagem: string | null
-  avatarUrl?: string
-}
-
-interface Criador {
+interface CriadorDetalhes {
   id: string
   nome: string
+  avatar: string
   nivel: string
-  avatar?: string
-  bio?: string
-  sementes: number // Sementes disponíveis
-  sementesRecebidas?: number // Total de sementes recebidas em doações
-  apoiadores: number
+  nivelRanking: string
+  sementes: number
+  sementesRecebidas: number
+  pontosMissoes: number
+  pontosConquistas: number
+  pontosUsuario: number
+  pontuacaoTotal: number
   doacoes: number
+  missoesCompletadas: number
+  conquistasDesbloqueadas: number
   posicao: number
+  usuarioId: string
   redesSociais?: {
     youtube?: string
     twitch?: string
     instagram?: string
+    tiktok?: string
   }
 }
 
-export default function PerfilCriador() {
+interface Conteudo {
+  id: string
+  titulo: string
+  url: string
+  tipo: string
+  categoria: string
+  data: string
+  visualizacoes: number
+  curtidas: number
+  dislikes: number
+  comentarios: number
+}
+
+interface Enquete {
+  id: string
+  pergunta: string
+  opcoes: { id: string; texto: string; votos: number }[]
+  data: string
+}
+
+interface Recado {
+  id: string
+  titulo: string
+  mensagem: string
+  data: string
+  resposta?: string
+  publico: boolean
+}
+
+export default function CriadorPerfil() {
   const router = useRouter()
   const { id } = router.query
-  const [valorDoacao, setValorDoacao] = useState('')
-  const [mensagem, setMensagem] = useState('')
-  const [criador, setCriador] = useState<Criador | null>(null)
-  const [doacoesRecentes, setDoacoesRecentes] = useState<Doacao[]>([])
+  const [user, setUser] = useState<User | null>(null)
+  const [criador, setCriador] = useState<CriadorDetalhes | null>(null)
+  const [conteudos, setConteudos] = useState<Conteudo[]>([])
+  const [enquetes, setEnquetes] = useState<Enquete[]>([])
+  const [recados, setRecados] = useState<Recado[]>([])
   const [loading, setLoading] = useState(true)
+  const [showPerguntaForm, setShowPerguntaForm] = useState(false)
+  const [perguntaForm, setPerguntaForm] = useState({ titulo: '', mensagem: '' })
+  const [enviandoPergunta, setEnviandoPergunta] = useState(false)
+  const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
+
+  useEffect(() => {
+    const currentUser = auth.getUser()
+    if (!currentUser) {
+      router.push('/login')
+      return
+    }
+    setUser(currentUser)
+  }, [router])
 
   useEffect(() => {
     if (id) {
-      fetchCriadorData()
-      fetchDoacoesRecentes()
+      carregarDetalhesCriador(id as string)
     }
   }, [id])
 
-  const fetchCriadorData = async () => {
+  const carregarDetalhesCriador = async (criadorId: string) => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/criador/${id}`)
+      // Buscar dados do criador
+      const response = await fetch(`/api/criadores/${criadorId}`)
+      const data = await response.json()
+      
       if (response.ok) {
-        const data = await response.json()
         setCriador(data.criador)
-      } else {
-        console.error('Erro ao buscar dados do criador')
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados do criador:', error)
-    }
-  }
+        
+        // Carregar conteúdos do criador
+        const responseConteudos = await fetch(`/api/conteudos?criadorId=${criadorId}`)
+        const dataConteudos = await responseConteudos.json()
+        
+        if (responseConteudos.ok) {
+          setConteudos(dataConteudos.conteudos || [])
+        }
 
-  const fetchDoacoesRecentes = async () => {
-    try {
-      const response = await fetch(`/api/criador/${id}/doacoes`)
-      if (response.ok) {
-        const data = await response.json()
-        setDoacoesRecentes(data.doacoes)
-      } else {
-        console.error('Erro ao buscar doações recentes')
+        // Carregar enquetes do criador
+        const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`)
+        const dataEnquetes = await responseEnquetes.json()
+        
+        if (responseEnquetes.ok) {
+          setEnquetes(dataEnquetes.enquetes || [])
+        }
+
+        // Carregar recados públicos do criador
+        const responseRecados = await fetch(`/api/recados/publicos/${data.criador.usuarioId}`)
+        const dataRecados = await responseRecados.json()
+        
+        if (responseRecados.ok) {
+          setRecados(dataRecados.recados || [])
+        }
       }
     } catch (error) {
-      console.error('Erro ao buscar doações recentes:', error)
+      console.error('Erro ao carregar detalhes:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDoacao = async (e: React.FormEvent) => {
+  const handleEnviarPergunta = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!valorDoacao) {
-      alert('Por favor, digite um valor!')
-      return
-    }
+    if (!perguntaForm.titulo.trim() || !perguntaForm.mensagem.trim() || !criador || !user) return
 
-    // Verificar se o usuário está logado
-    const user = auth.getUser()
-    if (!user) {
-      alert('Você precisa estar logado para fazer uma doação!')
-      window.location.href = '/login'
-      return
-    }
-    
+    setEnviandoPergunta(true)
+    setPerguntaStatus('enviando')
+
     try {
-      const response = await fetch('/api/doacoes', {
+      const token = user.id
+      
+      const response = await fetch('/api/recados', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          doadorId: user.id,
-          criadorId: id,
-          quantidade: parseInt(valorDoacao),
-          mensagem: mensagem || null
+          destinatarioId: criador.usuarioId,
+          titulo: perguntaForm.titulo,
+          mensagem: perguntaForm.mensagem
         })
       })
 
       if (response.ok) {
-        alert('Doação realizada com sucesso! 🌱')
-        setValorDoacao('')
-        setMensagem('')
-        // Recarregar as doações recentes
-        fetchDoacoesRecentes()
-        // Recarregar dados do criador para atualizar estatísticas
-        fetchCriadorData()
+        const data = await response.json()
+        setPerguntaStatus('enviado')
+        setPerguntaForm({ titulo: '', mensagem: '' })
+        setShowPerguntaForm(false)
+        setTimeout(() => setPerguntaStatus('idle'), 3000)
       } else {
-        const errorData = await response.json()
-        alert(errorData.error || 'Erro ao realizar doação. Tente novamente.')
+        const data = await response.json()
+        setPerguntaStatus('erro')
+        setTimeout(() => setPerguntaStatus('idle'), 3000)
       }
     } catch (error) {
-      console.error('Erro ao fazer doação:', error)
-      alert('Erro ao realizar doação. Tente novamente.')
+      console.error('Erro ao enviar pergunta:', error)
+      setPerguntaStatus('erro')
+      setTimeout(() => setPerguntaStatus('idle'), 3000)
+    } finally {
+      setEnviandoPergunta(false)
     }
   }
 
-  const getNivelColor = (nivel: string) => {
-    switch (nivel) {
-      case 'Supremo': return 'text-yellow-500'
-      case 'Parceiro': return 'text-gray-400'
-      case 'Comum': return 'text-orange-600'
-      default: return 'text-gray-300'
+  const formatarNumero = (numero: number) => {
+    if (numero >= 1000000) {
+      return (numero / 1000000).toFixed(1) + 'M'
+    } else if (numero >= 1000) {
+      return (numero / 1000).toFixed(1) + 'K'
     }
+    return numero.toString()
   }
 
-  const getNivelBg = (nivel: string) => {
-    switch (nivel) {
-      case 'Supremo': return 'bg-yellow-500/20'
-      case 'Parceiro': return 'bg-gray-500/20'
-      case 'Comum': return 'bg-orange-500/20'
-      default: return 'bg-gray-500/20'
-    }
+  const formatarData = (data: string) => {
+    return new Date(data).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
-        <div className="text-sss-white text-xl">Carregando...</div>
-      </div>
+      <>
+        <Head>
+          <title>Carregando... | SementesPLAY</title>
+        </Head>
+        <div className="min-h-screen bg-sss-dark">
+          <Navbar />
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sss-accent mx-auto mb-4"></div>
+              <p className="text-sss-white">Carregando perfil do criador...</p>
+            </div>
+          </div>
+        </div>
+      </>
     )
   }
 
   if (!criador) {
     return (
-      <div className="min-h-screen bg-sss-dark flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-sss-white text-xl mb-4">Criador não encontrado</div>
-          <div className="text-gray-400 text-sm mb-4">
-            ID buscado: {id}
-          </div>
-          <div className="text-gray-400 text-sm">
-            <button 
-              onClick={() => {
-                console.log('Debug: ID do criador não encontrado:', id)
-                console.log('Debug: Router query:', router.query)
-                console.log('Debug: Router asPath:', router.asPath)
-              }}
-              className="px-4 py-2 bg-sss-accent text-white rounded-lg"
-            >
-              Ver logs no console
-            </button>
+      <>
+        <Head>
+          <title>Criador não encontrado | SementesPLAY</title>
+        </Head>
+        <div className="min-h-screen bg-sss-dark">
+          <Navbar />
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <ExclamationTriangleIcon className="w-16 h-16 text-red-500 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-sss-white mb-2">Criador não encontrado</h1>
+              <p className="text-gray-400 mb-4">O criador que você está procurando não existe ou foi removido.</p>
+              <button
+                onClick={() => router.back()}
+                className="bg-sss-accent text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+              >
+                Voltar
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     )
   }
 
   return (
     <>
       <Head>
-        <title>{criador.nome} - SementesPLAY</title>
-        <meta name="description" content={`Perfil do criador ${criador.nome}`} />
+        <title>{criador.nome} | SementesPLAY</title>
       </Head>
-
+      
       <div className="min-h-screen bg-sss-dark">
+        <Navbar />
+        
         {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
+        <div className="bg-sss-medium/50 backdrop-blur-sm border-b border-sss-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
+            <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
-                <Link href="/ranking" className="inline-flex items-center text-sss-accent hover:text-red-400">
-                  <ArrowLeftIcon className="w-5 h-5 mr-2" />
-                  Voltar ao Ranking
-                </Link>
+                <button
+                  onClick={() => router.back()}
+                  className="text-sss-white hover:text-sss-accent transition-colors"
+                >
+                  <ArrowLeftIcon className="w-6 h-6" />
+                </button>
+                <div className="flex items-center space-x-3">
+                  {criador.avatar && criador.avatar.startsWith('http') ? (
+                    <img src={criador.avatar} alt={criador.nome} className="w-10 h-10 rounded-full object-cover" />
+                  ) : (
+                    <span className="text-2xl">{criador.avatar}</span>
+                  )}
+                  <div>
+                    <h1 className="text-xl font-bold text-sss-white">{criador.nome}</h1>
+                    <p className="text-sm text-gray-400">Posição #{criador.posicao} no ranking</p>
+                  </div>
+                </div>
               </div>
               
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-sss-accent">SementesPLAY</h1>
-                <p className="text-gray-400">Perfil do Criador</p>
-              </div>
-              
-              <div className="w-20"></div> {/* Espaçador */}
+              <button 
+                onClick={() => setShowPerguntaForm(true)}
+                className="bg-sss-accent text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center space-x-2"
+              >
+                <PaperAirplaneIcon className="w-4 h-4" />
+                <span>Enviar Pergunta</span>
+              </button>
             </div>
           </div>
-        </header>
+        </div>
 
-        {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Profile Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-sss-medium rounded-2xl p-8 border border-sss-light mb-8"
-            >
-              <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
-                {/* Avatar */}
-                <div className="relative">
-                  <div className="w-32 h-32 bg-sss-accent/20 rounded-full flex items-center justify-center text-4xl">
-                    {criador.avatar || '🎮'}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Coluna da Esquerda - Informações do Criador */}
+            <div className="lg:col-span-1">
+              <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center w-20 h-20 rounded-full bg-sss-dark mx-auto mb-4">
+                    {criador.avatar && criador.avatar.startsWith('http') ? (
+                      <img src={criador.avatar} alt={criador.nome} className="w-20 h-20 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-4xl">{criador.avatar}</span>
+                    )}
                   </div>
-                  <div className="absolute -top-2 -right-2 bg-sss-accent text-white text-xs px-2 py-1 rounded-full font-bold">
-                    #{criador.posicao}
+                  <h2 className="text-2xl font-bold text-sss-white mb-2">{criador.nome}</h2>
+                  <div className="flex items-center justify-center space-x-2 mb-4">
+                    <span className="px-3 py-1 bg-sss-accent text-white text-sm rounded-full">
+                      {criador.nivelRanking}
+                    </span>
+                    <span className="text-gray-400">#{criador.posicao}</span>
                   </div>
                 </div>
 
-                {/* Info */}
-                <div className="flex-1 text-center lg:text-left">
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4">
-                    <h1 className="text-3xl font-bold text-sss-white">{criador.nome}</h1>
-                    <div className="flex gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getNivelBg(criador.nivel)} ${getNivelColor(criador.nivel)}`}>
-                        {criador.nivel}
-                      </span>
-                      <span className="px-3 py-1 rounded-full text-sm font-semibold bg-sss-accent/20 text-sss-accent">
-                        #{criador.posicao}
-                      </span>
+                {/* Estatísticas */}
+                <div className="space-y-4 mb-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <p className="text-sss-accent font-bold text-2xl">
+                        {formatarNumero(criador.sementes)}
+                      </p>
+                      <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sss-accent font-bold text-2xl">
+                        {formatarNumero(criador.sementesRecebidas)}
+                      </p>
+                      <p className="text-gray-400 text-sm">Sementes Recebidas</p>
                     </div>
                   </div>
                   
-                  <p className="text-gray-300 mb-6 max-w-2xl">
-                    {criador.bio || 'Criador de conteúdo focado em FiveM e RP. Sempre trazendo o melhor conteúdo para a comunidade!'}
-                  </p>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-sss-accent">{criador.sementes.toLocaleString()}</div>
-                      <div className="text-gray-400">Sementes Disponíveis</div>
+                      <p className="text-sss-white font-semibold text-lg">
+                        {formatarNumero(criador.pontuacaoTotal)}
+                      </p>
+                      <p className="text-gray-400 text-sm">Pontos Totais</p>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-sss-accent">{criador.apoiadores}</div>
-                      <div className="text-gray-400">Apoiadores</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-sss-accent">{criador.doacoes}</div>
-                      <div className="text-gray-400">Doações</div>
+                      <p className="text-sss-white font-semibold text-lg">
+                        {formatarNumero(criador.doacoes)}
+                      </p>
+                      <p className="text-gray-400 text-sm">Doações</p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Social Links */}
-                  {criador.redesSociais && (
-                    <div className="flex justify-center lg:justify-start gap-4">
+                {/* Redes Sociais */}
+                {(criador.redesSociais?.youtube || criador.redesSociais?.twitch || criador.redesSociais?.instagram || criador.redesSociais?.tiktok) && (
+                  <div className="border-t border-sss-light pt-4">
+                    <h3 className="text-sss-white font-semibold mb-3">Redes Sociais</h3>
+                    <div className="flex justify-center space-x-3">
                       {criador.redesSociais.youtube && (
-                        <a href={criador.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400">
-                          YouTube
+                        <a
+                          href={criador.redesSociais.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-red-500 hover:text-red-400 transition-colors"
+                          title="YouTube"
+                        >
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                          </svg>
                         </a>
                       )}
                       {criador.redesSociais.twitch && (
-                        <a href={criador.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-purple-500 hover:text-purple-400">
-                          Twitch
+                        <a
+                          href={criador.redesSociais.twitch}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-500 hover:text-purple-400 transition-colors"
+                          title="Twitch"
+                        >
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+                          </svg>
                         </a>
                       )}
                       {criador.redesSociais.instagram && (
-                        <a href={criador.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-400">
-                          Instagram
+                        <a
+                          href={criador.redesSociais.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-pink-500 hover:text-pink-400 transition-colors"
+                          title="Instagram"
+                        >
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                          </svg>
+                        </a>
+                      )}
+                      {criador.redesSociais.tiktok && (
+                        <a
+                          href={criador.redesSociais.tiktok}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-black hover:text-gray-700 transition-colors"
+                          title="TikTok"
+                        >
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                          </svg>
                         </a>
                       )}
                     </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Donation Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Donation Form */}
-              <div className="lg:col-span-1">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="bg-sss-medium rounded-lg p-6 border border-sss-light sticky top-8"
-                >
-                  <h3 className="text-lg font-semibold text-sss-white mb-4">Fazer Doação</h3>
-                  <form onSubmit={handleDoacao} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-sss-white mb-2">
-                        Valor (Sementes)
-                      </label>
-                      <div className="grid grid-cols-3 gap-2 mb-2">
-                        {[100, 500, 1000].map((valor) => (
-                          <button
-                            key={valor}
-                            type="button"
-                            onClick={() => setValorDoacao(valor.toString())}
-                            className={`p-2 rounded border-2 transition-colors ${
-                              valorDoacao === valor.toString()
-                                ? 'border-sss-accent bg-sss-accent text-white'
-                                : 'border-sss-light bg-sss-dark text-sss-white hover:border-sss-accent/50'
-                            }`}
-                          >
-                            {valor}
-                          </button>
-                        ))}
-                      </div>
-                      <input
-                        type="number"
-                        placeholder="Valor personalizado"
-                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                        value={valorDoacao}
-                        onChange={(e) => setValorDoacao(e.target.value)}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-sss-white mb-2">
-                        Mensagem (opcional)
-                      </label>
-                      <textarea
-                        rows={3}
-                        placeholder="Deixe uma mensagem..."
-                        className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                        value={mensagem}
-                        onChange={(e) => setMensagem(e.target.value)}
-                      />
-                    </div>
-                    
-                    <button
-                      type="submit"
-                      className="w-full bg-sss-accent hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <HeartIcon className="w-5 h-5" />
-                      <span>Doar Sementes</span>
-                    </button>
-                  </form>
-                </motion.div>
-              </div>
-
-              {/* Recent Donations */}
-              <div className="lg:col-span-2">
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="bg-sss-medium rounded-lg p-6 border border-sss-light"
-                >
-                  <h3 className="text-lg font-semibold text-sss-white mb-4">Doações Recentes</h3>
-                  <div className="space-y-4">
-                    {doacoesRecentes.length === 0 ? (
-                      <div className="text-center text-gray-400 py-8">
-                        Nenhuma doação ainda. Seja o primeiro a apoiar este criador! 🌱
-                      </div>
-                    ) : (
-                      doacoesRecentes.map((doacao) => (
-                        <div key={doacao.id} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                              {doacao.avatarUrl ? (
-                                <img src={doacao.avatarUrl} alt={doacao.usuario} className="w-10 h-10 rounded-full" />
-                              ) : (
-                                <UserIcon className="w-5 h-5 text-sss-accent" />
-                              )}
-                            </div>
-                            <div>
-                              <p className="text-sss-white font-medium">{doacao.usuario}</p>
-                              <p className="text-gray-400 text-sm">{doacao.data}</p>
-                              {doacao.mensagem && (
-                                <p className="text-gray-300 text-sm mt-1">"{doacao.mensagem}"</p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sss-accent font-semibold">{doacao.valor} Sementes</p>
-                          </div>
-                        </div>
-                      ))
-                    )}
                   </div>
-                </motion.div>
+                )}
               </div>
             </div>
-          </motion.div>
+
+            {/* Coluna da Direita - Conteúdos e Atividades */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Conteúdos */}
+              <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                <h3 className="text-xl font-bold text-sss-white mb-4 flex items-center">
+                  <PlayIcon className="w-6 h-6 mr-2" />
+                  Conteúdos
+                </h3>
+                
+                {conteudos.length === 0 ? (
+                  <p className="text-gray-400 text-center py-8">Nenhum conteúdo publicado ainda.</p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {conteudos.map((conteudo) => (
+                      <div key={conteudo.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
+                        <h4 className="text-sss-white font-semibold mb-2">{conteudo.titulo}</h4>
+                        <div className="flex items-center space-x-4 text-sm text-gray-400 mb-3">
+                          <span className="px-2 py-1 bg-sss-accent text-white rounded text-xs">
+                            {conteudo.tipo}
+                          </span>
+                          <span className="px-2 py-1 bg-sss-light text-sss-white rounded text-xs">
+                            {conteudo.categoria}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-400">
+                          <div className="flex items-center space-x-4">
+                            <span className="flex items-center">
+                              <EyeIcon className="w-4 h-4 mr-1" />
+                              {formatarNumero(conteudo.visualizacoes)}
+                            </span>
+                            <span className="flex items-center">
+                              <ThumbUpIcon className="w-4 h-4 mr-1" />
+                              {formatarNumero(conteudo.curtidas)}
+                            </span>
+                            <span className="flex items-center">
+                              <ChatBubbleLeftIcon className="w-4 h-4 mr-1" />
+                              {formatarNumero(conteudo.comentarios)}
+                            </span>
+                          </div>
+                          <span>{formatarData(conteudo.data)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Enquetes */}
+              {enquetes.length > 0 && (
+                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                  <h3 className="text-xl font-bold text-sss-white mb-4 flex items-center">
+                    <ChartBarIcon className="w-6 h-6 mr-2" />
+                    Enquetes
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {enquetes.map((enquete) => (
+                      <div key={enquete.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
+                        <h4 className="text-sss-white font-semibold mb-3">{enquete.pergunta}</h4>
+                        <div className="space-y-2">
+                          {enquete.opcoes.map((opcao) => {
+                            const totalVotos = enquete.opcoes.reduce((sum, o) => sum + o.votos, 0)
+                            const porcentagem = totalVotos > 0 ? (opcao.votos / totalVotos) * 100 : 0
+                            
+                            return (
+                              <div key={opcao.id} className="flex items-center justify-between">
+                                <span className="text-sss-white text-sm">{opcao.texto}</span>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-24 bg-sss-light rounded-full h-2">
+                                    <div 
+                                      className="bg-sss-accent h-2 rounded-full" 
+                                      style={{ width: `${porcentagem}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-gray-400 text-sm w-8 text-right">
+                                    {opcao.votos}
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <p className="text-gray-400 text-xs mt-3">{formatarData(enquete.data)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recados Públicos */}
+              {recados.length > 0 && (
+                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                  <h3 className="text-xl font-bold text-sss-white mb-4 flex items-center">
+                    <ChatBubbleLeftIcon className="w-6 h-6 mr-2" />
+                    Recados Públicos
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {recados.map((recado) => (
+                      <div key={recado.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
+                        <h4 className="text-sss-white font-semibold mb-2">{recado.titulo}</h4>
+                        <p className="text-gray-300 mb-3">{recado.mensagem}</p>
+                        {recado.resposta && (
+                          <div className="bg-sss-light rounded-lg p-3 mt-3">
+                            <p className="text-sss-accent font-semibold text-sm mb-1">Resposta:</p>
+                            <p className="text-sss-white text-sm">{recado.resposta}</p>
+                          </div>
+                        )}
+                        <p className="text-gray-400 text-xs">{formatarData(recado.data)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+
+        {/* Modal de Pergunta */}
+        {showPerguntaForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4 border border-sss-light"
+            >
+              <h3 className="text-xl font-bold text-sss-white mb-4">Enviar Pergunta</h3>
+              
+              <form onSubmit={handleEnviarPergunta} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Título</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                    placeholder="Título da pergunta"
+                    value={perguntaForm.titulo}
+                    onChange={e => setPerguntaForm(f => ({ ...f, titulo: e.target.value }))}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Mensagem</label>
+                  <textarea
+                    required
+                    rows={4}
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all resize-none"
+                    placeholder="Sua pergunta..."
+                    value={perguntaForm.mensagem}
+                    onChange={e => setPerguntaForm(f => ({ ...f, mensagem: e.target.value }))}
+                  />
+                </div>
+
+                {perguntaStatus === 'enviado' && (
+                  <div className="bg-green-600 text-white p-3 rounded-lg text-center">
+                    Pergunta enviada com sucesso!
+                  </div>
+                )}
+
+                {perguntaStatus === 'erro' && (
+                  <div className="bg-red-600 text-white p-3 rounded-lg text-center">
+                    Erro ao enviar pergunta. Tente novamente.
+                  </div>
+                )}
+
+                <div className="flex space-x-3">
+                  <button
+                    type="submit"
+                    disabled={enviandoPergunta}
+                    className="flex-1 bg-sss-accent text-white py-3 px-4 rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {enviandoPergunta ? 'Enviando...' : 'Enviar Pergunta'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPerguntaForm(false)}
+                    className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-gray-700 transition"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
       </div>
     </>
   )
