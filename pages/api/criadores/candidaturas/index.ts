@@ -95,17 +95,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
          }
        })
 
-             // Log da ação (comentado temporariamente para debug)
-       // await prisma.logAuditoria.create({
-       //   data: {
-       //     usuarioId: user.id,
-       //     acao: 'CANDIDATURA_CRIADOR',
-       //     detalhes: 'Candidatura enviada para criador',
-       //     ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
-       //     userAgent: req.headers['user-agent'] || '',
-       //     nivel: 'info'
-       //   }
-       // })
+             // Log da ação
+       try {
+         await prisma.logAuditoria.create({
+           data: {
+             usuarioId: user.id,
+             acao: 'CANDIDATURA_CRIADOR',
+             detalhes: 'Candidatura enviada para criador',
+             ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+             userAgent: req.headers['user-agent'] || '',
+             nivel: 'info'
+           }
+         })
+       } catch (logError) {
+         console.error('Erro ao criar log de auditoria:', logError)
+         // Não falhar a candidatura por causa do log
+       }
 
       res.status(201).json({ 
         message: 'Candidatura enviada com sucesso',
