@@ -112,8 +112,6 @@ export default function Navbar() {
           {Number(user?.nivel) >= 5 && (
             <a href="/admin" className={`${router.asPath.startsWith('/admin') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Admin</a>
           )}
-          
-          <a href="/dashboard" className={`${router.asPath.startsWith('/dashboard') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Dashboard</a>
         </nav>
       </div>
       {/* Usuário e logout colados na borda direita */}
