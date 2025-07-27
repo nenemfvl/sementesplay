@@ -80,6 +80,7 @@ interface Recado {
   data: string
   resposta?: string
   publico: boolean
+  remetenteNome?: string
 }
 
 export default function CriadorPerfil() {
@@ -156,7 +157,17 @@ export default function CriadorPerfil() {
           const dataRecados = await responseRecados.json()
           
           if (responseRecados.ok) {
-            setRecados(dataRecados.recados || [])
+            // Mapear os dados da API para o formato esperado pela interface
+            const recadosMapeados = (dataRecados.recados || []).map((recado: any) => ({
+              id: recado.id,
+              titulo: recado.pergunta || '',
+              mensagem: `Pergunta de ${recado.remetenteNome || 'Usuário'}`,
+              data: recado.dataResposta || new Date().toISOString(),
+              resposta: recado.resposta,
+              publico: true,
+              remetenteNome: recado.remetenteNome
+            }))
+            setRecados(recadosMapeados)
           }
         } catch (error) {
           console.error('Erro ao carregar recados:', error)
