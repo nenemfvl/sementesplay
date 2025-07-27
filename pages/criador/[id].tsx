@@ -372,18 +372,9 @@ export default function CriadorPerfil() {
             : conteudo
         ))
 
-        // Compartilhar perfil do criador usando Web Share API se disponível
-        if (navigator.share) {
-          await navigator.share({
-            title: `Perfil do ${criador?.nome || 'Criador'}`,
-            text: `Confira o perfil do ${criador?.nome || 'criador'} no SementesPLAY!`,
-            url: window.location.href
-          })
-        } else {
-          // Fallback: copiar URL do perfil para clipboard
-          await navigator.clipboard.writeText(window.location.href)
-          alert('Link do perfil copiado para a área de transferência!')
-        }
+        // Copiar URL do perfil para clipboard
+        await navigator.clipboard.writeText(window.location.href)
+        alert('Link do perfil copiado para a área de transferência!')
       }
     } catch (error) {
       console.error('Erro ao compartilhar:', error)
