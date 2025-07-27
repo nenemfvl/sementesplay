@@ -74,10 +74,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      // Atualizar tipo do usuário
+      // Atualizar tipo e nível do usuário
       await prisma.usuario.update({
         where: { id: candidatura.usuarioId },
-        data: { tipo: 'criador' }
+        data: { 
+          tipo: 'criador',
+          nivel: 'criador-iniciante'
+        }
       })
 
       // Log da ação
@@ -92,15 +95,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      // Enviar notificação (implementar sistema de notificações)
+      // Enviar notificação
       await prisma.notificacao.create({
         data: {
           usuarioId: candidatura.usuarioId,
           titulo: 'Candidatura Aprovada! 🎉',
-          mensagem: 'Parabéns! Sua candidatura para criador foi aprovada. Você agora pode começar a receber doações da comunidade.',
+          mensagem: 'Parabéns! Sua candidatura para criador foi aprovada. Você agora tem acesso ao painel criador e pode começar a receber doações da comunidade.',
           tipo: 'candidatura_aprovada',
-          lida: false,
-          //dataCriacao: new Date()
+          lida: false
         }
       })
 
