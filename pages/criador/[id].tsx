@@ -22,7 +22,8 @@ import {
   HandThumbUpIcon,
   HandThumbDownIcon,
   ChatBubbleLeftIcon,
-  PaperAirplaneIcon
+  PaperAirplaneIcon,
+  ShareIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
 import Navbar from '../../components/Navbar'
@@ -63,6 +64,7 @@ interface Conteudo {
   curtidas: number
   dislikes: number
   comentarios: number
+  compartilhamentos: number
   thumbnail: string
 }
 
@@ -342,6 +344,52 @@ export default function CriadorPerfil() {
       }
     } catch (error) {
       console.error('Erro ao dar/remover dislike:', error)
+    }
+  }
+
+  const handleCompartilhar = async (conteudoId: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Evitar que o clique propague para o card
+    if (!user) return
+
+    try {
+      // Registrar compartilhamento na API
+      const response = await fetch(`/api/conteudos/${conteudoId}/compartilhar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ userId: user.id })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Atualizar contador de compartilhamentos
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, compartilhamentos: data.compartilhamentos }
+            : conteudo
+        ))
+
+        // Compartilhar usando Web Share API se disponível
+        const conteudo = conteudos.find(c => c.id === conteudoId)
+        if (conteudo && navigator.share) {
+          await navigator.share({
+            title: conteudo.titulo,
+            text: `Confira este conteúdo: ${conteudo.titulo}`,
+            url: conteudo.url
+          })
+        } else {
+          // Fallback: copiar URL para clipboard
+          if (conteudo) {
+            await navigator.clipboard.writeText(conteudo.url)
+            alert('Link copiado para a área de transferência!')
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao compartilhar:', error)
     }
   }
 
@@ -647,6 +695,14 @@ export default function CriadorPerfil() {
                                    conteudosInteracao[conteudo.id]?.disliked ? 'fill-current' : ''
                                  }`} />
                                  {formatarNumero(conteudo.dislikes)}
+                               </button>
+                               <button
+                                 onClick={(e) => handleCompartilhar(conteudo.id, e)}
+                                 className="flex items-center text-gray-400 hover:text-green-500 transition-colors"
+                                 title="Compartilhar"
+                               >
+                                 <ShareIcon className="w-4 h-4 mr-1" />
+                                 {formatarNumero(conteudo.compartilhamentos || 0)}
                                </button>
                             </div>
                             <span>{formatarData(conteudo.data)}</span>
