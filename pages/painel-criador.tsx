@@ -91,6 +91,7 @@ export default function PainelCriador() {
 
   const [authorized, setAuthorized] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [criadorId, setCriadorId] = useState<string | null>(null);
 
   // Estados para redes sociais
   const [redesSociais, setRedesSociais] = useState({
@@ -303,8 +304,11 @@ export default function PainelCriador() {
         if (user) {
           const res = await fetch(`/api/criador/${user.id}`);
           const data = await res.json();
-          if (data.criador && data.criador.redesSociais) {
-            setRedesSociais(data.criador.redesSociais);
+          if (data.criador) {
+            setCriadorId(data.criador.id);
+            if (data.criador.redesSociais) {
+              setRedesSociais(data.criador.redesSociais);
+            }
           }
         }
       } catch (error) {
@@ -350,10 +354,15 @@ export default function PainelCriador() {
     e.preventDefault();
     setSaving(true);
     try {
+      if (!criadorId) {
+        alert('ID do criador não encontrado.');
+        setSaving(false);
+        return;
+      }
       const res = await fetch('/api/conteudos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, criadorId }),
       });
       if (res.ok) {
         const novo = await res.json();
@@ -371,10 +380,15 @@ export default function PainelCriador() {
     if (!editando) return;
     setSaving(true);
     try {
+      if (!criadorId) {
+        alert('ID do criador não encontrado.');
+        setSaving(false);
+        return;
+      }
       const res = await fetch('/api/conteudos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, id: editando.id }),
+        body: JSON.stringify({ ...form, id: editando.id, criadorId }),
       });
       if (res.ok) {
         const atualizado = await res.json();
