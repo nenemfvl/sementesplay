@@ -104,7 +104,7 @@ export default function CriadorPerfil() {
     if (id) {
       carregarDetalhesCriador(id as string)
     }
-  }, [id])
+  }, [id, user])
 
   const carregarDetalhesCriador = async (criadorId: string) => {
     setLoading(true)
@@ -129,17 +129,23 @@ export default function CriadorPerfil() {
           setConteudos([])
         }
 
-        // Carregar enquetes do criador (sem autenticação por enquanto)
-        try {
-          const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`)
-          const dataEnquetes = await responseEnquetes.json()
-          
-          if (responseEnquetes.ok) {
-            setEnquetes(dataEnquetes.enquetes || [])
+        // Carregar enquetes do criador (apenas se usuário estiver autenticado)
+        if (user) {
+          try {
+            const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`, {
+              headers: {
+                'Authorization': `Bearer ${user.id}`
+              }
+            })
+            const dataEnquetes = await responseEnquetes.json()
+            
+            if (responseEnquetes.ok) {
+              setEnquetes(dataEnquetes.enquetes || [])
+            }
+          } catch (error) {
+            console.error('Erro ao carregar enquetes:', error)
+            setEnquetes([])
           }
-        } catch (error) {
-          console.error('Erro ao carregar enquetes:', error)
-          setEnquetes([])
         }
 
         // Carregar recados públicos do criador
