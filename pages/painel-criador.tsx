@@ -156,10 +156,25 @@ export default function PainelCriador() {
           return;
         }
         
-        const res = await fetch(`/api/conteudos?criadorId=${user.id}`);
+        // Primeiro buscar o criadorId do usuário
+        const criadorRes = await fetch(`/api/criadores?usuarioId=${user.id}`);
+        const criadorData = await criadorRes.json();
+        
+        if (!criadorData.criadores || criadorData.criadores.length === 0) {
+          console.log('Nenhum criador encontrado para o usuário');
+          setConteudos([]);
+          return;
+        }
+        
+        const criadorId = criadorData.criadores[0].id;
+        console.log('Criador ID encontrado:', criadorId);
+        
+        // Agora buscar os conteúdos usando o criadorId
+        const res = await fetch(`/api/conteudos?criadorId=${criadorId}`);
         const data = await res.json();
         setConteudos(Array.isArray(data) ? data : (data?.conteudos || []));
       } catch (e) {
+        console.error('Erro ao buscar conteúdos:', e);
         setConteudos([]);
       }
       setLoading(false);
