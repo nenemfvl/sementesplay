@@ -157,39 +157,42 @@ export default function Criadores() {
     return numero.toString()
   }
 
-  const carregarDetalhesCriador = async (criadorId: string) => {
+  const carregarDetalhesCriador = async (usuarioId: string) => {
     setLoadingDetalhes(true)
     try {
-      // Carregar detalhes do criador
-      const responseCriador = await fetch(`/api/criador/${criadorId}`)
+      // Primeiro, buscar o ID do criador usando o usuarioId
+      const responseCriador = await fetch(`/api/criador/${usuarioId}`)
       const dataCriador = await responseCriador.json()
       
       if (responseCriador.ok) {
         setCriadorDetalhes(dataCriador.criador)
-      }
+        
+        // Usar o ID do criador para buscar conteúdos
+        const criadorId = dataCriador.criador.id
+        
+        // Carregar conteúdos do criador
+        const responseConteudos = await fetch(`/api/conteudos?criadorId=${criadorId}`)
+        const dataConteudos = await responseConteudos.json()
+        
+        if (responseConteudos.ok) {
+          setConteudos(dataConteudos.conteudos || [])
+        }
 
-      // Carregar conteúdos do criador
-      const responseConteudos = await fetch(`/api/conteudos?criadorId=${criadorId}`)
-      const dataConteudos = await responseConteudos.json()
-      
-      if (responseConteudos.ok) {
-        setConteudos(dataConteudos.conteudos || [])
-      }
+        // Carregar enquetes do criador
+        const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`)
+        const dataEnquetes = await responseEnquetes.json()
+        
+        if (responseEnquetes.ok) {
+          setEnquetes(dataEnquetes.enquetes || [])
+        }
 
-      // Carregar enquetes do criador
-      const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`)
-      const dataEnquetes = await responseEnquetes.json()
-      
-      if (responseEnquetes.ok) {
-        setEnquetes(dataEnquetes.enquetes || [])
-      }
-
-      // Carregar perguntas públicas do criador
-      const responsePerguntas = await fetch(`/api/recados/publicos/${criadorId}`)
-      const dataPerguntas = await responsePerguntas.json()
-      
-      if (responsePerguntas.ok) {
-        setPerguntasPublicas(dataPerguntas.recados || [])
+        // Carregar perguntas públicas do criador
+        const responsePerguntas = await fetch(`/api/recados/publicos/${usuarioId}`)
+        const dataPerguntas = await responsePerguntas.json()
+        
+        if (responsePerguntas.ok) {
+          setPerguntasPublicas(dataPerguntas.recados || [])
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar detalhes:', error)
