@@ -647,43 +647,44 @@ export default function CandidaturaCriador() {
                 {currentStep === 3 && renderStep3()}
                 {currentStep === 4 && renderStep4()}
 
-              {/* Navigation */}
-              <div className="flex justify-between mt-8">
-                <button
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                  className="px-6 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
-                >
-                  Anterior
-                </button>
-                
-                {currentStep < 4 ? (
+                {/* Navigation */}
+                <div className="flex justify-between mt-8">
                   <button
-                    onClick={nextStep}
-                    className="px-6 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
+                    onClick={prevStep}
+                    disabled={currentStep === 1}
+                    className="px-6 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
                   >
-                    Próximo
+                    Anterior
                   </button>
-                ) : (
-                  <button
-                    onClick={submitCandidatura}
-                    disabled={loading}
-                    className="px-6 py-2 bg-sss-accent hover:bg-red-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center space-x-2"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        <span>Enviando...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Enviar Candidatura</span>
-                      </>
-                    )}
-                  </button>
-                )}
+                  
+                  {currentStep < 4 ? (
+                    <button
+                      onClick={nextStep}
+                      className="px-6 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
+                    >
+                      Próximo
+                    </button>
+                  ) : (
+                    <button
+                      onClick={submitCandidatura}
+                      disabled={loading}
+                      className="px-6 py-2 bg-sss-accent hover:bg-red-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+                    >
+                      {loading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <span>Enviando...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Enviar Candidatura</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>
