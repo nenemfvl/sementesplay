@@ -157,6 +157,44 @@ export default function Criadores() {
     return numero.toString()
   }
 
+  const registrarVisualizacao = async (conteudoId: string) => {
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (response.ok) {
+        // Atualizar o estado local se necessário
+        setConteudos(prev => prev.map(c => 
+          c.id === conteudoId 
+            ? { ...c, visualizacoes: (c.visualizacoes || 0) + 1 }
+            : c
+        ))
+      }
+    } catch (error) {
+      console.error('Erro ao registrar visualização:', error)
+    }
+  }
+
+  const curtirConteudo = async (conteudoId: string) => {
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/curtir`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (response.ok) {
+        // Atualizar o estado local
+        setConteudos(prev => prev.map(c => 
+          c.id === conteudoId 
+            ? { ...c, likes: (c.likes || 0) + 1 }
+            : c
+        ))
+      }
+    } catch (error) {
+      console.error('Erro ao curtir conteúdo:', error)
+    }
+  }
+
   const carregarDetalhesCriador = async (usuarioId: string) => {
     setLoadingDetalhes(true)
     try {
@@ -666,6 +704,7 @@ export default function Criadores() {
                                           target="_blank" 
                                           rel="noopener noreferrer"
                                           className="hover:text-sss-accent transition-colors cursor-pointer"
+                                          onClick={() => registrarVisualizacao(conteudo.id)}
                                         >
                                           {conteudo.titulo}
                                         </a>
@@ -675,8 +714,20 @@ export default function Criadores() {
                                     </h5>
                                     <p className="text-gray-400 text-xs mt-1">{conteudo.descricao?.substring(0, 60)}...</p>
                                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                                      <span>👁️ {formatarNumero(conteudo.visualizacoes || 0)}</span>
-                                      <span>❤️ {formatarNumero(conteudo.likes || 0)}</span>
+                                      <span 
+                                        className="cursor-pointer hover:text-sss-accent transition-colors"
+                                        onClick={() => registrarVisualizacao(conteudo.id)}
+                                        title="Visualizar"
+                                      >
+                                        👁️ {formatarNumero(conteudo.visualizacoes || 0)}
+                                      </span>
+                                      <span 
+                                        className="cursor-pointer hover:text-red-400 transition-colors"
+                                        onClick={() => curtirConteudo(conteudo.id)}
+                                        title="Curtir"
+                                      >
+                                        ❤️ {formatarNumero(conteudo.likes || 0)}
+                                      </span>
                                       <span>💬 {formatarNumero(conteudo.comentarios?.length || 0)}</span>
                                     </div>
                                   </div>
