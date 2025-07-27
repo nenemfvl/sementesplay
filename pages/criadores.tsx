@@ -639,11 +639,40 @@ export default function Criadores() {
                             {conteudos.slice(0, 3).map((conteudo: any) => (
                               <div key={conteudo.id} className="bg-sss-medium rounded-lg p-3">
                                 <div className="flex items-start space-x-3">
-                                  <div className="w-12 h-12 bg-sss-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    {conteudo.tipo === 'video' ? '🎥' : '📝'}
+                                  {/* Thumbnail do conteúdo */}
+                                  <div className="w-16 h-12 bg-sss-accent/20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                    {conteudo.thumbnail ? (
+                                      <img 
+                                        src={conteudo.thumbnail} 
+                                        alt={conteudo.titulo}
+                                        className="w-full h-full object-cover"
+                                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                                          e.currentTarget.style.display = 'none';
+                                          const next = e.currentTarget.nextElementSibling as HTMLElement | null;
+                                          if (next) next.style.display = 'flex';
+                                        }}
+                                      />
+                                    ) : null}
+                                    <div className={`w-full h-full flex items-center justify-center ${conteudo.thumbnail ? 'hidden' : ''}`}>
+                                      {conteudo.tipo === 'video' ? '🎥' : '📝'}
+                                    </div>
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <h5 className="text-sss-white font-medium text-sm truncate">{conteudo.titulo}</h5>
+                                    {/* Título como link clicável */}
+                                    <h5 className="text-sss-white font-medium text-sm truncate">
+                                      {conteudo.url ? (
+                                        <a 
+                                          href={conteudo.url} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="hover:text-sss-accent transition-colors cursor-pointer"
+                                        >
+                                          {conteudo.titulo}
+                                        </a>
+                                      ) : (
+                                        conteudo.titulo
+                                      )}
+                                    </h5>
                                     <p className="text-gray-400 text-xs mt-1">{conteudo.descricao?.substring(0, 60)}...</p>
                                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                                       <span>👁️ {formatarNumero(conteudo.visualizacoes || 0)}</span>
