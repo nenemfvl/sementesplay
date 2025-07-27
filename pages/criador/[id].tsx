@@ -374,7 +374,25 @@ export default function CriadorPerfil() {
 
         // Copiar URL do perfil para clipboard
         await navigator.clipboard.writeText(window.location.href)
-        alert('Link do perfil copiado para a área de transferência!')
+        
+        // Mostrar notificação elegante
+        const notification = document.createElement('div')
+        notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full'
+        notification.textContent = 'Link copiado!'
+        document.body.appendChild(notification)
+        
+        // Animar entrada
+        setTimeout(() => {
+          notification.classList.remove('translate-x-full')
+        }, 100)
+        
+        // Remover após 3 segundos
+        setTimeout(() => {
+          notification.classList.add('translate-x-full')
+          setTimeout(() => {
+            document.body.removeChild(notification)
+          }, 300)
+        }, 3000)
       }
     } catch (error) {
       console.error('Erro ao compartilhar:', error)
