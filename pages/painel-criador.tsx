@@ -131,7 +131,7 @@ export default function PainelCriador() {
   // Estatísticas calculadas
   const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
   const totalCurtidas = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).likes || 0, 0) : 0;
-  const totalComentarios = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + ((c as any).comentarios?.length || 0), 0) : 0;
+  const totalDislikes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + ((c as any).dislikes || 0), 0) : 0;
   const totalCompartilhamentos = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).compartilhamentos || 0, 0) : 0;
 
   function handleFixarConteudo(id: string, fixar: boolean) {
@@ -643,8 +643,8 @@ export default function PainelCriador() {
             <span className="text-2xl font-bold text-pink-500">{!loading ? totalCurtidas : '--'}</span>
           </div>
           <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
-            <span className="text-lg font-semibold">Comentários</span>
-            <span className="text-2xl font-bold text-blue-500">{!loading ? totalComentarios : '--'}</span>
+            <span className="text-lg font-semibold">Dislikes</span>
+            <span className="text-2xl font-bold text-red-500">{!loading ? totalDislikes : '--'}</span>
           </div>
           <div className="bg-sss-medium rounded-lg p-4 border border-sss-light text-sss-white flex flex-col items-center">
             <span className="text-lg font-semibold">Compartilhamentos</span>
