@@ -19,8 +19,8 @@ import {
   ArrowDownTrayIcon,
   PlayIcon,
   EyeIcon,
-  ThumbUpIcon,
-  ThumbDownIcon,
+  HandThumbUpIcon,
+  HandThumbDownIcon,
   ChatBubbleLeftIcon,
   PaperAirplaneIcon
 } from '@heroicons/react/24/outline'
@@ -449,7 +449,7 @@ export default function CriadorPerfil() {
                               {formatarNumero(conteudo.visualizacoes)}
                             </span>
                             <span className="flex items-center">
-                              <ThumbUpIcon className="w-4 h-4 mr-1" />
+                              <HandThumbUpIcon className="w-4 h-4 mr-1" />
                               {formatarNumero(conteudo.curtidas)}
                             </span>
                             <span className="flex items-center">
