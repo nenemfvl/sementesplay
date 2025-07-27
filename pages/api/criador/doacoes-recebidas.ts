@@ -56,7 +56,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const doacoesFormatadas = doacoesRecebidas.map(doacao => ({
       id: doacao.id,
       tipo: 'recebida',
-      doador: doacao.doador.nome,
+      doador: {
+        nome: doacao.doador.nome
+      },
       doadorId: doacao.doador.id,
       doadorAvatar: doacao.doador.avatarUrl,
       quantidade: doacao.quantidade,
