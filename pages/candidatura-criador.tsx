@@ -20,7 +20,6 @@ interface CandidaturaData {
   nome: string
   email: string
   bio: string
-  categoria: string
   redesSociais: {
     youtube?: string
     twitch?: string
@@ -44,7 +43,6 @@ export default function CandidaturaCriador() {
     nome: '',
     email: '',
     bio: '',
-    categoria: '',
     redesSociais: {},
     portfolio: {
       descricao: '',
@@ -59,15 +57,7 @@ export default function CandidaturaCriador() {
   const [loading, setLoading] = useState(false)
   const [portfolioLinks, setPortfolioLinks] = useState([''])
 
-  const categorias = [
-    'Gaming/FiveM',
-    'Streaming',
-    'Educativo',
-    'Entretenimento',
-    'Tecnologia',
-    'Lifestyle',
-    'Outros'
-  ]
+
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -206,21 +196,7 @@ export default function CandidaturaCriador() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-sss-white mb-2">
-          Categoria Principal
-        </label>
-        <select
-          value={formData.categoria}
-          onChange={(e) => handleInputChange('categoria', e.target.value)}
-          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
-        >
-          <option value="">Selecione uma categoria</option>
-          {categorias.map(categoria => (
-            <option key={categoria} value={categoria}>{categoria}</option>
-          ))}
-        </select>
-      </div>
+      
 
       <div>
         <label className="block text-sm font-medium text-sss-white mb-2">
@@ -296,56 +272,7 @@ export default function CandidaturaCriador() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-sss-white mb-2">
-          Descrição do Portfólio
-        </label>
-        <textarea
-          rows={3}
-          value={formData.portfolio.descricao}
-          onChange={(e) => setFormData(prev => ({
-            ...prev,
-            portfolio: { ...prev.portfolio, descricao: e.target.value }
-          }))}
-          className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-          placeholder="Descreva seus melhores trabalhos e conquistas..."
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-sss-white mb-2">
-          Links do Portfólio
-        </label>
-        <div className="space-y-2">
-          {portfolioLinks.map((link, index) => (
-            <div key={index} className="flex space-x-2">
-              <input
-                type="url"
-                value={link}
-                onChange={(e) => updatePortfolioLink(index, e.target.value)}
-                className="flex-1 px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                placeholder="https://exemplo.com/seutrabalho"
-              />
-              {portfolioLinks.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removePortfolioLink(index)}
-                  className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                >
-                  Remover
-                </button>
-              )}
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addPortfolioLink}
-            className="px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
-          >
-            Adicionar Link
-          </button>
-        </div>
-      </div>
+      
     </div>
   )
 
@@ -473,20 +400,14 @@ export default function CandidaturaCriador() {
               <span className="text-gray-400">Nome:</span>
               <span className="text-sss-white">{formData.nome}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Categoria:</span>
-              <span className="text-sss-white">{formData.categoria}</span>
-            </div>
+            
             <div className="flex justify-between">
               <span className="text-gray-400">Redes Sociais:</span>
               <span className="text-sss-white">
                 {Object.values(formData.redesSociais).filter(Boolean).length} configuradas
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Links do Portfólio:</span>
-              <span className="text-sss-white">{portfolioLinks.filter(link => link.trim() !== '').length}</span>
-            </div>
+            
           </div>
         </div>
       </div>
