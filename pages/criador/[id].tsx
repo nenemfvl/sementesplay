@@ -157,16 +157,16 @@ export default function CriadorPerfil() {
           const dataRecados = await responseRecados.json()
           
           if (responseRecados.ok) {
-            // Mapear os dados da API para o formato esperado pela interface
-            const recadosMapeados = (dataRecados.recados || []).map((recado: any) => ({
-              id: recado.id,
-              titulo: recado.pergunta || '',
-              mensagem: `Pergunta de ${recado.remetenteNome || 'Usuário'}`,
-              data: recado.dataResposta || new Date().toISOString(),
-              resposta: recado.resposta,
-              publico: true,
-              remetenteNome: recado.remetenteNome
-            }))
+                         // Mapear os dados da API para o formato esperado pela interface
+             const recadosMapeados = (dataRecados.recados || []).map((recado: any) => ({
+               id: recado.id,
+               titulo: recado.pergunta || '',
+               mensagem: recado.pergunta || '', // Mostrar a pergunta real como mensagem
+               data: recado.dataResposta || new Date().toISOString(),
+               resposta: recado.resposta,
+               publico: true,
+               remetenteNome: recado.remetenteNome
+             }))
             setRecados(recadosMapeados)
           }
         } catch (error) {
