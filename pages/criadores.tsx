@@ -713,23 +713,19 @@ export default function Criadores() {
                                       )}
                                     </h5>
                                     <p className="text-gray-400 text-xs mt-1">{conteudo.descricao?.substring(0, 60)}...</p>
-                                    <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                                      <span 
-                                        className="cursor-pointer hover:text-sss-accent transition-colors"
-                                        onClick={() => registrarVisualizacao(conteudo.id)}
-                                        title="Visualizar"
-                                      >
-                                        👁️ {formatarNumero(conteudo.visualizacoes || 0)}
-                                      </span>
-                                      <span 
-                                        className="cursor-pointer hover:text-red-400 transition-colors"
-                                        onClick={() => curtirConteudo(conteudo.id)}
-                                        title="Curtir"
-                                      >
-                                        ❤️ {formatarNumero(conteudo.likes || 0)}
-                                      </span>
-                                      <span>💬 {formatarNumero(conteudo.comentarios?.length || 0)}</span>
-                                    </div>
+                                                <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+              <span title="Visualizações">
+                👁️ {formatarNumero(conteudo.visualizacoes || 0)}
+              </span>
+              <span 
+                className="cursor-pointer hover:text-red-400 transition-colors"
+                onClick={() => curtirConteudo(conteudo.id)}
+                title="Curtir"
+              >
+                ❤️ {formatarNumero(conteudo.likes || 0)}
+              </span>
+              <span>💬 {formatarNumero(conteudo.comentarios?.length || 0)}</span>
+            </div>
                                   </div>
                                 </div>
                               </div>
