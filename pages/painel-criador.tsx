@@ -152,7 +152,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/conteudos');
         const data = await res.json();
-        setConteudos(data);
+        setConteudos(Array.isArray(data) ? data : (data?.conteudos || []));
       } catch (e) {
         setConteudos([]);
       }
@@ -169,7 +169,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/missoes');
         const data = await res.json();
-        setMissoes(data);
+        setMissoes(Array.isArray(data) ? data : (data?.missoes || []));
       } catch {
         setMissoes([]);
       }
@@ -180,7 +180,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/conquistas');
         const data = await res.json();
-        setConquistas(data);
+        setConquistas(Array.isArray(data) ? data : (data?.conquistas || []));
       } catch {
         setConquistas([]);
       }
@@ -198,7 +198,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/doacoes');
         const data = await res.json();
-        setDoacoes(data);
+        setDoacoes(Array.isArray(data) ? data : (data?.doacoes || []));
       } catch {
         setDoacoes([]);
       }
@@ -209,7 +209,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/ranking/doadores');
         const data = await res.json();
-        setRanking(data);
+        setRanking(Array.isArray(data) ? data : (data?.ranking || []));
       } catch {
         setRanking([]);
       }
@@ -227,7 +227,7 @@ export default function PainelCriador() {
       try {
         const res = await fetch('/api/notificacoes');
         const data = await res.json();
-        setNotificacoes(data);
+        setNotificacoes(Array.isArray(data) ? data : (data?.notificacoes || []));
       } catch {
         setNotificacoes([]);
       }
@@ -256,7 +256,7 @@ export default function PainelCriador() {
           }
         });
         const data = await res.json();
-        setRecados(data.recados || []);
+        setRecados(Array.isArray(data?.recados) ? data.recados : []);
       } catch (error) {
         console.error('Erro ao buscar recados:', error);
         setRecados([]);
@@ -284,7 +284,7 @@ export default function PainelCriador() {
           }
         });
         const data = await res.json();
-        setEnquetes(data.enquetes || []);
+        setEnquetes(Array.isArray(data?.enquetes) ? data.enquetes : []);
       } catch (error) {
         console.error('Erro ao buscar enquetes:', error);
         setEnquetes([]);
@@ -518,7 +518,7 @@ export default function PainelCriador() {
         }
       });
       const data = await res.json();
-      setEnquetes(data.enquetes || []);
+      setEnquetes(Array.isArray(data?.enquetes) ? data.enquetes : []);
     } catch (error) {
       console.error('Erro ao criar enquete:', error);
     } finally {
