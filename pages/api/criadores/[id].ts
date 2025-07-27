@@ -15,18 +15,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'ID do criador é obrigatório' })
     }
 
-    // Buscar o criador com dados do usuário
-    const criador = await prisma.criador.findUnique({
-      where: { id },
-      include: {
-        usuario: {
-          include: {
-            missoes: true,
-            conquistas: true
-          }
-        }
-      }
-    })
+         // Buscar o criador com dados do usuário
+     const criador = await prisma.criador.findUnique({
+       where: { id },
+       include: {
+         usuario: {
+           include: {
+             missaoUsuarios: {
+               include: {
+                 missao: true
+               }
+             },
+             conquistas: {
+               include: {
+                 conquista: true
+               }
+             }
+           }
+         }
+       }
+     })
 
     if (!criador) {
       return res.status(404).json({ error: 'Criador não encontrado' })
@@ -42,29 +50,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sementesRecebidas = doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
     const apoiadoresUnicos = new Set(doacoes.map(d => d.doadorId)).size
 
-    // Calcular pontuação total
-    const pontosMissoes = criador.usuario.missoes.length * 10
-    const pontosConquistas = criador.usuario.conquistas.length * 50
-    const pontosUsuario = criador.usuario.pontuacao || 0
-    const pontuacaoTotal = pontosMissoes + pontosConquistas + pontosUsuario
+         // Calcular pontuação total
+     const missoesConcluidas = criador.usuario.missaoUsuarios.filter(mu => mu.concluida).length
+     const conquistasDesbloqueadas = criador.usuario.conquistas.length
+     const pontosMissoes = missoesConcluidas * 10
+     const pontosConquistas = conquistasDesbloqueadas * 50
+     const pontosUsuario = criador.usuario.pontuacao || 0
+     const pontuacaoTotal = pontosMissoes + pontosConquistas + pontosUsuario
 
-    // Buscar posição no ranking
-    const todosCriadores = await prisma.criador.findMany({
-      include: {
-        usuario: {
-          include: {
-            missoes: true,
-            conquistas: true
-          }
-        }
-      }
-    })
+         // Buscar posição no ranking
+     const todosCriadores = await prisma.criador.findMany({
+       include: {
+         usuario: {
+           include: {
+             missaoUsuarios: {
+               include: {
+                 missao: true
+               }
+             },
+             conquistas: {
+               include: {
+                 conquista: true
+               }
+             }
+           }
+         }
+       }
+     })
 
-    const criadoresComPontuacao = todosCriadores.map(c => {
-      const doacoesCriador = doacoes.filter(d => d.criadorId === c.id)
-      const pontuacaoCriador = (c.usuario.missoes.length * 10) + (c.usuario.conquistas.length * 50) + (c.usuario.pontuacao || 0)
-      return { ...c, pontuacao: pontuacaoCriador }
-    })
+     const criadoresComPontuacao = todosCriadores.map(c => {
+       const doacoesCriador = doacoes.filter(d => d.criadorId === c.id)
+       const missoesConcluidasCriador = c.usuario.missaoUsuarios.filter(mu => mu.concluida).length
+       const conquistasDesbloqueadasCriador = c.usuario.conquistas.length
+       const pontuacaoCriador = (missoesConcluidasCriador * 10) + (conquistasDesbloqueadasCriador * 50) + (c.usuario.pontuacao || 0)
+       return { ...c, pontuacao: pontuacaoCriador }
+     })
 
     criadoresComPontuacao.sort((a, b) => b.pontuacao - a.pontuacao)
     const posicao = criadoresComPontuacao.findIndex(c => c.id === id) + 1
@@ -115,9 +135,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       pontosConquistas,
       pontosUsuario,
       pontuacaoTotal,
-      doacoes: totalDoacoes,
-      missoesCompletadas: criador.usuario.missoes.length,
-      conquistasDesbloqueadas: criador.usuario.conquistas.length,
+             doacoes: totalDoacoes,
+       missoesCompletadas: missoesConcluidas,
+       conquistasDesbloqueadas: conquistasDesbloqueadas,
       posicao,
       usuarioId: criador.usuarioId,
       redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
