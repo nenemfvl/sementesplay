@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       // Verificar se é criador para criar enquetes
-      if (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante') {
+      if (!user || (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante')) {
         return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem criar enquetes.' });
       }
 
@@ -104,11 +104,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (!pergunta || !opcoes || !Array.isArray(opcoes)) {
         return res.status(400).json({ error: 'Dados inválidos' })
-      }
-
-      // Verificar se o usuário é um criador
-      if (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante') {
-        return res.status(403).json({ error: 'Apenas criadores podem criar enquetes' });
       }
 
       const novaEnquete = await prisma.enquete.create({
