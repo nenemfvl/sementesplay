@@ -1,0 +1,5 @@
+[33mb84d224d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Corrigir erro TypeScript na API do perfil
+[33me91e5d4c[m Corrigir API do perfil para mostrar sementes de criadores corretamente
+[33m4b069b8a[m Corrigir API do perfil para mostrar sementes corretas
+[33m0d058055[m Refatorar ranking de doadores para usar Prisma ORM
+[33m34dfa79e[m Corrigir query do ranking de doadores - remover aspas das tabelas
