@@ -50,13 +50,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sementesRecebidas = doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
     const apoiadoresUnicos = new Set(doacoes.map(d => d.doadorId)).size
 
-         // Calcular pontuação total
+         // Calcular pontuação total (mesmo critério da página de status)
      const missoesConcluidas = criador.usuario.missaoUsuarios.filter(mu => mu.concluida).length
      const conquistasDesbloqueadas = criador.usuario.conquistas.length
      const pontosMissoes = missoesConcluidas * 10
-     const pontosConquistas = conquistasDesbloqueadas * 50
+     const pontosConquistas = conquistasDesbloqueadas * 20 // Corrigido para 20 pontos
      const pontosUsuario = criador.usuario.pontuacao || 0
-     const pontuacaoTotal = pontosMissoes + pontosConquistas + pontosUsuario
+     const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario // Incluir sementes recebidas
 
          // Buscar posição no ranking
      const todosCriadores = await prisma.criador.findMany({
@@ -78,11 +78,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
        }
      })
 
+     // Buscar doações de todos os criadores para calcular pontuação correta
+     const todasDoacoes = await prisma.doacao.findMany({
+       include: { doador: true }
+     })
+
      const criadoresComPontuacao = todosCriadores.map(c => {
-       const doacoesCriador = doacoes.filter(d => d.criadorId === c.id)
+       const doacoesCriador = todasDoacoes.filter(d => d.criadorId === c.id)
+       const sementesRecebidasCriador = doacoesCriador.reduce((sum, doacao) => sum + doacao.quantidade, 0)
        const missoesConcluidasCriador = c.usuario.missaoUsuarios.filter(mu => mu.concluida).length
        const conquistasDesbloqueadasCriador = c.usuario.conquistas.length
-       const pontuacaoCriador = (missoesConcluidasCriador * 10) + (conquistasDesbloqueadasCriador * 50) + (c.usuario.pontuacao || 0)
+       const pontuacaoCriador = sementesRecebidasCriador + (missoesConcluidasCriador * 10) + (conquistasDesbloqueadasCriador * 20) + (c.usuario.pontuacao || 0)
        return { ...c, pontuacao: pontuacaoCriador }
      })
 
