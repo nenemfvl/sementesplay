@@ -307,16 +307,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         console.log('Sementes deduzidas do doador')
 
-        // Adicionar sementes ao criador
-        console.log('Adicionando sementes ao criador...')
-        await tx.criador.update({
+        // Buscar o usuário do criador para adicionar sementes
+        console.log('Buscando usuário do criador...')
+        const criador = await tx.criador.findUnique({
           where: { id: String(criadorId) },
-          data: { 
-            sementes: { increment: quantidade },
-            doacoes: { increment: 1 }
-          }
+          select: { usuarioId: true }
         })
-        console.log('Sementes adicionadas ao criador')
+        console.log('Criador encontrado:', criador)
+
+        if (criador) {
+          // Adicionar sementes ao usuário do criador (sementes disponíveis)
+          console.log('Adicionando sementes ao usuário do criador...')
+          await tx.usuario.update({
+            where: { id: criador.usuarioId },
+            data: { sementes: { increment: quantidade } }
+          })
+          console.log('Sementes adicionadas ao usuário do criador')
+
+          // Atualizar contador de doações no criador
+          console.log('Atualizando contador de doações...')
+          await tx.criador.update({
+            where: { id: String(criadorId) },
+            data: { doacoes: { increment: 1 } }
+          })
+          console.log('Contador de doações atualizado')
+        } else {
+          console.log('Criador não encontrado para adicionar sementes')
+        }
 
         // Registrar histórico de sementes
         console.log('Registrando histórico de sementes do doador...')
@@ -329,14 +346,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
         console.log('Histórico do doador registrado')
-
-        // Buscar o usuário do criador para registrar o histórico
-        console.log('Buscando usuário do criador...')
-        const criador = await tx.criador.findUnique({
-          where: { id: String(criadorId) },
-          select: { usuarioId: true }
-        })
-        console.log('Criador encontrado:', criador)
 
         if (criador) {
           console.log('Registrando histórico de sementes do criador...')
