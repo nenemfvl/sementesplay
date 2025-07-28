@@ -20,9 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Usar as sementes do usuário, mas se for criador, considerar também as sementes do criador
-    let usuarioComSementes = { ...usuario };
+    let usuarioComSementes: any = { ...usuario };
     
-    // Se o usuário for um criador, usar as sementes do criador (que incluem as recebidas)
+    // Se o usuário for um criador, calcular sementes recebidas
     if (usuario.criador) {
       // Buscar doações recebidas para calcular sementes totais
       const doacoes = await prisma.doacao.findMany({
