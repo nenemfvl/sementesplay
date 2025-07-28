@@ -142,7 +142,7 @@ export default function Doar() {
         // Atualizar sementes do usuário
         auth.updateUser({ sementes: user.sementes - valorNum })
         alert('Doação realizada com sucesso! 🌱')
-        window.location.href = '/dashboard'
+        window.location.href = '/criadores'
       } else {
         console.error('Erro na resposta da API:', data)
         alert(`Erro: ${data.error || 'Erro interno do servidor'}`)
