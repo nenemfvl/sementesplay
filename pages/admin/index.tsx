@@ -25,6 +25,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
+import Navbar from '../../components/Navbar'
 
 interface AdminStats {
   totalUsuarios: number
@@ -121,29 +122,8 @@ export default function AdminDashboard() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <Link href="/dashboard" className="inline-flex items-center text-sss-accent hover:text-red-400">
-                  <ArrowLeftIcon className="w-5 h-5 mr-2" />
-                  Voltar ao Dashboard
-                </Link>
-              </div>
-              
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
-                  <ShieldCheckIcon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-red-400">Painel Administrativo</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Navbar */}
+        <Navbar />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
