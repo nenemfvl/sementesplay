@@ -1172,29 +1172,7 @@ export default function PainelCriador() {
             </div>
           </div>
 
-          {/* Seções adicionais continuam com o mesmo padrão moderno */}
-        {/* Atalhos e widgets */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6">
-                <h3 className="font-bold text-sss-white mb-2">Missões & Conquistas</h3>
-            <ul className="space-y-1">
-                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver missões</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ver conquistas</a></li>
-            </ul>
-          </div>
-            </div>
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6">
-                <h3 className="font-bold text-sss-white mb-2">Monetização</h3>
-            <ul className="space-y-1">
-                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Histórico de doações</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Ranking de doadores</a></li>
-                  <li><a href="#" className="text-sss-accent hover:underline text-sss-white">Metas de arrecadação</a></li>
-            </ul>
-              </div>
-          </div>
-        </section>
+  
 
         {/* Notificações e suporte */}
         <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
