@@ -19,11 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    // Se o usuário for um criador, incluir as sementes do criador
+    // Usar as sementes do usuário (não do criador)
     let usuarioComSementes = { ...usuario };
-    if (usuario.criador) {
-      usuarioComSementes.sementes = usuario.criador.sementes;
-    }
+    // As sementes já estão no usuario.sementes, não precisa alterar
 
     const { senha, ...usuarioSemSenha } = usuarioComSementes;
     return res.status(200).json(usuarioSemSenha);
