@@ -146,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Buscar doações separadamente para evitar problemas
     const doacoes = await prisma.doacao.findMany({
-      where: { criadorId: id },
+      where: { criadorId: criador.id },
       select: {
         id: true,
         quantidade: true
@@ -172,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    const posicao = ranking.findIndex(item => item.id === id) + 1
+    const posicao = ranking.findIndex(item => item.id === criador.id) + 1
 
     console.log('API criador: Posição no ranking:', posicao)
 
