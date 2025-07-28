@@ -512,22 +512,13 @@ export default function CriadorPerfil() {
 
                 {/* Estatísticas */}
                 <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <p className="text-sss-accent font-bold text-2xl">
                         {formatarNumero(criador.sementes)}
                       </p>
                       <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-sss-white font-semibold text-lg">
-                        {formatarNumero(criador.sementesRecebidas)}
-                      </p>
-                      <p className="text-gray-400 text-sm">Sementes Recebidas</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
                       <p className="text-sss-white font-semibold text-lg">
                         {formatarNumero(criador.pontuacaoTotal)}
