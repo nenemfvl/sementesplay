@@ -61,9 +61,24 @@ export default function Status() {
   useEffect(() => {
     const favoritosSalvos = localStorage.getItem('criadoresFavoritos')
     if (favoritosSalvos) {
-      setFavoritos(new Set(JSON.parse(favoritosSalvos)))
+      try {
+        const favoritosArray = JSON.parse(favoritosSalvos)
+        // Verificar se os IDs dos favoritos ainda existem nos criadores
+        const favoritosValidos = favoritosArray.filter((id: string) => 
+          criadores.some(criador => criador.id === id)
+        )
+        setFavoritos(new Set(favoritosValidos))
+        // Atualizar localStorage com apenas favoritos válidos
+        if (favoritosValidos.length !== favoritosArray.length) {
+          localStorage.setItem('criadoresFavoritos', JSON.stringify(favoritosValidos))
+        }
+      } catch (error) {
+        console.error('Erro ao carregar favoritos:', error)
+        localStorage.removeItem('criadoresFavoritos')
+        setFavoritos(new Set())
+      }
     }
-  }, [])
+  }, [criadores])
 
   const loadRankingMissoesConquistas = async () => {
     setLoadingRanking(true)
