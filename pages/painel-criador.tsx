@@ -260,10 +260,21 @@ export default function PainelCriador() {
     async function fetchRanking() {
       setLoadingRanking(true);
       try {
-        const res = await fetch('/api/ranking/doadores');
+        const user = auth.getUser();
+        if (!user) {
+          setRanking([]);
+          return;
+        }
+        
+        const res = await fetch('/api/ranking/doadores', {
+          headers: {
+            'Authorization': `Bearer ${user.id}`
+          }
+        });
         const data = await res.json();
         setRanking(Array.isArray(data) ? data : (data?.ranking || []));
-      } catch {
+      } catch (error) {
+        console.error('Erro ao buscar ranking:', error);
         setRanking([]);
       }
       setLoadingRanking(false);
