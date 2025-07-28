@@ -786,7 +786,7 @@ export default function CriadorPerfil() {
                             )
                           })}
                         </div>
-                        <p className="text-gray-400 text-xs mt-3">{formatarData(enquete.data)}</p>
+                        <p className="text-gray-400 text-xs mt-3">{formatarData(enquete.dataCriacao)}</p>
                       </div>
                     ))}
                             </div>
