@@ -27,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Valor mínimo de R$ 10,00' })
       }
 
-             // Calcular sementes (1 real = 1 semente)
-       const sementesGeradas = Math.floor(valor)
+      // Calcular sementes (1 real = 1 semente)
+      const sementesGeradas = Math.floor(valor)
 
       // Processar pagamento em transação
       const resultado = await prisma.$transaction(async (tx) => {
@@ -45,9 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             dataProcessamento: new Date()
           }
         })
-
-                 // Adicionar sementes diretamente ao usuário (1 real = 1 semente)
-         const sementesGeradas = Math.floor(valor)
 
         // Adicionar sementes ao usuário
         await tx.usuario.update({
