@@ -162,23 +162,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('API criador: Estatísticas calculadas - Sementes Recebidas:', totalSementesRecebidas, 'Sementes Disponíveis:', sementesDisponiveis, 'Doações:', numeroDoacoes)
 
-    // Buscar posição no ranking baseado nas sementes do usuário
+    // Buscar posição no ranking usando o mesmo critério da página de status
     const ranking = await prisma.criador.findMany({
-      include: {
+      where: {
         usuario: {
-          select: {
-            sementes: true
+          nivel: {
+            in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
         }
       },
-      orderBy: {
+      include: {
         usuario: {
-          sementes: 'desc'
-        }
+          include: {
+            missaoUsuarios: {
+              where: {
+                concluida: true
+              }
+            },
+            conquistas: true
+          }
+        },
+        doacoesRecebidas: true
       }
     })
 
-    const posicao = ranking.findIndex(item => item.id === criador.id) + 1
+    // Calcular pontuação composta para cada criador (mesmo critério da página de status)
+    const criadoresComPontuacao = ranking.map(c => {
+      const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+      const pontosMissoes = c.usuario.missaoUsuarios.length * 10
+      const pontosConquistas = c.usuario.conquistas.length * 20
+      const pontosUsuario = c.usuario.pontuacao || 0
+      const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
+      
+      return {
+        id: c.id,
+        pontuacaoTotal
+      }
+    })
+
+    // Ordenar por pontuação total (maior para menor)
+    criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
+
+    const posicao = criadoresComPontuacao.findIndex(item => item.id === criador.id) + 1
 
     console.log('API criador: Posição no ranking:', posicao)
 
