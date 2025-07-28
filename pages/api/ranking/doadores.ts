@@ -41,8 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         d.doadorId,
         u.nome,
         SUM(d.quantidade) as total
-      FROM "Doacao" d
-      JOIN "Usuario" u ON d.doadorId = u.id
+      FROM Doacao d
+      JOIN Usuario u ON d.doadorId = u.id
       WHERE d.criadorId = ${criador.id}
       GROUP BY d.doadorId, u.nome
       ORDER BY total DESC
