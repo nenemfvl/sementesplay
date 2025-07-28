@@ -49,7 +49,7 @@ export default function AdminUsuarios() {
     
     if (Number(currentUser.nivel) < 5) {
       alert('Acesso negado. Apenas administradores podem acessar esta área.')
-      window.location.href = '/dashboard'
+              window.location.href = '/admin'
       return
     }
     

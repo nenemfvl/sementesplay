@@ -61,7 +61,7 @@ export default function Analytics() {
       return
     }
     if (parseInt(currentUser.nivel) < 3) {
-      window.location.href = '/dashboard'
+              window.location.href = '/criadores'
       return
     }
     setUser(currentUser)

@@ -176,7 +176,7 @@ export default function CandidaturaCriador() {
 
       if (response.ok) {
         alert('Candidatura enviada com sucesso! 🎉\nVocê receberá uma notificação em breve.')
-        window.location.href = '/dashboard'
+        window.location.href = '/criadores'
       } else {
         const data = await response.json()
         alert(`Erro: ${data.error}`)

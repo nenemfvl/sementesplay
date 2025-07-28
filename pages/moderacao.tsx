@@ -97,7 +97,7 @@ export default function Moderacao() {
     // Verificar se é moderador ou admin
     if (Number(currentUser.nivel) < 4) {
       alert('Acesso negado. Apenas moderadores e administradores podem acessar esta área.')
-      window.location.href = '/dashboard'
+              window.location.href = '/criadores'
       return
     }
     

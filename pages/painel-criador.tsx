@@ -140,7 +140,7 @@ export default function PainelCriador() {
         setCheckingAuth(false);
       } else {
         alert(`Acesso negado. Seu nível é: ${user.nivel || 'desconhecido'}. Apenas criadores podem acessar o painel de criador.`);
-        window.location.href = '/dashboard';
+        window.location.href = '/perfil';
       }
     };
 
