@@ -162,13 +162,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('API criador: Estatísticas calculadas - Sementes Recebidas:', totalSementesRecebidas, 'Sementes Disponíveis:', sementesDisponiveis, 'Doações:', numeroDoacoes)
 
-    // Buscar posição no ranking de forma mais simples
+    // Buscar posição no ranking baseado nas sementes do usuário
     const ranking = await prisma.criador.findMany({
-      select: {
-        id: true
+      include: {
+        usuario: {
+          select: {
+            sementes: true
+          }
+        }
       },
       orderBy: {
-        sementes: 'desc'
+        usuario: {
+          sementes: 'desc'
+        }
       }
     })
 
