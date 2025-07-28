@@ -23,6 +23,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(403).json({ error: 'Acesso negado' })
       }
 
+      // Verificar se o usuário é um criador
+      const criador = await prisma.criador.findUnique({
+        where: { usuarioId: String(usuarioId) }
+      })
+
+      if (!criador) {
+        return res.status(403).json({ error: 'Apenas criadores podem solicitar saques' })
+      }
+
       if (valor < 50) {
         return res.status(400).json({ error: 'Valor mínimo para saque: R$ 50,00' })
       }

@@ -289,26 +289,56 @@ export default function Carteira() {
                 </button>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-sss-medium rounded-lg p-6 border border-sss-light"
-              >
-                <h3 className="text-lg font-semibold text-sss-white mb-4 flex items-center">
-                  <BanknotesIcon className="w-5 h-5 mr-2 text-blue-500" />
-                  Solicitar Saque
-                </h3>
-                <p className="text-gray-400 mb-4">
-                  Transfira seu saldo para conta bancária
-                </p>
-                <button
-                  onClick={() => setShowSaque(true)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+              {/* Card de Saque - Apenas para Criadores */}
+              {user?.criador && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="bg-sss-medium rounded-lg p-6 border border-sss-light"
                 >
-                  Solicitar Saque
-                </button>
-              </motion.div>
+                  <h3 className="text-lg font-semibold text-sss-white mb-4 flex items-center">
+                    <BanknotesIcon className="w-5 h-5 mr-2 text-blue-500" />
+                    Solicitar Saque
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Transfira seu saldo para conta bancária
+                  </p>
+                  <button
+                    onClick={() => setShowSaque(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                  >
+                    Solicitar Saque
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Card de Informação para Não-Criadores */}
+              {!user?.criador && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="bg-sss-medium rounded-lg p-6 border border-sss-light"
+                >
+                  <h3 className="text-lg font-semibold text-sss-white mb-4 flex items-center">
+                    <BanknotesIcon className="w-5 h-5 mr-2 text-gray-500" />
+                    Solicitar Saque
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Apenas criadores podem solicitar saques
+                  </p>
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                    <p className="text-yellow-200 text-sm">
+                      ⚠️ Para solicitar saques, você precisa ser um criador aprovado. 
+                      <br />
+                      <Link href="/candidatura-criador" className="text-blue-400 hover:text-blue-300 underline">
+                        Clique aqui para se candidatar
+                      </Link>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Histórico */}
