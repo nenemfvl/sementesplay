@@ -113,7 +113,6 @@ export default function PainelCriador() {
   const [novaEnquete, setNovaEnquete] = useState<{pergunta:string, opcoes:string[]}>({pergunta:'', opcoes:['','']});
   const [salvandoEnquete, setSalvandoEnquete] = useState(false);
   const [enqueteStatus, setEnqueteStatus] = useState<'idle'|'salva'>('idle');
-  const [copiado, setCopiado] = useState(false);
 
   const [authorized, setAuthorized] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -151,8 +150,7 @@ export default function PainelCriador() {
     checkAuth();
   }, []);
 
-  // Link de divulgação temporário
-  const linkDivulgacao = '';
+
 
   // Estatísticas calculadas
   const totalVisualizacoes = Array.isArray(conteudos) ? conteudos.reduce((acc, c) => acc + (c as any).visualizacoes || 0, 0) : 0;
@@ -621,12 +619,7 @@ export default function PainelCriador() {
     return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
   }
 
-  function handleCopiarLink() {
-    if (!linkDivulgacao) return;
-    navigator.clipboard.writeText(linkDivulgacao);
-    setCopiado(true);
-    setTimeout(() => setCopiado(false), 2000);
-  }
+
 
 
 
@@ -1361,25 +1354,7 @@ export default function PainelCriador() {
           </div>
         </section>
 
-        {/* Geração de Links Personalizados para Divulgação */}
-        <section className="mb-8">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light flex flex-col md:flex-row items-center gap-6 p-6 text-sss-white">
-            <div className="flex-1">
-                <h2 className="text-lg font-bold text-sss-white mb-2">Link Personalizado para Divulgação</h2>
-              {linkDivulgacao ? (
-                <div className="flex items-center gap-2 mb-2">
-                    <input className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white flex-1" value={linkDivulgacao} readOnly />
-                    <button className="bg-sss-accent text-sss-white px-3 py-1 rounded-lg font-semibold transition-colors" onClick={handleCopiarLink}>{copiado ? 'Copiado!' : 'Copiar'}</button>
-                </div>
-              ) : (
-                <span className="text-gray-400">Seu link será gerado após salvar o perfil.</span>
-              )}
-            </div>
-            {linkDivulgacao && (
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(linkDivulgacao)}`} alt="QR Code" className="rounded" />
-            )}
-          </div>
-        </section>
+
 
       </main>
       </div>
