@@ -520,10 +520,10 @@ export default function CriadorPerfil() {
                       <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sss-accent font-bold text-2xl">
-                        {formatarNumero(criador.sementes)}
+                      <p className="text-sss-white font-semibold text-lg">
+                        {formatarNumero(criador.sementesRecebidas)}
                       </p>
-                      <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
+                      <p className="text-gray-400 text-sm">Sementes Recebidas</p>
                     </div>
                   </div>
                   
@@ -540,8 +540,8 @@ export default function CriadorPerfil() {
                       </p>
                       <p className="text-gray-400 text-sm">Doações</p>
                     </div>
-                    </div>
                   </div>
+                </div>
 
                 {/* Redes Sociais */}
                 {(criador.redesSociais?.youtube || criador.redesSociais?.twitch || criador.redesSociais?.instagram || criador.redesSociais?.tiktok) && (
