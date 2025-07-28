@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { 
-  ArrowLeftIcon,
+  ArrowLeftIcon, 
   TrophyIcon,
   StarIcon,
   FireIcon,
@@ -413,7 +413,7 @@ export default function CriadorPerfil() {
               <p className="text-sss-white">Carregando perfil do criador...</p>
             </div>
           </div>
-        </div>
+      </div>
       </>
     )
   }
@@ -427,19 +427,19 @@ export default function CriadorPerfil() {
         <div className="min-h-screen bg-sss-dark">
           <Navbar />
           <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
+        <div className="text-center">
               <ExclamationTriangleIcon className="w-16 h-16 text-red-500 mx-auto mb-4" />
               <h1 className="text-2xl font-bold text-sss-white mb-2">Criador não encontrado</h1>
               <p className="text-gray-400 mb-4">O criador que você está procurando não existe ou foi removido.</p>
-              <button
+            <button 
                 onClick={() => router.back()}
                 className="bg-sss-accent text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
               >
                 Voltar
-              </button>
-            </div>
+            </button>
           </div>
         </div>
+      </div>
       </>
     )
   }
@@ -449,7 +449,7 @@ export default function CriadorPerfil() {
       <Head>
         <title>{criador.nome} | SementesPLAY</title>
       </Head>
-      
+
       <div className="min-h-screen bg-sss-dark">
         <Navbar />
         
@@ -474,7 +474,7 @@ export default function CriadorPerfil() {
                     <h1 className="text-xl font-bold text-sss-white">{criador.nome}</h1>
                     <p className="text-sm text-gray-400">Posição #{criador.posicao} no ranking</p>
                   </div>
-                </div>
+              </div>
               </div>
               
               <button 
@@ -540,8 +540,8 @@ export default function CriadorPerfil() {
                       </p>
                       <p className="text-gray-400 text-sm">Doações</p>
                     </div>
+                    </div>
                   </div>
-                </div>
 
                 {/* Redes Sociais */}
                 {(criador.redesSociais?.youtube || criador.redesSociais?.twitch || criador.redesSociais?.instagram || criador.redesSociais?.tiktok) && (
@@ -601,10 +601,10 @@ export default function CriadorPerfil() {
                         </a>
                       )}
                     </div>
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
             {/* Coluna da Direita - Conteúdos e Atividades */}
             <div className="lg:col-span-2 space-y-6">
@@ -642,7 +642,7 @@ export default function CriadorPerfil() {
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <PlayIcon className="w-16 h-16 text-gray-500" />
-                            </div>
+                      </div>
                           )}
                           
                           {/* Overlay com tipo */}
@@ -650,16 +650,16 @@ export default function CriadorPerfil() {
                             <span className="px-2 py-1 bg-sss-accent text-white rounded text-xs font-medium">
                               {conteudo.tipo}
                             </span>
-                          </div>
-                          
+                    </div>
+                    
                           {/* Overlay com ícone de play */}
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
                             <div className="bg-sss-accent rounded-full p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 transform scale-75 group-hover:scale-100">
                               <PlayIcon className="w-8 h-8 text-white" />
                             </div>
                           </div>
-                        </div>
-                        
+                    </div>
+                    
                         {/* Conteúdo do card */}
                         <div className="p-4">
                           <h4 className="text-sss-white font-semibold mb-2 line-clamp-2 group-hover:text-sss-accent transition-colors">{conteudo.titulo}</h4>
@@ -702,14 +702,14 @@ export default function CriadorPerfil() {
                                  }`} />
                                  {formatarNumero(conteudo.dislikes)}
                                </button>
-                               <button
+                    <button
                                  onClick={(e) => handleCompartilhar(conteudo.id, e)}
                                  className="flex items-center text-gray-400 hover:text-green-500 transition-colors"
                                  title="Compartilhar"
-                               >
+                    >
                                  <ShareIcon className="w-4 h-4 mr-1" />
                                  {formatarNumero(conteudo.compartilhamentos || 0)}
-                               </button>
+                    </button>
                             </div>
                             <span>{formatarData(conteudo.data)}</span>
                           </div>
@@ -758,8 +758,8 @@ export default function CriadorPerfil() {
                         <p className="text-gray-400 text-xs mt-3">{formatarData(enquete.data)}</p>
                       </div>
                     ))}
-                  </div>
-                </div>
+                            </div>
+                          </div>
               )}
 
               {/* Recados Públicos */}
@@ -782,10 +782,10 @@ export default function CriadorPerfil() {
                           </div>
                         )}
                         <p className="text-gray-400 text-xs">{formatarData(recado.data)}</p>
-                      </div>
+                        </div>
                     ))}
                   </div>
-                </div>
+              </div>
               )}
             </div>
           </div>
