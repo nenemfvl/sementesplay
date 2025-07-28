@@ -509,7 +509,7 @@ export default function Carteira() {
                     type="number"
                     step="0.01"
                     min="50"
-                    max={carteira?.saldo || 0}
+                    max={carteira?.sementes || 0}
                     value={valorSaque}
                     onChange={(e) => setValorSaque(e.target.value)}
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
