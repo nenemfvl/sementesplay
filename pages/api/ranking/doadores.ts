@@ -35,27 +35,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(403).json({ error: 'Apenas criadores podem acessar ranking de doadores' });
     }
 
-    // Buscar ranking de doadores para este criador
-    const rankingDoadores = await prisma.$queryRaw`
-      SELECT 
-        d.doadorId,
-        u.nome,
-        SUM(d.quantidade) as total
-      FROM Doacao d
-      JOIN Usuario u ON d.doadorId = u.id
-      WHERE d.criadorId = ${criador.id}
-      GROUP BY d.doadorId, u.nome
-      ORDER BY total DESC
-      LIMIT 10
-    `;
+    // Buscar ranking de doadores para este criador usando Prisma ORM
+    const doacoes = await prisma.doacao.findMany({
+      where: {
+        criadorId: criador.id
+      },
+      include: {
+        doador: {
+          select: {
+            id: true,
+            nome: true
+          }
+        }
+      }
+    });
 
-    // Formatar resultado
-    const rankingFormatado = (rankingDoadores as any[]).map((item, index) => ({
-      id: item.doadorId,
-      nome: item.nome,
-      total: Number(item.total),
-      posicao: index + 1
-    }));
+    // Agrupar por doador e somar quantidades
+    const doadoresMap = new Map();
+    
+    doacoes.forEach(doacao => {
+      const doadorId = doacao.doadorId;
+      const doadorNome = doacao.doador.nome;
+      
+      if (doadoresMap.has(doadorId)) {
+        doadoresMap.get(doadorId).total += doacao.quantidade;
+      } else {
+        doadoresMap.set(doadorId, {
+          id: doadorId,
+          nome: doadorNome,
+          total: doacao.quantidade
+        });
+      }
+    });
+
+    // Converter para array e ordenar
+    const rankingFormatado = Array.from(doadoresMap.values())
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10)
+      .map((item, index) => ({
+        ...item,
+        posicao: index + 1
+      }));
 
     return res.status(200).json(rankingFormatado);
   } catch (error) {
