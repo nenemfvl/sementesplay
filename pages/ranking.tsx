@@ -608,8 +608,8 @@ export default function Ranking() {
                           <p className="text-gray-400">Pontuação Total</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.sementesRecebidas || 0)}</p>
-                          <p className="text-gray-400">Sementes Recebidas</p>
+                          <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.sementes || 0)}</p>
+                          <p className="text-gray-400">Sementes Disponíveis</p>
                         </div>
                         <div className="text-center">
                           <p className="text-sss-white font-semibold">{formatarNumero(selectedItem.doacoes)}</p>

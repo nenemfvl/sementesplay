@@ -325,10 +325,10 @@ export default function Perfil() {
                 <div className="text-right">
                   <div className="text-3xl font-bold text-sss-accent">{user.sementes}</div>
                   <div className="text-sm text-gray-400">Sementes Disponíveis</div>
-                  {stats?.sementesRecebidas && stats.sementesRecebidas > 0 && (
+                  {stats?.sementes && stats.sementes > 0 && (
                     <div className="mt-2">
-                      <div className="text-lg font-semibold text-purple-400">{stats.sementesRecebidas}</div>
-                      <div className="text-xs text-gray-500">Sementes Recebidas</div>
+                      <div className="text-lg font-semibold text-purple-400">{stats.sementes}</div>
+                      <div className="text-xs text-gray-500">Sementes Disponíveis</div>
                     </div>
                   )}
                 </div>

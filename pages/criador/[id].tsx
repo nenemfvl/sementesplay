@@ -521,9 +521,9 @@ export default function CriadorPerfil() {
                     </div>
                     <div className="text-center">
                       <p className="text-sss-accent font-bold text-2xl">
-                        {formatarNumero(criador.sementesRecebidas)}
+                        {formatarNumero(criador.sementes)}
                       </p>
-                      <p className="text-gray-400 text-sm">Sementes Recebidas</p>
+                      <p className="text-gray-400 text-sm">Sementes Disponíveis</p>
                     </div>
                   </div>
                   
