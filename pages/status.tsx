@@ -360,7 +360,7 @@ export default function Status() {
                           <img src={c.avatar || '/default-avatar.png'} alt={c.nome} className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3" />
                           <div className="flex-1">
                             <div className="font-bold text-sss-white">{i + 2}º {c.nome}</div>
-                            <div className="text-sm text-gray-400">{c.totalDoacoes || 0} sementes</div>
+                            <div className="text-sm text-gray-400">{c.sementes || 0} sementes</div>
                           </div>
                         </div>
                         {/* Botão Favoritar e Redes Sociais - Borda Direita */}
