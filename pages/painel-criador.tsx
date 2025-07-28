@@ -274,7 +274,7 @@ export default function PainelCriador() {
         const data = await res.json();
         setRanking(Array.isArray(data) ? data : (data?.ranking || []));
       } catch (error) {
-        console.error('Erro ao buscar ranking:', error);
+        console.error('Erro ao buscar ranking de doadores:', error);
         setRanking([]);
       }
       setLoadingRanking(false);
