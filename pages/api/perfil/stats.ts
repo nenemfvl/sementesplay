@@ -84,6 +84,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    // Verificar se o usuário é um criador e calcular sementes recebidas
+    let sementesRecebidas = 0
+    const criador = await prisma.criador.findUnique({
+      where: {
+        usuarioId: String(usuarioId)
+      }
+    })
+
+    if (criador) {
+      // Buscar doações recebidas pelo criador
+      const doacoesRecebidas = await prisma.doacao.findMany({
+        where: {
+          criadorId: criador.id
+        },
+        select: {
+          quantidade: true
+        }
+      })
+      
+      sementesRecebidas = doacoesRecebidas.reduce((sum, doacao) => sum + doacao.quantidade, 0)
+    }
+
     // Calcular totais
     const totalDoacoes = doacoes.reduce((sum, d) => sum + d.quantidade, 0)
     const criadoresApoiados = new Set(doacoes.map(d => d.criadorId)).size
@@ -149,6 +171,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalDoacoes,
       criadoresApoiados,
       cashbacksResgatados,
+      sementesRecebidas, // Adicionando sementes recebidas
       atividadesRecentes,
       proximasConquistas,
       conquistas,

@@ -397,6 +397,23 @@ export default function Perfil() {
                     </div>
                   </div>
                 </div>
+
+                {/* Card de Sementes Recebidas (apenas para criadores) */}
+                {stats?.sementesRecebidas && stats.sementesRecebidas > 0 && (
+                  <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-300 text-sm">Sementes Recebidas</p>
+                        <p className="text-2xl font-bold text-sss-white">
+                          {stats.sementesRecebidas}
+                        </p>
+                      </div>
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <StarIcon className="w-6 h-6 text-purple-500" />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
