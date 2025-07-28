@@ -71,8 +71,12 @@ type Recado = {
 type Enquete = {
   id: string;
   pergunta: string;
-  opcoes: { id: string; texto: string; votos: number }[];
-  data: string;
+  opcoes: { opcao: string; votos: number; porcentagem: number }[];
+  criador: string;
+  totalVotos: number;
+  dataCriacao: string;
+  dataFim?: string;
+  ativa: boolean;
 };
 
 
@@ -342,7 +346,7 @@ export default function PainelCriador() {
           return;
         }
         
-        const res = await fetch('/api/enquetes', {
+        const res = await fetch(`/api/enquetes?criadorId=${user.id}`, {
           headers: {
             'Authorization': `Bearer ${user.id}`
           }
@@ -577,7 +581,7 @@ export default function PainelCriador() {
       setNovaEnquete({pergunta:'', opcoes:['','']});
       setTimeout(() => setEnqueteStatus('idle'), 2000);
       // Atualizar lista
-      const res = await fetch('/api/enquetes', {
+      const res = await fetch(`/api/enquetes?criadorId=${user.id}`, {
         headers: {
           'Authorization': `Bearer ${user.id}`
         }
@@ -1174,42 +1178,7 @@ export default function PainelCriador() {
 
   
 
-        {/* Notificações e suporte */}
-        <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6">
-                <h3 className="font-bold text-sss-white mb-2">Notificações</h3>
-            {loadingNotificacoes ? (
-              <span className="text-gray-400">Carregando...</span>
-            ) : Array.isArray(notificacoes) && notificacoes.length > 0 ? (
-              <ul className="space-y-2">
-                {notificacoes.map(n => (
-                  <li key={n.id} className="border rounded p-2">
-                        <span className="font-semibold text-sss-white">{n.titulo}</span>
-                        <div className="text-sm text-gray-400">{n.mensagem}</div>
-                    <span className="text-xs text-gray-400">{n.data ? new Date(n.data).toLocaleDateString() : ''}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <span className="text-gray-400">Nenhuma notificação recente.</span>
-            )}
-          </div>
-            </div>
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6">
-                <h3 className="font-bold text-sss-white mb-2">Suporte & Feedback</h3>
-            <form onSubmit={handleEnviarSuporte} className="flex flex-col gap-2 mb-2">
-                  <textarea className="border rounded px-2 py-1 bg-sss-light border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" placeholder="Descreva seu problema ou sugestão..." value={suporteMsg} onChange={e => setSuporteMsg(e.target.value)} disabled={suporteStatus==='enviando'} />
-                  <button type="submit" className="bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={suporteStatus==='enviando' || !suporteMsg.trim()}>{suporteStatus==='enviando' ? 'Enviando...' : 'Abrir chamado de suporte'}</button>
-              {suporteStatus==='enviado' && <span className="text-green-600 text-sm">Chamado enviado com sucesso!</span>}
-            </form>
-            <ul className="space-y-1">
-                  <li><a href="#" className="text-red-700 hover:underline text-sss-white">Enviar sugestão</a></li>
-            </ul>
-              </div>
-          </div>
-        </section>
+
 
         {/* Configuração de Redes Sociais */}
         <section className="mb-8">
@@ -1314,14 +1283,16 @@ export default function PainelCriador() {
                   <li key={e.id} className="border rounded p-2">
                         <div className="font-semibold text-sss-white mb-1">{e.pergunta}</div>
                     <ul className="ml-4">
-                      {e.opcoes.map(o => (
-                        <li key={o.id} className="flex justify-between items-center">
-                              <span className="text-gray-300">{o.texto}</span>
-                              <span className="text-xs text-gray-400">{o.votos} votos</span>
+                      {e.opcoes.map((o, index) => (
+                        <li key={index} className="flex justify-between items-center">
+                              <span className="text-gray-300">{o.opcao}</span>
+                              <span className="text-xs text-gray-400">{o.votos} votos ({o.porcentagem}%)</span>
                         </li>
                       ))}
                     </ul>
-                    <span className="text-xs text-gray-400">{e.data ? new Date(e.data).toLocaleDateString() : ''}</span>
+                    <div className="text-xs text-gray-400 mt-2">
+                      Total: {e.totalVotos} votos • {e.dataCriacao ? new Date(e.dataCriacao).toLocaleDateString() : ''}
+                    </div>
                   </li>
                 ))}
               </ul>

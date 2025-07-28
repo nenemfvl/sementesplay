@@ -71,8 +71,12 @@ interface Conteudo {
 interface Enquete {
   id: string
   pergunta: string
-  opcoes: { id: string; texto: string; votos: number }[]
-  data: string
+  opcoes: { opcao: string; votos: number; porcentagem: number }[]
+  criador: string
+  totalVotos: number
+  dataCriacao: string
+  dataFim?: string
+  ativa: boolean
 }
 
 interface Recado {
@@ -134,23 +138,17 @@ export default function CriadorPerfil() {
           setConteudos([])
         }
 
-        // Carregar enquetes do criador (apenas se usuário estiver autenticado)
-        if (user) {
-          try {
-            const responseEnquetes = await fetch(`/api/enquetes?criadorId=${criadorId}`, {
-              headers: {
-                'Authorization': `Bearer ${user.id}`
-              }
-            })
-            const dataEnquetes = await responseEnquetes.json()
-            
-            if (responseEnquetes.ok) {
-              setEnquetes(dataEnquetes.enquetes || [])
-            }
-          } catch (error) {
-            console.error('Erro ao carregar enquetes:', error)
-            setEnquetes([])
+        // Carregar enquetes do criador
+        try {
+          const responseEnquetes = await fetch(`/api/enquetes?criadorId=${data.criador.usuarioId}`)
+          const dataEnquetes = await responseEnquetes.json()
+          
+          if (responseEnquetes.ok) {
+            setEnquetes(dataEnquetes.enquetes || [])
           }
+        } catch (error) {
+          console.error('Erro ao carregar enquetes:', error)
+          setEnquetes([])
         }
 
         // Carregar recados públicos do criador
@@ -396,6 +394,42 @@ export default function CriadorPerfil() {
       }
     } catch (error) {
       console.error('Erro ao compartilhar:', error)
+    }
+  }
+
+  const handleVotarEnquete = async (enqueteId: string, opcaoIndex: number) => {
+    if (!user) {
+      alert('Você precisa estar logado para votar nas enquetes')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/enquetes/votar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({
+          enqueteId,
+          opcaoIndex,
+          tipo: 'voto'
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        // Atualizar a enquete na lista
+        setEnquetes(prev => prev.map(e => 
+          e.id === enqueteId ? data.enquete : e
+        ))
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || 'Erro ao votar na enquete')
+      }
+    } catch (error) {
+      console.error('Erro ao votar na enquete:', error)
+      alert('Erro ao votar na enquete')
     }
   }
 
@@ -724,14 +758,20 @@ export default function CriadorPerfil() {
                       <div key={enquete.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
                         <h4 className="text-sss-white font-semibold mb-3">{enquete.pergunta}</h4>
                         <div className="space-y-2">
-                          {enquete.opcoes.map((opcao) => {
+                          {enquete.opcoes.map((opcao, index) => {
                             const totalVotos = enquete.opcoes.reduce((sum, o) => sum + o.votos, 0)
                             const porcentagem = totalVotos > 0 ? (opcao.votos / totalVotos) * 100 : 0
                             
                             return (
-                              <div key={opcao.id} className="flex items-center justify-between">
-                                <span className="text-sss-white text-sm">{opcao.texto}</span>
+                              <div key={index} className="flex items-center justify-between">
+                                <span className="text-sss-white text-sm">{opcao.opcao}</span>
                                 <div className="flex items-center space-x-2">
+                                  <button
+                                    onClick={() => handleVotarEnquete(enquete.id, index)}
+                                    className="px-3 py-1 bg-sss-accent hover:bg-sss-accent/80 text-sss-dark text-xs rounded transition-colors"
+                                  >
+                                    Votar
+                                  </button>
                                   <div className="w-24 bg-sss-light rounded-full h-2">
                                     <div 
                                       className="bg-sss-accent h-2 rounded-full" 

@@ -4,21 +4,22 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Verificar autenticação via token
+  let user = null
+  
+  // Verificar autenticação via token (opcional para GET)
   const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token de autenticação necessário' });
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.replace('Bearer ', '')
+    
+    // Buscar usuário pelo token (ID do usuário)
+    user = await prisma.usuario.findUnique({
+      where: { id: token }
+    });
   }
 
-  const token = authHeader.replace('Bearer ', '')
-  
-  // Buscar usuário pelo token (ID do usuário)
-  const user = await prisma.usuario.findUnique({
-    where: { id: token }
-  });
-
-  if (!user) {
-    return res.status(401).json({ error: 'Usuário não autenticado' });
+  // Para POST, autenticação é obrigatória
+  if (req.method === 'POST' && !user) {
+    return res.status(401).json({ error: 'Token de autenticação necessário' });
   }
 
   if (req.method === 'GET') {
@@ -95,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       // Verificar se é criador para criar enquetes
-      if (user.nivel !== 'criador') {
+      if (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante') {
         return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem criar enquetes.' });
       }
 
@@ -105,18 +106,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      // Buscar o criador do usuário
-      const criador = await prisma.criador.findUnique({
-        where: { usuarioId: user.id }
-      });
-
-      if (!criador) {
-        return res.status(403).json({ error: 'Criador não encontrado' });
+      // Verificar se o usuário é um criador
+      if (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante') {
+        return res.status(403).json({ error: 'Apenas criadores podem criar enquetes' });
       }
 
       const novaEnquete = await prisma.enquete.create({
         data: {
-          criadorId: criador.id,
+          criadorId: user.id, // O criadorId é o próprio ID do usuário
           pergunta: String(pergunta),
           opcoes: JSON.stringify(opcoes),
           ativa: true
