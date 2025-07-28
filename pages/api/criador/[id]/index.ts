@@ -205,7 +205,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const posicao = criadoresComPontuacao.findIndex(item => item.id === criador.id) + 1
 
-    console.log('API criador: Posição no ranking:', posicao, 'para criador:', criador.usuario.nome)
+    console.log('API criador: Posição no ranking:', posicao, 'para criador:', criador.usuario.nome, '- FORCE DEPLOY')
 
     // Parsear redes sociais do JSON string
     let redesSociais = {}
