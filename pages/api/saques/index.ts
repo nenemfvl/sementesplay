@@ -45,13 +45,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Dados bancários não cadastrados' })
       }
 
-      // Buscar carteira
-      const carteira = await prisma.carteiraDigital.findUnique({
-        where: { usuarioId: String(usuarioId) }
+      // Buscar usuário para verificar sementes
+      const usuario = await prisma.usuario.findUnique({
+        where: { id: String(usuarioId) }
       })
 
-      if (!carteira || carteira.saldo < valor) {
-        return res.status(400).json({ error: 'Saldo insuficiente' })
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuário não encontrado' })
+      }
+
+             // Converter valor para sementes (1 real = 1 semente)
+       const sementesNecessarias = Math.floor(valor)
+
+      if (usuario.sementes < sementesNecessarias) {
+        return res.status(400).json({ error: 'Sementes insuficientes para o saque' })
       }
 
       // Calcular taxa (2% do valor)
@@ -80,30 +87,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // Atualizar carteira
-        const saldoAnterior = carteira.saldo
-        const novoSaldo = carteira.saldo - valor
-
-        await tx.carteiraDigital.update({
-          where: { id: carteira.id },
+        // Deduzir sementes do usuário
+        await tx.usuario.update({
+          where: { id: String(usuarioId) },
           data: {
-            saldo: novoSaldo,
-            saldoPendente: carteira.saldoPendente + valor,
-            totalSacado: carteira.totalSacado + valor
+            sementes: { decrement: sementesNecessarias }
           }
         })
 
-        // Registrar movimentação
-        await tx.movimentacaoCarteira.create({
+        // Registrar histórico de sementes
+        await tx.semente.create({
           data: {
-            carteiraId: carteira.id,
+            usuarioId: String(usuarioId),
+            quantidade: sementesNecessarias,
             tipo: 'saque',
-            valor: parseFloat(valor),
-            saldoAnterior,
-            saldoPosterior: novoSaldo,
-            descricao: `Solicitação de saque - Taxa: ${taxa.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
-            referencia: saque.id,
-            status: 'pendente'
+            descricao: `Solicitação de saque de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
           }
         })
 

@@ -19,8 +19,7 @@ import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 
 interface CarteiraData {
-  saldo: number
-  saldoPendente: number
+  sementes: number
   totalRecebido: number
   totalSacado: number
 }
@@ -58,19 +57,16 @@ export default function Carteira() {
 
   const loadCarteira = async () => {
     try {
-      const [carteiraResponse, movimentacoesResponse] = await Promise.all([
-        fetch(`/api/carteira?usuarioId=${user?.id}`),
-        fetch(`/api/carteira/movimentacoes?usuarioId=${user?.id}`)
-      ])
-
-      if (carteiraResponse.ok) {
-        const carteiraData = await carteiraResponse.json()
-        setCarteira(carteiraData)
-      }
-
-      if (movimentacoesResponse.ok) {
-        const movimentacoesData = await movimentacoesResponse.json()
-        setMovimentacoes(movimentacoesData.movimentacoes)
+      // Buscar dados do usuário atual
+      const userResponse = await fetch('/api/usuario/atual')
+      
+      if (userResponse.ok) {
+        const userData = await userResponse.json()
+        setCarteira({
+          sementes: userData.usuario.sementes,
+          totalRecebido: 0, // Será calculado se necessário
+          totalSacado: 0    // Será calculado se necessário
+        })
       }
     } catch (error) {
       console.error('Erro ao carregar carteira:', error)
@@ -122,10 +118,10 @@ export default function Carteira() {
       return
     }
 
-    if (!carteira || parseFloat(valorSaque) > carteira.saldo) {
-      alert('Saldo insuficiente')
-      return
-    }
+         if (!carteira || parseFloat(valorSaque) > carteira.sementes) {
+       alert('Sementes insuficientes para o saque')
+       return
+     }
 
     try {
       const response = await fetch('/api/saques', {
@@ -241,28 +237,28 @@ export default function Carteira() {
               </motion.div>
               
               <h2 className="text-3xl font-bold text-sss-white mb-2">
-                Carteira Digital
+                Sementes Disponíveis
               </h2>
               <p className="text-gray-300">
-                Gerencie seus pagamentos e saques
+                Gerencie suas sementes, pagamentos e saques
               </p>
             </div>
 
-            {/* Saldo Principal */}
+            {/* Sementes Disponíveis */}
             <div className="bg-gradient-to-r from-sss-accent to-red-600 rounded-lg p-8 text-center">
-              <h3 className="text-lg font-semibold text-white mb-2">Saldo Disponível</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Sementes Disponíveis</h3>
               <p className="text-4xl font-bold text-white mb-4">
-                {carteira ? formatarMoeda(carteira.saldo) : 'R$ 0,00'}
+                {carteira ? carteira.sementes.toLocaleString() : '0'} 🌱
               </p>
               <div className="flex justify-center space-x-8 text-white/80">
-                <div>
-                  <p className="text-sm">Total Recebido</p>
-                  <p className="font-semibold">{carteira ? formatarMoeda(carteira.totalRecebido) : 'R$ 0,00'}</p>
-                </div>
-                <div>
-                  <p className="text-sm">Total Sacado</p>
-                  <p className="font-semibold">{carteira ? formatarMoeda(carteira.totalSacado) : 'R$ 0,00'}</p>
-                </div>
+                                 <div>
+                   <p className="text-sm">Valor em Reais</p>
+                   <p className="font-semibold">{carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'}</p>
+                 </div>
+                 <div>
+                   <p className="text-sm">Taxa de Conversão</p>
+                   <p className="font-semibold">1 Real = 1 Semente</p>
+                 </div>
               </div>
             </div>
 
@@ -276,11 +272,11 @@ export default function Carteira() {
               >
                 <h3 className="text-lg font-semibold text-sss-white mb-4 flex items-center">
                   <PlusIcon className="w-5 h-5 mr-2 text-green-500" />
-                  Adicionar Saldo
+                  Comprar Sementes
                 </h3>
-                <p className="text-gray-400 mb-4">
-                  Compre Sementes com PIX ou cartão de crédito
-                </p>
+                                 <p className="text-gray-400 mb-4">
+                   Compre sementes com PIX ou cartão de crédito (1 Real = 1 Semente)
+                 </p>
                 <button
                   onClick={() => setShowPagamento(true)}
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
@@ -301,9 +297,9 @@ export default function Carteira() {
                     <BanknotesIcon className="w-5 h-5 mr-2 text-blue-500" />
                     Solicitar Saque
                   </h3>
-                  <p className="text-gray-400 mb-4">
-                    Transfira seu saldo para conta bancária
-                  </p>
+                                     <p className="text-gray-400 mb-4">
+                     Converta suas sementes em dinheiro (1 Semente = 1 Real)
+                   </p>
                   <button
                     onClick={() => setShowSaque(true)}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
@@ -519,9 +515,9 @@ export default function Carteira() {
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     placeholder="50,00"
                   />
-                  <p className="text-xs text-gray-400 mt-1">
-                    Saldo disponível: {carteira ? formatarMoeda(carteira.saldo) : 'R$ 0,00'}
-                  </p>
+                                     <p className="text-xs text-gray-400 mt-1">
+                     Sementes disponíveis: {carteira ? carteira.sementes.toLocaleString() : '0'} (Valor máximo: {carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'})
+                   </p>
                 </div>
 
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">

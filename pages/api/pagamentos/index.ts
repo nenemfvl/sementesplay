@@ -27,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Valor mínimo de R$ 10,00' })
       }
 
-      // Calcular sementes (1 real = 10 sementes)
-      const sementesGeradas = Math.floor(valor * 10)
+             // Calcular sementes (1 real = 1 semente)
+       const sementesGeradas = Math.floor(valor)
 
       // Processar pagamento em transação
       const resultado = await prisma.$transaction(async (tx) => {
@@ -46,48 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // Buscar ou criar carteira
-        let carteira = await tx.carteiraDigital.findUnique({
-          where: { usuarioId: String(usuarioId) }
-        })
-
-        if (!carteira) {
-          carteira = await tx.carteiraDigital.create({
-            data: {
-              usuarioId: String(usuarioId),
-              saldo: 0,
-              saldoPendente: 0,
-              totalRecebido: 0,
-              totalSacado: 0
-            }
-          })
-        }
-
-        // Atualizar carteira
-        const saldoAnterior = carteira.saldo
-        const novoSaldo = carteira.saldo + valor
-
-        await tx.carteiraDigital.update({
-          where: { id: carteira.id },
-          data: {
-            saldo: novoSaldo,
-            totalRecebido: carteira.totalRecebido + valor
-          }
-        })
-
-        // Registrar movimentação
-        await tx.movimentacaoCarteira.create({
-          data: {
-            carteiraId: carteira.id,
-            tipo: 'credito',
-            valor: parseFloat(valor),
-            saldoAnterior,
-            saldoPosterior: novoSaldo,
-            descricao: `Pagamento via ${tipo.toUpperCase()}`,
-            referencia: pagamento.id,
-            status: 'processado'
-          }
-        })
+                 // Adicionar sementes diretamente ao usuário (1 real = 1 semente)
+         const sementesGeradas = Math.floor(valor)
 
         // Adicionar sementes ao usuário
         await tx.usuario.update({
