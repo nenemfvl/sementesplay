@@ -23,6 +23,7 @@ export default function Doar() {
   const [creators, setCreators] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null)
 
 
   useEffect(() => {
@@ -36,6 +37,17 @@ export default function Doar() {
       setSelectedCreator(criadorId)
     }
   }, [])
+
+  // Limpar notificação automaticamente
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null)
+      }, 5000) // 5 segundos
+      
+      return () => clearTimeout(timer)
+    }
+  }, [notification])
 
 
 
@@ -101,24 +113,24 @@ export default function Doar() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!selectedCreator || !valor) {
-      alert('Por favor, selecione um criador e um valor!')
+      setNotification({ type: 'error', message: 'Por favor, selecione um criador e um valor!' })
       return
     }
 
     if (!user) {
-      alert('Usuário não encontrado!')
+      setNotification({ type: 'error', message: 'Usuário não encontrado!' })
       return
     }
 
     // Verificar se o usuário é um criador tentando doar para si mesmo
     if (user.criador && user.criador.id === selectedCreator) {
-      alert('Você não pode doar sementes para si mesmo!')
+      setNotification({ type: 'error', message: 'Você não pode doar sementes para si mesmo!' })
       return
     }
 
     const valorNum = parseInt(valor)
     if (valorNum > user.sementes) {
-      alert('Você não tem Sementes suficientes!')
+      setNotification({ type: 'error', message: 'Você não tem Sementes suficientes!' })
       return
     }
     
@@ -141,15 +153,22 @@ export default function Doar() {
       if (response.ok) {
         // Atualizar sementes do usuário
         auth.updateUser({ sementes: user.sementes - valorNum })
-        alert('Doação realizada com sucesso! 🌱')
-        window.location.href = '/criadores'
+        setNotification({ type: 'success', message: 'Doação realizada com sucesso! 🌱' })
+        // Limpar formulário
+        setValor('')
+        setMensagem('')
+        setSelectedCreator('')
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+          window.location.href = '/criadores'
+        }, 2000)
       } else {
         console.error('Erro na resposta da API:', data)
-        alert(`Erro: ${data.error || 'Erro interno do servidor'}`)
+        setNotification({ type: 'error', message: data.error || 'Erro interno do servidor' })
       }
     } catch (error) {
       console.error('Erro ao fazer doação:', error)
-      alert('Erro ao realizar doação. Tente novamente.')
+      setNotification({ type: 'error', message: 'Erro ao realizar doação. Tente novamente.' })
     }
   }
 
@@ -171,6 +190,33 @@ export default function Doar() {
       <div className="min-h-screen bg-sss-dark">
         {/* Navbar */}
         <Navbar />
+
+        {/* Notification */}
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${
+              notification.type === 'success' 
+                ? 'bg-green-600 text-white' 
+                : 'bg-red-600 text-white'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">
+                {notification.type === 'success' ? '✅' : '❌'}
+              </span>
+              <span className="font-medium">{notification.message}</span>
+            </div>
+            <button
+              onClick={() => setNotification(null)}
+              className="absolute top-1 right-2 text-white hover:text-gray-200"
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
