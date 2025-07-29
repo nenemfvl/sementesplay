@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useRouter } from 'next/router'
+import { auth, User } from '../lib/auth'
 
 const redes = [
   { nome: 'Todos', valor: 'todos', icon: null },
@@ -39,24 +40,19 @@ export default function Status() {
   const router = useRouter()
 
   useEffect(() => {
-    // Carregar dados do usuário do localStorage ou da API
-    const userData = localStorage.getItem('user')
-    console.log('Dados do localStorage:', userData)
+    // Carregar dados do usuário usando o sistema de autenticação
+    const currentUser = auth.getUser()
+    console.log('Usuário carregado do sistema de auth:', currentUser)
     
-    if (userData) {
-      try {
-        const parsedUser = JSON.parse(userData)
-        console.log('Usuário carregado do localStorage:', parsedUser)
-        console.log('Nível do usuário:', parsedUser.nivel)
-        setUser(parsedUser)
-      } catch (error) {
-        console.error('Erro ao carregar dados do usuário:', error)
-      }
+    if (currentUser) {
+      console.log('Nível do usuário:', currentUser.nivel)
+      console.log('É criador:', currentUser.criador)
+      setUser(currentUser)
     } else {
-      console.log('Nenhum usuário encontrado no localStorage, buscando da API...')
-      // Buscar dados do usuário atual da API com credenciais
+      console.log('Nenhum usuário autenticado encontrado')
+      // Tentar buscar da API como fallback
       fetch('/api/usuario/atual', {
-        credentials: 'include', // Incluir cookies de sessão
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         }
@@ -69,9 +65,10 @@ export default function Status() {
           if (data.usuario) {
             console.log('Usuário carregado da API:', data.usuario)
             console.log('Nível do usuário:', data.usuario.nivel)
+            console.log('É criador:', data.usuario.criador)
             setUser(data.usuario)
-            // Salvar no localStorage para próximas visitas
-            localStorage.setItem('user', JSON.stringify(data.usuario))
+            // Salvar no sistema de autenticação
+            auth.setUser(data.usuario)
           } else {
             console.log('Resposta da API:', data)
           }
@@ -189,8 +186,8 @@ export default function Status() {
           <Navbar />
         </header>
         
-                {/* Botão Fixo "Seja Criador" - Lateral Direita (apenas para usuários com nível comum) */}
-        {user && user.nivel === 'comum' && (
+                {/* Botão Fixo "Seja Criador" - Lateral Direita (apenas para usuários que não são criadores) */}
+        {user && (
           <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40">
             <button
               onClick={() => router.push('/candidatura-criador')}
@@ -209,7 +206,7 @@ export default function Status() {
         {/* Debug info - remover depois */}
         {user && (
           <div className="fixed left-4 top-4 z-50 bg-black/80 text-white p-2 rounded text-xs">
-            Debug: {user.nivel} - {user.nivel === 'comum' ? 'Deve mostrar botão' : 'Não deve mostrar'}
+            Debug: Nível: {user.nivel} | Criador: {user.criador ? 'Sim' : 'Não'} | Usuário logado: Sim
           </div>
         )}
         
