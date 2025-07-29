@@ -154,11 +154,11 @@ export default function Status() {
             style={{
               boxShadow: '0 10px 25px rgba(233, 69, 96, 0.3)',
             }}
-          >
-            <span className="text-2xl">🎯</span>
-            <span className="hidden sm:inline">Seja Criador</span>
-            <span className="sm:hidden">Criador</span>
-          </button>
+                     >
+             <span className="text-2xl">⭐</span>
+             <span className="hidden sm:inline">Seja Criador</span>
+             <span className="sm:hidden">Criador</span>
+           </button>
         </div>
         
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
