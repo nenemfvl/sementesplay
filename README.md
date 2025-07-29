@@ -2,6 +2,8 @@
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
+<!-- Forçar redeploy - $(date) -->
+
 ## 🚀 Como Funciona
 
 O SementesPLAY é um sistema cíclico que conecta:
