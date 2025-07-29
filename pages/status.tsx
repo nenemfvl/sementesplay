@@ -41,12 +41,19 @@ export default function Status() {
   useEffect(() => {
     // Carregar dados do usuário do localStorage
     const userData = localStorage.getItem('user')
+    console.log('Dados do localStorage:', userData)
+    
     if (userData) {
       try {
-        setUser(JSON.parse(userData))
+        const parsedUser = JSON.parse(userData)
+        console.log('Usuário carregado:', parsedUser)
+        console.log('Nível do usuário:', parsedUser.nivel)
+        setUser(parsedUser)
       } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error)
       }
+    } else {
+      console.log('Nenhum usuário encontrado no localStorage')
     }
 
     fetch('/api/admin/stats')
@@ -171,6 +178,13 @@ export default function Status() {
               <span className="hidden sm:inline">Seja Criador</span>
               <span className="sm:hidden">Criador</span>
             </button>
+          </div>
+        )}
+        
+        {/* Debug info - remover depois */}
+        {user && (
+          <div className="fixed left-4 top-4 z-50 bg-black/80 text-white p-2 rounded text-xs">
+            Debug: {user.nivel} - {user.nivel === 'comum' ? 'Deve mostrar botão' : 'Não deve mostrar'}
           </div>
         )}
         
