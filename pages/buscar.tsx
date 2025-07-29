@@ -154,14 +154,17 @@ export default function Buscar() {
             >
               {/* Search Bar */}
               <div className="mb-6">
+                <label htmlFor="search-input" className="sr-only">Buscar criadores</label>
                 <div className="relative">
                   <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
+                    id="search-input"
                     type="text"
                     placeholder="Buscar por nome ou tags..."
                     className="w-full pl-10 pr-3 py-3 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    aria-label="Buscar criadores por nome ou tags"
                   />
                 </div>
               </div>
@@ -169,14 +172,16 @@ export default function Buscar() {
               {/* Filters */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-sss-white mb-2">
+                  <label htmlFor="nivel-filter" className="block text-sm font-medium text-sss-white mb-2">
                     <FunnelIcon className="w-4 h-4 inline mr-1" />
                     Nível
                   </label>
                   <select
+                    id="nivel-filter"
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     value={filtroNivel}
                     onChange={(e) => setFiltroNivel(e.target.value)}
+                    aria-label="Filtrar por nível do criador"
                   >
                     <option value="todos">Todos os níveis</option>
                     <option value="supremo">Supremo</option>
@@ -186,13 +191,15 @@ export default function Buscar() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-sss-white mb-2">
+                  <label htmlFor="ordenacao-filter" className="block text-sm font-medium text-sss-white mb-2">
                     Ordenar por
                   </label>
                   <select
+                    id="ordenacao-filter"
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     value={ordenacao}
                     onChange={(e) => setOrdenacao(e.target.value)}
+                    aria-label="Ordenar resultados"
                   >
                     <option value="ranking">Ranking</option>
                     <option value="sementes">Mais Sementes</option>

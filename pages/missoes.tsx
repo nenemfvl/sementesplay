@@ -319,6 +319,7 @@ export default function Missoes() {
                           ? 'border-sss-accent text-sss-accent'
                           : 'border-transparent text-gray-300 hover:text-sss-white'
                       }`}
+                      aria-label={`${tab.label} (${tab.count} itens)`}
                     >
                       <tab.icon className="w-5 h-5" />
                       <span>{tab.label}</span>

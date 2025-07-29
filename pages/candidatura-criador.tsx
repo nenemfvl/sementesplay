@@ -195,33 +195,37 @@ export default function CandidaturaCriador() {
         <h3 className="text-lg font-semibold text-sss-white mb-4">Informações Básicas</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="nome-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               Nome Completo
             </label>
             <div className="relative">
               <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
+                id="nome-candidatura"
                 type="text"
                 value={formData.nome}
                 onChange={(e) => handleInputChange('nome', e.target.value)}
                 className="w-full pl-10 pr-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                 placeholder="Seu nome completo"
+                aria-label="Nome completo do candidato"
               />
             </div>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="email-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               Email
             </label>
             <div className="relative">
               <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
+                id="email-candidatura"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full pl-10 pr-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                 placeholder="seu@email.com"
+                aria-label="Email do candidato"
               />
             </div>
           </div>
@@ -231,15 +235,17 @@ export default function CandidaturaCriador() {
       
 
       <div>
-        <label className="block text-sm font-medium text-sss-white mb-2">
+        <label htmlFor="bio-candidatura" className="block text-sm font-medium text-sss-white mb-2">
           Biografia
         </label>
         <textarea
+          id="bio-candidatura"
           rows={4}
           value={formData.bio}
           onChange={(e) => handleInputChange('bio', e.target.value)}
           className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
           placeholder="Conte um pouco sobre você e seu conteúdo..."
+          aria-label="Biografia do candidato"
         />
       </div>
     </div>
@@ -251,54 +257,62 @@ export default function CandidaturaCriador() {
         <h3 className="text-lg font-semibold text-sss-white mb-4">Redes Sociais</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="youtube-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               YouTube
             </label>
             <input
+              id="youtube-candidatura"
               type="url"
               value={formData.redesSociais.youtube || ''}
               onChange={(e) => handleSocialChange('youtube', e.target.value)}
               className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
               placeholder="https://youtube.com/@seucanal"
+              aria-label="Link do canal do YouTube"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="twitch-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               Twitch
             </label>
             <input
+              id="twitch-candidatura"
               type="url"
               value={formData.redesSociais.twitch || ''}
               onChange={(e) => handleSocialChange('twitch', e.target.value)}
               className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
               placeholder="https://twitch.tv/seucanal"
+              aria-label="Link do canal da Twitch"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="instagram-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               Instagram
             </label>
             <input
+              id="instagram-candidatura"
               type="url"
               value={formData.redesSociais.instagram || ''}
               onChange={(e) => handleSocialChange('instagram', e.target.value)}
               className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
               placeholder="https://instagram.com/seuperfil"
+              aria-label="Link do perfil do Instagram"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-sss-white mb-2">
+            <label htmlFor="tiktok-candidatura" className="block text-sm font-medium text-sss-white mb-2">
               TikTok
             </label>
             <input
+              id="tiktok-candidatura"
               type="url"
               value={formData.redesSociais.tiktok || ''}
               onChange={(e) => handleSocialChange('tiktok', e.target.value)}
               className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
               placeholder="https://tiktok.com/@seuperfil"
+              aria-label="Link do perfil do TikTok"
             />
           </div>
         </div>
@@ -314,41 +328,47 @@ export default function CandidaturaCriador() {
         <h3 className="text-lg font-semibold text-sss-white mb-4">Experiência e Motivação</h3>
         
         <div className="mb-4">
-          <label className="block text-sm font-medium text-sss-white mb-2">
+          <label htmlFor="experiencia-candidatura" className="block text-sm font-medium text-sss-white mb-2">
             Experiência em Criação de Conteúdo
           </label>
           <textarea
+            id="experiencia-candidatura"
             rows={3}
             value={formData.experiencia}
             onChange={(e) => handleInputChange('experiencia', e.target.value)}
             className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
             placeholder="Conte sobre sua experiência criando conteúdo..."
+            aria-label="Experiência em criação de conteúdo"
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-sss-white mb-2">
+          <label htmlFor="motivacao-candidatura" className="block text-sm font-medium text-sss-white mb-2">
             Por que você quer ser um criador no SementesPLAY?
           </label>
           <textarea
+            id="motivacao-candidatura"
             rows={3}
             value={formData.motivacao}
             onChange={(e) => handleInputChange('motivacao', e.target.value)}
             className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
             placeholder="Explique sua motivação..."
+            aria-label="Motivação para ser criador"
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-sss-white mb-2">
+          <label htmlFor="metas-candidatura" className="block text-sm font-medium text-sss-white mb-2">
             Metas como Criador
           </label>
           <textarea
+            id="metas-candidatura"
             rows={3}
             value={formData.metas}
             onChange={(e) => handleInputChange('metas', e.target.value)}
             className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
             placeholder="Quais são suas metas e objetivos?"
+            aria-label="Metas como criador"
           />
         </div>
 
@@ -516,6 +536,7 @@ export default function CandidaturaCriador() {
               <button 
                 onClick={() => setCandidaturaExistente(null)}
                 className="inline-flex items-center px-6 py-3 bg-sss-accent hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                aria-label="Tentar candidatura novamente"
               >
                 Tentar Novamente
               </button>
@@ -653,6 +674,7 @@ export default function CandidaturaCriador() {
                     onClick={prevStep}
                     disabled={currentStep === 1}
                     className="px-6 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
+                    aria-label="Voltar para o passo anterior"
                   >
                     Anterior
                   </button>
@@ -661,6 +683,7 @@ export default function CandidaturaCriador() {
                     <button
                       onClick={nextStep}
                       className="px-6 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
+                      aria-label="Ir para o próximo passo"
                     >
                       Próximo
                     </button>
@@ -669,6 +692,7 @@ export default function CandidaturaCriador() {
                       onClick={submitCandidatura}
                       disabled={loading}
                       className="px-6 py-2 bg-sss-accent hover:bg-red-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+                      aria-label="Enviar candidatura"
                     >
                       {loading ? (
                         <>

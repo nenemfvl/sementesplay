@@ -351,13 +351,15 @@ export default function NotificacoesTempoReal() {
             <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="filtro-tipo" className="block text-sm font-medium text-gray-300 mb-2">
                     Filtrar por Tipo
                   </label>
                   <select
+                    id="filtro-tipo"
                     value={filtroTipo}
                     onChange={(e) => setFiltroTipo(e.target.value)}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                    aria-label="Filtrar notificações por tipo"
                   >
                     <option value="todas">Todas as notificações</option>
                     <option value="info">Informações</option>
@@ -401,6 +403,7 @@ export default function NotificacoesTempoReal() {
                   <button
                     onClick={marcarTodasComoLidas}
                     className="w-full px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
+                    aria-label="Marcar todas as notificações como lidas"
                   >
                     Marcar todas como lidas
                   </button>
@@ -472,6 +475,7 @@ export default function NotificacoesTempoReal() {
                                 onClick={() => marcarComoLida(notificacao.id)}
                                 className="text-green-400 hover:text-green-300"
                                 title="Marcar como lida"
+                                aria-label="Marcar notificação como lida"
                               >
                                 <CheckIcon className="w-4 h-4" />
                               </button>
@@ -480,6 +484,7 @@ export default function NotificacoesTempoReal() {
                               onClick={() => deletarNotificacao(notificacao.id)}
                               className="text-red-400 hover:text-red-300"
                               title="Deletar"
+                              aria-label="Deletar notificação"
                             >
                               <TrashIcon className="w-4 h-4" />
                             </button>

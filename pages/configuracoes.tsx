@@ -140,6 +140,7 @@ export default function Configuracoes() {
                           ? 'border-sss-accent text-sss-accent'
                           : 'border-transparent text-gray-300 hover:text-sss-white'
                       }`}
+                      aria-label={`Aba ${tab.label}`}
                     >
                       <tab.icon className="w-5 h-5" />
                       <span>{tab.label}</span>
@@ -159,11 +160,12 @@ export default function Configuracoes() {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-sss-white mb-2">
+                        <label htmlFor="nome" className="block text-sm font-medium text-sss-white mb-2">
                           Nome Completo
                         </label>
                         <input
                           type="text"
+                          id="nome"
                           className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                           value={formData.nome}
                           onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
@@ -171,11 +173,12 @@ export default function Configuracoes() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-sss-white mb-2">
+                        <label htmlFor="email" className="block text-sm font-medium text-sss-white mb-2">
                           Email
                         </label>
                         <input
                           type="email"
+                          id="email"
                           className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -187,12 +190,13 @@ export default function Configuracoes() {
                       <h3 className="text-lg font-semibold text-sss-white mb-4">Alterar Senha</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-sss-white mb-2">
+                          <label htmlFor="senhaAtual" className="block text-sm font-medium text-sss-white mb-2">
                             Senha Atual
                           </label>
                           <div className="relative">
                             <input
                               type={showPassword ? 'text' : 'password'}
+                              id="senhaAtual"
                               className="w-full pl-3 pr-10 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                               placeholder="Digite sua senha atual"
                               value={formData.senhaAtual}
@@ -202,6 +206,7 @@ export default function Configuracoes() {
                               type="button"
                               className="absolute inset-y-0 right-0 pr-3 flex items-center"
                               onClick={() => setShowPassword(!showPassword)}
+                              aria-label="Mostrar/Ocultar senha atual"
                             >
                               {showPassword ? (
                                 <EyeSlashIcon className="h-5 w-5 text-gray-400" />
@@ -214,12 +219,13 @@ export default function Configuracoes() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-sss-white mb-2">
+                            <label htmlFor="novaSenha" className="block text-sm font-medium text-sss-white mb-2">
                               Nova Senha
                             </label>
                             <div className="relative">
                               <input
                                 type={showNewPassword ? 'text' : 'password'}
+                                id="novaSenha"
                                 className="w-full pl-3 pr-10 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                                 placeholder="Nova senha"
                                 value={formData.novaSenha}
@@ -229,6 +235,7 @@ export default function Configuracoes() {
                                 type="button"
                                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 onClick={() => setShowNewPassword(!showNewPassword)}
+                                aria-label="Mostrar/Ocultar nova senha"
                               >
                                 {showNewPassword ? (
                                   <EyeSlashIcon className="h-5 w-5 text-gray-400" />
@@ -240,12 +247,13 @@ export default function Configuracoes() {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-sss-white mb-2">
+                            <label htmlFor="confirmarSenha" className="block text-sm font-medium text-sss-white mb-2">
                               Confirmar Nova Senha
                             </label>
                             <div className="relative">
                               <input
                                 type={showConfirmPassword ? 'text' : 'password'}
+                                id="confirmarSenha"
                                 className="w-full pl-3 pr-10 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                                 placeholder="Confirme a nova senha"
                                 value={formData.confirmarSenha}
@@ -255,6 +263,7 @@ export default function Configuracoes() {
                                 type="button"
                                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                aria-label="Mostrar/Ocultar confirmação de senha"
                               >
                                 {showConfirmPassword ? (
                                   <EyeSlashIcon className="h-5 w-5 text-gray-400" />
@@ -299,6 +308,7 @@ export default function Configuracoes() {
                             className={`w-12 h-6 rounded-full transition-colors ${
                               value ? 'bg-sss-accent' : 'bg-sss-light'
                             }`}
+                            aria-label={`Alternar notificação de ${key.replace(/([A-Z])/g, ' $1').trim()}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
                               value ? 'translate-x-6' : 'translate-x-1'
@@ -338,6 +348,7 @@ export default function Configuracoes() {
                             className={`w-12 h-6 rounded-full transition-colors ${
                               value ? 'bg-sss-accent' : 'bg-sss-light'
                             }`}
+                            aria-label={`Alternar privacidade de ${key.replace(/([A-Z])/g, ' $1').trim()}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
                               value ? 'translate-x-6' : 'translate-x-1'
@@ -354,6 +365,7 @@ export default function Configuracoes() {
                   <button
                     onClick={handleSubmit}
                     className="w-full bg-sss-accent hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                    aria-label="Salvar configurações"
                   >
                     <CheckIcon className="w-5 h-5" />
                     <span>Salvar Configurações</span>

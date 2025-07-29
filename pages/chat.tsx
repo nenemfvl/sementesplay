@@ -441,13 +441,22 @@ export default function Chat() {
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors">
+                      <button 
+                        className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors"
+                        aria-label="Ligar para o usuário"
+                      >
                         <PhoneIcon className="w-5 h-5" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors">
+                      <button 
+                        className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors"
+                        aria-label="Iniciar videoconferência"
+                      >
                         <VideoCameraIcon className="w-5 h-5" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors">
+                      <button 
+                        className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors"
+                        aria-label="Mais opções"
+                      >
                         <EllipsisVerticalIcon className="w-5 h-5" />
                       </button>
                     </div>
@@ -489,20 +498,29 @@ export default function Chat() {
                 {/* Input de Mensagem */}
                 <div className="bg-sss-medium border-t border-sss-light p-4">
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors">
+                    <button 
+                      className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors"
+                      aria-label="Anexar arquivo"
+                    >
                       <PaperClipIcon className="w-5 h-5" />
                     </button>
                     
                     <div className="flex-1 relative">
+                      <label htmlFor="mensagem-input" className="sr-only">Digite sua mensagem</label>
                       <input
+                        id="mensagem-input"
                         type="text"
                         value={novaMensagem}
                         onChange={(e) => setNovaMensagem(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && enviarMensagem()}
                         placeholder="Digite sua mensagem..."
                         className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                        aria-label="Campo de mensagem"
                       />
-                      <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-sss-accent">
+                      <button 
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-sss-accent"
+                        aria-label="Inserir emoji"
+                      >
                         <FaceSmileIcon className="w-5 h-5" />
                       </button>
                     </div>
@@ -511,6 +529,7 @@ export default function Chat() {
                       <button
                         onClick={() => setGravando(false)}
                         className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        aria-label="Parar gravação de áudio"
                       >
                         <MicrophoneIcon className="w-5 h-5" />
                       </button>
@@ -518,6 +537,7 @@ export default function Chat() {
                       <button
                         onClick={iniciarGravacao}
                         className="p-2 text-gray-400 hover:text-sss-accent hover:bg-sss-accent/10 rounded-lg transition-colors"
+                        aria-label="Iniciar gravação de áudio"
                       >
                         <MicrophoneIcon className="w-5 h-5" />
                       </button>
@@ -527,6 +547,7 @@ export default function Chat() {
                       onClick={enviarMensagem}
                       disabled={!novaMensagem.trim()}
                       className="p-2 bg-sss-accent text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label="Enviar mensagem"
                     >
                       <PaperAirplaneIcon className="w-5 h-5" />
                     </button>

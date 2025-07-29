@@ -395,6 +395,7 @@ export default function Cashback() {
                           ? 'border-green-500 text-green-500'
                           : 'border-transparent text-gray-300 hover:text-sss-white'
                       }`}
+                      aria-label={`${tab.label}${tab.count !== undefined ? ` (${tab.count} itens)` : ''}`}
                     >
                       <tab.icon className="w-5 h-5" />
                       <span>{tab.label}</span>
@@ -419,23 +420,29 @@ export default function Cashback() {
                     {/* Filtros */}
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex-1">
+                        <label htmlFor="search-codigos" className="sr-only">Buscar códigos</label>
                         <div className="relative">
                           <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <input
+                            id="search-codigos"
                             type="text"
                             placeholder="Buscar códigos..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-green-500"
+                            aria-label="Buscar códigos de cashback"
                           />
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <FunnelIcon className="w-5 h-5 text-gray-400" />
+                        <label htmlFor="categoria-filter" className="sr-only">Filtrar por categoria</label>
                         <select
+                          id="categoria-filter"
                           value={selectedCategoria}
                           onChange={(e) => setSelectedCategoria(e.target.value)}
                           className="bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-green-500"
+                          aria-label="Filtrar códigos por categoria"
                         >
                           {categorias.map((categoria) => (
                             <option key={categoria.id} value={categoria.id}>

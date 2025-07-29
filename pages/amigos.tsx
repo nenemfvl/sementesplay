@@ -401,7 +401,9 @@ export default function Amigos() {
               </p>
 
               {/* Barra de pesquisa global */}
+              <label htmlFor="busca-global" className="sr-only">Buscar pessoas</label>
               <input
+                id="busca-global"
                 type="text"
                 placeholder="Buscar pessoas por nome ou e-mail..."
                 className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent mb-4 mt-4"
@@ -410,6 +412,7 @@ export default function Amigos() {
                   setSearchTerm(e.target.value)
                   buscarUsuarios(e.target.value)
                 }}
+                aria-label="Buscar pessoas por nome ou email"
               />
 
               {/* Resultados da busca global */}
@@ -437,7 +440,13 @@ export default function Amigos() {
                       </div>
                       {/* Se não for amigo, botão de adicionar */}
                       {!amigos.some(a => a.id === usuario.id) && (
-                        <button onClick={() => enviarSolicitacao(usuario.id)} className="px-4 py-2 bg-sss-accent text-white rounded">Adicionar</button>
+                        <button 
+                          onClick={() => enviarSolicitacao(usuario.id)} 
+                          className="px-4 py-2 bg-sss-accent text-white rounded"
+                          aria-label={`Adicionar ${usuario.nome} como amigo`}
+                        >
+                          Adicionar
+                        </button>
                       )}
                       {/* Se já for amigo, mostrar texto */}
                       {amigos.some(a => a.id === usuario.id) && (
@@ -462,6 +471,7 @@ export default function Amigos() {
                           ? 'border-sss-accent text-sss-accent'
                           : 'border-transparent text-gray-300 hover:text-sss-white'
                       }`}
+                      aria-label={`${tab.label} (${tab.count} itens)`}
                     >
                       <UserGroupIcon className="w-5 h-5" />
                       <span>{tab.label}</span>
@@ -484,29 +494,33 @@ export default function Amigos() {
                     {/* Filtros */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label htmlFor="busca-amigos" className="block text-sm font-medium text-gray-300 mb-2">
                           Buscar
                         </label>
                         <div className="relative">
                           <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <input
+                            id="busca-amigos"
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Nome ou email..."
                             className="w-full pl-10 pr-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                            aria-label="Buscar amigos por nome ou email"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label htmlFor="filtro-status" className="block text-sm font-medium text-gray-300 mb-2">
                           Status
                         </label>
                         <select
+                          id="filtro-status"
                           value={filterStatus}
                           onChange={(e) => setFilterStatus(e.target.value)}
                           className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                          aria-label="Filtrar amigos por status"
                         >
                           <option value="todos">Todos os status</option>
                           <option value="online">Online</option>
@@ -522,6 +536,7 @@ export default function Amigos() {
                             setFilterStatus('todos')
                           }}
                           className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                          aria-label="Limpar filtros de busca"
                         >
                           Limpar Filtros
                         </button>
@@ -585,6 +600,7 @@ export default function Amigos() {
                                 href={`/chat?user=${amigo.id}`}
                                 className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors"
                                 title="Enviar mensagem"
+                                aria-label={`Enviar mensagem para ${amigo.nome}`}
                               >
                                 <ChatBubbleLeftIcon className="w-5 h-5" />
                               </Link>
@@ -593,6 +609,7 @@ export default function Amigos() {
                                 href={`/perfil/${amigo.id}`}
                                 className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-colors"
                                 title="Ver perfil"
+                                aria-label={`Ver perfil de ${amigo.nome}`}
                               >
                                 <UserGroupIcon className="w-5 h-5" />
                               </Link>
@@ -601,6 +618,7 @@ export default function Amigos() {
                                 onClick={() => removerAmigo(amigo.id)}
                                 className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
                                 title="Remover amigo"
+                                aria-label={`Remover ${amigo.nome} dos amigos`}
                               >
                                 <UserMinusIcon className="w-5 h-5" />
                               </button>
@@ -654,6 +672,7 @@ export default function Amigos() {
                               onClick={() => aceitarSolicitacao(solicitacao.id)}
                               className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-colors"
                               title="Aceitar"
+                              aria-label={`Aceitar solicitação de amizade de ${solicitacao.remetenteNome}`}
                             >
                               <CheckIcon className="w-5 h-5" />
                             </button>
@@ -662,6 +681,7 @@ export default function Amigos() {
                               onClick={() => rejeitarSolicitacao(solicitacao.id)}
                               className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
                               title="Rejeitar"
+                              aria-label={`Rejeitar solicitação de amizade de ${solicitacao.remetenteNome}`}
                             >
                               <XMarkIcon className="w-5 h-5" />
                             </button>
@@ -719,6 +739,7 @@ export default function Amigos() {
                               href={`/perfil/${usuario.id}`}
                               className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors"
                               title="Ver perfil"
+                              aria-label={`Ver perfil de ${usuario.nome}`}
                             >
                               <UserGroupIcon className="w-5 h-5" />
                             </Link>
@@ -727,6 +748,7 @@ export default function Amigos() {
                               onClick={() => enviarSolicitacao(usuario.id)}
                               className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-colors"
                               title="Adicionar amigo"
+                              aria-label={`Adicionar ${usuario.nome} como amigo`}
                             >
                               <UserPlusIcon className="w-5 h-5" />
                             </button>

@@ -181,6 +181,7 @@ export default function Notificacoes() {
                 <button
                   onClick={marcarTodasComoLidas}
                   className="bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                  aria-label="Marcar todas as notificações como lidas"
                 >
                   Marcar todas como lidas
                 </button>
@@ -199,6 +200,7 @@ export default function Notificacoes() {
                         ? 'bg-sss-accent text-white'
                         : 'bg-sss-dark text-gray-300 hover:text-sss-white'
                     }`}
+                    aria-label={`Filtrar por ${filtro.label} (${filtro.count} itens)`}
                   >
                     {filtro.label} ({filtro.count})
                   </button>
@@ -255,6 +257,7 @@ export default function Notificacoes() {
                               onClick={() => marcarComoLida(notificacao.id)}
                               className="p-1 text-gray-400 hover:text-green-500 transition-colors"
                               title="Marcar como lida"
+                              aria-label="Marcar notificação como lida"
                             >
                               <CheckIcon className="w-4 h-4" />
                             </button>

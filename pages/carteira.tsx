@@ -280,6 +280,7 @@ export default function Carteira() {
                 <button
                   onClick={() => setShowPagamento(true)}
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                  aria-label="Abrir modal para fazer pagamento"
                 >
                   Fazer Pagamento
                 </button>
@@ -303,6 +304,7 @@ export default function Carteira() {
                   <button
                     onClick={() => setShowSaque(true)}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                    aria-label="Abrir modal para solicitar saque"
                   >
                     Solicitar Saque
                   </button>
@@ -426,6 +428,7 @@ export default function Carteira() {
                 <button
                   onClick={() => setShowPagamento(false)}
                   className="text-gray-400 hover:text-white"
+                  aria-label="Fechar modal de pagamento"
                 >
                   ✕
                 </button>
@@ -433,10 +436,11 @@ export default function Carteira() {
 
               <form onSubmit={handlePagamento} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="valor-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
                     Valor (R$)
                   </label>
                   <input
+                    id="valor-pagamento"
                     type="number"
                     step="0.01"
                     min="10"
@@ -444,17 +448,20 @@ export default function Carteira() {
                     onChange={(e) => setValorPagamento(e.target.value)}
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     placeholder="10,00"
+                    aria-label="Valor do pagamento em reais"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="tipo-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
                     Forma de Pagamento
                   </label>
                   <select
+                    id="tipo-pagamento"
                     value={tipoPagamento}
                     onChange={(e) => setTipoPagamento(e.target.value)}
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                    aria-label="Selecionar forma de pagamento"
                   >
                     <option value="pix">PIX</option>
                     <option value="cartao_credito">Cartão de Crédito</option>
@@ -495,6 +502,7 @@ export default function Carteira() {
                 <button
                   onClick={() => setShowSaque(false)}
                   className="text-gray-400 hover:text-white"
+                  aria-label="Fechar modal de saque"
                 >
                   ✕
                 </button>
@@ -502,10 +510,11 @@ export default function Carteira() {
 
               <form onSubmit={handleSaque} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="valor-saque" className="block text-sm font-medium text-gray-300 mb-2">
                     Valor (R$)
                   </label>
                   <input
+                    id="valor-saque"
                     type="number"
                     step="0.01"
                     min="50"
@@ -514,6 +523,7 @@ export default function Carteira() {
                     onChange={(e) => setValorSaque(e.target.value)}
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
                     placeholder="50,00"
+                    aria-label="Valor do saque em reais"
                   />
                                      <p className="text-xs text-gray-400 mt-1">
                      Sementes disponíveis: {carteira ? carteira.sementes.toLocaleString() : '0'} (Valor máximo: {carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'})
