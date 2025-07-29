@@ -339,6 +339,7 @@ export default function Parceiros() {
                         ? 'bg-sss-accent text-white'
                         : 'text-gray-400 hover:text-sss-white hover:bg-sss-light'
                     }`}
+                    aria-label={tab.label}
                   >
                     <tab.icon className="w-4 h-4" />
                     <span>{tab.label}</span>
@@ -682,6 +683,8 @@ export default function Parceiros() {
                           value={parceiro.nomeCidade}
                           disabled
                           className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                          aria-label="Nome da cidade"
+                          placeholder="Nome da cidade"
                         />
                       </div>
                       
@@ -694,6 +697,8 @@ export default function Parceiros() {
                           value={`R$ ${parceiro.comissaoMensal.toFixed(2)}`}
                           disabled
                           className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                          aria-label="Comissão mensal"
+                          placeholder="Comissão mensal"
                         />
                       </div>
                     </div>
@@ -721,6 +726,8 @@ export default function Parceiros() {
                 <button
                   onClick={() => setShowModal(false)}
                   className="text-gray-400 hover:text-sss-white transition"
+                  aria-label="Fechar modal"
+                  title="Fechar"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -1096,6 +1103,8 @@ export default function Parceiros() {
                 <button
                   onClick={() => setShowModal(false)}
                   className="text-gray-400 hover:text-sss-white transition"
+                  aria-label="Fechar modal"
+                  title="Fechar"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
