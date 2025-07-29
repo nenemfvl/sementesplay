@@ -50,7 +50,7 @@ export default function Configuracoes() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Configurações salvas:', { formData, notificacoes, privacidade })
+    
     alert('Configurações salvas com sucesso! ✅')
   }
 

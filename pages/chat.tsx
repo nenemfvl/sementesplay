@@ -127,7 +127,7 @@ export default function Chat() {
         }, 3000)
       },
       close: () => {
-        console.log('WebSocket chat mock fechado')
+    
       }
     }
 

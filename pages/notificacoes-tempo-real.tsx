@@ -97,7 +97,7 @@ export default function NotificacoesTempoReal() {
         }, 15000)
       },
       close: () => {
-        console.log('WebSocket mock fechado')
+
       }
     }
 

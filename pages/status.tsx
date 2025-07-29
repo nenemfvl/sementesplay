@@ -42,14 +42,10 @@ export default function Status() {
   useEffect(() => {
     // Carregar dados do usuário usando o sistema de autenticação
     const currentUser = auth.getUser()
-    console.log('Usuário carregado do sistema de auth:', currentUser)
     
     if (currentUser) {
-      console.log('Nível do usuário:', currentUser.nivel)
-      console.log('É criador:', currentUser.criador)
       setUser(currentUser)
     } else {
-      console.log('Nenhum usuário autenticado encontrado')
       // Tentar buscar da API como fallback
       fetch('/api/usuario/atual', {
         credentials: 'include',
@@ -57,20 +53,12 @@ export default function Status() {
           'Content-Type': 'application/json',
         }
       })
-        .then(res => {
-          console.log('Status da resposta:', res.status)
-          return res.json()
-        })
+        .then(res => res.json())
         .then(data => {
           if (data.usuario) {
-            console.log('Usuário carregado da API:', data.usuario)
-            console.log('Nível do usuário:', data.usuario.nivel)
-            console.log('É criador:', data.usuario.criador)
             setUser(data.usuario)
             // Salvar no sistema de autenticação
             auth.setUser(data.usuario)
-          } else {
-            console.log('Resposta da API:', data)
           }
         })
         .catch(error => {
@@ -199,12 +187,7 @@ export default function Status() {
           </div>
         )}
         
-        {/* Debug info - remover depois */}
-        {user && (
-          <div className="fixed left-4 top-4 z-50 bg-black/80 text-white p-2 rounded text-xs">
-            Debug: Nível: {user.nivel} | Criador: {user.criador ? 'Sim' : 'Não'} | Usuário logado: Sim
-          </div>
-        )}
+        
         
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Contador de Sementes - bloco destacado */}

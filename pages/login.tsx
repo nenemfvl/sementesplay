@@ -14,14 +14,8 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('Tentando fazer login...');
     e.preventDefault();
-    console.log('Depois do preventDefault');
     setError(null);
-    console.log('Antes do fetch');
-
-    // Log para garantir que está no navegador
-    console.log('window:', typeof window, window ? 'existe' : 'NÃO existe');
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -42,19 +36,11 @@ export default function Login() {
         if (typeof window !== 'undefined') {
           if (data.usuario && data.token) {
             auth.setUser(data.usuario, data.token)
-            console.log('Usuário salvo no localStorage:', data.usuario)
-            const userLS = localStorage.getItem('sementesplay_user');
-            console.log('Usuário no localStorage após login:', userLS);
             window.location.href = '/';
           } else {
             auth.setUser(data)
-            console.log('Usuário salvo no localStorage (fallback):', data)
-            const userLS = localStorage.getItem('sementesplay_user');
-            console.log('Usuário no localStorage após login:', userLS);
             window.location.href = '/';
           }
-        } else {
-          console.log('Tentativa de salvar usuário fora do navegador!')
         }
       } else {
         setError(data.error || 'Erro ao fazer login. Tente novamente.')
