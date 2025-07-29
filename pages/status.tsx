@@ -186,7 +186,7 @@ export default function Status() {
         </header>
         
                 {/* Botão Fixo "Seja Criador" - Lateral Direita (apenas para usuários que não são criadores) */}
-        {user && (
+        {user && !user.criador && (
           <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40">
             <button
               onClick={() => router.push('/candidatura-criador')}
