@@ -498,6 +498,8 @@ export default function Parceiros() {
                               <button
                                 onClick={() => copiarCodigo(codigo.codigo)}
                                 className="text-sss-accent hover:text-sss-white transition"
+                                aria-label={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
+                                title={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
                               >
                                 {copiado === codigo.codigo ? (
                                   <CheckIcon className="w-4 h-4" />

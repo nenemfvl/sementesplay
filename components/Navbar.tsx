@@ -69,8 +69,7 @@ export default function Navbar() {
     <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
       {/* Logo e nome colados à esquerda como botão para o topo */}
       <button
-        className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none"
-        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+        className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Ir para o topo"
       >
@@ -212,11 +211,11 @@ export default function Navbar() {
               </button>
               {showSocials && (
                 <div className="origin-top-right absolute right-0 mt-2 w-16 rounded-md shadow-lg bg-black ring-1 ring-black ring-opacity-5 z-50 flex flex-col items-center py-2 gap-2">
-                  <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-discord fa-lg"></i></a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-instagram fa-lg"></i></a>
-                  <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-tiktok fa-lg"></i></a>
-                  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-youtube fa-lg"></i></a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent"><i className="fab fa-twitter fa-lg"></i></a>
+                  <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Discord" aria-label="Discord"><i className="fab fa-discord fa-lg"></i></a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Instagram" aria-label="Instagram"><i className="fab fa-instagram fa-lg"></i></a>
+                  <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="TikTok" aria-label="TikTok"><i className="fab fa-tiktok fa-lg"></i></a>
+                  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="YouTube" aria-label="YouTube"><i className="fab fa-youtube fa-lg"></i></a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Twitter" aria-label="Twitter"><i className="fab fa-twitter fa-lg"></i></a>
                 </div>
               )}
             </div>
