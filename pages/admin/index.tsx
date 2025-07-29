@@ -286,7 +286,7 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/criadores" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                        <Link href="/admin/candidaturas" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <TrophyIcon className="w-6 h-6 text-yellow-500" />
                           <div>
                             <p className="text-sss-white font-medium">Gerenciar Criadores</p>
@@ -302,7 +302,7 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/cashback" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                        <Link href="/admin/usuarios" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <GiftIcon className="w-6 h-6 text-green-500" />
                           <div>
                             <p className="text-sss-white font-medium">Códigos Cashback</p>
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/missoes" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                        <Link href="/admin/usuarios" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <TrophyIcon className="w-6 h-6 text-purple-500" />
                           <div>
                             <p className="text-sss-white font-medium">Sistema de Missões</p>
@@ -407,7 +407,7 @@ export default function AdminDashboard() {
                     <TrophyIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Gerenciamento de Criadores</h3>
                     <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/criadores" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    <Link href="/admin/candidaturas" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                       Ver Criadores
                     </Link>
                   </motion.div>
@@ -423,7 +423,7 @@ export default function AdminDashboard() {
                     <CurrencyDollarIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Histórico de Doações</h3>
                     <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/doacoes" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                       Ver Doações
                     </Link>
                   </motion.div>
@@ -439,7 +439,7 @@ export default function AdminDashboard() {
                     <GiftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Sistema de Cashback</h3>
                     <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/cashback" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                       Gerenciar Cashback
                     </Link>
                   </motion.div>
@@ -455,7 +455,7 @@ export default function AdminDashboard() {
                     <TrophyIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Sistema de Missões</h3>
                     <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/missoes" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                       Gerenciar Missões
                     </Link>
                   </motion.div>
@@ -471,7 +471,7 @@ export default function AdminDashboard() {
                     <ChatBubbleLeftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Moderação do Chat</h3>
                     <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/chat" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                       Moderar Chat
                     </Link>
                   </motion.div>

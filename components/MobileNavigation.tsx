@@ -24,7 +24,7 @@ import {
 const navigationItems = [
   {
     name: 'Dashboard',
-    href: '/dashboard',
+    href: '/status',
     icon: HomeIcon,
     iconSolid: HomeIconSolid
   },

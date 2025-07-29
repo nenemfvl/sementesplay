@@ -53,7 +53,7 @@ export default function Salao() {
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-400 text-sm">
               <a href="/termos" className="hover:text-sss-accent">Termos de Uso</a>
               <span>|</span>
-              <a href="/privacidade" className="hover:text-sss-accent">Política de Privacidade</a>
+              <a href="/termos" className="hover:text-sss-accent">Política de Privacidade</a>
               <span>|</span>
               <a href="/ajuda" className="hover:text-sss-accent">Ajuda</a>
               <span>|</span>
