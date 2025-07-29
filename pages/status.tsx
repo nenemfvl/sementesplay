@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
@@ -501,13 +502,13 @@ export default function Status() {
             </div>
             {/* Links horizontais */}
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-400 text-sm">
-              <a href="/termos" className="hover:text-sss-accent">Termos de Uso</a>
+              <Link href="/termos" className="hover:text-sss-accent">Termos de Uso</Link>
               <span>|</span>
-              <a href="/termos" className="hover:text-sss-accent">Política de Privacidade</a>
+              <Link href="/termos" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
-              <a href="/ajuda" className="hover:text-sss-accent">Ajuda</a>
+              <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
               <span>|</span>
-              <a href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</a>
+              <Link href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</Link>
             </div>
             {/* Copyright */}
             <div className="text-gray-500 text-xs text-center">

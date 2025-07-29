@@ -19,7 +19,7 @@ interface NotificationSettings {
 
 export default function PushNotifications() {
   const [isOpen, setIsOpen] = useState(false)
-  const [permission, setPermission] = useState<NotificationPermission>('default')
+  const [permission, setPermission] = useState<'default' | 'granted' | 'denied'>('default')
   const [settings, setSettings] = useState<NotificationSettings>({
     donations: true,
     missions: true,
@@ -127,6 +127,7 @@ export default function PushNotifications() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1 text-gray-400 hover:text-white"
+                  aria-label="Fechar modal de notificações"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -194,6 +195,7 @@ export default function PushNotifications() {
                         className={`w-12 h-6 rounded-full transition-colors ${
                           value ? 'bg-sss-accent' : 'bg-gray-600'
                         }`}
+                        aria-label={`${value ? 'Desativar' : 'Ativar'} notificações de ${key}`}
                       >
                         <div
                           className={`w-4 h-4 bg-white rounded-full transition-transform ${
