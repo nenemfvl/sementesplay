@@ -72,6 +72,9 @@ export default function AdminParceiros() {
   const [aba, setAba] = useState<'dados' | 'codigos' | 'transacoes' | 'estatisticas'>('dados');
   const [banindo, setBanindo] = useState(false);
   const [removendo, setRemovendo] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [motivo, setMotivo] = useState('');
 
   useEffect(() => {
     const currentUser = auth.getUser();
@@ -151,18 +154,27 @@ export default function AdminParceiros() {
   };
 
   const banirParceiro = async (parceiro: Parceiro) => {
-    if (!confirm('Tem certeza que deseja banir este parceiro?')) return;
+    if (!motivo.trim()) {
+      alert('Por favor, informe o motivo do banimento.');
+      return;
+    }
     setBanindo(true);
     try {
       const response = await fetch(`/api/admin/parceiros/${parceiro.usuarioId}/banir`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ motivo })
       });
       if (response.ok) {
         alert('Parceiro banido com sucesso!');
-        setShowModal(false);
+        setShowBanModal(false);
+        setMotivo('');
         loadParceiros();
       } else {
-        alert('Erro ao banir parceiro');
+        const data = await response.json();
+        alert(`Erro: ${data.error}`);
       }
     } catch (error) {
       console.error('Erro ao banir parceiro:', error);
@@ -173,18 +185,27 @@ export default function AdminParceiros() {
   };
 
   const removerParceiro = async (parceiro: Parceiro) => {
-    if (!confirm('Tem certeza que deseja remover este parceiro? Esta ação é irreversível.')) return;
+    if (!motivo.trim()) {
+      alert('Por favor, informe o motivo da remoção.');
+      return;
+    }
     setRemovendo(true);
     try {
       const response = await fetch(`/api/admin/parceiros/${parceiro.usuarioId}/remover`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ motivo })
       });
       if (response.ok) {
         alert('Parceiro removido com sucesso!');
-        setShowModal(false);
+        setShowRemoveModal(false);
+        setMotivo('');
         loadParceiros();
       } else {
-        alert('Erro ao remover parceiro');
+        const data = await response.json();
+        alert(`Erro: ${data.error}`);
       }
     } catch (error) {
       console.error('Erro ao remover parceiro:', error);
@@ -257,7 +278,10 @@ export default function AdminParceiros() {
                         <button
                           className="text-yellow-500 hover:text-yellow-700"
                           title="Banir parceiro"
-                          onClick={() => banirParceiro(parceiro)}
+                          onClick={() => {
+                            setSelectedParceiro(parceiro)
+                            setShowBanModal(true)
+                          }}
                           disabled={banindo}
                         >
                           <NoSymbolIcon className="w-5 h-5" />
@@ -265,7 +289,10 @@ export default function AdminParceiros() {
                         <button
                           className="text-red-500 hover:text-red-700"
                           title="Remover parceiro"
-                          onClick={() => removerParceiro(parceiro)}
+                          onClick={() => {
+                            setSelectedParceiro(parceiro)
+                            setShowRemoveModal(true)
+                          }}
                           disabled={removendo}
                         >
                           <TrashIcon className="w-5 h-5" />
@@ -382,6 +409,110 @@ export default function AdminParceiros() {
                   </ul>
                 </div>
               )}
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Banimento */}
+        {showBanModal && selectedParceiro && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+            >
+              <h3 className="text-lg font-semibold text-red-600 mb-4">
+                Banir Parceiro: {selectedParceiro.usuario.nome}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Motivo do Banimento *
+                  </label>
+                  <textarea
+                    value={motivo}
+                    onChange={(e) => setMotivo(e.target.value)}
+                    placeholder="Informe o motivo do banimento..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowBanModal(false)
+                      setMotivo('')
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => banirParceiro(selectedParceiro)}
+                    disabled={banindo}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {banindo ? 'Banindo...' : 'Banir Parceiro'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Remoção */}
+        {showRemoveModal && selectedParceiro && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+            >
+              <h3 className="text-lg font-semibold text-red-600 mb-4">
+                Remover Parceiro: {selectedParceiro.usuario.nome}
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-yellow-800 text-sm">
+                    <strong>Atenção:</strong> Esta ação é irreversível. O parceiro será removido e suas permissões serão revogadas.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Motivo da Remoção *
+                  </label>
+                  <textarea
+                    value={motivo}
+                    onChange={(e) => setMotivo(e.target.value)}
+                    placeholder="Informe o motivo da remoção..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowRemoveModal(false)
+                      setMotivo('')
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => removerParceiro(selectedParceiro)}
+                    disabled={removendo}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {removendo ? 'Removendo...' : 'Remover Parceiro'}
+                  </button>
+                </div>
+              </div>
             </motion.div>
           </div>
         )}

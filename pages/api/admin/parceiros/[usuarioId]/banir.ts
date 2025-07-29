@@ -23,13 +23,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { id: String(usuarioId) },
       data: { nivel: 'banido', tipo: 'banido' }
     });
+    const { motivo } = req.body;
+
     // Log de auditoria
     await prisma.logAuditoria.create({
       data: {
         usuarioId: user.id,
         acao: 'BANIR_PARCEIRO',
-        detalhes: `Parceiro ${usuarioId} banido pelo admin ${user.nome}`,
+        detalhes: `Parceiro ${usuarioId} banido pelo admin ${user.nome}. Motivo: ${motivo || 'Não informado'}`,
         nivel: 'warning'
+      }
+    });
+
+    // Enviar notificação ao parceiro banido
+    await prisma.notificacao.create({
+      data: {
+        usuarioId: String(usuarioId),
+        titulo: 'Conta Banida',
+        mensagem: `Sua conta de parceiro foi banida pela administração. Motivo: ${motivo || 'Violação dos termos de uso'}`,
+        tipo: 'sistema',
+        lida: false
       }
     });
     res.status(200).json({ message: 'Parceiro banido com sucesso' });

@@ -26,13 +26,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     // Remover permissões usando o PermissionsManager
     await PermissionsManager.removeParceiroPermissions(String(usuarioId));
+    const { motivo } = req.body;
+
     // Log de auditoria
     await prisma.logAuditoria.create({
       data: {
         usuarioId: user.id,
         acao: 'REMOVER_PARCEIRO',
-        detalhes: `Parceiro ${usuarioId} removido pelo admin ${user.nome}`,
+        detalhes: `Parceiro ${usuarioId} removido pelo admin ${user.nome}. Motivo: ${motivo || 'Não informado'}`,
         nivel: 'warning'
+      }
+    });
+
+    // Enviar notificação ao parceiro removido
+    await prisma.notificacao.create({
+      data: {
+        usuarioId: String(usuarioId),
+        titulo: 'Status de Parceiro Removido',
+        mensagem: `Seu status de parceiro foi removido pela administração. Motivo: ${motivo || 'Reavaliação da administração'}`,
+        tipo: 'sistema',
+        lida: false
       }
     });
     res.status(200).json({ message: 'Parceiro removido com sucesso' });

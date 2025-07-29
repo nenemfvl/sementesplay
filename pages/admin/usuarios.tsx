@@ -13,7 +13,8 @@ import {
   NoSymbolIcon,
   CheckCircleIcon,
   XCircleIcon,
-  FunnelIcon
+  FunnelIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
@@ -82,43 +83,103 @@ export default function AdminUsuarios() {
     })
   }
 
+  const [showBanModal, setShowBanModal] = useState(false)
+  const [showSuspendModal, setShowSuspendModal] = useState(false)
+  const [showReactivateModal, setShowReactivateModal] = useState(false)
+  const [motivo, setMotivo] = useState('')
+  const [duracaoSuspensao, setDuracaoSuspensao] = useState(7)
+
   const banirUsuario = async (usuarioId: string) => {
-    if (!confirm('Tem certeza que deseja banir este usuário?')) return
+    if (!motivo.trim()) {
+      alert('Por favor, informe o motivo do banimento.')
+      return
+    }
 
     try {
       const response = await fetch(`/api/admin/usuarios/${usuarioId}/banir`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ motivo })
       })
 
       if (response.ok) {
         alert('Usuário banido com sucesso!')
         loadUsuarios()
+        setShowBanModal(false)
+        setMotivo('')
       } else {
-        alert('Erro ao banir usuário')
+        const data = await response.json()
+        alert(`Erro: ${data.error}`)
       }
     } catch (error) {
       console.error('Erro ao banir usuário:', error)
       alert('Erro ao banir usuário')
     }
   }
+      alert('Erro ao banir usuário')
+    }
+  }
 
-  const desbanirUsuario = async (usuarioId: string) => {
-    if (!confirm('Tem certeza que deseja desbanir este usuário?')) return
+  const suspenderUsuario = async (usuarioId: string) => {
+    if (!motivo.trim()) {
+      alert('Por favor, informe o motivo da suspensão.')
+      return
+    }
 
     try {
-      const response = await fetch(`/api/admin/usuarios/${usuarioId}/desbanir`, {
-        method: 'POST'
+      const response = await fetch(`/api/admin/usuarios/${usuarioId}/suspender`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ motivo, duracao: duracaoSuspensao })
       })
 
       if (response.ok) {
-        alert('Usuário desbanido com sucesso!')
+        alert('Usuário suspenso com sucesso!')
         loadUsuarios()
+        setShowSuspendModal(false)
+        setMotivo('')
+        setDuracaoSuspensao(7)
       } else {
-        alert('Erro ao desbanir usuário')
+        const data = await response.json()
+        alert(`Erro: ${data.error}`)
       }
     } catch (error) {
-      console.error('Erro ao desbanir usuário:', error)
-      alert('Erro ao desbanir usuário')
+      console.error('Erro ao suspender usuário:', error)
+      alert('Erro ao suspender usuário')
+    }
+  }
+
+  const reativarUsuario = async (usuarioId: string) => {
+    if (!motivo.trim()) {
+      alert('Por favor, informe o motivo da reativação.')
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/usuarios/${usuarioId}/reativar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ motivo })
+      })
+
+      if (response.ok) {
+        alert('Usuário reativado com sucesso!')
+        loadUsuarios()
+        setShowReactivateModal(false)
+        setMotivo('')
+      } else {
+        const data = await response.json()
+        alert(`Erro: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao reativar usuário:', error)
+      alert('Erro ao reativar usuário')
     }
   }
 
@@ -380,22 +441,40 @@ export default function AdminUsuarios() {
                                 <EyeIcon className="w-4 h-4" />
                               </button>
                               {usuario.status === 'ativo' ? (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedUser(usuario)
+                                      setShowSuspendModal(true)
+                                    }}
+                                    className="text-yellow-400 hover:text-yellow-300"
+                                    title="Suspender"
+                                  >
+                                    <ClockIcon className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedUser(usuario)
+                                      setShowBanModal(true)
+                                    }}
+                                    className="text-red-400 hover:text-red-300"
+                                    title="Banir"
+                                  >
+                                    <NoSymbolIcon className="w-4 h-4" />
+                                  </button>
+                                </>
+                              ) : (usuario.status === 'banido' || usuario.status === 'suspenso') ? (
                                 <button
-                                  onClick={() => banirUsuario(usuario.id)}
-                                  className="text-red-400 hover:text-red-300"
-                                  title="Banir"
-                                >
-                                  <NoSymbolIcon className="w-4 h-4" />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => desbanirUsuario(usuario.id)}
+                                  onClick={() => {
+                                    setSelectedUser(usuario)
+                                    setShowReactivateModal(true)
+                                  }}
                                   className="text-green-400 hover:text-green-300"
-                                  title="Desbanir"
+                                  title="Reativar"
                                 >
                                   <CheckCircleIcon className="w-4 h-4" />
                                 </button>
-                              )}
+                              ) : null}
                             </div>
                           </td>
                         </motion.tr>
@@ -450,6 +529,168 @@ export default function AdminUsuarios() {
                     className="flex-1 px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
                   >
                     Salvar
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Banimento */}
+        {showBanModal && selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4"
+            >
+              <h3 className="text-lg font-semibold text-red-400 mb-4">
+                Banir Usuário: {selectedUser.nome}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Motivo do Banimento *
+                  </label>
+                  <textarea
+                    value={motivo}
+                    onChange={(e) => setMotivo(e.target.value)}
+                    placeholder="Informe o motivo do banimento..."
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowBanModal(false)
+                      setMotivo('')
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => banirUsuario(selectedUser.id)}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  >
+                    Banir Usuário
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Suspensão */}
+        {showSuspendModal && selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4"
+            >
+              <h3 className="text-lg font-semibold text-yellow-400 mb-4">
+                Suspender Usuário: {selectedUser.nome}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Motivo da Suspensão *
+                  </label>
+                  <textarea
+                    value={motivo}
+                    onChange={(e) => setMotivo(e.target.value)}
+                    placeholder="Informe o motivo da suspensão..."
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-yellow-500 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Duração (dias)
+                  </label>
+                  <select
+                    value={duracaoSuspensao}
+                    onChange={(e) => setDuracaoSuspensao(Number(e.target.value))}
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                  >
+                    <option value={1}>1 dia</option>
+                    <option value={3}>3 dias</option>
+                    <option value={7}>7 dias</option>
+                    <option value={14}>14 dias</option>
+                    <option value={30}>30 dias</option>
+                  </select>
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowSuspendModal(false)
+                      setMotivo('')
+                      setDuracaoSuspensao(7)
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => suspenderUsuario(selectedUser.id)}
+                    className="flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
+                  >
+                    Suspender Usuário
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Reativação */}
+        {showReactivateModal && selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4"
+            >
+              <h3 className="text-lg font-semibold text-green-400 mb-4">
+                Reativar Usuário: {selectedUser.nome}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Motivo da Reativação *
+                  </label>
+                  <textarea
+                    value={motivo}
+                    onChange={(e) => setMotivo(e.target.value)}
+                    placeholder="Informe o motivo da reativação..."
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowReactivateModal(false)
+                      setMotivo('')
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => reativarUsuario(selectedUser.id)}
+                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                  >
+                    Reativar Usuário
                   </button>
                 </div>
               </div>
