@@ -682,7 +682,7 @@ export default function PainelParceiro() {
                                   <input
                                     type="file"
                                     accept="image/*,application/pdf"
-                                    style={{ display: 'none' }}
+                                    className="hidden"
                                     disabled={uploading === compra.id}
                                     onChange={e => {
                                       if (e.target.files && e.target.files[0]) {
@@ -762,6 +762,8 @@ export default function PainelParceiro() {
                         value={parceiro.nomeCidade}
                         disabled
                         className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                        title="Nome da cidade do parceiro"
+                        aria-label="Nome da cidade do parceiro"
                       />
                     </div>
                     
@@ -774,6 +776,8 @@ export default function PainelParceiro() {
                         value={`R$ ${parceiro.comissaoMensal.toFixed(2)}`}
                         disabled
                         className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white disabled:opacity-50"
+                        title="Comissão mensal do parceiro"
+                        aria-label="Comissão mensal do parceiro"
                       />
                     </div>
                   </div>
@@ -798,6 +802,8 @@ export default function PainelParceiro() {
               <button
                 onClick={() => setShowGerarCodigo(false)}
                 className="text-gray-400 hover:text-sss-white"
+                aria-label="Fechar modal"
+                title="Fechar"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>

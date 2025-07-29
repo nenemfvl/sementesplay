@@ -600,12 +600,12 @@ export default function PainelCriador() {
     // YouTube
     const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
     if (yt) {
-      return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" />;
+      return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" title="YouTube video" />;
     }
     // Twitch
     const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
     if (tw) {
-      return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" />;
+      return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" title="Twitch stream" />;
     }
     // Instagram
     if (url.includes('instagram.com')) {
@@ -634,6 +634,21 @@ export default function PainelCriador() {
     }
     return null;
   }
+
+  // Helper function para calcular largura das barras de progresso
+  const getProgressWidthClass = (value: number, max: number) => {
+    const percentage = Math.min((value / max) * 100, 100);
+    if (percentage <= 10) return 'w-[10%]';
+    if (percentage <= 20) return 'w-[20%]';
+    if (percentage <= 30) return 'w-[30%]';
+    if (percentage <= 40) return 'w-[40%]';
+    if (percentage <= 50) return 'w-[50%]';
+    if (percentage <= 60) return 'w-[60%]';
+    if (percentage <= 70) return 'w-[70%]';
+    if (percentage <= 80) return 'w-[80%]';
+    if (percentage <= 90) return 'w-[90%]';
+    return 'w-full';
+  };
 
   // Mostrar loading enquanto verifica autorização
   if (checkingAuth) {
@@ -800,7 +815,7 @@ export default function PainelCriador() {
           </div>
           </div>
                 <div className="h-1 bg-blue-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full" style={{width: `${Math.min((totalVisualizacoes / 1000) * 100, 100)}%`}}></div>
+                  <div className={`h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full ${getProgressWidthClass(totalVisualizacoes, 1000)}`}></div>
                 </div>
               </div>
 
@@ -815,7 +830,7 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="h-1 bg-pink-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-pink-400 to-pink-600 rounded-full" style={{width: `${Math.min((totalCurtidas / 100) * 100, 100)}%`}}></div>
+                  <div className={`h-full bg-gradient-to-r from-pink-400 to-pink-600 rounded-full ${getProgressWidthClass(totalCurtidas, 100)}`}></div>
                 </div>
               </div>
 
@@ -830,7 +845,7 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="h-1 bg-red-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full" style={{width: `${Math.min((totalDislikes / 50) * 100, 100)}%`}}></div>
+                  <div className={`h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full ${getProgressWidthClass(totalDislikes, 50)}`}></div>
                 </div>
               </div>
 
@@ -845,7 +860,7 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="h-1 bg-yellow-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full" style={{width: `${Math.min((totalCompartilhamentos / 100) * 100, 100)}%`}}></div>
+                  <div className={`h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full ${getProgressWidthClass(totalCompartilhamentos, 100)}`}></div>
                 </div>
               </div>
           </div>
