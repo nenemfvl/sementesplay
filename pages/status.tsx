@@ -39,21 +39,36 @@ export default function Status() {
   const router = useRouter()
 
   useEffect(() => {
-    // Carregar dados do usuário do localStorage
+    // Carregar dados do usuário do localStorage ou da API
     const userData = localStorage.getItem('user')
     console.log('Dados do localStorage:', userData)
     
     if (userData) {
       try {
         const parsedUser = JSON.parse(userData)
-        console.log('Usuário carregado:', parsedUser)
+        console.log('Usuário carregado do localStorage:', parsedUser)
         console.log('Nível do usuário:', parsedUser.nivel)
         setUser(parsedUser)
       } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error)
       }
     } else {
-      console.log('Nenhum usuário encontrado no localStorage')
+      console.log('Nenhum usuário encontrado no localStorage, buscando da API...')
+      // Buscar dados do usuário atual da API
+      fetch('/api/usuario/atual')
+        .then(res => res.json())
+        .then(data => {
+          if (data.usuario) {
+            console.log('Usuário carregado da API:', data.usuario)
+            console.log('Nível do usuário:', data.usuario.nivel)
+            setUser(data.usuario)
+            // Salvar no localStorage para próximas visitas
+            localStorage.setItem('user', JSON.stringify(data.usuario))
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao buscar usuário da API:', error)
+        })
     }
 
     fetch('/api/admin/stats')
