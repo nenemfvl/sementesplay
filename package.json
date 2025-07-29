@@ -11,6 +11,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
+    "db:studio:watch": "prisma studio --port 5555 --browser none",
+    "db:studio:forever": "node scripts/start-studio.js",
     "seed": "ts-node --project tsconfig-seed.json scripts/seed.ts",
     "atualizar-niveis": "node scripts/atualizar-niveis.js",
     "postinstall": "prisma generate"
