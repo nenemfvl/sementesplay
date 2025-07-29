@@ -54,9 +54,17 @@ export default function Status() {
       }
     } else {
       console.log('Nenhum usuário encontrado no localStorage, buscando da API...')
-      // Buscar dados do usuário atual da API
-      fetch('/api/usuario/atual')
-        .then(res => res.json())
+      // Buscar dados do usuário atual da API com credenciais
+      fetch('/api/usuario/atual', {
+        credentials: 'include', // Incluir cookies de sessão
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+        .then(res => {
+          console.log('Status da resposta:', res.status)
+          return res.json()
+        })
         .then(data => {
           if (data.usuario) {
             console.log('Usuário carregado da API:', data.usuario)
@@ -64,6 +72,8 @@ export default function Status() {
             setUser(data.usuario)
             // Salvar no localStorage para próximas visitas
             localStorage.setItem('user', JSON.stringify(data.usuario))
+          } else {
+            console.log('Resposta da API:', data)
           }
         })
         .catch(error => {
