@@ -175,8 +175,7 @@ export default function Status() {
         {/* Header */}
         <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
           <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             aria-label="Ir para o topo"
           >
@@ -192,9 +191,6 @@ export default function Status() {
             <button
               onClick={() => router.push('/candidatura-criador')}
               className="bg-gradient-to-r from-sss-accent to-red-600 hover:from-red-600 hover:to-sss-accent text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-bold text-lg"
-              style={{
-                boxShadow: '0 10px 25px rgba(233, 69, 96, 0.3)',
-              }}
             >
               <span className="text-2xl">⭐</span>
               <span className="hidden sm:inline">Seja Criador</span>
@@ -421,10 +417,10 @@ export default function Status() {
                                              {/* Redes Sociais - Borda Direita */}
                        {top1.redesSociais && (top1.redesSociais.twitch || top1.redesSociais.youtube || top1.redesSociais.tiktok || top1.redesSociais.instagram) && (
                          <div className="flex flex-row gap-3 mt-8">
-                         {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform"><FaTwitch /></a>}
-                         {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform"><FaYoutube /></a>}
-                         {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform"><FaTiktok /></a>}
-                         {top1.redesSociais.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform"><FaInstagram /></a>}
+                         {top1.redesSociais.twitch && <a href={top1.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-2xl hover:scale-110 transition-transform" title="Twitch"><FaTwitch /></a>}
+                         {top1.redesSociais.youtube && <a href={top1.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-2xl hover:scale-110 transition-transform" title="YouTube"><FaYoutube /></a>}
+                         {top1.redesSociais.tiktok && <a href={top1.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-2xl hover:scale-110 transition-transform" title="TikTok"><FaTiktok /></a>}
+                         {top1.redesSociais.instagram && <a href={top1.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-2xl hover:scale-110 transition-transform" title="Instagram"><FaInstagram /></a>}
                        </div>
                       )}
                     </div>
@@ -458,10 +454,10 @@ export default function Status() {
                                                      {/* Redes Sociais */}
                            {c.redesSociais && (c.redesSociais.twitch || c.redesSociais.youtube || c.redesSociais.tiktok || c.redesSociais.instagram) && (
                              <div className="flex flex-row gap-2 mt-4">
-                             {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform"><FaTwitch /></a>}
-                             {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform"><FaYoutube /></a>}
-                             {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform"><FaTiktok /></a>}
-                             {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform"><FaInstagram /></a>}
+                             {c.redesSociais.twitch && <a href={c.redesSociais.twitch} target="_blank" rel="noopener noreferrer" className="text-[#9147ff] text-lg hover:scale-110 transition-transform" title="Twitch"><FaTwitch /></a>}
+                             {c.redesSociais.youtube && <a href={c.redesSociais.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] text-lg hover:scale-110 transition-transform" title="YouTube"><FaYoutube /></a>}
+                             {c.redesSociais.tiktok && <a href={c.redesSociais.tiktok} target="_blank" rel="noopener noreferrer" className="text-[#000] text-lg hover:scale-110 transition-transform" title="TikTok"><FaTiktok /></a>}
+                             {c.redesSociais.instagram && <a href={c.redesSociais.instagram} target="_blank" rel="noopener noreferrer" className="text-[#e1306c] text-lg hover:scale-110 transition-transform" title="Instagram"><FaInstagram /></a>}
                            </div>
                           )}
                         </div>
