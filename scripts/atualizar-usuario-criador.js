@@ -34,11 +34,10 @@ async function atualizarUsuarioCriador() {
     console.log(`  Nível atual: ${candidatura.usuario.nivel}`)
     console.log(`  Tipo atual: ${candidatura.usuario.tipo}`)
     
-    // Atualizar usuário para nível criador-iniciante
+    // Atualizar usuário para nível criador-iniciante (tipo permanece 'usuario')
     const usuarioAtualizado = await prisma.usuario.update({
       where: { id: candidatura.usuarioId },
       data: { 
-        tipo: 'criador',
         nivel: 'criador-iniciante'
       },
       select: {

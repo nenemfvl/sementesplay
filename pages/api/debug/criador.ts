@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     // Se não existe criador mas o usuário tem nível criador, criar automaticamente
-    if (!criador && (usuario.nivel === 'criador' || usuario.tipo === 'criador')) {
+    if (!criador && (usuario.nivel.startsWith('criador-'))) {
       const novoCriador = await prisma.criador.create({
         data: {
           usuarioId: usuario.id,

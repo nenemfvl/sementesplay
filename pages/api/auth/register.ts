@@ -31,13 +31,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Criptografar senha
     const senhaCriptografada = await bcrypt.hash(senha, 12)
 
-    // Criar usuário
+    // Criar usuário (tipo sempre 'usuario')
     const usuario = await prisma.usuario.create({
       data: {
         nome,
         email,
         senha: senhaCriptografada,
-        tipo: tipo || 'comum'
+        tipo: 'usuario',
+        nivel: tipo === 'criador' ? 'criador-iniciante' : tipo === 'parceiro' ? 'parceiro' : 'comum'
       }
     })
 

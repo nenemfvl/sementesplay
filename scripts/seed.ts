@@ -49,9 +49,9 @@ async function main() {
       nome: 'JoãoGamer',
       email: 'joaogamer@email.com',
       senha: senhaHash,
-      tipo: 'criador',
+      tipo: 'usuario',
       sementes: 25000,
-      nivel: 'supremo',
+      nivel: 'criador-supremo',
       pontuacao: 5000
     }
   })
@@ -61,9 +61,9 @@ async function main() {
       nome: 'MariaStream',
       email: 'mariastream@email.com',
       senha: senhaHash,
-      tipo: 'criador',
+      tipo: 'usuario',
       sementes: 22000,
-      nivel: 'supremo',
+      nivel: 'criador-supremo',
       pontuacao: 4500
     }
   })
@@ -73,9 +73,9 @@ async function main() {
       nome: 'PedroFiveM',
       email: 'pedrofivem@email.com',
       senha: senhaHash,
-      tipo: 'criador',
+      tipo: 'usuario',
       sementes: 18000,
-      nivel: 'parceiro',
+      nivel: 'criador-parceiro',
       pontuacao: 3000
     }
   })

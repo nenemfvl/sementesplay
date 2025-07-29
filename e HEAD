@@ -1,0 +1,5 @@
+[33m2f5e3b99[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Remover seção Link Personalizado para Divulgação do painel de criador
+[33mbabab411[m Forçar redeploy
+[33m767698a0[m Corrigir erro TypeScript - usar dataCriacao em vez de data na interface Enquete
+[33mdf0876a6[m Corrigir erro TypeScript - verificar se user não é null antes de acessar propriedades
+[33ma2ffef97[m Implementar funcionalidade de enquetes no perfil do criador - adicionar botões de votação e corrigir interface

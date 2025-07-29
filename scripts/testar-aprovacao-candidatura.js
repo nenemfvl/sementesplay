@@ -64,11 +64,10 @@ async function testarAprovacaoCandidatura() {
       }
     })
     
-    // 5. Atualizar usuário
+    // 5. Atualizar usuário (apenas o nível, tipo permanece 'usuario')
     await prisma.usuario.update({
       where: { id: candidatura.usuarioId },
       data: { 
-        tipo: 'criador',
         nivel: 'criador-iniciante'
       }
     })
