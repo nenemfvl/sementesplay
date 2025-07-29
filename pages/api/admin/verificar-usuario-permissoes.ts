@@ -25,11 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       resultado
     })
 
-  } catch (error) {
+    } catch (error) {
     console.error('Erro ao verificar permissões do usuário:', error)
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Erro interno do servidor',
-      details: error.message 
+      details: error instanceof Error ? error.message : 'Erro desconhecido'
     })
   }
 } 

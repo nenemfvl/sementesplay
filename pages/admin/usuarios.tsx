@@ -28,7 +28,7 @@ interface UsuarioAdmin {
   sementes: number
   pontuacao: number
   dataCriacao: Date
-  status: 'ativo' | 'banido' | 'pendente'
+  status: 'ativo' | 'banido' | 'pendente' | 'suspenso'
 }
 
 export default function AdminUsuarios() {
@@ -115,9 +115,6 @@ export default function AdminUsuarios() {
       }
     } catch (error) {
       console.error('Erro ao banir usuário:', error)
-      alert('Erro ao banir usuário')
-    }
-  }
       alert('Erro ao banir usuário')
     }
   }

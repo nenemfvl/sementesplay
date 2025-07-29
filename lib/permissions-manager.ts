@@ -175,7 +175,7 @@ export class PermissionsManager {
         parceirosCorrigidos: 0,
         adminsCorrigidos: 0,
         total: 0,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
       }
     }
   }
@@ -227,7 +227,7 @@ export class PermissionsManager {
       }
     } catch (error) {
       console.error('Erro ao verificar permissões do usuário:', error)
-      return { error: error.message }
+      return { error: error instanceof Error ? error.message : 'Erro desconhecido' }
     }
   }
 } 
