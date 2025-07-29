@@ -280,13 +280,15 @@ export default function AdminUsuarios() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="tipo-select" className="block text-sm font-medium text-gray-300 mb-2">
                     Tipo
                   </label>
                   <select
+                    id="tipo-select"
                     value={filterTipo}
                     onChange={(e) => setFilterTipo(e.target.value)}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                    aria-label="Filtrar por tipo de usuário"
                   >
                     <option value="todos">Todos os tipos</option>
                     <option value="comum">Comum</option>
@@ -296,13 +298,15 @@ export default function AdminUsuarios() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="nivel-select" className="block text-sm font-medium text-gray-300 mb-2">
                     Nível
                   </label>
                   <select
+                    id="nivel-select"
                     value={filterNivel}
                     onChange={(e) => setFilterNivel(e.target.value)}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                    aria-label="Filtrar por nível do usuário"
                   >
                     <option value="todos">Todos os níveis</option>
                     <option value="comum">Comum</option>
@@ -498,12 +502,14 @@ export default function AdminUsuarios() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="nivel-modal-select" className="block text-sm font-medium text-gray-300 mb-2">
                     Nível
                   </label>
                   <select
+                    id="nivel-modal-select"
                     defaultValue={selectedUser.nivel}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                    aria-label="Alterar nível do usuário"
                   >
                     <option value="comum">Comum</option>
                     <option value="parceiro">Parceiro</option>
@@ -608,13 +614,15 @@ export default function AdminUsuarios() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label htmlFor="duracao-suspensao-select" className="block text-sm font-medium text-gray-300 mb-2">
                     Duração (dias)
                   </label>
                   <select
+                    id="duracao-suspensao-select"
                     value={duracaoSuspensao}
                     onChange={(e) => setDuracaoSuspensao(Number(e.target.value))}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    aria-label="Selecionar duração da suspensão"
                   >
                     <option value={1}>1 dia</option>
                     <option value={3}>3 dias</option>
