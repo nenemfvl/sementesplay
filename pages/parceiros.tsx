@@ -917,6 +917,8 @@ export default function Parceiros() {
                 <button
                   onClick={() => setShowGerarCodigo(false)}
                   className="text-gray-400 hover:text-sss-white"
+                  aria-label="Fechar modal"
+                  title="Fechar"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -1294,6 +1296,8 @@ export default function Parceiros() {
                 <button
                   onClick={() => setShowGerarCodigo(false)}
                   className="text-gray-400 hover:text-sss-white"
+                  aria-label="Fechar modal"
+                  title="Fechar"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>

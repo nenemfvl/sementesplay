@@ -652,8 +652,12 @@ export default function CandidaturaCriador() {
               </div>
               <div className="w-full bg-sss-dark rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-sss-accent to-red-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${(currentStep / 4) * 100}%` }}
+                  className={`bg-gradient-to-r from-sss-accent to-red-600 h-2 rounded-full transition-all duration-500 ${
+                    currentStep === 1 ? 'w-1/4' :
+                    currentStep === 2 ? 'w-1/2' :
+                    currentStep === 3 ? 'w-3/4' :
+                    'w-full'
+                  }`}
                 ></div>
               </div>
             </div>

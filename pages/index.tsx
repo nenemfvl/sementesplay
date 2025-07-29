@@ -76,8 +76,7 @@ export default function Home() {
         <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
           {/* Logo e nome colados à esquerda como botão para o topo */}
           <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             aria-label="Ir para o topo"
           >

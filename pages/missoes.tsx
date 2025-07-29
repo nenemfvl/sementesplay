@@ -217,6 +217,20 @@ export default function Missoes() {
     return Math.min((progresso / objetivo) * 100, 100)
   }
 
+  const getProgressWidthClass = (progresso: number, objetivo: number) => {
+    const percentual = calcularProgresso(progresso, objetivo)
+    if (percentual <= 10) return 'w-[10%]'
+    if (percentual <= 20) return 'w-[20%]'
+    if (percentual <= 30) return 'w-[30%]'
+    if (percentual <= 40) return 'w-[40%]'
+    if (percentual <= 50) return 'w-[50%]'
+    if (percentual <= 60) return 'w-[60%]'
+    if (percentual <= 70) return 'w-[70%]'
+    if (percentual <= 80) return 'w-[80%]'
+    if (percentual <= 90) return 'w-[90%]'
+    return 'w-full'
+  }
+
   const missoesFiltradas = filtrarMissoes(activeTab)
   const missoesCompletadas = missoes.filter(m => m.status === 'completada').length
   const totalMissoes = missoes.length
@@ -297,8 +311,7 @@ export default function Missoes() {
               </div>
               <div className="w-full bg-sss-dark rounded-full h-3 mb-2">
                 <div 
-                  className="bg-gradient-to-r from-sss-accent to-red-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${progressoGeral}%` }}
+                  className={`bg-gradient-to-r from-sss-accent to-red-600 h-3 rounded-full transition-all duration-500 ${getProgressWidthClass(missoesCompletadas, totalMissoes)}`}
                 ></div>
               </div>
               <p className="text-gray-400 text-sm">
@@ -388,8 +401,7 @@ export default function Missoes() {
                                       : missao.status === 'em_progresso'
                                       ? 'bg-yellow-500'
                                       : 'bg-gray-500'
-                                  }`}
-                                  style={{ width: `${calcularProgresso(missao.progresso, missao.objetivo)}%` }}
+                                  } ${getProgressWidthClass(missao.progresso, missao.objetivo)}`}
                                 ></div>
                               </div>
 
@@ -563,8 +575,7 @@ export default function Missoes() {
                   
                   <div className="w-full bg-sss-dark rounded-full h-3">
                     <div 
-                      className="bg-sss-accent h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${calcularProgresso(selectedMissao.progresso, selectedMissao.objetivo)}%` }}
+                      className={`bg-sss-accent h-3 rounded-full transition-all duration-500 ${getProgressWidthClass(selectedMissao.progresso, selectedMissao.objetivo)}`}
                     ></div>
                   </div>
 
