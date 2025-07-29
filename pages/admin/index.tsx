@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
-  ShieldCheckIcon,
   UsersIcon,
   CurrencyDollarIcon,
   ChartBarIcon,
   CogIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   ArrowLeftIcon,
   PlusIcon,
   TrashIcon,

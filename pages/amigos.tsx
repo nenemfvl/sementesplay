@@ -87,7 +87,9 @@ export default function Amigos() {
         const res = await fetch('/api/chat/usuarios-online')
         const data = await res.json()
         setOnlineIds(data.online || [])
-      } catch {}
+      } catch (error) {
+        console.error('Erro ao buscar usuários online:', error)
+      }
     }
     fetchOnline()
     const interval = setInterval(fetchOnline, 10000)
@@ -659,7 +661,7 @@ export default function Amigos() {
                               <h3 className="text-sss-white font-semibold">{solicitacao.remetenteNome}</h3>
                               <p className="text-gray-400 text-sm">{solicitacao.remetenteEmail}</p>
                               {solicitacao.mensagem && (
-                                <p className="text-gray-300 text-sm mt-1">"{solicitacao.mensagem}"</p>
+                                <p className="text-gray-300 text-sm mt-1">&quot;{solicitacao.mensagem}&quot;</p>
                               )}
                               <p className="text-gray-500 text-xs mt-1">
                                 {formatarTempo(solicitacao.dataEnvio)}

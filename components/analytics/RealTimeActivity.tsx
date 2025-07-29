@@ -17,7 +17,7 @@ export default function RealTimeActivity() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: ReturnType<typeof setInterval>
     let abort = false
     async function fetchActivities() {
       setLoading(true)

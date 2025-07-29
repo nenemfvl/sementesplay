@@ -389,7 +389,7 @@ export default function Doar() {
                       ))
                     ) : (
                       <div className="col-span-2 text-center py-8">
-                        <p className="text-gray-400">Nenhum criador encontrado para "{searchTerm}"</p>
+                        <p className="text-gray-400">Nenhum criador encontrado para &quot;{searchTerm}&quot;</p>
                         <button
                           type="button"
                           onClick={() => setSearchTerm('')}

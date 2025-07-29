@@ -1,5 +1,21 @@
 // Tipos para o sistema SementesPLAY
 
+// Definições globais para TypeScript
+declare global {
+  interface Window {
+    Notification: {
+      permission: 'default' | 'granted' | 'denied';
+      requestPermission(): Promise<'default' | 'granted' | 'denied'>;
+    };
+  }
+  
+  namespace NodeJS {
+    interface Timeout {}
+  }
+  
+  var globalThis: typeof globalThis;
+}
+
 export enum TipoUsuario {
   COMUM = 'comum',
   CRIADOR = 'criador',

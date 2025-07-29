@@ -4,7 +4,8 @@
     "eslint:recommended"
   ],
   "rules": {
-    "no-console": "warn",
-    "no-unused-vars": "warn"
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "@next/next/no-img-element": "warn"
   }
 } 

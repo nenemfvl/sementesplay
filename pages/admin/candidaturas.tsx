@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
-  DocumentTextIcon,
   ArrowLeftIcon,
   ShieldCheckIcon,
   MagnifyingGlassIcon,
-  FunnelIcon,
   EyeIcon,
   CheckCircleIcon,
   XCircleIcon,
   ClockIcon,
-  UserIcon,
-  EnvelopeIcon,
-  GlobeAltIcon
+  UserIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
@@ -296,6 +292,7 @@ export default function AdminCandidaturas() {
                     Status
                   </label>
                   <select
+                    aria-label="Filtrar por status"
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
@@ -312,6 +309,7 @@ export default function AdminCandidaturas() {
                     Categoria
                   </label>
                   <select
+                    aria-label="Filtrar por categoria"
                     value={filterCategoria}
                     onChange={(e) => setFilterCategoria(e.target.value)}
                     className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"

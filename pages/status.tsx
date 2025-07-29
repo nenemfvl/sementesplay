@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, TrophyIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, StarIcon, FireIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'

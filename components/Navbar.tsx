@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
@@ -22,7 +24,6 @@ interface UserWithCriador extends User {
 
 export default function Navbar() {
   const router = useRouter();
-  console.log('Navbar asPath:', router.asPath);
   const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
@@ -31,7 +32,6 @@ export default function Navbar() {
     const loadUserData = async () => {
       if (typeof window !== 'undefined') {
         const currentUser = auth.getUser();
-        console.log('Usuário carregado na navbar:', currentUser);
         if (currentUser) {
           setUser(currentUser as UserWithCriador);
         }
@@ -79,15 +79,15 @@ export default function Navbar() {
       {/* Remover o bloco de debug visual do asPath */}
       <div className="flex justify-center items-center py-6">
         <nav className="flex-1 flex justify-center hidden md:flex space-x-8">
-          <a href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Início</a>
-          <a href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Status</a>
-          <a href="/salao" className={`${router.asPath.startsWith('/salao') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'} relative flex items-center gap-2`}>
+          <Link href="/" className={`${router.asPath === '/' ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Início</Link>
+          <Link href="/status" className={`${router.asPath.startsWith('/status') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Status</Link>
+          <Link href="/salao" className={`${router.asPath.startsWith('/salao') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'} relative flex items-center gap-2`}>
             <div className="relative">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
               <div className="absolute inset-0 w-2 h-2 bg-red-500 rounded-full animate-ping opacity-75"></div>
             </div>
             Salão
-          </a>
+          </Link>
           <a
             href="#"
             onClick={e => {
@@ -103,13 +103,13 @@ export default function Navbar() {
           >
             Buscar Criadores
           </a>
-          <a href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</a>
+          <Link href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</Link>
           {(user?.nivel === 'criador-iniciante' || user?.nivel === 'criador-comum' || user?.nivel === 'criador-parceiro' || user?.nivel === 'criador-supremo') && (
-            <a href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</a>
+            <Link href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</Link>
           )}
           
           {Number(user?.nivel) >= 5 && (
-            <a href="/admin" className={`${router.asPath.startsWith('/admin') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Admin</a>
+            <Link href="/admin" className={`${router.asPath.startsWith('/admin') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Admin</Link>
           )}
         </nav>
       </div>
@@ -126,9 +126,11 @@ export default function Navbar() {
                 {/* Avatar do usuário */}
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-sss-accent flex items-center justify-center">
                   {user.avatarUrl ? (
-                    <img 
+                    <Image 
                       src={user.avatarUrl} 
                       alt={`Avatar de ${user.nome}`}
+                      width={32}
+                      height={32}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         // Fallback para ícone se a imagem falhar
@@ -225,8 +227,8 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <a href="/login" className="btn-outline">Entrar</a>
-            <a href="/registro" className="btn-primary">Cadastrar</a>
+            <Link href="/login" className="btn-outline">Entrar</Link>
+            <Link href="/registro" className="btn-primary">Cadastrar</Link>
           </>
         )}
       </div>

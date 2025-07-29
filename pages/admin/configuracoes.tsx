@@ -6,8 +6,6 @@ import {
   ArrowLeftIcon,
   ShieldCheckIcon,
   ExclamationTriangleIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   CurrencyDollarIcon,
   UsersIcon,
   TrophyIcon,
@@ -180,6 +178,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Taxa de cashback em porcentagem"
                       value={configuracoes.taxaCashback}
                       onChange={(e) => handleInputChange('taxaCashback', Number(e.target.value))}
                       min="0"
@@ -202,6 +201,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Limite de doação em sementes"
                       value={configuracoes.limiteDoacao}
                       onChange={(e) => handleInputChange('limiteDoacao', Number(e.target.value))}
                       min="100"
@@ -224,6 +224,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Quantidade de sementes iniciais"
                       value={configuracoes.sementesIniciais}
                       onChange={(e) => handleInputChange('sementesIniciais', Number(e.target.value))}
                       min="0"
@@ -238,6 +239,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Nível mínimo para administrador"
                       value={configuracoes.nivelMinimoAdmin}
                       onChange={(e) => handleInputChange('nivelMinimoAdmin', Number(e.target.value))}
                       min="1"
@@ -260,6 +262,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Máximo de criadores permitidos"
                       value={configuracoes.maximoCriadores}
                       onChange={(e) => handleInputChange('maximoCriadores', Number(e.target.value))}
                       min="10"
@@ -282,6 +285,7 @@ export default function AdminConfiguracoes() {
                     </label>
                     <input
                       type="number"
+                      aria-label="Tempo de sessão em horas"
                       value={configuracoes.tempoSessao}
                       onChange={(e) => handleInputChange('tempoSessao', Number(e.target.value))}
                       min="1"

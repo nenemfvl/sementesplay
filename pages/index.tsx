@@ -1,5 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
@@ -118,9 +119,9 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <a href="/registro" className="btn-primary text-lg px-8 py-3">
-                  Começar Agora
-                </a>
+                            <Link href="/registro" className="btn-primary text-lg px-8 py-3">
+              Começar Agora
+            </Link>
                 <a href="#como-funciona" className="btn-outline text-lg px-8 py-3">
                   Saiba Mais
                 </a>
@@ -218,27 +219,27 @@ export default function Home() {
               enquanto apoia seus criadores favoritos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/registro" className="bg-white text-sss-accent font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
+              <Link href="/registro" className="bg-white text-sss-accent font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
                 Criar Conta Grátis
-              </a>
-              <a href="/login" className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-sss-accent transition-colors">
+              </Link>
+              <Link href="/login" className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-sss-accent transition-colors">
                 Já tenho conta
-              </a>
+              </Link>
             </div>
             
             <div className="flex flex-wrap justify-center gap-6 mt-8">
-              <a href="/ranking" className="text-white/80 hover:text-white text-sm">
+              <Link href="/ranking" className="text-white/80 hover:text-white text-sm">
                 Ranking de Criadores
-              </a>
-              <a href="/buscar" className="text-white/80 hover:text-white text-sm">
+              </Link>
+              <Link href="/buscar" className="text-white/80 hover:text-white text-sm">
                 Buscar Criadores
-              </a>
-              <a href="/termos" className="text-white/80 hover:text-white text-sm">
+              </Link>
+              <Link href="/termos" className="text-white/80 hover:text-white text-sm">
                 Termos de Uso
-              </a>
-              <a href="/ajuda" className="text-white/80 hover:text-white text-sm">
+              </Link>
+              <Link href="/ajuda" className="text-white/80 hover:text-white text-sm">
                 Ajuda
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -271,13 +272,13 @@ export default function Home() {
             </div>
             {/* Links horizontais */}
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-400 text-sm">
-              <a href="/termos" className="hover:text-sss-accent">Termos de Uso</a>
+              <Link href="/termos" className="hover:text-sss-accent">Termos de Uso</Link>
               <span>|</span>
-              <a href="/termos" className="hover:text-sss-accent">Política de Privacidade</a>
+              <Link href="/termos" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
-              <a href="/ajuda" className="hover:text-sss-accent">Ajuda</a>
+              <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
               <span>|</span>
-              <a href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</a>
+              <Link href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</Link>
             </div>
             {/* Copyright */}
             <div className="text-gray-500 text-xs text-center">

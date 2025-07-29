@@ -100,7 +100,7 @@ export default function PainelParceiro() {
 
   const loadParceiroData = async () => {
     try {
-      console.log('Carregando dados do parceiro para usuário:', user?.id)
+  
       
       const [parceiroRes, codigosRes, transacoesRes, statsRes] = await Promise.all([
         fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`),
@@ -109,11 +109,11 @@ export default function PainelParceiro() {
         fetch(`/api/parceiros/estatisticas?usuarioId=${user?.id}`)
       ])
 
-      console.log('Resposta da API de perfil:', parceiroRes.status)
+      
       
       if (parceiroRes.ok) {
         const parceiroData = await parceiroRes.json()
-        console.log('Dados do parceiro:', parceiroData)
+        
         setParceiro(parceiroData)
       } else {
         const errorData = await parceiroRes.json()

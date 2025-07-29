@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { 
   ArrowLeftOnRectangleIcon,
@@ -1003,11 +1004,11 @@ export default function Parceiros() {
             </div>
             {/* Links horizontais */}
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-400 text-sm">
-              <a href="/termos" className="hover:text-sss-accent">Termos de Uso</a>
+              <Link href="/termos" className="hover:text-sss-accent">Termos de Uso</Link>
               <span>|</span>
-              <a href="/termos" className="hover:text-sss-accent">Política de Privacidade</a>
+              <Link href="/termos" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
-              <a href="/ajuda" className="hover:text-sss-accent">Ajuda</a>
+              <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
             </div>
             {/* Copyright */}
             <div className="text-gray-500 text-xs text-center">

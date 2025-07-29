@@ -185,13 +185,13 @@ export default function PainelCriador() {
         const criadorData = await criadorRes.json();
         
         if (!criadorData.criadores || criadorData.criadores.length === 0) {
-          console.log('Nenhum criador encontrado para o usuário');
+  
           setConteudos([]);
           return;
         }
         
         const criadorId = criadorData.criadores[0].id;
-        console.log('Criador ID encontrado:', criadorId);
+
         
         // Agora buscar os conteúdos usando o criadorId
         const res = await fetch(`/api/conteudos?criadorId=${criadorId}`);
@@ -684,6 +684,7 @@ export default function PainelCriador() {
               <button 
                 onClick={() => { setShowModal(false); setEditando(null); }}
                 className="text-gray-400 hover:text-sss-white transition-colors"
+                aria-label="Fechar modal"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -717,6 +718,7 @@ export default function PainelCriador() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Tipo</label>
                 <select 
                   required 
+                  aria-label="Tipo de conteúdo"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={form.tipo} 
                   onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} 
@@ -731,6 +733,7 @@ export default function PainelCriador() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Categoria</label>
                 <select 
                   required 
+                  aria-label="Categoria do conteúdo"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={form.categoria} 
                   onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} 
@@ -885,6 +888,7 @@ export default function PainelCriador() {
                     <div className="flex items-center space-x-3">
                       <span className="text-sm text-gray-300">Filtrar:</span>
                       <select 
+                        aria-label="Filtrar por categoria"
                         className="bg-sss-light border border-sss-light rounded-lg px-3 py-2 text-sss-white text-sm focus:ring-2 focus:ring-sss-accent focus:border-transparent" 
                         value={categoriaFiltro} 
                         onChange={e => setCategoriaFiltro(e.target.value)}
@@ -1122,7 +1126,7 @@ export default function PainelCriador() {
                             </span>
                           </div>
                           {d.mensagem && (
-                            <div className="text-sm text-gray-300 mb-2 italic">"{d.mensagem}"</div>
+                            <div className="text-sm text-gray-300 mb-2 italic">&quot;{d.mensagem}&quot;</div>
                           )}
                           {d.doador && (
                             <div className="text-xs text-gray-400">De: {d.doador.nome}</div>
