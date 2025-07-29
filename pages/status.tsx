@@ -145,6 +145,22 @@ export default function Status() {
           </button>
           <Navbar />
         </header>
+        
+        {/* Botão Fixo "Seja Criador" - Lateral Direita */}
+        <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40">
+          <button
+            onClick={() => router.push('/candidatura-criador')}
+            className="bg-gradient-to-r from-sss-accent to-red-600 hover:from-red-600 hover:to-sss-accent text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-bold text-lg"
+            style={{
+              boxShadow: '0 10px 25px rgba(233, 69, 96, 0.3)',
+            }}
+          >
+            <span className="text-2xl">🎯</span>
+            <span className="hidden sm:inline">Seja Criador</span>
+            <span className="sm:hidden">Criador</span>
+          </button>
+        </div>
+        
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Contador de Sementes - bloco destacado */}
           <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-[#1a223a]/90 rounded-2xl shadow-lg py-10 mb-10">
