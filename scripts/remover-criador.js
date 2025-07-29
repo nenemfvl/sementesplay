@@ -2,6 +2,37 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
+// Simular o PermissionsManager para o script
+const PermissionsManager = {
+  async removeCriadorPermissions(usuarioId) {
+    try {
+      // Atualizar o nível do usuário para 'comum'
+      await prisma.usuario.update({
+        where: { id: usuarioId },
+        data: {
+          nivel: 'comum'
+        }
+      })
+
+      // Log da ação
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId,
+          acao: 'PERMISSAO_REMOVIDA',
+          detalhes: 'Permissões de criador removidas - usuário voltou para nível comum',
+          nivel: 'warning'
+        }
+      })
+
+      console.log(`Permissões de criador removidas para usuário ${usuarioId}`)
+      return true
+    } catch (error) {
+      console.error('Erro ao remover permissões de criador:', error)
+      return false
+    }
+  }
+}
+
 async function removerCriador() {
   try {
     console.log('=== Removendo Registro de Criador ===\n')
@@ -65,8 +96,12 @@ async function removerCriador() {
       where: { id: criador.id }
     })
     
-    console.log('✅ Registro de criador removido com sucesso!')
-    console.log('\nAgora o usuário não aparecerá mais no ranking de criadores.')
+    // Remover permissões usando o PermissionsManager
+    console.log('\n🔐 Removendo permissões de criador...')
+    await PermissionsManager.removeCriadorPermissions(candidatura.usuarioId)
+    
+    console.log('✅ Registro de criador removido e permissões atualizadas com sucesso!')
+    console.log('\nAgora o usuário não aparecerá mais no ranking de criadores e voltou para nível comum.')
     
   } catch (error) {
     console.error('❌ Erro:', error)

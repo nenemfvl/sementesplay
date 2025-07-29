@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { getUserFromToken } from '@/pages/api/utils/auth-backend';
+import { PermissionsManager } from '../../../../../lib/permissions-manager';
 
 const prisma = new PrismaClient();
 
@@ -22,11 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await prisma.parceiro.delete({
       where: { usuarioId: String(usuarioId) }
     });
-    // Atualizar usuário para comum
-    await prisma.usuario.update({
-      where: { id: String(usuarioId) },
-      data: { nivel: 'comum', tipo: 'comum' }
-    });
+    
+    // Remover permissões usando o PermissionsManager
+    await PermissionsManager.removeParceiroPermissions(String(usuarioId));
     // Log de auditoria
     await prisma.logAuditoria.create({
       data: {
