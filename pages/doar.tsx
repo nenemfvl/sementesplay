@@ -332,6 +332,7 @@ export default function Doar() {
                                       href={creator.redesSociais.youtube}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      aria-label="Canal do YouTube"
                                       className="text-red-500 hover:text-red-400 transition-colors"
                                       onClick={(e) => e.stopPropagation()}
                                     >
@@ -345,6 +346,7 @@ export default function Doar() {
                                       href={creator.redesSociais.twitch}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      aria-label="Canal da Twitch"
                                       className="text-purple-500 hover:text-purple-400 transition-colors"
                                       onClick={(e) => e.stopPropagation()}
                                     >
@@ -358,6 +360,7 @@ export default function Doar() {
                                       href={creator.redesSociais.instagram}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      aria-label="Perfil do Instagram"
                                       className="text-pink-500 hover:text-pink-400 transition-colors"
                                       onClick={(e) => e.stopPropagation()}
                                     >
@@ -371,6 +374,7 @@ export default function Doar() {
                                       href={creator.redesSociais.tiktok}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      aria-label="Perfil do TikTok"
                                       className="text-black hover:text-gray-700 transition-colors"
                                       onClick={(e) => e.stopPropagation()}
                                     >

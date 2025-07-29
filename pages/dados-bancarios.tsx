@@ -12,7 +12,7 @@ import {
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 
-interface DadosBancarios {
+interface DadosBancariosType {
   id: string
   banco: string
   agencia: string
@@ -25,7 +25,7 @@ interface DadosBancarios {
 
 export default function DadosBancarios() {
   const [user, setUser] = useState<User | null>(null)
-  const [dadosBancarios, setDadosBancarios] = useState<DadosBancarios | null>(null)
+  const [dadosBancarios, setDadosBancarios] = useState<DadosBancariosType | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
@@ -286,6 +286,7 @@ export default function DadosBancarios() {
                     </label>
                     <select
                       name="tipoConta"
+                      aria-label="Tipo de conta"
                       value={formData.tipoConta}
                       onChange={handleInputChange}
                       required

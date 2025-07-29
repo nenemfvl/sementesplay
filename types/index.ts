@@ -13,7 +13,7 @@ declare global {
     interface Timeout {}
   }
   
-  var globalThis: typeof globalThis;
+
 }
 
 export enum TipoUsuario {
