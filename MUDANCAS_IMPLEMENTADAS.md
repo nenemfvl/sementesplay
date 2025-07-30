@@ -22,12 +22,14 @@
 ## 🛠️ **ARQUIVOS MODIFICADOS**
 
 ### **1. `pages/api/compras-parceiro.ts`**
+
 ```diff
 - cupomUsado: 'sementesplay20',
 + cupomUsado: 'sementesplay10', // Alterado de sementesplay20 para sementesplay10
 ```
 
 ### **2. `pages/api/admin/aprovar-repasse.ts`**
+
 ```diff
 - const pctUsuario = valor * 0.10
 - const pctParceiro = valor * 0.05
@@ -37,6 +39,7 @@
 ```
 
 ### **3. `pages/api/repasses-parceiro.ts`**
+
 ```diff
 + // Validação: valor deve ser 10% da compra (era 20%)
 + const valorEsperado = compra.valorCompra * 0.10
@@ -50,6 +53,7 @@
 ```
 
 ### **4. `pages/painel-parceiro.tsx`**
+
 ```diff
 - • O cupom obrigatório para compras é <b>sementesplay20</b>.<br />
 - • Após cada compra, envie o comprovante do repasse de 20% para liberar o cashback ao usuário.<br />
@@ -58,6 +62,7 @@
 ```
 
 ### **5. `pages/api/usuario/cashback.ts`**
+
 ```diff
 - cupomUsado: 'sementesplay20'
 + cupomUsado: 'sementesplay10'
@@ -65,9 +70,10 @@
 
 ## 🧪 **TESTE DE SIMULAÇÃO**
 
-### **Script Criado**: `scripts/testar-novo-fluxo.js`
+### **Script Criado**: `scripts/testar-novo-fluxo.js`**
 
 **Resultado do Teste:**
+
 ```
 🧪 TESTANDO NOVO FLUXO SEMENTESPLAY10
 =====================================
@@ -87,6 +93,7 @@
 💰 Fundo de Sementes: 0.65 total
 
 🎉 TESTE CONCLUÍDO COM SUCESSO!
+
 ```
 
 ## �� **FLUXO ATUALIZADO**
