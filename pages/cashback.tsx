@@ -382,6 +382,39 @@ export default function Cashback() {
               </div>
             )}
 
+            {/* Ações Rápidas */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="bg-sss-medium rounded-lg p-6 border border-sss-light"
+            >
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-sss-white mb-4">
+                  Ações Rápidas
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link
+                    href="/registrar-compra"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    <PlusIcon className="w-5 h-5 mr-2" />
+                    Registrar Compra com Parceiro
+                  </Link>
+                  <Link
+                    href="/parceiros"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    <BuildingOfficeIcon className="w-5 h-5 mr-2" />
+                    Ver Parceiros Disponíveis
+                  </Link>
+                </div>
+                <p className="text-gray-400 text-sm mt-4">
+                  Use o cupom <strong>sementesplay10</strong> nas compras e registre aqui para receber cashback!
+                </p>
+              </div>
+            </motion.div>
+
             {/* Tabs */}
             <div className="bg-sss-medium rounded-lg border border-sss-light">
               <div className="border-b border-sss-light">
