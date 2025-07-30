@@ -23,14 +23,14 @@
 
 ### **1. `pages/api/compras-parceiro.ts`**
 
-```diff
+```typescript
 - cupomUsado: 'sementesplay20',
 + cupomUsado: 'sementesplay10', // Alterado de sementesplay20 para sementesplay10
 ```
 
 ### **2. `pages/api/admin/aprovar-repasse.ts`**
 
-```diff
+```typescript
 - const pctUsuario = valor * 0.10
 - const pctParceiro = valor * 0.05
 + const pctUsuario = Math.round(valor * 0.05)    // 5% para jogador
@@ -40,7 +40,7 @@
 
 ### **3. `pages/api/repasses-parceiro.ts`**
 
-```diff
+```typescript
 + // Validação: valor deve ser 10% da compra (era 20%)
 + const valorEsperado = compra.valorCompra * 0.10
 + if (Math.abs(valor - valorEsperado) > 0.01) {
@@ -54,7 +54,7 @@
 
 ### **4. `pages/painel-parceiro.tsx`**
 
-```diff
+```typescript
 - • O cupom obrigatório para compras é <b>sementesplay20</b>.<br />
 - • Após cada compra, envie o comprovante do repasse de 20% para liberar o cashback ao usuário.<br />
 + • O cupom obrigatório para compras é <b>sementesplay10</b>.<br />
@@ -63,7 +63,7 @@
 
 ### **5. `pages/api/usuario/cashback.ts`**
 
-```diff
+```typescript
 - cupomUsado: 'sementesplay20'
 + cupomUsado: 'sementesplay10'
 ```
@@ -96,19 +96,22 @@
 
 ```
 
-## �� **FLUXO ATUALIZADO**
+## 🚀 **FLUXO ATUALIZADO**
 
 ### **1. Compra do Jogador**
+
 - Jogador compra R$ 100 na cidade
 - Usa cupom `sementesplay10`
 - Sistema registra compra
 
 ### **2. Repasse da Cidade**
+
 - Cidade envia R$ 10 (10% da compra)
 - Sistema valida valor exato
 - Repasse fica pendente
 
 ### **3. Aprovação do Admin**
+
 - Admin aprova repasse
 - Jogador recebe 1 semente (5%)
 - Sistema SementesPLAY recebe R$ 0,25 (2,5%)
