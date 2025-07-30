@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await prisma.usuario.update({
           where: { id: candidatura.usuarioId },
           data: {
-            nivel: '3' // Nível de parceiro
+            nivel: 'parceiro' // Nível de parceiro
           }
         })
 

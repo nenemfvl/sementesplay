@@ -108,6 +108,10 @@ export default function Navbar() {
             <Link href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</Link>
           )}
           
+          {user?.nivel === 'parceiro' && (
+            <Link href="/painel-parceiro" className={`${router.asPath.startsWith('/painel-parceiro') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Parceiro</Link>
+          )}
+          
           {Number(user?.nivel) >= 5 && (
             <Link href="/admin" className={`${router.asPath.startsWith('/admin') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Admin</Link>
           )}
@@ -197,6 +201,14 @@ export default function Navbar() {
                     >
                       ⭐ Criadores Favoritos
                     </button>
+                    {user?.nivel === 'parceiro' && (
+                      <button
+                        onClick={() => handleMenuItemClick('/painel-parceiro')}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-sss-accent"
+                      >
+                        🏢 Painel Parceiro
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
