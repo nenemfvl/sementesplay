@@ -29,6 +29,8 @@ export const auth = {
   setUser: (user: User, token?: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('sementesplay_user', JSON.stringify(user))
+      // Salvar também em cookie para APIs
+      document.cookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=86400`
       if (token) {
         localStorage.setItem('sementesplay_token', token)
       }
@@ -56,6 +58,8 @@ export const auth = {
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('sementesplay_user')
+      // Remover cookie também
+      document.cookie = 'sementesplay_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
       window.location.href = '/'
     }
   },
