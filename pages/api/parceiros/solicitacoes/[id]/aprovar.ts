@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         titulo: 'Solicitação de Compra Aprovada!',
         mensagem: `Sua solicitação de compra de R$ ${solicitacao.valorCompra.toFixed(2)} foi aprovada pelo parceiro ${solicitacao.parceiro.nomeCidade}. Aguarde o pagamento.`,
         tipo: 'solicitacao_aprovada',
-        dados: JSON.stringify({ compraId: compra.id })
+
       }
     })
 

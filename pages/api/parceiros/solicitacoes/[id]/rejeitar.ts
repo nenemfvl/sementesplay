@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         titulo: 'Solicitação de Compra Rejeitada',
         mensagem: `Sua solicitação de compra de R$ ${solicitacao.valorCompra.toFixed(2)} foi rejeitada pelo parceiro ${solicitacao.parceiro.nomeCidade}.${motivoRejeicao ? ` Motivo: ${motivoRejeicao}` : ''}`,
         tipo: 'solicitacao_rejeitada',
-        dados: JSON.stringify({ solicitacaoId: solicitacao.id })
+
       }
     })
 

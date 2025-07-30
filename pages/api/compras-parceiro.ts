@@ -44,8 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         usuarioId: parceiro.usuarioId,
         titulo: 'Nova Solicitação de Compra',
         mensagem: `Nova solicitação de compra de R$ ${parseFloat(valorCompra).toFixed(2)} aguardando sua aprovação.`,
-        tipo: 'solicitacao_compra',
-        dados: JSON.stringify({ solicitacaoId: solicitacaoCompra.id })
+        tipo: 'solicitacao_compra'
       }
     })
 
