@@ -90,7 +90,6 @@ export default function Status() {
   useEffect(() => {
     // Só validar favoritos se os criadores já foram carregados
     if (criadores.length === 0) {
-      console.log('Aguardando criadores carregarem...')
       return
     }
 
@@ -98,17 +97,12 @@ export default function Status() {
     if (favoritosSalvos) {
       try {
         const favoritosArray = JSON.parse(favoritosSalvos)
-        console.log('Favoritos salvos:', favoritosArray)
-        console.log('Criadores carregados:', criadores.length)
         
         // Verificar se os IDs dos favoritos ainda existem nos criadores
-        const favoritosValidos = favoritosArray.filter((id: string) => {
-          const existe = criadores.some(criador => criador.id === id)
-          console.log(`Favorito ${id} existe nos criadores:`, existe)
-          return existe
-        })
+        const favoritosValidos = favoritosArray.filter((id: string) => 
+          criadores.some(criador => criador.id === id)
+        )
         
-        console.log('Favoritos válidos:', favoritosValidos)
         setFavoritos(new Set(favoritosValidos))
         
         // Atualizar localStorage com apenas favoritos válidos
@@ -156,20 +150,15 @@ export default function Status() {
   // useEffect do contador removida
 
   const toggleFavorito = (criadorId: string) => {
-    console.log('Toggle favorito para criador:', criadorId)
     setFavoritos(prev => {
       const novosFavoritos = new Set(prev)
       if (novosFavoritos.has(criadorId)) {
         novosFavoritos.delete(criadorId)
-        console.log('Removido dos favoritos:', criadorId)
       } else {
         novosFavoritos.add(criadorId)
-        console.log('Adicionado aos favoritos:', criadorId)
       }
       // Salvar no localStorage
-      const favoritosArray = Array.from(novosFavoritos)
-      console.log('Salvando favoritos no localStorage:', favoritosArray)
-      localStorage.setItem('criadoresFavoritos', JSON.stringify(favoritosArray))
+      localStorage.setItem('criadoresFavoritos', JSON.stringify(Array.from(novosFavoritos)))
       return novosFavoritos
     })
   }
