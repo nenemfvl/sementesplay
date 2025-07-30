@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
+import { auth } from '../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -7,8 +8,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Temporariamente sem autenticação para debug
-    console.log('🔍 Buscando criadores...')
+    // Verificar autenticação
+    const user = auth.getUser()
+    if (!user) {
+      return res.status(401).json({ error: 'Não autorizado' })
+    }
+
+    // Verificar se é admin
+    if (Number(user.nivel) < 5) {
+      return res.status(403).json({ error: 'Acesso negado' })
+    }
 
     // Buscar criadores
     const criadores = await prisma.criador.findMany({
@@ -28,8 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    console.log(`📊 Criadores encontrados: ${criadores.length}`)
-    
     // Formatar dados
     const criadoresFormatados = criadores.map(criador => ({
       id: criador.id,
@@ -43,7 +50,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       dataCriacao: criador.dataCriacao
     }))
 
-    console.log('✅ Dados formatados:', criadoresFormatados)
     return res.status(200).json({ criadores: criadoresFormatados })
   } catch (error) {
     console.error('Erro ao buscar criadores:', error)

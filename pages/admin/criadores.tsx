@@ -54,21 +54,13 @@ export default function AdminCriadores() {
 
   const loadCriadores = async () => {
     try {
-      console.log('🔄 Carregando criadores...')
       const response = await fetch('/api/admin/criadores')
-      
-      console.log('📡 Resposta da API:', response.status, response.statusText)
-      
       if (response.ok) {
         const data = await response.json()
-        console.log('📊 Dados recebidos:', data)
-        setCriadores(data.criadores || [])
-      } else {
-        const errorText = await response.text()
-        console.error('❌ Erro na resposta:', response.status, errorText)
+        setCriadores(data.criadores)
       }
     } catch (error) {
-      console.error('❌ Erro ao carregar criadores:', error)
+      console.error('Erro ao carregar criadores:', error)
     } finally {
       setLoading(false)
     }
