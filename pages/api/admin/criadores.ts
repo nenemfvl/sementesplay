@@ -52,8 +52,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log(`✅ Usuário autenticado e autorizado via ${authMethod}`)
 
-    // Buscar criadores
+    // Buscar criadores (apenas usuários com nível de criador)
     const criadores = await prisma.criador.findMany({
+      where: {
+        usuario: {
+          nivel: {
+            in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
+          }
+        }
+      },
       include: {
         usuario: {
           select: {
@@ -79,7 +86,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case 'criador-parceiro': return 'Parceiro'
         case 'criador-comum': return 'Comum'
         case 'criador-iniciante': return 'Iniciante'
-        case 'suspenso': return 'Suspenso'
         default: return 'Comum'
       }
     }
@@ -93,15 +99,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       doacoesRecebidas: criador.doacoes || 0,
       apoiadores: criador.apoiadores || 0,
       favoritos: 0, // Campo não existe no schema
-      status: criador.usuario.nivel === 'suspenso' ? 'suspenso' : 'ativo',
+      status: 'ativo', // Todos os criadores na lista são ativos
       dataCriacao: criador.dataCriacao
     }))
 
     // Calcular estatísticas baseadas no nível do usuário
     const totalCriadores = criadores.length
-    const ativos = criadores.filter(c => c.usuario.nivel !== 'suspenso').length
+    const ativos = criadores.length // Todos os criadores na lista são ativos
     const supremos = criadores.filter(c => c.usuario.nivel === 'criador-supremo').length
-    const suspensos = criadores.filter(c => c.usuario.nivel === 'suspenso').length
+    const suspensos = 0 // Não há criadores suspensos na lista
 
     const estatisticas = {
       total: totalCriadores,

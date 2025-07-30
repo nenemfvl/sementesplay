@@ -39,20 +39,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Criador não encontrado' })
     }
 
-    // Atualizar o nível do usuário para "suspenso"
+    // Atualizar o nível do usuário para "comum" (remover status de criador)
     await prisma.usuario.update({
       where: { id: criador.usuarioId },
-      data: { nivel: 'suspenso' }
+      data: { nivel: 'comum' }
     })
 
-    console.log(`✅ Criador ${criador.usuario.nome} suspenso com sucesso`)
+    console.log(`✅ Criador ${criador.usuario.nome} removido com sucesso`)
 
     return res.status(200).json({ 
-      message: 'Criador suspenso com sucesso',
+      message: 'Criador removido com sucesso',
       criador: {
         id: criador.id,
         nome: criador.usuario.nome,
-        nivel: 'suspenso'
+        nivel: 'comum'
       }
     })
 

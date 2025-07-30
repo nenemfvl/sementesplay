@@ -133,8 +133,8 @@ export default function AdminCriadores() {
     alert(`Editar criador: ${criador.nome}`)
   }
 
-  const suspenderCriador = async (criador: Criador) => {
-    if (confirm(`Tem certeza que deseja suspender o criador "${criador.nome}"?`)) {
+  const removerCriador = async (criador: Criador) => {
+    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"? Ele voltará ao nível comum.`)) {
       try {
         const response = await fetch(`/api/admin/criadores/${criador.id}/suspender`, {
           method: 'POST',
@@ -145,15 +145,15 @@ export default function AdminCriadores() {
         })
 
         if (response.ok) {
-          alert('Criador suspenso com sucesso!')
+          alert('Criador removido com sucesso!')
           loadCriadores() // Recarregar lista
         } else {
           const error = await response.text()
-          alert(`Erro ao suspender criador: ${error}`)
+          alert(`Erro ao remover criador: ${error}`)
         }
       } catch (error) {
-        console.error('Erro ao suspender criador:', error)
-        alert('Erro ao suspender criador')
+        console.error('Erro ao remover criador:', error)
+        alert('Erro ao remover criador')
       }
     }
   }
@@ -375,10 +375,10 @@ export default function AdminCriadores() {
                               <PencilIcon className="w-4 h-4" />
                             </button>
                             <button 
-                              onClick={() => suspenderCriador(criador)}
+                              onClick={() => removerCriador(criador)}
                               className="text-red-500 hover:text-red-400 transition-colors" 
-                              aria-label="Suspender criador"
-                              title="Suspender criador"
+                              aria-label="Remover criador"
+                              title="Remover criador"
                             >
                               <TrashIcon className="w-4 h-4" />
                             </button>
