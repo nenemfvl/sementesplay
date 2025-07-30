@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             id: true,
             nome: true,
             email: true,
-            avatar: true
+            avatarUrl: true
           }
         },
         parceiro: {
