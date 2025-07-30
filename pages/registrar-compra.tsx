@@ -53,13 +53,22 @@ export default function RegistrarCompra() {
 
   const loadParceiros = async () => {
     try {
+      console.log('🔄 Carregando parceiros...')
       const response = await fetch('/api/parceiros/ranking')
+      console.log('📡 Response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
-        setParceiros(data.parceiros)
+        console.log('📊 Dados recebidos:', data)
+        console.log('👥 Parceiros:', data.parceiros)
+        setParceiros(data.parceiros || [])
+      } else {
+        console.error('❌ Erro na resposta:', response.status, response.statusText)
+        const errorText = await response.text()
+        console.error('📄 Erro detalhado:', errorText)
       }
     } catch (error) {
-      console.error('Erro ao carregar parceiros:', error)
+      console.error('❌ Erro ao carregar parceiros:', error)
     } finally {
       setLoading(false)
     }
