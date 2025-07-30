@@ -14,11 +14,17 @@ import { auth, User } from '../lib/auth'
 
 interface Parceiro {
   id: string
+  nome: string
+  email: string
   nomeCidade: string
-  usuario: {
-    nome: string
-    email: string
-  }
+  avatar: string
+  nivel: string
+  sementes: number
+  comissaoMensal: number
+  totalVendas: number
+  codigosGerados: number
+  posicao: number
+  dataCriacao: string
 }
 
 export default function RegistrarCompra() {
@@ -47,7 +53,7 @@ export default function RegistrarCompra() {
 
   const loadParceiros = async () => {
     try {
-      const response = await fetch('/api/parceiros')
+      const response = await fetch('/api/parceiros/ranking')
       if (response.ok) {
         const data = await response.json()
         setParceiros(data.parceiros)
@@ -281,7 +287,7 @@ export default function RegistrarCompra() {
                       <option value="">Selecione um parceiro</option>
                       {parceiros.map((parceiro) => (
                         <option key={parceiro.id} value={parceiro.id}>
-                          {parceiro.nomeCidade} - {parceiro.usuario.nome}
+                          {parceiro.nomeCidade} - {parceiro.nome}
                         </option>
                       ))}
                     </select>
