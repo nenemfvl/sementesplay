@@ -11,22 +11,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('🍪 Cookies:', req.cookies)
     console.log('📋 Headers:', req.headers)
 
-    // Verificar autenticação
-    const userCookie = req.cookies.sementesplay_user
-    console.log('👤 User cookie:', userCookie)
+    // Verificar autenticação - tentar cookie primeiro, depois header
+    let user = null
+    let authMethod = ''
 
-    if (!userCookie) {
-      console.log('❌ Cookie de usuário não encontrado')
-      return res.status(401).json({ error: 'Usuário não autenticado' })
+    // Método 1: Cookie
+    const userCookie = req.cookies.sementesplay_user
+    if (userCookie) {
+      try {
+        user = JSON.parse(decodeURIComponent(userCookie))
+        authMethod = 'cookie'
+        console.log('✅ Usuário autenticado via cookie:', { id: user.id, nome: user.nome, nivel: user.nivel })
+      } catch (error) {
+        console.log('❌ Erro ao decodificar cookie:', error)
+      }
     }
 
-    let user
-    try {
-      user = JSON.parse(decodeURIComponent(userCookie))
-      console.log('✅ Usuário decodificado:', { id: user.id, nome: user.nome, nivel: user.nivel })
-    } catch (error) {
-      console.log('❌ Erro ao decodificar cookie:', error)
-      return res.status(401).json({ error: 'Cookie inválido' })
+    // Método 2: Header Authorization (fallback)
+    if (!user && req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.replace('Bearer ', '')
+        user = JSON.parse(decodeURIComponent(token))
+        authMethod = 'header'
+        console.log('✅ Usuário autenticado via header:', { id: user.id, nome: user.nome, nivel: user.nivel })
+      } catch (error) {
+        console.log('❌ Erro ao decodificar header:', error)
+      }
+    }
+
+    if (!user) {
+      console.log('❌ Nenhum método de autenticação válido encontrado')
+      return res.status(401).json({ error: 'Usuário não autenticado' })
     }
 
     // Verificar se é admin
@@ -35,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem acessar esta área.' })
     }
 
-    console.log('✅ Usuário autenticado e autorizado')
+    console.log(`✅ Usuário autenticado e autorizado via ${authMethod}`)
 
     // Buscar criadores
     const criadores = await prisma.criador.findMany({

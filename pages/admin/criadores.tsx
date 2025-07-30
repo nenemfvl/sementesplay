@@ -60,7 +60,22 @@ export default function AdminCriadores() {
   const loadCriadores = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/admin/criadores')
+      
+      // Obter token do localStorage como fallback
+      const token = localStorage.getItem('sementesplay_token')
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      }
+      
+      // Adicionar token no header se disponível
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+      
+      const response = await fetch('/api/admin/criadores', {
+        credentials: 'include',
+        headers
+      })
       
       if (response.ok) {
         const data = await response.json()
