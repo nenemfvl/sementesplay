@@ -32,7 +32,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    return res.status(201).json({ message: 'Compra registrada com sucesso', compra })
+    // Calcula o valor do repasse (10% da compra)
+    const valorRepasse = parseFloat(valorCompra) * 0.10
+
+    // Cria automaticamente o repasse pendente
+    const repasse = await prisma.repasseParceiro.create({
+      data: {
+        parceiroId,
+        compraId: compra.id,
+        valor: valorRepasse,
+        status: 'pendente',
+        usuarioId: usuarioId, // Adiciona o ID do usuário que fez a compra
+      }
+    })
+
+    // Atualiza o status da compra
+    await prisma.compraParceiro.update({
+      where: { id: compra.id },
+      data: { status: 'repasse_pendente' }
+    })
+
+    return res.status(201).json({ message: 'Compra registrada com sucesso', compra, repasse })
   } catch (error) {
     console.error('Erro ao registrar compra:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
