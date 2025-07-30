@@ -11,11 +11,10 @@ import {
   ExclamationTriangleIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
   PlusIcon,
   UserIcon,
-  CalendarIcon,
-  ChartBarIcon
+  ChartBarIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
