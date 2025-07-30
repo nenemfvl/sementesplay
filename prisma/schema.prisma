@@ -42,7 +42,9 @@ model Usuario {
   conquistas           ConquistaUsuario[]
   emblemas             EmblemaUsuario[]
   comentarios          Comentario[]
+  comentariosParceiro  ComentarioParceiro[]
   interacoes          InteracaoConteudo[]
+  interacoesParceiro  InteracaoConteudoParceiro[]
   amizades             Amizade[]             @relation("UsuarioAmizade")
   amizadesRecebidas    Amizade[]             @relation("AmigoUsuario")
   conversas1           Conversa[]            @relation("Usuario1Conversa")
@@ -252,6 +254,7 @@ model Parceiro {
   codigosCashback CodigoCashback[]
   comprasParceiro CompraParceiro[]
   repasses        RepasseParceiro[]
+  conteudosParceiros ConteudoParceiro[]
 
   @@map("parceiros")
 }
@@ -368,6 +371,35 @@ model Conteudo {
   @@map("conteudos")
 }
 
+model ConteudoParceiro {
+  id                String   @id @default(cuid())
+  parceiroId        String
+  titulo            String
+  url               String
+  tipo              String // evento, promoção, notícia, tour, etc.
+  categoria         String // eventos, promoções, notícias, tours, etc.
+  descricao         String?
+  preview           String? // url da imagem de preview
+  fixado            Boolean  @default(false)
+  dataPublicacao    DateTime @default(now())
+  plataforma        String // site, instagram, facebook, etc.
+  visualizacoes     Int      @default(0)
+  curtidas          Int      @default(0)
+  dislikes          Int      @default(0)
+  compartilhamentos Int      @default(0)
+  cidade            String   // nome da cidade
+  endereco          String?  // endereço do evento/local
+  dataEvento        DateTime? // data do evento (se aplicável)
+  preco             String?  // preço do evento/produto
+  vagas             Int?     // número de vagas disponíveis
+
+  parceiro     Parceiro      @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  comentarios  ComentarioParceiro[]
+  interacoes   InteracaoConteudoParceiro[]
+
+  @@map("conteudos_parceiros")
+}
+
 model Comentario {
   id          String   @id @default(cuid())
   conteudoId  String
@@ -384,6 +416,22 @@ model Comentario {
   @@map("comentarios")
 }
 
+model ComentarioParceiro {
+  id          String   @id @default(cuid())
+  conteudoId  String
+  usuarioId   String
+  texto       String
+  data        DateTime @default(now())
+  respostaAId String?
+
+  conteudo  ConteudoParceiro     @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  usuario   Usuario              @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  respostas ComentarioParceiro[] @relation("RespostaComentarioParceiro")
+  respostaA ComentarioParceiro?  @relation("RespostaComentarioParceiro", fields: [respostaAId], references: [id])
+
+  @@map("comentarios_parceiros")
+}
+
 model InteracaoConteudo {
   id          String   @id @default(cuid())
   conteudoId  String
@@ -396,6 +444,20 @@ model InteracaoConteudo {
 
   // Sem constraint única - tratado no código das APIs
   @@map("interacoes_conteudo")
+}
+
+model InteracaoConteudoParceiro {
+  id          String   @id @default(cuid())
+  conteudoId  String
+  usuarioId   String
+  tipo        String   // "visualizacao", "curtida" ou "dislike"
+  data        DateTime @default(now())
+
+  conteudo ConteudoParceiro @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  usuario  Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  // Sem constraint única - tratado no código das APIs
+  @@map("interacoes_conteudo_parceiros")
 }
 
 model Missao {

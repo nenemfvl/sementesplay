@@ -75,6 +75,27 @@ type Repasse = {
   usuario?: { nome: string; email: string };
 };
 
+type ConteudoParceiro = {
+  id: string;
+  titulo: string;
+  tipo: string;
+  categoria: string;
+  descricao?: string;
+  url: string;
+  cidade: string;
+  endereco?: string;
+  dataEvento?: string;
+  preco?: string;
+  vagas?: number;
+  visualizacoes: number;
+  curtidas: number;
+  dislikes: number;
+  compartilhamentos: number;
+  comentarios: number;
+  dataPublicacao: string;
+  fixado: boolean;
+};
+
 export default function PainelParceiro() {
   const [codigos, setCodigos] = useState<CodigoCashback[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +118,25 @@ export default function PainelParceiro() {
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authorized, setAuthorized] = useState(false);
+  const [conteudos, setConteudos] = useState<ConteudoParceiro[]>([]);
+  const [loadingConteudos, setLoadingConteudos] = useState(true);
+  const [showModalConteudo, setShowModalConteudo] = useState(false);
+  const [formConteudo, setFormConteudo] = useState({ 
+    titulo: '', 
+    url: '', 
+    tipo: '', 
+    categoria: '', 
+    descricao: '', 
+    plataforma: '', 
+    cidade: '', 
+    endereco: '', 
+    dataEvento: '', 
+    preco: '', 
+    vagas: '',
+    fixado: false
+  });
+  const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
+  const [savingConteudo, setSavingConteudo] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -134,6 +174,7 @@ export default function PainelParceiro() {
       fetchEstatisticas();
       fetchNotificacoes();
       fetchRepasses();
+      fetchConteudos();
     }
   }, [authorized, user]);
 
@@ -221,6 +262,22 @@ export default function PainelParceiro() {
     }
   }
 
+  async function fetchConteudos() {
+    try {
+      const response = await fetch(`/api/parceiros/conteudos?parceiroId=${parceiro?.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setConteudos(data.conteudos || []);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar conteúdos:', error);
+    } finally {
+      setLoadingConteudos(false);
+    }
+  }
+
   async function handleGerarCodigo(e: React.FormEvent) {
     e.preventDefault();
     if (!form.valor || !form.quantidade) {
@@ -297,6 +354,153 @@ export default function PainelParceiro() {
     if (percentage >= 25) return 'w-1/4';
     return 'w-full';
   };
+
+  async function handleAddConteudo(e: React.FormEvent) {
+    e.preventDefault();
+    if (!formConteudo.titulo || !formConteudo.url || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.cidade) {
+      alert('Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    setSavingConteudo(true);
+    try {
+      const response = await fetch('/api/parceiros/conteudos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formConteudo,
+          parceiroId: parceiro?.id
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setConteudos(prev => [data.conteudo, ...prev]);
+        setFormConteudo({ 
+          titulo: '', 
+          url: '', 
+          tipo: '', 
+          categoria: '', 
+          descricao: '', 
+          plataforma: '', 
+          cidade: '', 
+          endereco: '', 
+          dataEvento: '', 
+          preco: '', 
+          vagas: '',
+          fixado: false
+        });
+        setShowModalConteudo(false);
+        alert('Conteúdo criado com sucesso!');
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erro ao criar conteúdo');
+      }
+    } catch (error) {
+      alert('Erro ao criar conteúdo');
+    } finally {
+      setSavingConteudo(false);
+    }
+  }
+
+  async function handleEditConteudo(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editandoConteudo) return;
+
+    setSavingConteudo(true);
+    try {
+      const response = await fetch('/api/parceiros/conteudos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editandoConteudo.id,
+          ...formConteudo,
+          parceiroId: parceiro?.id
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setConteudos(prev => prev.map(c => c.id === editandoConteudo.id ? data.conteudo : c));
+        setFormConteudo({ 
+          titulo: '', 
+          url: '', 
+          tipo: '', 
+          categoria: '', 
+          descricao: '', 
+          plataforma: '', 
+          cidade: '', 
+          endereco: '', 
+          dataEvento: '', 
+          preco: '', 
+          vagas: '',
+          fixado: false
+        });
+        setEditandoConteudo(null);
+        setShowModalConteudo(false);
+        alert('Conteúdo atualizado com sucesso!');
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erro ao atualizar conteúdo');
+      }
+    } catch (error) {
+      alert('Erro ao atualizar conteúdo');
+    } finally {
+      setSavingConteudo(false);
+    }
+  }
+
+  async function handleRemoverConteudo(id: string) {
+    if (!confirm('Tem certeza que deseja remover este conteúdo?')) return;
+
+    try {
+      const response = await fetch('/api/parceiros/conteudos', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        setConteudos(prev => prev.filter(c => c.id !== id));
+        alert('Conteúdo removido com sucesso!');
+      } else {
+        alert('Erro ao remover conteúdo');
+      }
+    } catch (error) {
+      alert('Erro ao remover conteúdo');
+    }
+  }
+
+  async function handleFixarConteudo(id: string, fixar: boolean) {
+    try {
+      const response = await fetch('/api/parceiros/conteudos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id,
+          parceiroId: parceiro?.id,
+          fixado: fixar,
+          titulo: '',
+          url: '',
+          tipo: '',
+          categoria: '',
+          descricao: '',
+          plataforma: '',
+          cidade: '',
+          endereco: '',
+          dataEvento: '',
+          preco: '',
+          vagas: ''
+        })
+      });
+
+      if (response.ok) {
+        setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado } : c));
+      }
+    } catch (error) {
+      console.error('Erro ao fixar conteúdo:', error);
+    }
+  }
 
   // Mostrar loading enquanto verifica autorização
   if (checkingAuth) {
@@ -396,6 +600,230 @@ export default function PainelParceiro() {
                 </button>
             </div>
           </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de conteúdo */}
+      {showModalConteudo && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-2xl border border-sss-light shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-sss-white">
+                {editandoConteudo ? 'Editar Conteúdo' : 'Adicionar Conteúdo'}
+              </h2>
+              <button 
+                onClick={() => { 
+                  setShowModalConteudo(false); 
+                  setEditandoConteudo(null);
+                  setFormConteudo({ 
+                    titulo: '', 
+                    url: '', 
+                    tipo: '', 
+                    categoria: '', 
+                    descricao: '', 
+                    plataforma: '', 
+                    cidade: '', 
+                    endereco: '', 
+                    dataEvento: '', 
+                    preco: '', 
+                    vagas: '',
+                    fixado: false
+                  });
+                }}
+                className="text-gray-400 hover:text-sss-white transition-colors"
+                aria-label="Fechar modal"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={editandoConteudo ? handleEditConteudo : handleAddConteudo} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Título *</label>
+                  <input 
+                    required 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Ex: Evento de Gaming" 
+                    value={formConteudo.titulo} 
+                    onChange={e => setFormConteudo(f => ({ ...f, titulo: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Tipo *</label>
+                  <select 
+                    required
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                    value={formConteudo.tipo}
+                    onChange={e => setFormConteudo(f => ({ ...f, tipo: e.target.value }))}
+                  >
+                    <option value="">Selecione o tipo</option>
+                    <option value="evento">Evento</option>
+                    <option value="promoção">Promoção</option>
+                    <option value="notícia">Notícia</option>
+                    <option value="tour">Tour</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="competição">Competição</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
+                  <select 
+                    required
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                    value={formConteudo.categoria}
+                    onChange={e => setFormConteudo(f => ({ ...f, categoria: e.target.value }))}
+                  >
+                    <option value="">Selecione a categoria</option>
+                    <option value="eventos">Eventos</option>
+                    <option value="promoções">Promoções</option>
+                    <option value="notícias">Notícias</option>
+                    <option value="tours">Tours</option>
+                    <option value="workshops">Workshops</option>
+                    <option value="competições">Competições</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
+                  <input 
+                    required 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Ex: São Paulo" 
+                    value={formConteudo.cidade} 
+                    onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">URL *</label>
+                  <input 
+                    required 
+                    type="url"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="https://exemplo.com" 
+                    value={formConteudo.url} 
+                    onChange={e => setFormConteudo(f => ({ ...f, url: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Plataforma</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Ex: Site, Instagram, Facebook" 
+                    value={formConteudo.plataforma} 
+                    onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Endereço do evento/local" 
+                    value={formConteudo.endereco} 
+                    onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
+                  <input 
+                    type="datetime-local"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    value={formConteudo.dataEvento} 
+                    onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Preço</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Ex: R$ 50,00 ou Gratuito" 
+                    value={formConteudo.preco} 
+                    onChange={e => setFormConteudo(f => ({ ...f, preco: e.target.value }))} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Vagas</label>
+                  <input 
+                    type="number"
+                    min="0"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Número de vagas disponíveis" 
+                    value={formConteudo.vagas} 
+                    onChange={e => setFormConteudo(f => ({ ...f, vagas: e.target.value }))} 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                <textarea 
+                  rows={4}
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Descrição detalhada do conteúdo..." 
+                  value={formConteudo.descricao} 
+                  onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button 
+                  type="submit" 
+                  className="flex-1 bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                  disabled={savingConteudo}
+                >
+                  {savingConteudo ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
+                      {editandoConteudo ? 'Salvando...' : 'Criando...'}
+                    </>
+                  ) : (
+                    <>
+                      <CheckIcon className="w-4 h-4" />
+                      {editandoConteudo ? 'Salvar Alterações' : 'Criar Conteúdo'}
+                    </>
+                  )}
+                </button>
+                <button 
+                  type="button" 
+                  className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
+                  onClick={() => { 
+                    setShowModalConteudo(false); 
+                    setEditandoConteudo(null);
+                    setFormConteudo({ 
+                      titulo: '', 
+                      url: '', 
+                      tipo: '', 
+                      categoria: '', 
+                      descricao: '', 
+                      plataforma: '', 
+                      cidade: '', 
+                      endereco: '', 
+                      dataEvento: '', 
+                      preco: '', 
+                      vagas: '',
+                      fixado: false
+                    });
+                  }} 
+                  disabled={savingConteudo}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -752,6 +1180,202 @@ export default function PainelParceiro() {
                   <div className="text-center py-8">
                     <ArrowTrendingUpIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-400">Nenhum repasse pendente</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Gestão de Conteúdos */}
+          <section className="mb-8">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+              <div className="p-6 border-b border-sss-light">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                      <DocumentTextIcon className="w-5 h-5 text-sss-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-sss-white">Seus Conteúdos</h2>
+                      <p className="text-sm text-gray-400">Gerencie eventos, promoções e notícias da sua cidade</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowModalConteudo(true)}
+                    className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-sss-white px-4 py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-indigo-700 transition-all duration-200 flex items-center gap-2 shadow-lg"
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                    Adicionar Conteúdo
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                {loadingConteudos ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                    <span className="ml-3 text-gray-400">Carregando conteúdos...</span>
+                  </div>
+                ) : conteudos && conteudos.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {conteudos.map((conteudo) => (
+                      <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-2">
+                              <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
+                              <span className="text-sss-white font-medium">{conteudo.tipo}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              {conteudo.fixado && (
+                                <div className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
+                                  Fixado
+                                </div>
+                              )}
+                              <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                conteudo.categoria === 'eventos' ? 'bg-blue-500/20 text-blue-400' :
+                                conteudo.categoria === 'promoções' ? 'bg-green-500/20 text-green-400' :
+                                'bg-purple-500/20 text-purple-400'
+                              }`}>
+                                {conteudo.categoria}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div>
+                              <p className="text-sm text-gray-400">Título</p>
+                              <p className="text-lg font-bold text-sss-white">{conteudo.titulo}</p>
+                            </div>
+                            
+                            {conteudo.descricao && (
+                              <div>
+                                <p className="text-sm text-gray-400">Descrição</p>
+                                <p className="text-sm text-sss-white">{conteudo.descricao}</p>
+                              </div>
+                            )}
+                            
+                            <div>
+                              <p className="text-sm text-gray-400">Cidade</p>
+                              <p className="text-sss-white">{conteudo.cidade}</p>
+                            </div>
+                            
+                            {conteudo.endereco && (
+                              <div>
+                                <p className="text-sm text-gray-400">Endereço</p>
+                                <p className="text-sm text-sss-white">{conteudo.endereco}</p>
+                              </div>
+                            )}
+                            
+                            {conteudo.dataEvento && (
+                              <div>
+                                <p className="text-sm text-gray-400">Data do Evento</p>
+                                <p className="text-sss-white">
+                                  {new Date(conteudo.dataEvento).toLocaleDateString('pt-BR')}
+                                </p>
+                              </div>
+                            )}
+                            
+                            {conteudo.preco && (
+                              <div>
+                                <p className="text-sm text-gray-400">Preço</p>
+                                <p className="text-sss-accent font-semibold">{conteudo.preco}</p>
+                              </div>
+                            )}
+                            
+                            {conteudo.vagas && (
+                              <div>
+                                <p className="text-sm text-gray-400">Vagas</p>
+                                <p className="text-sss-white">{conteudo.vagas} disponíveis</p>
+                              </div>
+                            )}
+                            
+                            <div className="flex justify-between text-sm">
+                              <div>
+                                <p className="text-gray-400">Visualizações</p>
+                                <p className="text-sss-white">{conteudo.visualizacoes}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Curtidas</p>
+                                <p className="text-sss-white">{conteudo.curtidas}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Comentários</p>
+                                <p className="text-sss-white">{conteudo.comentarios}</p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
+                            <div className="flex space-x-2">
+                              <button 
+                                className="text-blue-400 hover:text-blue-300 transition-colors p-1" 
+                                onClick={() => {
+                                  setEditandoConteudo(conteudo);
+                                  setFormConteudo({
+                                    titulo: conteudo.titulo,
+                                    url: conteudo.url,
+                                    tipo: conteudo.tipo,
+                                    categoria: conteudo.categoria,
+                                    descricao: conteudo.descricao || '',
+                                    plataforma: '',
+                                    cidade: conteudo.cidade,
+                                    endereco: conteudo.endereco || '',
+                                    dataEvento: conteudo.dataEvento || '',
+                                    preco: conteudo.preco || '',
+                                    vagas: conteudo.vagas?.toString() || '',
+                                    fixado: conteudo.fixado
+                                  });
+                                  setShowModalConteudo(true);
+                                }}
+                                title="Editar"
+                              >
+                                <PencilIcon className="w-4 h-4" />
+                              </button>
+                              <button 
+                                className="text-red-400 hover:text-red-300 transition-colors p-1" 
+                                onClick={() => handleRemoverConteudo(conteudo.id)}
+                                title="Remover"
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                            
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleFixarConteudo(conteudo.id, !conteudo.fixado)}
+                                className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
+                                  conteudo.fixado 
+                                    ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' 
+                                    : 'bg-gray-600 hover:bg-gray-700 text-sss-white'
+                                }`}
+                              >
+                                {conteudo.fixado ? 'Desfixar' : 'Fixar'}
+                              </button>
+                              <a
+                                href={conteudo.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-sss-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
+                              >
+                                Ver
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <DocumentTextIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-400">Nenhum conteúdo criado ainda</p>
+                    <button
+                      onClick={() => setShowModalConteudo(true)}
+                      className="mt-4 bg-sss-accent text-sss-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+                    >
+                      Criar Primeiro Conteúdo
+                    </button>
                   </div>
                 )}
               </div>

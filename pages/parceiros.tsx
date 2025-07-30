@@ -73,7 +73,7 @@ export default function Parceiros() {
 
   const loadParceiros = async () => {
     try {
-      const response = await fetch('/api/parceiros/conteudos')
+      const response = await fetch('/api/parceiros/ranking')
       const data = await response.json()
       if (response.ok && data.success) {
         setParceiros(data.parceiros || [])
@@ -86,7 +86,7 @@ export default function Parceiros() {
   const loadRankingParceiros = async () => {
     setLoadingRanking(true)
     try {
-      const response = await fetch(`/api/parceiros/conteudos?categoria=${categoriaRanking}`)
+      const response = await fetch(`/api/parceiros/ranking?categoria=${categoriaRanking}`)
       const data = await response.json()
       if (response.ok && data.success) {
         setParceiros(data.parceiros || [])
@@ -119,8 +119,8 @@ export default function Parceiros() {
         // Atualizar localStorage com apenas os favoritos válidos
         if (favoritosValidos.length !== favoritosArray.length) {
           localStorage.setItem('parceirosFavoritos', JSON.stringify(favoritosValidos))
-        }
-      } catch (error) {
+      }
+    } catch (error) {
         console.error('Erro ao carregar favoritos:', error)
         localStorage.removeItem('parceirosFavoritos')
       }
@@ -131,7 +131,7 @@ export default function Parceiros() {
     const novosFavoritos = new Set(favoritos)
     if (novosFavoritos.has(parceiroId)) {
       novosFavoritos.delete(parceiroId)
-    } else {
+      } else {
       novosFavoritos.add(parceiroId)
     }
     setFavoritos(novosFavoritos)
@@ -163,13 +163,13 @@ export default function Parceiros() {
     return null
   }
 
-  return (
-    <>
-      <Head>
-        <title>Parceiros - SementesPLAY</title>
+    return (
+      <>
+        <Head>
+          <title>Parceiros - SementesPLAY</title>
         <meta name="description" content="Descubra nossos parceiros e suas ofertas" />
-      </Head>
-      <Navbar />
+        </Head>
+          <Navbar />
       <div className="min-h-screen bg-sss-dark">
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Header com estatísticas */}
@@ -185,13 +185,13 @@ export default function Parceiros() {
               <div className="bg-sss-medium rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-sss-accent">{parceiros.length}</div>
                 <div className="text-gray-400 text-sm">Parceiros Ativos</div>
-              </div>
+                </div>
               <div className="bg-sss-medium rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-green-400">
                   {formatarNumero(parceiros.reduce((total, p) => total + p.totalVendas, 0))}
-                </div>
+                  </div>
                 <div className="text-gray-400 text-sm">Total de Vendas</div>
-              </div>
+                  </div>
               <div className="bg-sss-medium rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-purple-400">
                   {formatarNumero(parceiros.reduce((total, p) => total + p.codigosGerados, 0))}
@@ -227,15 +227,15 @@ export default function Parceiros() {
                     {categoria.nome}
                   </button>
                 ))}
-              </div>
-            </div>
+                      </div>
+                    </div>
 
             {loadingRanking ? (
               <div className="text-center text-gray-400 py-8">Carregando ranking...</div>
             ) : parceirosFiltrados.length === 0 ? (
               <div className="text-center text-gray-400 py-8">Nenhum parceiro encontrado.</div>
             ) : (
-              <div className="space-y-4">
+                        <div className="space-y-4">
                 {/* Top 3 Destaque */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   {parceirosFiltrados.slice(0, 3).map((parceiro, index) => (
@@ -244,12 +244,12 @@ export default function Parceiros() {
                       index === 1 ? 'from-gray-700/60 to-sss-dark border border-gray-400' :
                       'from-orange-900/60 to-sss-dark border border-orange-400'
                     }`}>
-                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center justify-between mb-4">
                         <span className="text-2xl">🏢</span>
                         <span className="text-sm bg-sss-accent text-white px-3 py-1 rounded-full font-bold">
                           {index + 1}º Lugar
                         </span>
-                      </div>
+                          </div>
                       <h3 className="text-xl font-bold text-sss-white mb-2">{parceiro.nome}</h3>
                       <div className="text-sm text-gray-400 mb-3">{parceiro.nomeCidade}</div>
                       
@@ -257,19 +257,19 @@ export default function Parceiros() {
                         <div className="flex justify-between">
                           <span className="text-gray-400">Vendas:</span>
                           <span className="text-sss-white">{formatarNumero(parceiro.totalVendas)}</span>
-                        </div>
+                            </div>
                         <div className="flex justify-between">
                           <span className="text-gray-400">Códigos:</span>
                           <span className="text-sss-white">{formatarNumero(parceiro.codigosGerados)}</span>
-                        </div>
+                          </div>
                         <div className="flex justify-between font-bold">
                           <span className="text-gray-400">Comissão:</span>
                           <span className="text-sss-accent">R$ {parceiro.comissaoMensal}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
 
                 {/* Lista dos demais */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -280,8 +280,8 @@ export default function Parceiros() {
                         <div className="flex-1">
                           <h4 className="font-bold text-sss-white">{parceiro.posicao}º {parceiro.nome}</h4>
                           <p className="text-sm text-gray-400">{parceiro.nomeCidade}</p>
-                        </div>
-                      </div>
+                    </div>
+                </div>
                       
                       <div className="text-sm space-y-1">
                         <div className="flex justify-between">
@@ -299,9 +299,9 @@ export default function Parceiros() {
                       </div>
                     </div>
                   ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </section>
 
           {/* Lista de Parceiros */}
@@ -316,7 +316,7 @@ export default function Parceiros() {
                   <div className="flex items-center flex-1">
                     <div className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6 bg-sss-medium flex items-center justify-center text-4xl">
                       🏢
-                    </div>
+                  </div>
                     <div className="flex-1 flex flex-col items-start">
                       <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
                       <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
@@ -325,17 +325,17 @@ export default function Parceiros() {
                         <span>Vendas: {formatarNumero(top1.totalVendas)}</span>
                         <span>Códigos: {formatarNumero(top1.codigosGerados)}</span>
                       </div>
-                      <button 
+                      <button
                         onClick={() => router.push(`/painel-parceiro/${top1.id}`)}
                         className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors mt-3"
                       >
                         Ver Detalhes
                       </button>
                     </div>
-                  </div>
+          </div>
                   {/* Botão Favoritar - Canto Superior Direito */}
                   <div className="flex flex-col items-end gap-4">
-                    <button
+                <button
                       onClick={() => toggleFavorito(top1.id)}
                       className="text-2xl hover:scale-110 transition-transform"
                     >
@@ -344,11 +344,11 @@ export default function Parceiros() {
                       ) : (
                         <FaRegHeart className="text-gray-400 hover:text-red-500" />
                       )}
-                    </button>
-                  </div>
-                </div>
-              )}
-              
+                </button>
+              </div>
+          </div>
+        )}
+
               {/* Lista dos demais parceiros */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {outros.map((parceiro, i) => (
@@ -358,16 +358,16 @@ export default function Parceiros() {
                       <div className="flex items-center flex-1">
                         <div className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3 bg-sss-dark flex items-center justify-center text-xl">
                           🏢
-                        </div>
+            </div>
                         <div className="flex-1">
                           <div className="font-bold text-sss-white">{i + 2}º {parceiro.nome}</div>
                           <div className="text-sm text-gray-400">{parceiro.nomeCidade}</div>
                           <div className="text-xs text-gray-500">Vendas: {formatarNumero(parceiro.totalVendas)}</div>
-                        </div>
-                      </div>
+            </div>
+            </div>
                       {/* Botão Favoritar - Borda Direita */}
                       <div className="flex flex-col items-end gap-2">
-                        <button
+              <button 
                           onClick={() => toggleFavorito(parceiro.id)}
                           className="text-lg hover:scale-110 transition-transform"
                         >
@@ -376,45 +376,45 @@ export default function Parceiros() {
                           ) : (
                             <FaRegHeart className="text-gray-400 hover:text-red-500" />
                           )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              </button>
             </div>
+          </div>
+        </div>
+                ))}
+                </div>
+              </div>
           )}
 
           {/* Botões de Navegação */}
           <div className="flex justify-center gap-4 mt-8">
-            <button
+                      <button
               className="flex items-center gap-2 border border-gray-500 rounded-xl px-6 py-3 text-white text-lg font-medium hover:border-sss-accent hover:text-sss-accent transition-colors"
               onClick={() => router.push('/criadores')}
-            >
+                      >
               <PlusIcon className="w-5 h-5 mr-2" />
               Ver Criadores
-            </button>
-            <button
+                      </button>
+                      <button
               className="flex items-center gap-2 bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-xl text-lg font-medium transition-colors"
               onClick={() => router.push('/parceiros-favoritos')}
-            >
+                      >
               <FaHeart className="w-5 h-5 mr-2" />
               Parceiros Favoritos ({favoritos.size})
-            </button>
-          </div>
+                      </button>
+                    </div>
 
           {/* Botão Seja Parceiro */}
           {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
             <div className="fixed bottom-6 right-6">
-              <button
+                <button
                 onClick={() => router.push('/candidatura-parceiro')}
                 className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-colors flex items-center gap-2"
               >
                 <FaBuilding className="w-5 h-5" />
                 Seja Parceiro
-              </button>
-            </div>
-          )}
+                </button>
+          </div>
+        )}
         </main>
       </div>
     </>
