@@ -7,6 +7,7 @@ Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema Five
 ## 🚀 Como Funciona
 
 O SementesPLAY é um sistema cíclico que conecta:
+
 - **Jogadores**: Recebem 10% de cashback em compras FiveM
 - **Criadores de Conteúdo**: Recebem doações dos jogadores
 - **Parceiros**: Donos de cidades FiveM que geram códigos de cashback
@@ -14,18 +15,21 @@ O SementesPLAY é um sistema cíclico que conecta:
 ## ✨ Funcionalidades
 
 ### Para Usuários
+
 - ✅ Receber 10% de cashback em compras FiveM
 - ✅ Doar Sementes para criadores favoritos
 - ✅ Visualizar ranking de criadores
 - ✅ Resgatar dinheiro real com códigos
 
 ### Para Criadores
+
 - ✅ Receber doações dos usuários
 - ✅ Sistema de níveis (Comum, Parceiro, Supremo)
 - ✅ Benefícios baseados no ranking
 - ✅ Estatísticas de engajamento
 
 ### Para Parceiros (Donos de Cidades)
+
 - ✅ Painel exclusivo de administração
 - ✅ Gerar códigos de cashback
 - ✅ Relatórios de vendas e comissões
@@ -44,6 +48,7 @@ O SementesPLAY é um sistema cíclico que conecta:
 ## 📦 Instalação
 
 ### Pré-requisitos
+
 - Node.js 18+ 
 - npm ou yarn
 
@@ -130,6 +135,7 @@ npm run db:studio    # Abre Prisma Studio
 ## 🔐 Autenticação
 
 O sistema usa NextAuth.js com:
+
 - Login/Registro por email e senha
 - Sessões seguras
 - Proteção de rotas por tipo de usuário
@@ -138,6 +144,7 @@ O sistema usa NextAuth.js com:
 ## 🎨 Design System
 
 ### Cores
+
 - **Sementes**: Verde (#22c55e)
 - **Cashback**: Dourado (#eab308)
 - **Supremo**: Roxo (#a855f7)
@@ -145,6 +152,7 @@ O sistema usa NextAuth.js com:
 - **Comum**: Cinza (#6b7280)
 
 ### Componentes
+
 - Botões primários e secundários
 - Cards informativos
 - Badges de status
@@ -154,24 +162,28 @@ O sistema usa NextAuth.js com:
 ## 📊 Sistema de Ranking
 
 ### Cálculo de Pontuação
+
 ```
 Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favoritos × 5)
 ```
 
 ### Níveis
+
 - **Supremo**: Top 100 criadores
-- **Parceiro**: Top 101-300 criadores  
+- **Parceiro**: Top 101-300 criadores
 - **Comum**: Demais criadores
 
 ## 💰 Sistema de Cashback
 
 ### Fluxo
+
 1. Usuário compra em cidade FiveM parceira
 2. Parceiro gera código único
 3. Usuário recebe 10% em Sementes
 4. Usuário pode doar ou resgatar
 
 ### Resgate
+
 - Código único por transação
 - Validação automática
 - Processamento em 24h
@@ -187,11 +199,13 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 ## 🚀 Deploy
 
 ### Vercel (Recomendado)
+
 1. Conecte seu repositório ao Vercel
 2. Configure as variáveis de ambiente
 3. Deploy automático
 
 ### Outras Plataformas
+
 - Netlify
 - Railway
 - Heroku
@@ -224,18 +238,21 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 ## 🗺️ Roadmap
 
 ### Versão 1.0 (Atual)
+
 - ✅ Sistema básico de autenticação
 - ✅ Dashboard de usuários
 - ✅ Sistema de doações
 - ✅ Ranking de criadores
 
 ### Versão 1.1 (Próxima)
+
 - 🔄 Painel de parceiros
 - 🔄 Sistema de resgate
 - 🔄 Notificações em tempo real
 - 🔄 Relatórios avançados
 
 ### Versão 2.0 (Futuro)
+
 - 📋 Integração com APIs FiveM
 - 📋 Sistema de missões
 - 📋 Marketplace de criadores
