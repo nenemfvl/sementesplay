@@ -144,6 +144,7 @@ export default function RegistrarCompra() {
       })
       
       if (response.ok) {
+        const data = await response.json()
         setSuccess(true)
         setFormData({
           parceiroId: '',
@@ -266,10 +267,10 @@ export default function RegistrarCompra() {
                 <div className="text-center py-8">
                   <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-sss-white mb-2">
-                    Compra Registrada com Sucesso!
+                    Solicitação Enviada com Sucesso!
                   </h3>
                   <p className="text-gray-300 mb-6">
-                    Sua compra foi registrada e está aguardando o repasse do parceiro.
+                    Sua solicitação de compra foi enviada e está aguardando aprovação do parceiro. Você receberá uma notificação quando for aprovada ou rejeitada.
                   </p>
                   <button
                     onClick={() => setSuccess(false)}

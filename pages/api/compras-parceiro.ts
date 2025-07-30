@@ -19,42 +19,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Parceiro não encontrado' })
     }
 
-    // Cria registro da compra
-    const compra = await prisma.compraParceiro.create({
+    // Verifica se o usuário existe
+    const usuario = await prisma.usuario.findUnique({ where: { id: usuarioId } })
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuário não encontrado' })
+    }
+
+    // Cria solicitação de compra pendente
+    const solicitacaoCompra = await prisma.solicitacaoCompra.create({
       data: {
         usuarioId,
         parceiroId,
         valorCompra: parseFloat(valorCompra),
         comprovanteUrl: comprovanteUrl || null,
         dataCompra: new Date(dataCompra),
-        status: 'aguardando_repasse',
-        cupomUsado: 'sementesplay10', // Alterado de sementesplay20 para sementesplay10
-      }
-    })
-
-    // Calcula o valor do repasse (10% da compra)
-    const valorRepasse = parseFloat(valorCompra) * 0.10
-
-    // Cria automaticamente o repasse pendente
-    const repasse = await prisma.repasseParceiro.create({
-      data: {
-        parceiroId,
-        compraId: compra.id,
-        valor: valorRepasse,
         status: 'pendente',
-        usuarioId: usuarioId, // Adiciona o ID do usuário que fez a compra
+        cupomUsado: 'sementesplay10',
       }
     })
 
-    // Atualiza o status da compra
-    await prisma.compraParceiro.update({
-      where: { id: compra.id },
-      data: { status: 'repasse_pendente' }
+    // Cria notificação para o parceiro
+    await prisma.notificacao.create({
+      data: {
+        usuarioId: parceiro.usuarioId,
+        titulo: 'Nova Solicitação de Compra',
+        mensagem: `Nova solicitação de compra de R$ ${parseFloat(valorCompra).toFixed(2)} aguardando sua aprovação.`,
+        tipo: 'solicitacao_compra',
+        dados: JSON.stringify({ solicitacaoId: solicitacaoCompra.id })
+      }
     })
 
-    return res.status(201).json({ message: 'Compra registrada com sucesso', compra, repasse })
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Solicitação de compra enviada com sucesso! Aguarde a aprovação do parceiro.',
+      solicitacao: solicitacaoCompra
+    })
+
   } catch (error) {
-    console.error('Erro ao registrar compra:', error)
+    console.error('Erro ao criar solicitação de compra:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

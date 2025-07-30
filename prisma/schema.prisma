@@ -21,13 +21,13 @@ model Usuario {
   pontuacao       Int      @default(0)
   dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
-  avatarUrl       String?   // URL da foto de perfil do usuário
+  avatarUrl       String? // URL da foto de perfil do usuário
 
   // Relacionamentos
   criador              Criador?
   parceiro             Parceiro?
   sementesHistorico    Semente[]
-  doacoesFeitas        Doacao[]              @relation("Doador")
+  doacoesFeitas        Doacao[]                    @relation("Doador")
   transacoes           Transacao[]
   notificacoes         Notificacao[]
   candidaturas         CandidaturaCriador[]
@@ -43,20 +43,21 @@ model Usuario {
   emblemas             EmblemaUsuario[]
   comentarios          Comentario[]
   comentariosParceiro  ComentarioParceiro[]
-  interacoes          InteracaoConteudo[]
-  interacoesParceiro  InteracaoConteudoParceiro[]
-  amizades             Amizade[]             @relation("UsuarioAmizade")
-  amizadesRecebidas    Amizade[]             @relation("AmigoUsuario")
-  conversas1           Conversa[]            @relation("Usuario1Conversa")
-  conversas2           Conversa[]            @relation("Usuario2Conversa")
+  interacoes           InteracaoConteudo[]
+  interacoesParceiro   InteracaoConteudoParceiro[]
+  amizades             Amizade[]                   @relation("UsuarioAmizade")
+  amizadesRecebidas    Amizade[]                   @relation("AmigoUsuario")
+  conversas1           Conversa[]                  @relation("Usuario1Conversa")
+  conversas2           Conversa[]                  @relation("Usuario2Conversa")
   mensagens            Mensagem[]
-  recadosEnviados      Recado[]              @relation("RemetenteRecado")
-  recadosRecebidos     Recado[]              @relation("DestinatarioRecado")
+  recadosEnviados      Recado[]                    @relation("RemetenteRecado")
+  recadosRecebidos     Recado[]                    @relation("DestinatarioRecado")
   enquetes             Enquete[]
   votosEnquete         VotoEnquete[]
   comprasParceiro      CompraParceiro[]
   repasses             RepasseParceiro[]
   DistribuicaoFundo    DistribuicaoFundo[]
+  solicitacoesCompra   SolicitacaoCompra[]         @relation("SolicitacaoCompraUsuario")
 
   @@map("usuarios")
 }
@@ -250,10 +251,12 @@ model Parceiro {
   saldoDevedor   Float  @default(0) // NOVO: saldo devedor do parceiro
 
   // Relacionamentos
-  usuario         Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario         Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   codigosCashback CodigoCashback[]
-  comprasParceiro CompraParceiro[]
-  repasses        RepasseParceiro[]
+
+  solicitacoesCompra SolicitacaoCompra[]
+  comprasParceiro    CompraParceiro[]
+  repasses           RepasseParceiro[]
   conteudosParceiros ConteudoParceiro[]
 
   @@map("parceiros")
@@ -364,7 +367,7 @@ model Conteudo {
   dislikes          Int      @default(0)
   compartilhamentos Int      @default(0)
 
-  criador     Criador      @relation(fields: [criadorId], references: [id], onDelete: Cascade)
+  criador     Criador             @relation(fields: [criadorId], references: [id], onDelete: Cascade)
   comentarios Comentario[]
   interacoes  InteracaoConteudo[]
 
@@ -372,7 +375,7 @@ model Conteudo {
 }
 
 model ConteudoParceiro {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   parceiroId        String
   titulo            String
   url               String
@@ -380,22 +383,22 @@ model ConteudoParceiro {
   categoria         String // eventos, promoções, notícias, tours, etc.
   descricao         String?
   preview           String? // url da imagem de preview
-  fixado            Boolean  @default(false)
-  dataPublicacao    DateTime @default(now())
+  fixado            Boolean   @default(false)
+  dataPublicacao    DateTime  @default(now())
   plataforma        String // site, instagram, facebook, etc.
-  visualizacoes     Int      @default(0)
-  curtidas          Int      @default(0)
-  dislikes          Int      @default(0)
-  compartilhamentos Int      @default(0)
-  cidade            String   // nome da cidade
-  endereco          String?  // endereço do evento/local
+  visualizacoes     Int       @default(0)
+  curtidas          Int       @default(0)
+  dislikes          Int       @default(0)
+  compartilhamentos Int       @default(0)
+  cidade            String // nome da cidade
+  endereco          String? // endereço do evento/local
   dataEvento        DateTime? // data do evento (se aplicável)
-  preco             String?  // preço do evento/produto
-  vagas             Int?     // número de vagas disponíveis
+  preco             String? // preço do evento/produto
+  vagas             Int? // número de vagas disponíveis
 
-  parceiro     Parceiro      @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
-  comentarios  ComentarioParceiro[]
-  interacoes   InteracaoConteudoParceiro[]
+  parceiro    Parceiro                    @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  comentarios ComentarioParceiro[]
+  interacoes  InteracaoConteudoParceiro[]
 
   @@map("conteudos_parceiros")
 }
@@ -433,11 +436,11 @@ model ComentarioParceiro {
 }
 
 model InteracaoConteudo {
-  id          String   @id @default(cuid())
-  conteudoId  String
-  usuarioId   String
-  tipo        String   // "visualizacao", "curtida" ou "dislike"
-  data        DateTime @default(now())
+  id         String   @id @default(cuid())
+  conteudoId String
+  usuarioId  String
+  tipo       String // "visualizacao", "curtida" ou "dislike"
+  data       DateTime @default(now())
 
   conteudo Conteudo @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
   usuario  Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
@@ -447,11 +450,11 @@ model InteracaoConteudo {
 }
 
 model InteracaoConteudoParceiro {
-  id          String   @id @default(cuid())
-  conteudoId  String
-  usuarioId   String
-  tipo        String   // "visualizacao", "curtida" ou "dislike"
-  data        DateTime @default(now())
+  id         String   @id @default(cuid())
+  conteudoId String
+  usuarioId  String
+  tipo       String // "visualizacao", "curtida" ou "dislike"
+  data       DateTime @default(now())
 
   conteudo ConteudoParceiro @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
   usuario  Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
@@ -521,10 +524,10 @@ model ConquistaUsuario {
 }
 
 model EmblemaUsuario {
-  id        String   @id @default(cuid())
-  usuarioId String
-  emblema   String
-  titulo    String
+  id            String   @id @default(cuid())
+  usuarioId     String
+  emblema       String
+  titulo        String
   dataConquista DateTime @default(now())
 
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
@@ -624,6 +627,26 @@ model Recado {
   @@map("recados")
 }
 
+// NOVO: Solicitação de compra pendente de aprovação
+model SolicitacaoCompra {
+  id             String    @id @default(cuid())
+  usuarioId      String
+  parceiroId     String
+  valorCompra    Float
+  dataCompra     DateTime  @default(now())
+  comprovanteUrl String?
+  status         String    @default("pendente") // pendente, aprovada, rejeitada
+  cupomUsado     String // sempre 'sementesplay10'
+  dataAprovacao  DateTime?
+  dataRejeicao   DateTime?
+  motivoRejeicao String?
+
+  usuario  Usuario  @relation("SolicitacaoCompraUsuario", fields: [usuarioId], references: [id], onDelete: Cascade)
+  parceiro Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+
+  @@map("solicitacoes_compra")
+}
+
 // NOVO: Registro de compras feitas com o cupom sementesplay20
 model CompraParceiro {
   id             String   @id @default(cuid())
@@ -650,7 +673,7 @@ model RepasseParceiro {
   valor          Float
   dataRepasse    DateTime @default(now())
   comprovanteUrl String?
-  paymentId      String?  // ID único do pagamento PIX
+  paymentId      String? // ID único do pagamento PIX
   status         String   @default("pendente") // pendente, aguardando_pagamento, confirmado, rejeitado
 
   parceiro  Parceiro       @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
