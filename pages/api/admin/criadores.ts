@@ -43,10 +43,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       nome: criador.usuario.nome,
       email: criador.usuario.email,
       nivel: criador.nivel,
-      doacoesRecebidas: criador.doacoesRecebidas || 0,
+      doacoesRecebidas: criador.doacoes || 0,
       apoiadores: criador.apoiadores || 0,
-      favoritos: criador.favoritos || 0,
-      status: criador.status || 'ativo',
+      favoritos: 0, // Campo não existe no schema
+      status: 'ativo', // Campo não existe no schema
       dataCriacao: criador.dataCriacao
     }))
 

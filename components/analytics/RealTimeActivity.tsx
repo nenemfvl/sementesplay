@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HeartIcon, UserIcon, GiftIcon, TrophyIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import { HeartIcon, UserIcon, GiftIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 
 interface Activity {
   id: string

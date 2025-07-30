@@ -12,17 +12,17 @@ export interface User {
   avatarUrl?: string // Adicionado campo para URL do avatar
 }
 
-// Usuário de teste padrão
-const defaultUser: User = {
-  id: '1',
-  nome: 'Usuário Teste',
-  email: 'teste@sementesplay.com',
-  tipo: 'usuario',
-  sementes: 1000,
-  nivel: '5',
-  pontuacao: 500,
-  dataCriacao: new Date().toISOString()
-}
+// Usuário de teste padrão (não utilizado atualmente)
+// const defaultUser: User = {
+//   id: '1',
+//   nome: 'Usuário Teste',
+//   email: 'teste@sementesplay.com',
+//   tipo: 'usuario',
+//   sementes: 1000,
+//   nivel: '5',
+//   pontuacao: 500,
+//   dataCriacao: new Date().toISOString()
+// }
 
 export const auth = {
   // Salvar usuário na sessão
