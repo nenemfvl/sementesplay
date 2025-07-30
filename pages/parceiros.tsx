@@ -1026,8 +1026,23 @@ export default function Parceiros() {
       <div className="min-h-screen bg-sss-dark flex flex-col items-center justify-center">
         <div className="bg-sss-medium p-8 rounded-lg shadow-lg max-w-md w-full text-center">
           <h2 className="text-2xl font-bold text-sss-accent mb-4">Solicitação enviada!</h2>
-          <p className="text-gray-200 mb-2">Sua solicitação para ser parceiro está em análise.</p>
-          <p className="text-gray-400 text-sm">Assim que for aprovada ou rejeitada, você será notificado por email.</p>
+          <p className="text-gray-200 mb-4">Sua solicitação para ser parceiro está em análise.</p>
+          <p className="text-gray-400 text-sm mb-6">Assim que for aprovada ou rejeitada, você será notificado por email.</p>
+          
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-sss-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+            >
+              Voltar ao Início
+            </button>
+            <button
+              onClick={() => window.location.href = '/parceiros'}
+              className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition"
+            >
+              Ver Parceiros
+            </button>
+          </div>
         </div>
       </div>
     );
