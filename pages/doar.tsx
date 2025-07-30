@@ -3,13 +3,10 @@ import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
   HeartIcon, 
-  ArrowLeftIcon, 
-  UserIcon, 
   CurrencyDollarIcon,
   StarIcon,
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar'
 import Image from 'next/image'
