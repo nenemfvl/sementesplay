@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { auth } from '../lib/auth';
 import Navbar from '../components/Navbar';
 import { 
@@ -8,14 +9,11 @@ import {
   CreditCardIcon,
   PlusIcon,
   BellIcon,
-  LinkIcon,
-  QrCodeIcon,
   ClipboardDocumentIcon,
   CheckIcon,
   XMarkIcon,
   PencilIcon,
   TrashIcon,
-  MapPinIcon,
   ArrowTrendingUpIcon,
   DocumentTextIcon,
   UsersIcon,
@@ -174,7 +172,7 @@ export default function PainelParceiro() {
       fetchRepasses();
       fetchConteudos();
     }
-  }, [authorized, user]);
+  }, [authorized, user, parceiro?.id]);
 
   async function fetchParceiro() {
     try {
@@ -562,41 +560,7 @@ export default function PainelParceiro() {
     }, 300000);
   }
 
-  async function handleEnviarComprovantePIX(e: React.FormEvent) {
-    e.preventDefault();
-    if (!repasseSelecionado || !comprovantePIX) {
-      alert('Selecione um comprovante de pagamento');
-      return;
-    }
 
-    setEnviandoPIX(true);
-    try {
-      const response = await fetch('/api/parceiros/enviar-comprovante-pix', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          repasseId: repasseSelecionado.id,
-          parceiroId: parceiro?.id,
-          comprovanteUrl: 'manual' // Para pagamentos manuais
-        })
-      });
-
-      if (response.ok) {
-        alert('Comprovante enviado com sucesso! Aguardando confirmação.');
-        setShowModalPIX(false);
-        setRepasseSelecionado(null);
-        setComprovantePIX(null);
-        fetchRepasses();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erro ao enviar comprovante');
-      }
-    } catch (error) {
-      alert('Erro ao enviar comprovante');
-    } finally {
-      setEnviandoPIX(false);
-    }
-  }
 
   // Mostrar loading enquanto verifica autorização
   if (checkingAuth) {
@@ -973,10 +937,12 @@ export default function PainelParceiro() {
                   
                   {/* QR Code */}
                   <div className="text-center mb-4">
-                    <img 
+                    <Image 
                       src={pagamentoPIX.qrCode} 
                       alt="QR Code PIX" 
-                      className="mx-auto w-48 h-48 bg-white rounded-lg p-2"
+                      width={192}
+                      height={192}
+                      className="mx-auto bg-white rounded-lg p-2"
                     />
                   </div>
 

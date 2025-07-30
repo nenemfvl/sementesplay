@@ -5,7 +5,6 @@ import {
   EyeIcon,
   CheckIcon,
   XMarkIcon,
-  DocumentTextIcon,
   CurrencyDollarIcon,
   ClockIcon,
   CheckCircleIcon,
@@ -199,6 +198,7 @@ export default function AdminRepasses() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
+                  aria-label="Filtrar por status"
                   className="bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                 >
                   <option value="todos">Todos os status</option>
