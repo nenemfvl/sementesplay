@@ -14,14 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         siteCidade,
         descricao,
         experiencia,
-        expectativa,
-        investimento,
-        publico,
-        estrategia
+        expectativa
       } = req.body
 
       // Validar campos obrigatórios
-      if (!nome || !email || !telefone || !nomeCidade || !descricao || !experiencia || !expectativa || !investimento || !publico || !estrategia) {
+      if (!nome || !email || !telefone || !nomeCidade || !descricao || !experiencia || !expectativa) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
       }
 
@@ -45,9 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           descricao,
           experiencia,
           expectativa,
-          investimento,
-          publico,
-          estrategia,
           status: 'pendente',
           dataCandidatura: new Date()
         }
