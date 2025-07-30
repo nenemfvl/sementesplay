@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const { repasseId, parceiroId } = fields
-      const comprovante = files.comprovante as formidable.File
+      const comprovante = Array.isArray(files.comprovante) ? files.comprovante[0] : files.comprovante
 
       if (!repasseId || !parceiroId || !comprovante) {
         return res.status(400).json({ error: 'Dados obrigatórios ausentes' })
