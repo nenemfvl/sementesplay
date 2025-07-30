@@ -1,5 +1,0 @@
-[33m969d6820[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Remove botão de favoritar da página /doar
-[33m46769cab[m Corrige botão de favoritar na página /doar para evitar propagação de eventos
-[33m825676f5[m Ajusta cards dos criadores na página /doar: volta ao formato clicável e usa botão de favoritar igual ao da página /status
-[33me0762d26[m Adiciona TikTok nas redes sociais dos cards dos criadores na página /doar
-[33m2082aa54[m Adiciona redes sociais e botão seguir nos cards dos criadores na página /doar

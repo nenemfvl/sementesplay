@@ -3,17 +3,11 @@ import Head from 'next/head';
 import { auth } from '../lib/auth';
 import Navbar from '../components/Navbar';
 import { 
-  ChartBarIcon, 
   BuildingOfficeIcon,
-  TrophyIcon, 
   CurrencyDollarIcon,
   CreditCardIcon,
-  EyeIcon,
   PlusIcon,
-  CogIcon,
   BellIcon,
-  ChatBubbleLeftRightIcon,
-  QuestionMarkCircleIcon,
   LinkIcon,
   QrCodeIcon,
   ClipboardDocumentIcon,
@@ -701,6 +695,7 @@ export default function PainelParceiro() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Tipo *</label>
                   <select 
                     required
+                    aria-label="Tipo de conteúdo"
                     className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                     value={formConteudo.tipo}
                     onChange={e => setFormConteudo(f => ({ ...f, tipo: e.target.value }))}
@@ -719,6 +714,7 @@ export default function PainelParceiro() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
                   <select 
                     required
+                    aria-label="Categoria do conteúdo"
                     className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                     value={formConteudo.categoria}
                     onChange={e => setFormConteudo(f => ({ ...f, categoria: e.target.value }))}
@@ -783,6 +779,7 @@ export default function PainelParceiro() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
                   <input 
                     type="datetime-local"
+                    aria-label="Data e hora do evento"
                     className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                     value={formConteudo.dataEvento} 
                     onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
@@ -941,6 +938,7 @@ export default function PainelParceiro() {
                     required 
                     type="file"
                     accept="image/*,.pdf"
+                    aria-label="Comprovante de pagamento PIX"
                     className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sss-accent file:text-sss-white hover:file:bg-red-700 transition-all" 
                     onChange={e => setComprovantePIX(e.target.files?.[0] || null)}
                   />

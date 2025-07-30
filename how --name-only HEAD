@@ -1,3 +1,0 @@
-[33m75b11776[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix: corrigir erro de tipo TypeScript na API enviar-comprovante-pix - Corrigir conversão de File[] para File usando Array.isArray() - Resolver erro de build no Vercel
-[33m602a2d91[m fix: criar API /api/parceiros e corrigir página registrar compra - Criar nova API /api/parceiros/index.ts para listar parceiros - Atualizar página registrar-compra.tsx para usar /api/parceiros - Resolver problema de parceiros não aparecerem no dropdown
-[33md38c2f0e[m feat: adicionar logs de debug para investigar problema dos parceiros não aparecerem

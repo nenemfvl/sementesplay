@@ -1,5 +1,0 @@
-[33mf9944313[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Remove onClick from eye icon - views only count when clicking title
-[33m90c07f7d[m Adicionar funcionalidades de visualizar e curtir conteúdos no modal do criador
-[33m11e19e02[m Endpoints de API para visualizar e curtir conteúdos (incrementar visualizações e curtidas)
-[33m31a0d47b[m Preencher automaticamente o thumbnail do conteúdo com imagem do YouTube se preview estiver vazio
-[33m6e011bef[m Corrigir tipagem do onError do thumbnail para evitar erro de propriedade 'style' no TypeScript
