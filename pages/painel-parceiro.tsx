@@ -173,7 +173,6 @@ export default function PainelParceiro() {
       fetchNotificacoes();
       fetchRepasses();
       fetchConteudos();
-      fetchSolicitacoes();
     }
   }, [authorized, user, parceiro?.id]);
 
@@ -265,21 +264,7 @@ export default function PainelParceiro() {
     }
   }
 
-  async function fetchSolicitacoes() {
-    try {
-      const response = await fetch(`/api/parceiros/solicitacoes?parceiroId=${parceiro?.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSolicitacoes(data.solicitacoes || []);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar solicitações:', error);
-    } finally {
-      setLoadingSolicitacoes(false);
-    }
-  }
+
 
   async function handleAprovarSolicitacao(solicitacaoId: string) {
     if (!confirm('Tem certeza que deseja aprovar esta solicitação de compra?')) return;
@@ -1094,95 +1079,7 @@ export default function PainelParceiro() {
           </section>
 
           {/* Solicitações Pendentes */}
-          <section className="mb-8">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6 border-b border-sss-light">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <ClockIcon className="w-5 h-5 text-sss-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-sss-white">Solicitações de Compra</h2>
-                    <p className="text-sm text-gray-400">Aguardando sua aprovação</p>
-                  </div>
-                </div>
-              </div>
 
-              <div className="p-6">
-                {loadingSolicitacoes ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
-                    <span className="ml-3 text-gray-400">Carregando solicitações...</span>
-                  </div>
-                ) : solicitacoes && solicitacoes.length > 0 ? (
-                  <div className="space-y-4">
-                    {solicitacoes.map((solicitacao) => (
-                      <div key={solicitacao.id} className="flex items-center justify-between p-4 bg-sss-light/30 rounded-lg hover:bg-sss-light/50 transition-all">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
-                            <CurrencyDollarIcon className="w-5 h-5 text-purple-400" />
-                          </div>
-                          <div>
-                            <p className="text-sss-white font-medium">
-                              R$ {solicitacao.valorCompra.toFixed(2)}
-                            </p>
-                            <p className="text-sm text-gray-400">
-                              {solicitacao.usuario.nome}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {new Date(solicitacao.dataCompra).toLocaleDateString('pt-BR')}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              {solicitacao.comprovanteUrl ? (
-                                <span className="text-xs text-green-400 flex items-center gap-1">
-                                  <CheckCircleIcon className="w-3 h-3" />
-                                  Comprovante enviado
-                                </span>
-                              ) : (
-                                <span className="text-xs text-yellow-400 flex items-center gap-1">
-                                  <XMarkIcon className="w-3 h-3" />
-                                  Sem comprovante
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          {solicitacao.comprovanteUrl && (
-                            <button
-                              onClick={() => window.open(solicitacao.comprovanteUrl, '_blank')}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
-                              title="Ver comprovante"
-                            >
-                              <DocumentTextIcon className="w-4 h-4" />
-                              Comprovante
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleAprovarSolicitacao(solicitacao.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                          >
-                            Aprovar
-                          </button>
-                          <button
-                            onClick={() => handleRejeitarSolicitacao(solicitacao.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                          >
-                            Rejeitar
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <ClockIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">Nenhuma solicitação pendente</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
 
           {/* Repasses Pendentes */}
           <section className="mb-8">
@@ -1234,12 +1131,24 @@ export default function PainelParceiro() {
                           <p className="text-sm text-orange-400 mb-2">
                             Pendente
                           </p>
-                          <button
-                            onClick={() => handleFazerPagamentoPIX(repasse)}
-                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                          >
-                            Pagar PIX
-                          </button>
+                          <div className="flex gap-2">
+                            {repasse.comprovante && (
+                              <button
+                                onClick={() => window.open(repasse.comprovante, '_blank')}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
+                                title="Ver comprovante"
+                              >
+                                <DocumentTextIcon className="w-4 h-4" />
+                                Comprovante
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleFazerPagamentoPIX(repasse)}
+                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
+                            >
+                              Pagar PIX
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
