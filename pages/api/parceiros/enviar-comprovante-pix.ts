@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../../../lib/prisma'
 import formidable from 'formidable'
-import fs from 'fs'
-import path from 'path'
-
-const prisma = new PrismaClient()
+import { uploadToCloudinary } from '../../../lib/cloudinary'
 
 export const config = {
   api: {
@@ -19,17 +16,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const form = formidable({
-      uploadDir: path.join(process.cwd(), 'public', 'uploads', 'comprovantes'),
-      keepExtensions: true,
       maxFiles: 1,
       maxFileSize: 5 * 1024 * 1024, // 5MB
     })
-
-    // Criar diretório se não existir
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'comprovantes')
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true })
-    }
 
     form.parse(req, async (err, fields, files) => {
       if (err) {
@@ -58,8 +47,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(404).json({ error: 'Repasse não encontrado ou já processado' })
         }
 
-        // Salvar URL do comprovante
-        const comprovanteUrl = `/uploads/comprovantes/${comprovante.newFilename}`
+        // Upload do arquivo para Cloudinary
+        let comprovanteUrl = null
+        if (comprovante.filepath) {
+          try {
+            const result = await uploadToCloudinary(comprovante.filepath, 'comprovantes-pix')
+            comprovanteUrl = result.secure_url
+          } catch (uploadError) {
+            console.error('Erro no upload para Cloudinary:', uploadError)
+            // Se falhar o upload, continua sem o comprovante
+          }
+        }
 
         // Atualizar o repasse com o comprovante
         await prisma.repasseParceiro.update({
@@ -71,16 +69,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // Criar notificação para o admin
-        await prisma.notificacao.create({
-          data: {
-            usuarioId: 'admin', // Você pode ajustar isso conforme necessário
-            tipo: 'repasse_confirmado',
-            titulo: 'Novo Comprovante PIX Recebido',
-            mensagem: `Parceiro enviou comprovante PIX para repasse de R$ ${repasse.valor.toFixed(2)}`,
-            data: new Date()
-          }
+        // Atualizar status da compra relacionada
+        await prisma.compraParceiro.update({
+          where: { id: repasse.compraId },
+          data: { status: 'cashback_liberado' }
         })
+
+        // Criar notificação para o admin (se existir)
+        try {
+          await prisma.notificacao.create({
+            data: {
+              usuarioId: 'admin',
+              tipo: 'repasse_confirmado',
+              titulo: 'Novo Comprovante PIX Recebido',
+              mensagem: `Parceiro enviou comprovante PIX para repasse de R$ ${repasse.valor.toFixed(2)}`,
+              data: new Date()
+            }
+          })
+        } catch (notifError) {
+          console.log('Erro ao criar notificação (pode ser ignorado):', notifError)
+        }
 
         res.status(200).json({ 
           success: true, 
