@@ -500,9 +500,66 @@ export default function PainelParceiro() {
     }
   }
 
-  function handleFazerPagamentoPIX(repasse: Repasse) {
+  const [pagamentoPIX, setPagamentoPIX] = useState<any>(null);
+  const [verificandoPagamento, setVerificandoPagamento] = useState(false);
+
+  async function handleFazerPagamentoPIX(repasse: Repasse) {
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
+    
+    try {
+      const response = await fetch('/api/pix/gerar-pagamento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repasseId: repasse.id,
+          parceiroId: parceiro?.id
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPagamentoPIX(data);
+        // Iniciar verificação automática
+        verificarPagamento(data.paymentId);
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erro ao gerar pagamento PIX');
+      }
+    } catch (error) {
+      alert('Erro ao gerar pagamento PIX');
+    }
+  }
+
+  async function verificarPagamento(paymentId: string) {
+    setVerificandoPagamento(true);
+    
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/pix/verificar-pagamento?paymentId=${paymentId}`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.status === 'confirmado') {
+            clearInterval(interval);
+            setVerificandoPagamento(false);
+            alert('Pagamento confirmado com sucesso!');
+            setShowModalPIX(false);
+            setRepasseSelecionado(null);
+            setPagamentoPIX(null);
+            fetchRepasses();
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar pagamento:', error);
+      }
+    }, 5000); // Verificar a cada 5 segundos
+
+    // Parar verificação após 5 minutos
+    setTimeout(() => {
+      clearInterval(interval);
+      setVerificandoPagamento(false);
+    }, 300000);
   }
 
   async function handleEnviarComprovantePIX(e: React.FormEvent) {
@@ -514,14 +571,14 @@ export default function PainelParceiro() {
 
     setEnviandoPIX(true);
     try {
-      const formData = new FormData();
-      formData.append('comprovante', comprovantePIX);
-      formData.append('repasseId', repasseSelecionado.id);
-      formData.append('parceiroId', parceiro?.id || '');
-
       const response = await fetch('/api/parceiros/enviar-comprovante-pix', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repasseId: repasseSelecionado.id,
+          parceiroId: parceiro?.id,
+          comprovanteUrl: 'manual' // Para pagamentos manuais
+        })
       });
 
       if (response.ok) {
@@ -529,7 +586,7 @@ export default function PainelParceiro() {
         setShowModalPIX(false);
         setRepasseSelecionado(null);
         setComprovantePIX(null);
-        fetchRepasses(); // Recarregar repasses
+        fetchRepasses();
       } else {
         const error = await response.json();
         alert(error.error || 'Erro ao enviar comprovante');
@@ -910,75 +967,90 @@ export default function PainelParceiro() {
                 </div>
               </div>
 
-              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                <h3 className="text-green-400 font-semibold mb-2">Dados para Pagamento PIX</h3>
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-sm text-gray-400">Chave PIX:</p>
-                    <p className="text-sss-white font-mono text-lg">82988181358</p>
+              {pagamentoPIX ? (
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                  <h3 className="text-green-400 font-semibold mb-4">Pagamento PIX Integrado</h3>
+                  
+                  {/* QR Code */}
+                  <div className="text-center mb-4">
+                    <img 
+                      src={pagamentoPIX.qrCode} 
+                      alt="QR Code PIX" 
+                      className="mx-auto w-48 h-48 bg-white rounded-lg p-2"
+                    />
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Valor a pagar:</p>
-                    <p className="text-green-400 font-bold text-xl">R$ {repasseSelecionado.valorRepasse.toFixed(2)}</p>
-                  </div>
-                </div>
-                <div className="mt-3 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded">
-                  <p className="text-yellow-400 text-xs">
-                    ⚠️ Faça o pagamento PIX e envie o comprovante abaixo
-                  </p>
-                </div>
-              </div>
 
-              <form onSubmit={handleEnviarComprovantePIX} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Comprovante de Pagamento *
-                  </label>
-                  <input 
-                    required 
-                    type="file"
-                    accept="image/*,.pdf"
-                    aria-label="Comprovante de pagamento PIX"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sss-accent file:text-sss-white hover:file:bg-red-700 transition-all" 
-                    onChange={e => setComprovantePIX(e.target.files?.[0] || null)}
-                  />
-                  <p className="text-xs text-gray-400 mt-1">
-                    Aceita imagens (JPG, PNG) ou PDF
-                  </p>
+                  {/* Dados do PIX */}
+                  <div className="space-y-3 mb-4">
+                    <div>
+                      <p className="text-sm text-gray-400">Chave PIX:</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sss-white font-mono text-lg">{pagamentoPIX.pixData.chavePix}</p>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(pagamentoPIX.pixData.chavePix);
+                            alert('Chave PIX copiada!');
+                          }}
+                          className="text-sss-accent hover:text-sss-accent/80"
+                        >
+                          📋
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Valor a pagar:</p>
+                      <p className="text-green-400 font-bold text-xl">R$ {pagamentoPIX.pixData.valor.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Descrição:</p>
+                      <p className="text-sss-white text-sm">{pagamentoPIX.pixData.descricao}</p>
+                    </div>
+                  </div>
+
+                  {/* Instruções */}
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-4">
+                    <h4 className="text-blue-400 font-semibold mb-2">Instruções:</h4>
+                    <ul className="text-sm text-gray-300 space-y-1">
+                      {pagamentoPIX.instrucoes.map((instrucao: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-blue-400">•</span>
+                          {instrucao}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Status do pagamento */}
+                  {verificandoPagamento && (
+                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-400 mx-auto mb-2"></div>
+                      <p className="text-yellow-400 text-sm">Verificando pagamento...</p>
+                      <p className="text-gray-400 text-xs">Aguarde a confirmação automática</p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-4">
+                    <button 
+                      type="button" 
+                      className="flex-1 bg-sss-light text-sss-white px-6 py-3 rounded-lg hover:bg-sss-light transition-colors" 
+                      onClick={() => { 
+                        setShowModalPIX(false); 
+                        setRepasseSelecionado(null);
+                        setPagamentoPIX(null);
+                      }}
+                    >
+                      Fechar
+                    </button>
+                  </div>
                 </div>
-                
-                <div className="flex gap-3 pt-4">
-                  <button 
-                    type="submit" 
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-sss-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
-                    disabled={enviandoPIX || !comprovantePIX}
-                  >
-                    {enviandoPIX ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <CheckIcon className="w-4 h-4" />
-                        Enviar Comprovante
-                      </>
-                    )}
-                  </button>
-                  <button 
-                    type="button" 
-                    className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
-                    onClick={() => { 
-                      setShowModalPIX(false); 
-                      setRepasseSelecionado(null);
-                      setComprovantePIX(null);
-                    }} 
-                    disabled={enviandoPIX}
-                  >
-                    Cancelar
-                  </button>
+              ) : (
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto mb-3"></div>
+                    <p className="text-yellow-400">Gerando pagamento PIX...</p>
+                  </div>
                 </div>
-              </form>
+              )}
             </div>
           </div>
         </div>
