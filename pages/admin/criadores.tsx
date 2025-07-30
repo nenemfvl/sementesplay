@@ -118,7 +118,43 @@ export default function AdminCriadores() {
       case 'Supremo': return 'text-purple-500 bg-purple-500/10'
       case 'Parceiro': return 'text-blue-500 bg-blue-500/10'
       case 'Comum': return 'text-gray-500 bg-gray-500/10'
+      case 'Iniciante': return 'text-green-500 bg-green-500/10'
       default: return 'text-gray-500 bg-gray-500/10'
+    }
+  }
+
+  // Funções para as ações
+  const visualizarCriador = (criador: Criador) => {
+    window.open(`/criador/${criador.id}`, '_blank')
+  }
+
+  const editarCriador = (criador: Criador) => {
+    // Implementar modal de edição ou redirecionar para página de edição
+    alert(`Editar criador: ${criador.nome}`)
+  }
+
+  const suspenderCriador = async (criador: Criador) => {
+    if (confirm(`Tem certeza que deseja suspender o criador "${criador.nome}"?`)) {
+      try {
+        const response = await fetch(`/api/admin/criadores/${criador.id}/suspender`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (response.ok) {
+          alert('Criador suspenso com sucesso!')
+          loadCriadores() // Recarregar lista
+        } else {
+          const error = await response.text()
+          alert(`Erro ao suspender criador: ${error}`)
+        }
+      } catch (error) {
+        console.error('Erro ao suspender criador:', error)
+        alert('Erro ao suspender criador')
+      }
     }
   }
 
@@ -321,17 +357,32 @@ export default function AdminCriadores() {
                           {criador.apoiadores}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                     <div className="flex space-x-2">
-                             <button className="text-blue-500 hover:text-blue-400" aria-label="Visualizar criador">
-                               <EyeIcon className="w-4 h-4" />
-                             </button>
-                             <button className="text-yellow-500 hover:text-yellow-400" aria-label="Editar criador">
-                               <PencilIcon className="w-4 h-4" />
-                             </button>
-                             <button className="text-red-500 hover:text-red-400" aria-label="Suspender criador">
-                               <TrashIcon className="w-4 h-4" />
-                             </button>
-                           </div>
+                          <div className="flex space-x-2">
+                            <button 
+                              onClick={() => visualizarCriador(criador)}
+                              className="text-blue-500 hover:text-blue-400 transition-colors" 
+                              aria-label="Visualizar criador"
+                              title="Visualizar perfil"
+                            >
+                              <EyeIcon className="w-4 h-4" />
+                            </button>
+                            <button 
+                              onClick={() => editarCriador(criador)}
+                              className="text-yellow-500 hover:text-yellow-400 transition-colors" 
+                              aria-label="Editar criador"
+                              title="Editar criador"
+                            >
+                              <PencilIcon className="w-4 h-4" />
+                            </button>
+                            <button 
+                              onClick={() => suspenderCriador(criador)}
+                              className="text-red-500 hover:text-red-400 transition-colors" 
+                              aria-label="Suspender criador"
+                              title="Suspender criador"
+                            >
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

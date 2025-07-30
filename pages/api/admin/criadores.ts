@@ -79,6 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case 'criador-parceiro': return 'Parceiro'
         case 'criador-comum': return 'Comum'
         case 'criador-iniciante': return 'Iniciante'
+        case 'suspenso': return 'Suspenso'
         default: return 'Comum'
       }
     }
@@ -92,15 +93,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       doacoesRecebidas: criador.doacoes || 0,
       apoiadores: criador.apoiadores || 0,
       favoritos: 0, // Campo não existe no schema
-      status: 'ativo', // Campo não existe no schema
+      status: criador.usuario.nivel === 'suspenso' ? 'suspenso' : 'ativo',
       dataCriacao: criador.dataCriacao
     }))
 
     // Calcular estatísticas baseadas no nível do usuário
     const totalCriadores = criadores.length
-    const ativos = criadores.length // Todos são ativos por padrão
+    const ativos = criadores.filter(c => c.usuario.nivel !== 'suspenso').length
     const supremos = criadores.filter(c => c.usuario.nivel === 'criador-supremo').length
-    const suspensos = 0 // Campo não existe no schema
+    const suspensos = criadores.filter(c => c.usuario.nivel === 'suspenso').length
 
     const estatisticas = {
       total: totalCriadores,
