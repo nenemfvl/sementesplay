@@ -72,12 +72,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log(`📊 Encontrados ${criadores.length} criadores`)
 
+    // Função para mapear nível do usuário para nível de criador
+    const mapearNivelCriador = (nivelUsuario: string) => {
+      switch (nivelUsuario) {
+        case 'criador-supremo': return 'Supremo'
+        case 'criador-parceiro': return 'Parceiro'
+        case 'criador-comum': return 'Comum'
+        case 'criador-iniciante': return 'Iniciante'
+        default: return 'Comum'
+      }
+    }
+
     // Formatar dados
     const criadoresFormatados = criadores.map(criador => ({
       id: criador.id,
       nome: criador.usuario.nome,
       email: criador.usuario.email,
-      nivel: criador.nivel,
+      nivel: mapearNivelCriador(criador.usuario.nivel), // Usar nível do usuário
       doacoesRecebidas: criador.doacoes || 0,
       apoiadores: criador.apoiadores || 0,
       favoritos: 0, // Campo não existe no schema
@@ -85,7 +96,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       dataCriacao: criador.dataCriacao
     }))
 
-    return res.status(200).json({ criadores: criadoresFormatados })
+    // Calcular estatísticas baseadas no nível do usuário
+    const totalCriadores = criadores.length
+    const ativos = criadores.length // Todos são ativos por padrão
+    const supremos = criadores.filter(c => c.usuario.nivel === 'criador-supremo').length
+    const suspensos = 0 // Campo não existe no schema
+
+    const estatisticas = {
+      total: totalCriadores,
+      ativos,
+      supremos,
+      suspensos
+    }
+
+    console.log('📈 Estatísticas calculadas:', estatisticas)
+
+    return res.status(200).json({ 
+      criadores: criadoresFormatados,
+      estatisticas
+    })
   } catch (error) {
     console.error('❌ Erro ao buscar criadores:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
