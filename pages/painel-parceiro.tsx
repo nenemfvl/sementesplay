@@ -1306,7 +1306,7 @@ export default function PainelParceiro() {
                   </div>
                 ) : repasses && repasses.length > 0 ? (
                     <div className="space-y-4">
-                    {repasses.filter(r => r.status === 'pendente').slice(0, 5).map((repasse) => (
+                    {repasses.slice(0, 5).map((repasse) => (
                       <div key={repasse.id} className="flex items-center justify-between p-4 bg-sss-light/30 rounded-lg hover:bg-sss-light/50 transition-all">
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
