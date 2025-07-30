@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         comprovanteUrl: comprovanteUrl || null,
         dataCompra: new Date(dataCompra),
         status: 'aguardando_repasse',
-        cupomUsado: 'sementesplay20',
+        cupomUsado: 'sementesplay10', // Alterado de sementesplay20 para sementesplay10
       }
     })
 

@@ -27,6 +27,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Compra não encontrada' })
     }
 
+    // Validação: valor deve ser 10% da compra (era 20%)
+    const valorEsperado = compra.valorCompra * 0.10
+    if (Math.abs(valor - valorEsperado) > 0.01) {
+      return res.status(400).json({ 
+        error: `Valor deve ser 10% da compra (R$ ${valorEsperado.toFixed(2)})`,
+        valorEsperado: valorEsperado,
+        valorRecebido: valor
+      })
+    }
+
     // Cria registro do repasse
     const repasse = await prisma.repasseParceiro.create({
       data: {

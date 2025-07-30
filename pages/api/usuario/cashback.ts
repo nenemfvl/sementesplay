@@ -12,11 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
     }
 
-    // Compras feitas com o cupom sementesplay20
+    // Compras feitas com o cupom sementesplay10
     const compras = await prisma.compraParceiro.findMany({
       where: {
         usuarioId: String(usuarioId),
-        cupomUsado: 'sementesplay20'
+        cupomUsado: 'sementesplay10'
       },
       orderBy: { dataCompra: 'desc' }
     })

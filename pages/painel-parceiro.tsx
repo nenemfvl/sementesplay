@@ -636,8 +636,8 @@ export default function PainelParceiro() {
               <div className="space-y-6">
                 <div className="bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded mb-4 text-blue-200">
                   <strong>Instruções:</strong><br />
-                  • O cupom obrigatório para compras é <b>sementesplay20</b>.<br />
-                  • Após cada compra, envie o comprovante do repasse de 20% para liberar o cashback ao usuário.<br />
+                  • O cupom obrigatório para compras é <b>sementesplay10</b>.<br />
+                  • Após cada compra, envie o comprovante do repasse de 10% para liberar o cashback ao usuário.<br />
                   • O comprovante deve ser imagem ou PDF, até 5MB.<br />
                   • O saldo devedor é atualizado automaticamente após aprovação do repasse.<br />
                   • Dúvidas? Entre em contato com o suporte.

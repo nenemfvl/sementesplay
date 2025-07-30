@@ -31,12 +31,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Dados inconsistentes' })
     }
 
-    // Calcula as porcentagens
+    // Calcula as porcentagens - NOVO FLUXO
     const valor = repasse.valor
-    const pctUsuario = valor * 0.10
-    const pctParceiro = valor * 0.05
-    const pctManutencao = valor * 0.03
-    const pctFundo = valor * 0.02
+    const pctUsuario = Math.round(valor * 0.05)    // 5% para jogador
+    const pctSistema = valor * 0.025               // 2,5% para sistema SementesPLAY
+    const pctFundo = valor * 0.025                 // 2,5% para fundo de distribuição
 
     // Transação: atualiza tudo de uma vez
     await prisma.$transaction(async (tx) => {
@@ -60,12 +59,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { id: compra.usuarioId },
         data: { sementes: { increment: pctUsuario } }
       })
-      // Credita sementes para parceiro (bônus)
-      await tx.usuario.update({
-        where: { id: parceiro.usuarioId },
-        data: { sementes: { increment: pctParceiro } }
-      })
-      // Registra manutenção (pode ser um usuário do sistema ou só registro interno)
+      
+      // Sistema SementesPLAY recebe dinheiro (não sementes)
+      // Aqui você pode implementar a lógica para creditar na conta do sistema
+      // Por enquanto, vamos apenas registrar no histórico
+      
       // Registra fundo de sementes
       const fundoExistente = await tx.fundoSementes.findFirst({
         where: { distribuido: false }
@@ -86,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         });
       }
-      // Registra histórico de sementes para usuário e parceiro
+      // Registra histórico de sementes (apenas para o jogador)
       await tx.semente.createMany({
         data: [
           {
@@ -94,19 +92,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             quantidade: pctUsuario,
             tipo: 'resgatada',
             descricao: `Cashback compra parceiro ${compra.id}`
-          },
-          {
-            usuarioId: parceiro.usuarioId,
-            quantidade: pctParceiro,
-            tipo: 'bonus',
-            descricao: `Bônus parceiro compra ${compra.id}`
           }
         ]
       })
     })
     // Notificações fora da transação
-    await enviarNotificacao(compra.usuarioId, 'cashback', 'Cashback liberado!', `Seu cashback da compra foi liberado e você recebeu ${pctUsuario.toFixed(2)} sementes.`)
-    await enviarNotificacao(parceiro.usuarioId, 'repasse', 'Repasse aprovado!', `Seu repasse da compra ${compra.id} foi aprovado e você recebeu ${pctParceiro.toFixed(2)} sementes de bônus.`)
+    await enviarNotificacao(compra.usuarioId, 'cashback', 'Cashback liberado!', `Seu cashback da compra foi liberado e você recebeu ${pctUsuario} sementes.`)
 
     return res.status(200).json({ message: 'Repasse aprovado, cashback e porcentagens distribuídos com sucesso!' })
   } catch (error) {
