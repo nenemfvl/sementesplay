@@ -77,7 +77,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { usuarioId: criador.usuarioId }
     })
 
-    // 7. Remover o registro do criador
+    // 7. Remover doações recebidas
+    await prisma.doacao.deleteMany({
+      where: { criadorId: criador.id }
+    })
+
+    // 8. Remover notificações
+    await prisma.notificacao.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 9. Remover conquistas do usuário
+    await prisma.conquistaUsuario.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 10. Remover emblemas do usuário
+    await prisma.emblemaUsuario.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 11. Remover missões do usuário
+    await prisma.missaoUsuario.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 12. Remover comentários
+    await prisma.comentario.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 13. Remover conversas
+    await prisma.conversa.deleteMany({
+      where: { 
+        OR: [
+          { usuario1Id: criador.usuarioId },
+          { usuario2Id: criador.usuarioId }
+        ]
+      }
+    })
+
+    // 14. Remover mensagens
+    await prisma.mensagem.deleteMany({
+      where: { remetenteId: criador.usuarioId }
+    })
+
+    // 15. Remover o registro do criador
     await prisma.criador.delete({
       where: { id: criador.id }
     })

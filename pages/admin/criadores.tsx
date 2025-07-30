@@ -134,7 +134,7 @@ export default function AdminCriadores() {
   }
 
   const removerCriador = async (criador: Criador) => {
-    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Candidatura de criador\n\nO usuário voltará ao nível comum.`)) {
+    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas e mensagens\n• Candidatura de criador\n\nO usuário voltará ao nível comum.`)) {
       try {
         const response = await fetch(`/api/admin/criadores/${criador.id}/suspender`, {
           method: 'POST',
