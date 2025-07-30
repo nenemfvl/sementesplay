@@ -7,17 +7,20 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 ## Funcionalidades Implementadas
 
 ### 🎯 Dashboard Principal
+
 - **Estatísticas em Tempo Real**: Total de vendas, comissões, códigos ativos e usuários ativos
 - **Transações Recentes**: Lista das últimas 5 transações com códigos do parceiro
 - **Visão Geral**: Resumo completo da performance da cidade
 
 ### 💳 Gestão de Códigos de Cashback
+
 - **Geração de Códigos**: Interface para criar códigos únicos com valores personalizados
 - **Listagem de Códigos**: Visualização de todos os códigos gerados com status (ativo/usado)
 - **Cópia de Códigos**: Funcionalidade para copiar códigos para a área de transferência
 - **Histórico**: Data de geração e uso dos códigos
 
 ### 📊 Transações
+
 - **Histórico Completo**: Todas as transações que usaram códigos do parceiro
 - **Detalhes da Transação**: Usuário, valor, status e data
 - **Filtros**: Por status (aprovada, pendente, rejeitada)

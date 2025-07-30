@@ -74,7 +74,7 @@
 
 **Resultado do Teste:**
 
-```
+```bash
 🧪 TESTANDO NOVO FLUXO SEMENTESPLAY10
 =====================================
 
@@ -93,7 +93,6 @@
 💰 Fundo de Sementes: 0.65 total
 
 🎉 TESTE CONCLUÍDO COM SUCESSO!
-
 ```
 
 ## 🚀 **FLUXO ATUALIZADO**
