@@ -26,37 +26,44 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 - **Filtros**: Por status (aprovada, pendente, rejeitada)
 
 ### 📈 Relatórios
+
 - **Relatório de Vendas**: Total de vendas, comissões e transações do mês
 - **Relatório de Códigos**: Quantidade de códigos gerados, ativos e usados
 - **Métricas de Performance**: Análise detalhada da performance da cidade
 
 ### ⚙️ Configurações
+
 - **Informações da Cidade**: Nome da cidade e comissão mensal
 - **Dados do Parceiro**: Informações básicas do perfil
 
 ## APIs Implementadas
 
 ### `/api/parceiros/perfil`
+
 - **Método**: GET
 - **Parâmetros**: `usuarioId`
 - **Retorno**: Dados completos do parceiro incluindo informações do usuário
 
 ### `/api/parceiros/codigos`
+
 - **Método**: GET
 - **Parâmetros**: `usuarioId`
 - **Retorno**: Lista de todos os códigos de cashback do parceiro
 
 ### `/api/parceiros/transacoes`
+
 - **Método**: GET
 - **Parâmetros**: `usuarioId`
 - **Retorno**: Histórico de transações que usaram códigos do parceiro
 
 ### `/api/parceiros/estatisticas`
+
 - **Método**: GET
 - **Parâmetros**: `usuarioId`
 - **Retorno**: Estatísticas calculadas (vendas, comissões, códigos, etc.)
 
 ### `/api/parceiros/gerar-codigo`
+
 - **Método**: POST
 - **Body**: `{ valor, quantidade, usuarioId }`
 - **Retorno**: Códigos gerados com sucesso
@@ -64,6 +71,7 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 ## Estrutura do Banco de Dados
 
 ### Tabela `parceiros`
+
 ```sql
 - id: String (PK)
 - usuarioId: String (FK para usuarios)
@@ -74,6 +82,7 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 ```
 
 ### Tabela `codigos_cashback`
+
 ```sql
 - id: String (PK)
 - parceiroId: String (FK para parceiros)
@@ -87,22 +96,26 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 ## Como Usar
 
 ### 1. Acesso ao Painel
+
 - Faça login como usuário do tipo "parceiro"
 - Acesse `/painel-parceiro` ou use a aba no dashboard
 - O sistema verifica automaticamente se o usuário é parceiro
 
 ### 2. Gerar Códigos
+
 - Vá para a aba "Códigos Cashback"
 - Clique em "Gerar Códigos"
 - Defina o valor e quantidade desejados
 - Os códigos são gerados automaticamente com valores únicos
 
 ### 3. Acompanhar Estatísticas
+
 - Use o dashboard principal para visão geral
 - Acesse "Relatórios" para análises detalhadas
 - Monitore transações em tempo real
 
 ### 4. Gerenciar Códigos
+
 - Visualize todos os códigos gerados
 - Copie códigos para distribuição
 - Acompanhe quais foram usados
@@ -110,11 +123,13 @@ O Painel de Parceiros é uma interface exclusiva para donos de cidades FiveM que
 ## Scripts de Teste
 
 ### Criar Parceiro de Teste
+
 ```bash
 npx ts-node scripts/add-parceiro.ts
 ```
 
 Este script cria:
+
 - Usuário parceiro: `parceiro@teste.com` / `123456`
 - Cidade: "Cidade Teste FiveM"
 - Comissão: R$ 500,00
@@ -139,6 +154,7 @@ Este script cria:
 ## Suporte
 
 Para dúvidas ou problemas com o painel de parceiros, entre em contato:
-- Email: parceiros@sementesplay.com
+
+- Email: <parceiros@sementesplay.com>
 - Discord: [Link do servidor]
-- Documentação: [Link da documentação completa] 
+- Documentação: [Link da documentação completa]
