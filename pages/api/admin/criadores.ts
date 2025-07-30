@@ -7,9 +7,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Temporariamente sem autenticação para testar
     console.log('🔍 Buscando criadores...')
     console.log('🍪 Cookies:', req.cookies)
+    console.log('📋 Headers:', req.headers)
+
+    // Verificar autenticação
+    const userCookie = req.cookies.sementesplay_user
+    console.log('👤 User cookie:', userCookie)
+
+    if (!userCookie) {
+      console.log('❌ Cookie de usuário não encontrado')
+      return res.status(401).json({ error: 'Usuário não autenticado' })
+    }
+
+    let user
+    try {
+      user = JSON.parse(decodeURIComponent(userCookie))
+      console.log('✅ Usuário decodificado:', { id: user.id, nome: user.nome, nivel: user.nivel })
+    } catch (error) {
+      console.log('❌ Erro ao decodificar cookie:', error)
+      return res.status(401).json({ error: 'Cookie inválido' })
+    }
+
+    // Verificar se é admin
+    if (Number(user.nivel) < 5) {
+      console.log('❌ Usuário não é admin. Nível:', user.nivel)
+      return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem acessar esta área.' })
+    }
+
+    console.log('✅ Usuário autenticado e autorizado')
 
     // Buscar criadores
     const criadores = await prisma.criador.findMany({
@@ -29,6 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    console.log(`📊 Encontrados ${criadores.length} criadores`)
+
     // Formatar dados
     const criadoresFormatados = criadores.map(criador => ({
       id: criador.id,
@@ -44,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ criadores: criadoresFormatados })
   } catch (error) {
-    console.error('Erro ao buscar criadores:', error)
+    console.error('❌ Erro ao buscar criadores:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

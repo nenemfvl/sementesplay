@@ -33,6 +33,12 @@ export default function AdminCriadores() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('todos')
+  const [estatisticas, setEstatisticas] = useState({
+    total: 0,
+    ativos: 0,
+    supremos: 0,
+    suspensos: 0
+  })
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -54,10 +60,21 @@ export default function AdminCriadores() {
 
   const loadCriadores = async () => {
     try {
+      setLoading(true)
       const response = await fetch('/api/admin/criadores')
+      
       if (response.ok) {
         const data = await response.json()
-        setCriadores(data.criadores)
+        setCriadores(data.criadores || [])
+        setEstatisticas(data.estatisticas || {
+          total: 0,
+          ativos: 0,
+          supremos: 0,
+          suspensos: 0
+        })
+      } else {
+        const errorText = await response.text()
+        console.error('Erro na resposta:', response.status, errorText)
       }
     } catch (error) {
       console.error('Erro ao carregar criadores:', error)
@@ -144,7 +161,7 @@ export default function AdminCriadores() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-400 text-sm">Total de Criadores</p>
-                    <p className="text-2xl font-bold text-sss-white">{criadores.length}</p>
+                    <p className="text-2xl font-bold text-sss-white">{estatisticas.total}</p>
                   </div>
                   <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
                     <TrophyIcon className="w-6 h-6 text-yellow-500" />
@@ -162,7 +179,7 @@ export default function AdminCriadores() {
                   <div>
                     <p className="text-gray-400 text-sm">Ativos</p>
                     <p className="text-2xl font-bold text-green-500">
-                      {criadores.filter(c => c.status === 'ativo').length}
+                      {estatisticas.ativos}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
@@ -181,7 +198,7 @@ export default function AdminCriadores() {
                   <div>
                     <p className="text-gray-400 text-sm">Supremos</p>
                     <p className="text-2xl font-bold text-purple-500">
-                      {criadores.filter(c => c.nivel === 'Supremo').length}
+                      {estatisticas.supremos}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
@@ -200,7 +217,7 @@ export default function AdminCriadores() {
                   <div>
                     <p className="text-gray-400 text-sm">Suspensos</p>
                     <p className="text-2xl font-bold text-red-500">
-                      {criadores.filter(c => c.status === 'suspenso').length}
+                      {estatisticas.suspensos}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
