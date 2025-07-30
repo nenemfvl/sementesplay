@@ -1132,9 +1132,32 @@ export default function PainelParceiro() {
                             <p className="text-xs text-gray-500">
                               {new Date(solicitacao.dataCompra).toLocaleDateString('pt-BR')}
                             </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              {solicitacao.comprovanteUrl ? (
+                                <span className="text-xs text-green-400 flex items-center gap-1">
+                                  <CheckCircleIcon className="w-3 h-3" />
+                                  Comprovante enviado
+                                </span>
+                              ) : (
+                                <span className="text-xs text-yellow-400 flex items-center gap-1">
+                                  <XMarkIcon className="w-3 h-3" />
+                                  Sem comprovante
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <div className="flex gap-2">
+                          {solicitacao.comprovanteUrl && (
+                            <button
+                              onClick={() => window.open(solicitacao.comprovanteUrl, '_blank')}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
+                              title="Ver comprovante"
+                            >
+                              <DocumentTextIcon className="w-4 h-4" />
+                              Comprovante
+                            </button>
+                          )}
                           <button
                             onClick={() => handleAprovarSolicitacao(solicitacao.id)}
                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
