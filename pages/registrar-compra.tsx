@@ -323,6 +323,7 @@ export default function RegistrarCompra() {
                       className={`w-full bg-sss-dark border rounded-lg px-4 py-3 text-sss-white ${
                         errors.dataCompra ? 'border-red-500' : 'border-sss-light'
                       } focus:border-sss-accent focus:outline-none`}
+                      aria-label="Data da compra"
                     />
                     {errors.dataCompra && (
                       <p className="text-red-400 text-sm mt-1">{errors.dataCompra}</p>

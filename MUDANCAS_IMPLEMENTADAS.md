@@ -3,16 +3,19 @@
 ## 📋 **RESUMO DAS ALTERAÇÕES**
 
 ### **1. Cupom Alterado**
+
 - **Antes**: `sementesplay20` (20% de cashback)
 - **Depois**: `sementesplay10` (10% de cashback)
 
 ### **2. Percentuais Ajustados**
+
 - **Jogador recebe**: 5% em sementes
 - **Sistema SementesPLAY**: 2,5% em dinheiro
 - **Fundo de distribuição**: 2,5% em dinheiro
 - **Parceiro**: NÃO recebe nada (apenas paga o repasse)
 
 ### **3. Validação de Repasse**
+
 - **Antes**: Aceitava 20% da compra
 - **Depois**: Valida que seja exatamente 10% da compra
 
