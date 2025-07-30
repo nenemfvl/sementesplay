@@ -381,7 +381,7 @@ export default function Cashback() {
               </div>
             )}
 
-            {/* Ações Rápidas */}
+            {/* Ações Rápidas - SEMPRE VISÍVEL */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -390,7 +390,7 @@ export default function Cashback() {
             >
               <div className="text-center">
                 <h3 className="text-lg font-semibold text-sss-white mb-4">
-                  Ações Rápidas
+                  🚀 Ações Rápidas
                 </h3>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
@@ -409,7 +409,7 @@ export default function Cashback() {
                   </Link>
                 </div>
                 <p className="text-gray-400 text-sm mt-4">
-                  Use o cupom <strong>sementesplay10</strong> nas compras e registre aqui para receber cashback!
+                  💡 Use o cupom <strong>sementesplay10</strong> nas compras e registre aqui para receber cashback!
                 </p>
               </div>
             </motion.div>
