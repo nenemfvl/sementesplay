@@ -1091,6 +1091,26 @@ export default function Parceiros() {
           </div>
         </div>
 
+        {/* Botão Fixo "Seja Parceiro" - Lateral Direita (apenas para usuários que não são parceiros) */}
+        {user && !parceiro && candidaturaStatus !== 'pendente' && (
+          <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40">
+            <button
+              onClick={() => {
+                if (!user) {
+                  window.location.href = '/login';
+                  return;
+                }
+                window.location.href = '/candidatura-parceiro';
+              }}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-bold text-lg"
+            >
+              <span className="text-2xl">🏢</span>
+              <span className="hidden sm:inline">Seja Parceiro</span>
+              <span className="sm:hidden">Parceiro</span>
+            </button>
+          </div>
+        )}
+
         {/* Modal de Cadastro de Parceiro */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
