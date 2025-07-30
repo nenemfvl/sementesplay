@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { 
-  UserIcon,
-  EnvelopeIcon,
-  GlobeAltIcon,
-  DocumentTextIcon,
   BuildingOfficeIcon,
-  PhoneIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
   ArrowLeftIcon,
@@ -41,7 +36,7 @@ interface CandidaturaExistente {
 }
 
 export default function CandidaturaParceiro() {
-  const [user, setUser] = useState<User | null>(null)
+  const [, setUser] = useState<User | null>(null)
   const [formData, setFormData] = useState<CandidaturaData>({
     nome: '',
     email: '',
@@ -170,6 +165,8 @@ export default function CandidaturaParceiro() {
             value={formData.nome}
             onChange={(e) => handleInputChange('nome', e.target.value)}
             className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+            placeholder="Digite seu nome completo"
+            aria-label="Nome completo"
             required
           />
         </div>
@@ -183,6 +180,8 @@ export default function CandidaturaParceiro() {
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
             className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+            placeholder="seu@email.com"
+            aria-label="Email"
             required
           />
         </div>
@@ -559,10 +558,9 @@ export default function CandidaturaParceiro() {
               <span className="text-sm text-gray-400">{Math.round((currentStep / 3) * 100)}%</span>
             </div>
             <div className="w-full bg-sss-medium rounded-full h-2">
-              <div 
-                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(currentStep / 3) * 100}%` }}
-              ></div>
+                          <div 
+              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+            ></div>
             </div>
           </div>
 
