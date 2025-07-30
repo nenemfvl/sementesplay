@@ -9,7 +9,12 @@ import {
   ChartBarIcon,
   DocumentTextIcon,
   CreditCardIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  MagnifyingGlassIcon,
+  BuildingOfficeIcon,
+  CurrencyDollarIcon,
+  UserGroupIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { auth, User } from '../../lib/auth';
 
@@ -84,7 +89,7 @@ export default function AdminParceiros() {
     }
     if (Number(currentUser.nivel) < 5) {
       alert('Acesso negado. Apenas administradores podem acessar esta área.');
-              window.location.href = '/admin';
+      window.location.href = '/admin';
       return;
     }
     setUser(currentUser);
@@ -229,212 +234,415 @@ export default function AdminParceiros() {
       <Head>
         <title>Painel Admin - Parceiros</title>
       </Head>
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="flex items-center mb-6">
-          <ArrowLeftIcon className="w-6 h-6 mr-2 cursor-pointer" onClick={() => window.location.href = '/admin'} />
-          <h1 className="text-2xl font-bold">Parceiros</h1>
-        </div>
-        <div className="mb-4 flex items-center">
-          <input
-            type="text"
-            placeholder="Buscar por nome, email ou cidade..."
-            className="px-4 py-2 border rounded-lg w-full max-w-md"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="overflow-x-auto rounded-lg shadow border">
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left">Nome</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-left">Cidade</th>
-                <th className="px-6 py-3 text-left">Comissão</th>
-                <th className="px-6 py-3 text-left">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan={5} className="text-center py-8">Carregando...</td></tr>
-              ) : parceirosFiltrados.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-8">Nenhum parceiro encontrado.</td></tr>
-              ) : (
-                parceirosFiltrados.map(parceiro => (
-                  <tr key={parceiro.id} className="border-b">
-                    <td className="px-6 py-4">{parceiro.usuario.nome}</td>
-                    <td className="px-6 py-4">{parceiro.usuario.email}</td>
-                    <td className="px-6 py-4">{parceiro.nomeCidade}</td>
-                    <td className="px-6 py-4">R$ {parceiro.comissaoMensal.toFixed(2)}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex space-x-2">
-                        <button
-                          className="text-blue-500 hover:text-blue-700"
-                          title="Ver detalhes"
-                          onClick={() => abrirDetalhes(parceiro)}
-                        >
-                          <EyeIcon className="w-5 h-5" />
-                        </button>
-                        <button
-                          className="text-yellow-500 hover:text-yellow-700"
-                          title="Banir parceiro"
-                          onClick={() => {
-                            setSelectedParceiro(parceiro)
-                            setShowBanModal(true)
-                          }}
-                          disabled={banindo}
-                        >
-                          <NoSymbolIcon className="w-5 h-5" />
-                        </button>
-                        <button
-                          className="text-red-500 hover:text-red-700"
-                          title="Remover parceiro"
-                          onClick={() => {
-                            setSelectedParceiro(parceiro)
-                            setShowRemoveModal(true)
-                          }}
-                          disabled={removendo}
-                        >
-                          <TrashIcon className="w-5 h-5" />
-                        </button>
+      <div className="min-h-screen bg-sss-dark p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center">
+              <button 
+                onClick={() => window.location.href = '/admin'}
+                className="mr-4 p-2 bg-sss-medium hover:bg-sss-light rounded-lg transition-colors"
+              >
+                <ArrowLeftIcon className="w-6 h-6 text-sss-white" />
+              </button>
+              <div>
+                <h1 className="text-3xl font-bold text-sss-white">Parceiros</h1>
+                <p className="text-gray-400 mt-1">Gerencie os parceiros do SementesPLAY</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-sss-accent">{parceiros.length}</div>
+              <div className="text-gray-400 text-sm">Total de Parceiros</div>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar por nome, email ou cidade..."
+                className="w-full pl-12 pr-4 py-3 bg-sss-medium border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-sss-accent"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sss-accent"></div>
+              <span className="ml-3 text-sss-white">Carregando parceiros...</span>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && parceirosFiltrados.length === 0 && (
+            <div className="text-center py-12">
+              <BuildingOfficeIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-sss-white mb-2">Nenhum parceiro encontrado</h3>
+              <p className="text-gray-400">
+                {searchTerm ? 'Tente ajustar os termos de busca.' : 'Ainda não há parceiros cadastrados.'}
+              </p>
+            </div>
+          )}
+
+          {/* Parceiros Grid */}
+          {!loading && parceirosFiltrados.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {parceirosFiltrados.map((parceiro, index) => (
+                <motion.div
+                  key={parceiro.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="bg-sss-medium rounded-lg p-6 border border-sss-light hover:border-sss-accent transition-all duration-300 hover:shadow-lg"
+                >
+                  {/* Header do Card */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <BuildingOfficeIcon className="w-6 h-6 text-white" />
                       </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-sss-white">{parceiro.usuario.nome}</h3>
+                        <p className="text-sm text-gray-400">{parceiro.usuario.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => abrirDetalhes(parceiro)}
+                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                        title="Ver detalhes"
+                      >
+                        <EyeIcon className="w-4 h-4 text-white" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedParceiro(parceiro)
+                          setShowBanModal(true)
+                        }}
+                        className="p-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors"
+                        title="Banir parceiro"
+                      >
+                        <NoSymbolIcon className="w-4 h-4 text-white" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedParceiro(parceiro)
+                          setShowRemoveModal(true)
+                        }}
+                        className="p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+                        title="Remover parceiro"
+                      >
+                        <TrashIcon className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Informações do Parceiro */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Cidade</span>
+                      <span className="text-sss-white font-medium">{parceiro.nomeCidade}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Comissão Mensal</span>
+                      <span className="text-green-400 font-semibold">R$ {parceiro.comissaoMensal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Total de Vendas</span>
+                      <span className="text-sss-accent font-semibold">R$ {parceiro.totalVendas.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Códigos Gerados</span>
+                      <span className="text-blue-400 font-semibold">{parceiro.codigosGerados}</span>
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="mt-4 pt-4 border-t border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Status</span>
+                      <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full">
+                        Ativo
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Modal de detalhes do parceiro */}
         {showModal && selectedParceiro && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl relative">
-              <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-600" onClick={() => setShowModal(false)}>
-                ×
-              </button>
-              <div className="flex space-x-4 mb-6">
-                <button className={`px-4 py-2 rounded-lg ${aba === 'dados' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`} onClick={() => setAba('dados')}>
-                  <UsersIcon className="w-5 h-5 inline mr-1" /> Dados
-                </button>
-                <button className={`px-4 py-2 rounded-lg ${aba === 'codigos' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`} onClick={() => setAba('codigos')}>
-                  <DocumentTextIcon className="w-5 h-5 inline mr-1" /> Códigos
-                </button>
-                <button className={`px-4 py-2 rounded-lg ${aba === 'transacoes' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`} onClick={() => setAba('transacoes')}>
-                  <CreditCardIcon className="w-5 h-5 inline mr-1" /> Transações
-                </button>
-                <button className={`px-4 py-2 rounded-lg ${aba === 'estatisticas' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`} onClick={() => setAba('estatisticas')}>
-                  <ChartBarIcon className="w-5 h-5 inline mr-1" /> Estatísticas
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              className="bg-sss-medium rounded-lg shadow-xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-sss-light"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-sss-white flex items-center">
+                  <BuildingOfficeIcon className="w-8 h-8 mr-3 text-sss-accent" />
+                  {selectedParceiro.usuario.nome}
+                </h2>
+                <button 
+                  className="text-gray-400 hover:text-sss-white p-1 rounded-lg transition-colors" 
+                  onClick={() => setShowModal(false)}
+                  title="Fechar modal"
+                >
+                  <XMarkIcon className="w-6 h-6" />
                 </button>
               </div>
-              {aba === 'dados' && (
-                <div>
-                  <h2 className="text-xl font-bold mb-2">{selectedParceiro.usuario.nome}</h2>
-                  <p><b>Email:</b> {selectedParceiro.usuario.email}</p>
-                  <p><b>Cidade:</b> {selectedParceiro.nomeCidade}</p>
-                  <p><b>Comissão mensal:</b> R$ {selectedParceiro.comissaoMensal.toFixed(2)}</p>
-                  <p><b>Nível:</b> {selectedParceiro.usuario.nivel}</p>
-                </div>
-              )}
-              {aba === 'codigos' && (
-                <div>
-                  <h3 className="font-bold mb-2">Códigos de Cashback</h3>
-                  <div className="overflow-x-auto max-h-64">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr>
-                          <th className="px-2 py-1">Código</th>
-                          <th className="px-2 py-1">Valor</th>
-                          <th className="px-2 py-1">Status</th>
-                          <th className="px-2 py-1">Data Geração</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {codigos.length === 0 ? (
-                          <tr><td colSpan={4} className="text-center py-4">Nenhum código encontrado.</td></tr>
-                        ) : codigos.map(codigo => (
-                          <tr key={codigo.id}>
-                            <td className="px-2 py-1 font-mono">{codigo.codigo}</td>
-                            <td className="px-2 py-1">R$ {codigo.valor.toFixed(2)}</td>
-                            <td className="px-2 py-1">{codigo.usado ? 'Usado' : 'Ativo'}</td>
-                            <td className="px-2 py-1">{new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+
+              {/* Tabs */}
+              <div className="flex space-x-2 mb-6 border-b border-sss-light">
+                <button 
+                  className={`px-4 py-2 rounded-t-lg transition-colors ${aba === 'dados' ? 'bg-sss-accent text-white' : 'bg-sss-dark text-gray-400 hover:text-sss-white'}`} 
+                  onClick={() => setAba('dados')}
+                >
+                  <UsersIcon className="w-5 h-5 inline mr-2" /> Dados
+                </button>
+                <button 
+                  className={`px-4 py-2 rounded-t-lg transition-colors ${aba === 'codigos' ? 'bg-sss-accent text-white' : 'bg-sss-dark text-gray-400 hover:text-sss-white'}`} 
+                  onClick={() => setAba('codigos')}
+                >
+                  <DocumentTextIcon className="w-5 h-5 inline mr-2" /> Códigos
+                </button>
+                <button 
+                  className={`px-4 py-2 rounded-t-lg transition-colors ${aba === 'transacoes' ? 'bg-sss-accent text-white' : 'bg-sss-dark text-gray-400 hover:text-sss-white'}`} 
+                  onClick={() => setAba('transacoes')}
+                >
+                  <CreditCardIcon className="w-5 h-5 inline mr-2" /> Transações
+                </button>
+                <button 
+                  className={`px-4 py-2 rounded-t-lg transition-colors ${aba === 'estatisticas' ? 'bg-sss-accent text-white' : 'bg-sss-dark text-gray-400 hover:text-sss-white'}`} 
+                  onClick={() => setAba('estatisticas')}
+                >
+                  <ChartBarIcon className="w-5 h-5 inline mr-2" /> Estatísticas
+                </button>
+              </div>
+
+              {/* Conteúdo das Tabs */}
+              <div className="bg-sss-dark rounded-lg p-6">
+                {aba === 'dados' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-sss-white mb-4">Informações Pessoais</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Nome:</span>
+                          <span className="text-sss-white font-medium">{selectedParceiro.usuario.nome}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Email:</span>
+                          <span className="text-sss-white font-medium">{selectedParceiro.usuario.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Nível:</span>
+                          <span className="text-sss-accent font-medium">{selectedParceiro.usuario.nivel}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-sss-white mb-4">Informações da Cidade</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Cidade:</span>
+                          <span className="text-sss-white font-medium">{selectedParceiro.nomeCidade}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Comissão Mensal:</span>
+                          <span className="text-green-400 font-semibold">R$ {selectedParceiro.comissaoMensal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Total de Vendas:</span>
+                          <span className="text-sss-accent font-semibold">R$ {selectedParceiro.totalVendas.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
-              {aba === 'transacoes' && (
-                <div>
-                  <h3 className="font-bold mb-2">Transações</h3>
-                  <div className="overflow-x-auto max-h-64">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr>
-                          <th className="px-2 py-1">Código</th>
-                          <th className="px-2 py-1">Usuário</th>
-                          <th className="px-2 py-1">Valor</th>
-                          <th className="px-2 py-1">Status</th>
-                          <th className="px-2 py-1">Data</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {transacoes.length === 0 ? (
-                          <tr><td colSpan={5} className="text-center py-4">Nenhuma transação encontrada.</td></tr>
-                        ) : transacoes.map(transacao => (
-                          <tr key={transacao.id}>
-                            <td className="px-2 py-1 font-mono">{transacao.codigoParceiro}</td>
-                            <td className="px-2 py-1">{transacao.usuario?.nome || 'N/A'}</td>
-                            <td className="px-2 py-1">R$ {transacao.valor.toFixed(2)}</td>
-                            <td className="px-2 py-1">{transacao.status}</td>
-                            <td className="px-2 py-1">{new Date(transacao.data).toLocaleDateString('pt-BR')}</td>
+                )}
+
+                {aba === 'codigos' && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Códigos de Cashback</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full bg-sss-medium rounded-lg overflow-hidden">
+                        <thead className="bg-sss-light">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Código</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Valor</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Status</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Data Geração</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {codigos.length === 0 ? (
+                            <tr>
+                              <td colSpan={4} className="text-center py-8 text-gray-400">
+                                Nenhum código encontrado.
+                              </td>
+                            </tr>
+                          ) : codigos.map(codigo => (
+                            <tr key={codigo.id} className="border-b border-sss-light">
+                              <td className="px-4 py-3 font-mono text-sss-white">{codigo.codigo}</td>
+                              <td className="px-4 py-3 text-green-400 font-medium">R$ {codigo.valor.toFixed(2)}</td>
+                              <td className="px-4 py-3">
+                                <span className={`px-2 py-1 rounded-full text-xs ${codigo.usado ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}>
+                                  {codigo.usado ? 'Usado' : 'Ativo'}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-gray-400">
+                                {new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
-              {aba === 'estatisticas' && estatisticas && (
-                <div>
-                  <h3 className="font-bold mb-2">Estatísticas</h3>
-                  <ul className="space-y-1">
-                    <li><b>Total de vendas:</b> R$ {estatisticas.totalVendas.toFixed(2)}</li>
-                    <li><b>Total de comissões:</b> R$ {estatisticas.totalComissoes.toFixed(2)}</li>
-                    <li><b>Códigos ativos:</b> {estatisticas.codigosAtivos}</li>
-                    <li><b>Códigos usados:</b> {estatisticas.codigosUsados}</li>
-                    <li><b>Transações no mês:</b> {estatisticas.transacoesMes}</li>
-                    <li><b>Usuários ativos:</b> {estatisticas.usuariosAtivos}</li>
-                  </ul>
-                </div>
-              )}
+                )}
+
+                {aba === 'transacoes' && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Transações</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full bg-sss-medium rounded-lg overflow-hidden">
+                        <thead className="bg-sss-light">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Código</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Usuário</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Valor</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Status</th>
+                            <th className="px-4 py-3 text-left text-sss-white font-medium">Data</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transacoes.length === 0 ? (
+                            <tr>
+                              <td colSpan={5} className="text-center py-8 text-gray-400">
+                                Nenhuma transação encontrada.
+                              </td>
+                            </tr>
+                          ) : transacoes.map(transacao => (
+                            <tr key={transacao.id} className="border-b border-sss-light">
+                              <td className="px-4 py-3 font-mono text-sss-white">{transacao.codigoParceiro}</td>
+                              <td className="px-4 py-3 text-sss-white">{transacao.usuario?.nome || 'N/A'}</td>
+                              <td className="px-4 py-3 text-green-400 font-medium">R$ {transacao.valor.toFixed(2)}</td>
+                              <td className="px-4 py-3">
+                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                  transacao.status === 'aprovada' ? 'bg-green-600 text-white' :
+                                  transacao.status === 'pendente' ? 'bg-yellow-600 text-white' :
+                                  'bg-red-600 text-white'
+                                }`}>
+                                  {transacao.status}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-gray-400">
+                                {new Date(transacao.data).toLocaleDateString('pt-BR')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {aba === 'estatisticas' && estatisticas && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Estatísticas</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <CurrencyDollarIcon className="w-8 h-8 text-green-400 mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Total de Vendas</p>
+                            <p className="text-sss-white font-semibold text-lg">R$ {estatisticas.totalVendas.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <CreditCardIcon className="w-8 h-8 text-blue-400 mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Total de Comissões</p>
+                            <p className="text-sss-white font-semibold text-lg">R$ {estatisticas.totalComissoes.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <DocumentTextIcon className="w-8 h-8 text-purple-400 mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Códigos Ativos</p>
+                            <p className="text-sss-white font-semibold text-lg">{estatisticas.codigosAtivos}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <ChartBarIcon className="w-8 h-8 text-yellow-400 mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Códigos Usados</p>
+                            <p className="text-sss-white font-semibold text-lg">{estatisticas.codigosUsados}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <CreditCardIcon className="w-8 h-8 text-sss-accent mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Transações no Mês</p>
+                            <p className="text-sss-white font-semibold text-lg">{estatisticas.transacoesMes}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-sss-medium p-4 rounded-lg border border-sss-light">
+                        <div className="flex items-center">
+                          <UserGroupIcon className="w-8 h-8 text-green-400 mr-3" />
+                          <div>
+                            <p className="text-gray-400 text-sm">Usuários Ativos</p>
+                            <p className="text-sss-white font-semibold text-lg">{estatisticas.usuariosAtivos}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
         )}
 
         {/* Modal de Banimento */}
         {showBanModal && selectedParceiro && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md border border-sss-light"
             >
-              <h3 className="text-lg font-semibold text-red-600 mb-4">
+              <h3 className="text-lg font-semibold text-red-400 mb-4 flex items-center">
+                <NoSymbolIcon className="w-6 h-6 mr-2" />
                 Banir Parceiro: {selectedParceiro.usuario.nome}
               </h3>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Motivo do Banimento *
                   </label>
                   <textarea
                     value={motivo}
                     onChange={(e) => setMotivo(e.target.value)}
                     placeholder="Informe o motivo do banimento..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-red-500 resize-none"
                     rows={3}
                   />
                 </div>
@@ -464,32 +672,33 @@ export default function AdminParceiros() {
 
         {/* Modal de Remoção */}
         {showRemoveModal && selectedParceiro && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              className="bg-sss-medium rounded-lg p-6 w-full max-w-md border border-sss-light"
             >
-              <h3 className="text-lg font-semibold text-red-600 mb-4">
+              <h3 className="text-lg font-semibold text-red-400 mb-4 flex items-center">
+                <TrashIcon className="w-6 h-6 mr-2" />
                 Remover Parceiro: {selectedParceiro.usuario.nome}
               </h3>
               
               <div className="space-y-4">
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                  <p className="text-yellow-800 text-sm">
+                <div className="bg-yellow-900 border border-yellow-700 rounded-lg p-3">
+                  <p className="text-yellow-200 text-sm">
                     <strong>Atenção:</strong> Esta ação é irreversível. O parceiro será removido e suas permissões serão revogadas.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Motivo da Remoção *
                   </label>
                   <textarea
                     value={motivo}
                     onChange={(e) => setMotivo(e.target.value)}
                     placeholder="Informe o motivo da remoção..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-red-500 resize-none"
                     rows={3}
                   />
                 </div>
