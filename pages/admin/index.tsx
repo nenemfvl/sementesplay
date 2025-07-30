@@ -292,7 +292,7 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/parceiros" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                        <Link href="/admin/candidaturas-parceiros" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <DocumentTextIcon className="w-6 h-6 text-purple-500" />
                           <div>
                             <p className="text-sss-white font-medium">Candidaturas Parceiros</p>
