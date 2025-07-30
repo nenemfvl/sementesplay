@@ -223,11 +223,12 @@ export default function AdminCriadores() {
                   />
                 </div>
                 <div>
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="bg-sss-dark border border-sss-light rounded-lg px-4 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
-                  >
+                                     <select
+                     value={filterStatus}
+                     onChange={(e) => setFilterStatus(e.target.value)}
+                     className="bg-sss-dark border border-sss-light rounded-lg px-4 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                     aria-label="Filtrar por status"
+                   >
                     <option value="todos">Todos os Status</option>
                     <option value="ativo">Ativos</option>
                     <option value="suspenso">Suspensos</option>
@@ -289,17 +290,17 @@ export default function AdminCriadores() {
                           {criador.apoiadores}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button className="text-blue-500 hover:text-blue-400">
-                              <EyeIcon className="w-4 h-4" />
-                            </button>
-                            <button className="text-yellow-500 hover:text-yellow-400">
-                              <PencilIcon className="w-4 h-4" />
-                            </button>
-                            <button className="text-red-500 hover:text-red-400">
-                              <TrashIcon className="w-4 h-4" />
-                            </button>
-                          </div>
+                                                     <div className="flex space-x-2">
+                             <button className="text-blue-500 hover:text-blue-400" aria-label="Visualizar criador">
+                               <EyeIcon className="w-4 h-4" />
+                             </button>
+                             <button className="text-yellow-500 hover:text-yellow-400" aria-label="Editar criador">
+                               <PencilIcon className="w-4 h-4" />
+                             </button>
+                             <button className="text-red-500 hover:text-red-400" aria-label="Suspender criador">
+                               <TrashIcon className="w-4 h-4" />
+                             </button>
+                           </div>
                         </td>
                       </tr>
                     ))}
