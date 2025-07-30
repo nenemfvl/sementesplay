@@ -137,6 +137,10 @@ export default function PainelParceiro() {
   });
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
   const [savingConteudo, setSavingConteudo] = useState(false);
+  const [showModalPIX, setShowModalPIX] = useState(false);
+  const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
+  const [comprovantePIX, setComprovantePIX] = useState<File | null>(null);
+  const [enviandoPIX, setEnviandoPIX] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -502,6 +506,47 @@ export default function PainelParceiro() {
     }
   }
 
+  function handleFazerPagamentoPIX(repasse: Repasse) {
+    setRepasseSelecionado(repasse);
+    setShowModalPIX(true);
+  }
+
+  async function handleEnviarComprovantePIX(e: React.FormEvent) {
+    e.preventDefault();
+    if (!repasseSelecionado || !comprovantePIX) {
+      alert('Selecione um comprovante de pagamento');
+      return;
+    }
+
+    setEnviandoPIX(true);
+    try {
+      const formData = new FormData();
+      formData.append('comprovante', comprovantePIX);
+      formData.append('repasseId', repasseSelecionado.id);
+      formData.append('parceiroId', parceiro?.id || '');
+
+      const response = await fetch('/api/parceiros/enviar-comprovante-pix', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        alert('Comprovante enviado com sucesso! Aguardando confirmação.');
+        setShowModalPIX(false);
+        setRepasseSelecionado(null);
+        setComprovantePIX(null);
+        fetchRepasses(); // Recarregar repasses
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erro ao enviar comprovante');
+      }
+    } catch (error) {
+      alert('Erro ao enviar comprovante');
+    } finally {
+      setEnviandoPIX(false);
+    }
+  }
+
   // Mostrar loading enquanto verifica autorização
   if (checkingAuth) {
     return (
@@ -826,6 +871,119 @@ export default function PainelParceiro() {
             </form>
                     </div>
                   </div>
+      )}
+
+      {/* Modal de Pagamento PIX */}
+      {showModalPIX && repasseSelecionado && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-md border border-sss-light shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-sss-white">
+                Pagamento PIX
+              </h2>
+              <button 
+                onClick={() => { 
+                  setShowModalPIX(false); 
+                  setRepasseSelecionado(null);
+                  setComprovantePIX(null);
+                }}
+                className="text-gray-400 hover:text-sss-white transition-colors"
+                aria-label="Fechar modal"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-sss-light/30 rounded-lg p-4">
+                <h3 className="text-sss-white font-semibold mb-2">Detalhes do Repasse</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Valor da Compra:</span>
+                    <span className="text-sss-white">R$ {repasseSelecionado.valorCompra.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Valor do Repasse:</span>
+                    <span className="text-sss-accent font-semibold">R$ {repasseSelecionado.valorRepasse.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Data da Compra:</span>
+                    <span className="text-sss-white">{new Date(repasseSelecionado.dataCompra).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                <h3 className="text-green-400 font-semibold mb-2">Dados para Pagamento PIX</h3>
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-sm text-gray-400">Chave PIX:</p>
+                    <p className="text-sss-white font-mono text-lg">82988181358</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Valor a pagar:</p>
+                    <p className="text-green-400 font-bold text-xl">R$ {repasseSelecionado.valorRepasse.toFixed(2)}</p>
+                  </div>
+                </div>
+                <div className="mt-3 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded">
+                  <p className="text-yellow-400 text-xs">
+                    ⚠️ Faça o pagamento PIX e envie o comprovante abaixo
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleEnviarComprovantePIX} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Comprovante de Pagamento *
+                  </label>
+                  <input 
+                    required 
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sss-accent file:text-sss-white hover:file:bg-red-700 transition-all" 
+                    onChange={e => setComprovantePIX(e.target.files?.[0] || null)}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Aceita imagens (JPG, PNG) ou PDF
+                  </p>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <button 
+                    type="submit" 
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-sss-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                    disabled={enviandoPIX || !comprovantePIX}
+                  >
+                    {enviandoPIX ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckIcon className="w-4 h-4" />
+                        Enviar Comprovante
+                      </>
+                    )}
+                  </button>
+                  <button 
+                    type="button" 
+                    className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
+                    onClick={() => { 
+                      setShowModalPIX(false); 
+                      setRepasseSelecionado(null);
+                      setComprovantePIX(null);
+                    }} 
+                    disabled={enviandoPIX}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="min-h-screen bg-sss-dark">
@@ -1155,7 +1313,7 @@ export default function PainelParceiro() {
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
                             <ClockIcon className="w-5 h-5 text-orange-400" />
-                      </div>
+                          </div>
                           <div>
                             <p className="text-sss-white font-medium">
                               Compra: R$ {repasse.valorCompra.toFixed(2)}
@@ -1163,17 +1321,28 @@ export default function PainelParceiro() {
                             <p className="text-sm text-gray-400">
                               Repasse: R$ {repasse.valorRepasse.toFixed(2)}
                             </p>
-                      </div>
-                      </div>
+                            {repasse.usuario && (
+                              <p className="text-xs text-gray-500">
+                                Usuário: {repasse.usuario.nome}
+                              </p>
+                            )}
+                          </div>
+                        </div>
                         <div className="text-right">
                           <p className="text-sss-white font-semibold">
                             {new Date(repasse.dataCompra).toLocaleDateString('pt-BR')}
                           </p>
-                          <p className="text-sm text-orange-400">
+                          <p className="text-sm text-orange-400 mb-2">
                             Pendente
                           </p>
-                    </div>
-                  </div>
+                          <button
+                            onClick={() => handleFazerPagamentoPIX(repasse)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
+                          >
+                            Pagar PIX
+                          </button>
+                        </div>
+                      </div>
                     ))}
                 </div>
                 ) : (
