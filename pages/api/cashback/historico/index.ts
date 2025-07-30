@@ -9,81 +9,80 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Por enquanto, retornar dados mockados
-    const historico = [
-      {
-        id: '1',
-        codigo: 'WELCOME50',
-        valor: 50,
-        dataResgate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 dias atrás
-        status: 'aprovado' as const,
-        observacao: 'Resgate aprovado automaticamente',
-        criadorNome: undefined
+    const { usuarioId } = req.query
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    }
+
+    // Buscar histórico de compras do usuário
+    const compras = await prisma.compraParceiro.findMany({
+      where: {
+        usuarioId: String(usuarioId)
       },
-      {
-        id: '2',
-        codigo: 'BONUS100',
-        valor: 100,
-        dataResgate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 dias atrás
-        status: 'processado' as const,
-        observacao: 'Processado com sucesso',
-        criadorNome: undefined
+      include: {
+        parceiro: {
+          select: {
+            nomeCidade: true
+          }
+        },
+        repasse: {
+          select: {
+            status: true,
+            dataRepasse: true
+          }
+        }
       },
-      {
-        id: '3',
-        codigo: 'CREATOR10',
-        valor: 75,
-        dataResgate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 dias atrás
-        status: 'aprovado' as const,
-        observacao: 'Cashback do criador João Silva',
-        criadorNome: 'João Silva'
-      },
-      {
-        id: '4',
-        codigo: 'EXTRA200',
-        valor: 200,
-        dataResgate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 dias atrás
-        status: 'aprovado' as const,
-        observacao: 'Código parceiro resgatado',
-        criadorNome: undefined
-      },
-      {
-        id: '5',
-        codigo: 'MARIA15',
-        valor: 150,
-        dataResgate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000), // 12 dias atrás
-        status: 'pendente' as const,
-        observacao: 'Aguardando aprovação',
-        criadorNome: 'Maria Santos'
-      },
-      {
-        id: '6',
-        codigo: 'GIFT500',
-        valor: 500,
-        dataResgate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15 dias atrás
-        status: 'rejeitado' as const,
-        observacao: 'Código já foi usado',
-        criadorNome: undefined
-      },
-      {
-        id: '7',
-        codigo: 'WELCOME50',
-        valor: 50,
-        dataResgate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // 20 dias atrás
-        status: 'aprovado' as const,
-        observacao: 'Primeiro resgate do usuário',
-        criadorNome: undefined
-      },
-      {
-        id: '8',
-        codigo: 'BONUS100',
-        valor: 100,
-        dataResgate: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000), // 25 dias atrás
-        status: 'processado' as const,
-        observacao: 'Resgate processado',
-        criadorNome: undefined
+      orderBy: {
+        dataCompra: 'desc'
       }
-    ]
+    })
+
+    // Buscar histórico de códigos de cashback usados
+    const codigosUsados = await prisma.codigoCashback.findMany({
+      where: {
+        usado: true
+      },
+      include: {
+        parceiro: {
+          select: {
+            nomeCidade: true
+          }
+        }
+      },
+      orderBy: {
+        dataUso: 'desc'
+      }
+    })
+
+    // Formatar histórico de compras
+    const historicoCompras = compras.map(compra => ({
+      id: compra.id,
+      codigo: compra.cupomUsado,
+      valor: Math.round(compra.valorCompra * 0.05), // 5% para o usuário
+      dataResgate: compra.dataCompra,
+      status: compra.status === 'cashback_liberado' ? 'aprovado' : 
+              compra.status === 'aguardando_repasse' ? 'pendente' : 'processado',
+      observacao: `Compra de R$ ${compra.valorCompra.toFixed(2)} em ${compra.parceiro.nomeCidade}`,
+      criadorNome: compra.parceiro.nomeCidade,
+      tipo: 'compra'
+    }))
+
+    // Formatar histórico de códigos
+    const historicoCodigos = codigosUsados.map(codigo => ({
+      id: codigo.id,
+      codigo: codigo.codigo,
+      valor: Math.round(codigo.valor),
+      dataResgate: codigo.dataUso!,
+      status: 'aprovado' as const,
+      observacao: `Código de cashback de ${codigo.parceiro.nomeCidade}`,
+      criadorNome: codigo.parceiro.nomeCidade,
+      tipo: 'codigo'
+    }))
+
+    // Combinar e ordenar por data
+    const historico = [...historicoCompras, ...historicoCodigos]
+      .sort((a, b) => new Date(b.dataResgate).getTime() - new Date(a.dataResgate).getTime())
 
     return res.status(200).json({ historico })
   } catch (error) {

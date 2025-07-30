@@ -49,6 +49,22 @@ interface HistoricoCashback {
   criadorNome?: string
 }
 
+interface SolicitacaoPendente {
+  id: string
+  parceiroNome: string
+  valorCompra: number
+  valorCashback: number
+  dataCompra: Date
+  status: string
+  comprovanteUrl?: string
+  repasse?: {
+    id: string
+    status: string
+    dataRepasse: Date
+    comprovanteUrl?: string
+  }
+}
+
 interface EstatisticasCashback {
   totalResgatado: number
   totalPendente: number
@@ -62,6 +78,7 @@ export default function Cashback() {
   const [user, setUser] = useState<User | null>(null)
   const [codigos, setCodigos] = useState<CodigoCashback[]>([])
   const [historico, setHistorico] = useState<HistoricoCashback[]>([])
+  const [solicitacoesPendentes, setSolicitacoesPendentes] = useState<SolicitacaoPendente[]>([])
   const [estatisticas, setEstatisticas] = useState<EstatisticasCashback | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('disponiveis')
@@ -80,6 +97,7 @@ export default function Cashback() {
     setUser(currentUser)
     loadCodigos()
     loadHistorico()
+    loadSolicitacoesPendentes()
     loadEstatisticas()
   }, [])
 
@@ -116,9 +134,28 @@ export default function Cashback() {
     }
   }
 
+  const loadSolicitacoesPendentes = async () => {
+    try {
+      const response = await fetch(`/api/cashback/solicitacoes-pendentes?usuarioId=${user?.id}`)
+      const data = await response.json()
+      if (response.ok) {
+        setSolicitacoesPendentes(data.solicitacoes.map((s: any) => ({
+          ...s,
+          dataCompra: new Date(s.dataCompra),
+          repasse: s.repasse ? {
+            ...s.repasse,
+            dataRepasse: new Date(s.repasse.dataRepasse)
+          } : undefined
+        })))
+      }
+    } catch (error) {
+      console.error('Erro ao carregar solicitações pendentes:', error)
+    }
+  }
+
   const loadEstatisticas = async () => {
     try {
-      const response = await fetch('/api/cashback/estatisticas')
+      const response = await fetch(`/api/cashback/estatisticas?usuarioId=${user?.id}`)
       const data = await response.json()
       if (response.ok) {
         setEstatisticas(data.estatisticas)
@@ -252,6 +289,7 @@ export default function Cashback() {
 
   const tabs = [
     { id: 'disponiveis', label: 'Disponíveis', icon: GiftIcon, count: codigosDisponiveis.length },
+    { id: 'pendentes', label: 'Pendentes', icon: ExclamationTriangleIcon, count: solicitacoesPendentes.length },
     { id: 'historico', label: 'Histórico', icon: ClockIcon, count: historico.length },
     { id: 'estatisticas', label: 'Estatísticas', icon: ChartBarIcon }
   ]
@@ -608,6 +646,66 @@ export default function Cashback() {
                                 {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                               </p>
                             </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {activeTab === 'pendentes' && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                  >
+                    {solicitacoesPendentes.length === 0 ? (
+                      <div className="text-center py-8">
+                        <ExclamationTriangleIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-sss-white mb-2">Nenhuma solicitação pendente</h3>
+                        <p className="text-gray-400">Você não tem compras aguardando aprovação de cashback</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {solicitacoesPendentes.map((solicitacao) => (
+                          <motion.div
+                            key={solicitacao.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-4 bg-sss-dark rounded-lg"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                                  <ExclamationTriangleIcon className="w-5 h-5 text-yellow-500" />
+                                </div>
+                                <div>
+                                  <p className="text-sss-white font-medium">{solicitacao.parceiroNome}</p>
+                                  <p className="text-gray-400 text-sm">
+                                    Compra de R$ {solicitacao.valorCompra.toFixed(2)} • {formatarData(solicitacao.dataCompra)}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-yellow-500 font-semibold">+{solicitacao.valorCashback} Sementes</p>
+                                <p className="text-sm text-yellow-400">
+                                  {solicitacao.status === 'aguardando_repasse' ? 'Aguardando repasse' : 'Repasse pendente'}
+                                </p>
+                              </div>
+                            </div>
+                            {solicitacao.repasse && (
+                              <div className="mt-3 p-3 bg-sss-medium rounded-lg">
+                                <p className="text-sm text-gray-300">
+                                  <strong>Status do repasse:</strong> {solicitacao.repasse.status}
+                                </p>
+                                {solicitacao.repasse.dataRepasse && (
+                                  <p className="text-sm text-gray-400">
+                                    Data do repasse: {formatarData(solicitacao.repasse.dataRepasse)}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </motion.div>
                         ))}
                       </div>

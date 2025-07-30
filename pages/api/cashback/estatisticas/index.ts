@@ -9,14 +9,71 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Por enquanto, retornar dados mockados
+    const { usuarioId } = req.query
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    }
+
+    // Buscar dados reais do usuário
+    const [comprasPendentes, comprasAprovadas, codigosUsados] = await Promise.all([
+      // Compras pendentes
+      prisma.compraParceiro.findMany({
+        where: {
+          usuarioId: String(usuarioId),
+          status: {
+            in: ['aguardando_repasse', 'repasse_pendente']
+          }
+        }
+      }),
+      // Compras aprovadas (cashback liberado)
+      prisma.compraParceiro.findMany({
+        where: {
+          usuarioId: String(usuarioId),
+          status: 'cashback_liberado'
+        }
+      }),
+      // Códigos de cashback usados
+      prisma.codigoCashback.findMany({
+        where: {
+          usado: true
+        }
+      })
+    ])
+
+    // Calcular estatísticas
+    const totalPendente = comprasPendentes.reduce((total, compra) => {
+      return total + (compra.valorCompra * 0.05) // 5% para o usuário
+    }, 0)
+
+    const totalResgatado = comprasAprovadas.reduce((total, compra) => {
+      return total + (compra.valorCompra * 0.05) // 5% para o usuário
+    }, 0)
+
+    const economiaTotal = comprasAprovadas.reduce((total, compra) => {
+      return total + compra.valorCompra
+    }, 0)
+
+    // Resgates do mês atual
+    const inicioMes = new Date()
+    inicioMes.setDate(1)
+    inicioMes.setHours(0, 0, 0, 0)
+
+    const resgatesMes = comprasAprovadas.filter(compra => 
+      compra.dataCompra >= inicioMes
+    ).length
+
+    const mediaPorResgate = comprasAprovadas.length > 0 
+      ? totalResgatado / comprasAprovadas.length 
+      : 0
+
     const estatisticas = {
-      totalResgatado: 1225,
-      totalPendente: 150,
-      codigosUsados: 8,
-      economiaTotal: 2450,
-      resgatesMes: 3,
-      mediaPorResgate: 153
+      totalResgatado: Math.round(totalResgatado),
+      totalPendente: Math.round(totalPendente),
+      codigosUsados: codigosUsados.length,
+      economiaTotal: Math.round(economiaTotal),
+      resgatesMes,
+      mediaPorResgate: Math.round(mediaPorResgate)
     }
 
     return res.status(200).json({ estatisticas })
