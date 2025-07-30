@@ -65,7 +65,7 @@ interface Estatisticas {
 }
 
 export default function AdminParceiros() {
-  const [user, setUser] = useState<User | null>(null);
+  const [, setUser] = useState<User | null>(null);
   const [parceiros, setParceiros] = useState<Parceiro[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -242,6 +242,7 @@ export default function AdminParceiros() {
               <button 
                 onClick={() => window.location.href = '/admin'}
                 className="mr-4 p-2 bg-sss-medium hover:bg-sss-light rounded-lg transition-colors"
+                title="Voltar ao painel admin"
               >
                 <ArrowLeftIcon className="w-6 h-6 text-sss-white" />
               </button>
