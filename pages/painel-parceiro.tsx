@@ -4,9 +4,9 @@ import { auth } from '../lib/auth';
 import Navbar from '../components/Navbar';
 import { 
   ChartBarIcon, 
-  BuildingOfficeIcon, 
+  BuildingOfficeIcon,
   TrophyIcon, 
-  CurrencyDollarIcon, 
+  CurrencyDollarIcon,
   CreditCardIcon,
   EyeIcon,
   PlusIcon,
@@ -142,12 +142,12 @@ export default function PainelParceiro() {
     const checkAuth = async () => {
       try {
         const currentUser = auth.getUser();
-        if (!currentUser) {
+    if (!currentUser) {
           window.location.href = '/login';
           return;
-        }
-        
-        if (currentUser.nivel !== 'parceiro') {
+    }
+    
+    if (currentUser.nivel !== 'parceiro') {
           alert('Acesso negado. Apenas parceiros podem acessar esta área.');
           window.location.href = '/perfil';
           return;
@@ -495,7 +495,7 @@ export default function PainelParceiro() {
       });
 
       if (response.ok) {
-        setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado } : c));
+        setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado: fixar } : c));
       }
     } catch (error) {
       console.error('Erro ao fixar conteúdo:', error);
@@ -509,7 +509,7 @@ export default function PainelParceiro() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <div className="text-sss-white text-lg font-medium">Verificando autorização...</div>
-        </div>
+      </div>
       </div>
     );
   }
@@ -524,7 +524,7 @@ export default function PainelParceiro() {
       <Head>
         <title>Painel do Parceiro | SementesPLAY</title>
       </Head>
-      
+
       {/* Modal de gerar código */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -570,7 +570,7 @@ export default function PainelParceiro() {
                   value={form.quantidade} 
                   onChange={e => setForm(f => ({ ...f, quantidade: e.target.value }))} 
                 />
-              </div>
+                </div>
               
               <div className="flex gap-3 pt-4">
                 <button 
@@ -598,10 +598,10 @@ export default function PainelParceiro() {
                 >
                   Cancelar
                 </button>
-            </div>
+                </div>
           </form>
-          </div>
-        </div>
+              </div>
+            </div>
       )}
 
       {/* Modal de conteúdo */}
@@ -612,7 +612,7 @@ export default function PainelParceiro() {
               <h2 className="text-xl font-bold text-sss-white">
                 {editandoConteudo ? 'Editar Conteúdo' : 'Adicionar Conteúdo'}
               </h2>
-              <button 
+                <button
                 onClick={() => { 
                   setShowModalConteudo(false); 
                   setEditandoConteudo(null);
@@ -635,7 +635,7 @@ export default function PainelParceiro() {
                 aria-label="Fechar modal"
               >
                 <XMarkIcon className="w-6 h-6" />
-              </button>
+                </button>
             </div>
             
             <form onSubmit={editandoConteudo ? handleEditConteudo : handleAddConteudo} className="space-y-4">
@@ -670,7 +670,7 @@ export default function PainelParceiro() {
                   </select>
                 </div>
                 
-                <div>
+                      <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
                   <select 
                     required
@@ -686,7 +686,7 @@ export default function PainelParceiro() {
                     <option value="workshops">Workshops</option>
                     <option value="competições">Competições</option>
                   </select>
-                </div>
+                      </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
@@ -698,7 +698,7 @@ export default function PainelParceiro() {
                     value={formConteudo.cidade} 
                     onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
                   />
-                </div>
+                      </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">URL *</label>
@@ -710,7 +710,7 @@ export default function PainelParceiro() {
                     value={formConteudo.url} 
                     onChange={e => setFormConteudo(f => ({ ...f, url: e.target.value }))} 
                   />
-                </div>
+                    </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Plataforma</label>
@@ -721,9 +721,9 @@ export default function PainelParceiro() {
                     value={formConteudo.plataforma} 
                     onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
                   />
-                </div>
-                
-                <div>
+                  </div>
+
+                      <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
                   <input 
                     type="text"
@@ -732,7 +732,7 @@ export default function PainelParceiro() {
                     value={formConteudo.endereco} 
                     onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
                   />
-                </div>
+                      </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
@@ -742,7 +742,7 @@ export default function PainelParceiro() {
                     value={formConteudo.dataEvento} 
                     onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
                   />
-                </div>
+                      </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Preço</label>
@@ -765,10 +765,10 @@ export default function PainelParceiro() {
                     value={formConteudo.vagas} 
                     onChange={e => setFormConteudo(f => ({ ...f, vagas: e.target.value }))} 
                   />
-                </div>
-              </div>
-              
-              <div>
+                    </div>
+                  </div>
+
+                      <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
                 <textarea 
                   rows={4}
@@ -777,7 +777,7 @@ export default function PainelParceiro() {
                   value={formConteudo.descricao} 
                   onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
                 />
-              </div>
+                      </div>
               
               <div className="flex gap-3 pt-4">
                 <button 
@@ -822,10 +822,10 @@ export default function PainelParceiro() {
                 >
                   Cancelar
                 </button>
-              </div>
+                      </div>
             </form>
-          </div>
-        </div>
+                    </div>
+                  </div>
       )}
 
       <div className="min-h-screen bg-sss-dark">
@@ -839,9 +839,9 @@ export default function PainelParceiro() {
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                     <BuildingOfficeIcon className="w-5 h-5 text-sss-white" />
-                  </div>
+                      </div>
                   <h1 className="text-xl font-bold text-sss-white">Painel do Parceiro</h1>
-                </div>
+                      </div>
               </div>
               
               <button 
@@ -851,9 +851,9 @@ export default function PainelParceiro() {
                 <PlusIcon className="w-4 h-4" />
                 Gerar Códigos
               </button>
-            </div>
-          </div>
-        </div>
+                    </div>
+                  </div>
+                </div>
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Estatísticas principais */}
@@ -867,9 +867,9 @@ export default function PainelParceiro() {
                   <div className="text-right">
                     <div className="text-2xl font-bold text-sss-white">
                       {!loadingEstatisticas ? `R$ ${estatisticas?.totalVendas.toFixed(2) || '0.00'}` : '--'}
-                    </div>
+                              </div>
                     <div className="text-sm text-green-300">Total de Vendas</div>
-                  </div>
+                              </div>
                 </div>
                 <div className="h-1 bg-green-500/20 rounded-full overflow-hidden">
                   <div className={`h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full ${getProgressWidthClass(estatisticas?.totalVendas || 0, 10000)}`}></div>
@@ -880,24 +880,24 @@ export default function PainelParceiro() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:bg-blue-500/30 transition-all">
                     <CreditCardIcon className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <div className="text-right">
+                            </div>
+                            <div className="text-right">
                     <div className="text-2xl font-bold text-sss-white">
                       {!loadingEstatisticas ? estatisticas?.codigosAtivos || 0 : '--'}
-                    </div>
+                            </div>
                     <div className="text-sm text-blue-300">Códigos Ativos</div>
-                  </div>
-                </div>
+                          </div>
+                      </div>
                 <div className="h-1 bg-blue-500/20 rounded-full overflow-hidden">
                   <div className={`h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full ${getProgressWidthClass(estatisticas?.codigosAtivos || 0, 100)}`}></div>
+                  </div>
                 </div>
-              </div>
 
               <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center group-hover:bg-purple-500/30 transition-all">
                     <CheckCircleIcon className="w-6 h-6 text-purple-400" />
-                  </div>
+              </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-sss-white">
                       {!loadingEstatisticas ? estatisticas?.codigosUsados || 0 : '--'}
@@ -944,7 +944,7 @@ export default function PainelParceiro() {
                     </div>
                   </div>
                 </div>
-              </div>
+                </div>
 
               <div className="p-6">
                 {loading ? (
@@ -953,75 +953,75 @@ export default function PainelParceiro() {
                     <span className="ml-3 text-gray-400">Carregando códigos...</span>
                   </div>
                 ) : codigos && codigos.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {codigos.map((codigo) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {codigos.map((codigo) => (
                       <div key={codigo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
                         <div className="p-4">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
                               <CreditCardIcon className="w-5 h-5 text-blue-400" />
-                              <span className="text-sss-white font-medium">Código</span>
-                            </div>
-                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              codigo.usado 
-                                ? 'bg-red-500/20 text-red-400' 
-                                : 'bg-green-500/20 text-green-400'
-                            }`}>
-                              {codigo.usado ? 'Usado' : 'Ativo'}
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <div>
-                              <p className="text-sm text-gray-400">Código</p>
-                              <div className="flex items-center space-x-2">
-                                <p className="text-lg font-mono text-sss-white">{codigo.codigo}</p>
-                                <button
-                                  onClick={() => copiarCodigo(codigo.codigo)}
+                          <span className="text-sss-white font-medium">Código</span>
+                        </div>
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          codigo.usado 
+                            ? 'bg-red-500/20 text-red-400' 
+                            : 'bg-green-500/20 text-green-400'
+                        }`}>
+                          {codigo.usado ? 'Usado' : 'Ativo'}
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-sm text-gray-400">Código</p>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-lg font-mono text-sss-white">{codigo.codigo}</p>
+                            <button
+                              onClick={() => copiarCodigo(codigo.codigo)}
                                   className="text-blue-400 hover:text-blue-300 transition-colors"
                                   aria-label={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
                                   title={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
-                                >
-                                  {copiado === codigo.codigo ? (
-                                    <CheckIcon className="w-4 h-4" />
-                                  ) : (
-                                    <ClipboardDocumentIcon className="w-4 h-4" />
-                                  )}
-                                </button>
-                              </div>
-                            </div>
-                            
+                            >
+                              {copiado === codigo.codigo ? (
+                                <CheckIcon className="w-4 h-4" />
+                              ) : (
+                                <ClipboardDocumentIcon className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <p className="text-sm text-gray-400">Valor</p>
+                          <p className="text-lg font-bold text-sss-accent">
+                            R$ {codigo.valor.toFixed(2)}
+                          </p>
+                        </div>
+                        
+                        <div className="flex justify-between text-sm">
+                          <div>
+                            <p className="text-gray-400">Gerado em</p>
+                            <p className="text-sss-white">
+                              {new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                          {codigo.dataUso && (
                             <div>
-                              <p className="text-sm text-gray-400">Valor</p>
-                              <p className="text-lg font-bold text-sss-accent">
-                                R$ {codigo.valor.toFixed(2)}
+                              <p className="text-gray-400">Usado em</p>
+                              <p className="text-sss-white">
+                                {new Date(codigo.dataUso).toLocaleDateString('pt-BR')}
                               </p>
                             </div>
-                            
-                            <div className="flex justify-between text-sm">
-                              <div>
-                                <p className="text-gray-400">Gerado em</p>
-                                <p className="text-sss-white">
-                                  {new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}
-                                </p>
-                              </div>
-                              {codigo.dataUso && (
-                                <div>
-                                  <p className="text-gray-400">Usado em</p>
-                                  <p className="text-sss-white">
-                                    {new Date(codigo.dataUso).toLocaleDateString('pt-BR')}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                          )}
+                        </div>
                             
                             {codigo.usuario && (
                               <div>
                                 <p className="text-sm text-gray-400">Usado por</p>
                                 <p className="text-sss-white">{codigo.usuario.nome}</p>
-                              </div>
+                      </div>
                             )}
-                          </div>
+                    </div>
                           
                           <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
                             <div className="flex space-x-2">
@@ -1034,8 +1034,8 @@ export default function PainelParceiro() {
                                   <TrashIcon className="w-4 h-4" />
                                 </button>
                               )}
-                            </div>
-                            
+                </div>
+
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => copiarCodigo(codigo.codigo)}
@@ -1105,13 +1105,13 @@ export default function PainelParceiro() {
                         </div>
                         <div className="text-right">
                           <p className="text-sss-white font-semibold">
-                            R$ {transacao.valor.toFixed(2)}
+                                R$ {transacao.valor.toFixed(2)}
                           </p>
                           <p className={`text-sm ${
                             transacao.status === 'aprovada' ? 'text-green-400' : 
                             transacao.status === 'pendente' ? 'text-yellow-400' : 'text-red-400'
-                          }`}>
-                            {transacao.status}
+                              }`}>
+                                {transacao.status}
                           </p>
                         </div>
                       </div>
@@ -1119,12 +1119,12 @@ export default function PainelParceiro() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <DocumentTextIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">Nenhuma transação encontrada</p>
-                  </div>
-                )}
+                      <DocumentTextIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-400">Nenhuma transação encontrada</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
           </section>
 
           {/* Repasses Pendentes */}
@@ -1134,13 +1134,13 @@ export default function PainelParceiro() {
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
                     <ArrowTrendingUpIcon className="w-5 h-5 text-sss-white" />
-                  </div>
+                      </div>
                   <div>
                     <h2 className="text-xl font-bold text-sss-white">Repasses Pendentes</h2>
                     <p className="text-sm text-gray-400">Compras aguardando repasse</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
               <div className="p-6">
                 {loadingRepasses ? (
@@ -1149,13 +1149,13 @@ export default function PainelParceiro() {
                     <span className="ml-3 text-gray-400">Carregando repasses...</span>
                   </div>
                 ) : repasses && repasses.length > 0 ? (
-                  <div className="space-y-4">
+                    <div className="space-y-4">
                     {repasses.filter(r => r.status === 'pendente').slice(0, 5).map((repasse) => (
                       <div key={repasse.id} className="flex items-center justify-between p-4 bg-sss-light/30 rounded-lg hover:bg-sss-light/50 transition-all">
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
                             <ClockIcon className="w-5 h-5 text-orange-400" />
-                          </div>
+                      </div>
                           <div>
                             <p className="text-sss-white font-medium">
                               Compra: R$ {repasse.valorCompra.toFixed(2)}
@@ -1163,8 +1163,8 @@ export default function PainelParceiro() {
                             <p className="text-sm text-gray-400">
                               Repasse: R$ {repasse.valorRepasse.toFixed(2)}
                             </p>
-                          </div>
-                        </div>
+                      </div>
+                      </div>
                         <div className="text-right">
                           <p className="text-sss-white font-semibold">
                             {new Date(repasse.dataCompra).toLocaleDateString('pt-BR')}
@@ -1172,16 +1172,16 @@ export default function PainelParceiro() {
                           <p className="text-sm text-orange-400">
                             Pendente
                           </p>
-                        </div>
-                      </div>
-                    ))}
+                    </div>
                   </div>
+                    ))}
+                </div>
                 ) : (
                   <div className="text-center py-8">
                     <ArrowTrendingUpIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-400">Nenhum repasse pendente</p>
-                  </div>
-                )}
+              </div>
+            )}
               </div>
             </div>
           </section>
@@ -1194,11 +1194,11 @@ export default function PainelParceiro() {
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
                       <DocumentTextIcon className="w-5 h-5 text-sss-white" />
-                    </div>
+                </div>
                     <div>
                       <h2 className="text-xl font-bold text-sss-white">Seus Conteúdos</h2>
                       <p className="text-sm text-gray-400">Gerencie eventos, promoções e notícias da sua cidade</p>
-                    </div>
+                  </div>
                   </div>
                   <button 
                     onClick={() => setShowModalConteudo(true)}
@@ -1207,8 +1207,8 @@ export default function PainelParceiro() {
                     <PlusIcon className="w-4 h-4" />
                     Adicionar Conteúdo
                   </button>
+                  </div>
                 </div>
-              </div>
 
               <div className="p-6">
                 {loadingConteudos ? (
@@ -1230,8 +1230,8 @@ export default function PainelParceiro() {
                               {conteudo.fixado && (
                                 <div className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
                                   Fixado
-                                </div>
-                              )}
+              </div>
+            )}
                               <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 conteudo.categoria === 'eventos' ? 'bg-blue-500/20 text-blue-400' :
                                 conteudo.categoria === 'promoções' ? 'bg-green-500/20 text-green-400' :
@@ -1249,23 +1249,23 @@ export default function PainelParceiro() {
                             </div>
                             
                             {conteudo.descricao && (
-                              <div>
+                    <div>
                                 <p className="text-sm text-gray-400">Descrição</p>
                                 <p className="text-sm text-sss-white">{conteudo.descricao}</p>
-                              </div>
+                    </div>
                             )}
-                            
-                            <div>
+                    
+                    <div>
                               <p className="text-sm text-gray-400">Cidade</p>
                               <p className="text-sss-white">{conteudo.cidade}</p>
-                            </div>
+                    </div>
                             
                             {conteudo.endereco && (
                               <div>
                                 <p className="text-sm text-gray-400">Endereço</p>
                                 <p className="text-sm text-sss-white">{conteudo.endereco}</p>
-                              </div>
-                            )}
+              </div>
+            )}
                             
                             {conteudo.dataEvento && (
                               <div>
@@ -1273,25 +1273,25 @@ export default function PainelParceiro() {
                                 <p className="text-sss-white">
                                   {new Date(conteudo.dataEvento).toLocaleDateString('pt-BR')}
                                 </p>
-                              </div>
+        </div>
                             )}
                             
                             {conteudo.preco && (
                               <div>
                                 <p className="text-sm text-gray-400">Preço</p>
                                 <p className="text-sss-accent font-semibold">{conteudo.preco}</p>
-                              </div>
+            </div>
                             )}
-                            
+            
                             {conteudo.vagas && (
-                              <div>
+              <div>
                                 <p className="text-sm text-gray-400">Vagas</p>
                                 <p className="text-sss-white">{conteudo.vagas} disponíveis</p>
-                              </div>
+              </div>
                             )}
-                            
+              
                             <div className="flex justify-between text-sm">
-                              <div>
+              <div>
                                 <p className="text-gray-400">Visualizações</p>
                                 <p className="text-sss-white">{conteudo.visualizacoes}</p>
                               </div>
@@ -1303,12 +1303,12 @@ export default function PainelParceiro() {
                                 <p className="text-gray-400">Comentários</p>
                                 <p className="text-sss-white">{conteudo.comentarios}</p>
                               </div>
-                            </div>
-                          </div>
-                          
+              </div>
+            </div>
+            
                           <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
                             <div className="flex space-x-2">
-                              <button 
+              <button
                                 className="text-blue-400 hover:text-blue-300 transition-colors p-1" 
                                 onClick={() => {
                                   setEditandoConteudo(conteudo);
@@ -1331,15 +1331,15 @@ export default function PainelParceiro() {
                                 title="Editar"
                               >
                                 <PencilIcon className="w-4 h-4" />
-                              </button>
-                              <button 
+              </button>
+              <button
                                 className="text-red-400 hover:text-red-300 transition-colors p-1" 
                                 onClick={() => handleRemoverConteudo(conteudo.id)}
                                 title="Remover"
                               >
                                 <TrashIcon className="w-4 h-4" />
-                              </button>
-                            </div>
+              </button>
+            </div>
                             
                             <div className="flex space-x-2">
                               <button
@@ -1376,8 +1376,8 @@ export default function PainelParceiro() {
                     >
                       Criar Primeiro Conteúdo
                     </button>
-                  </div>
-                )}
+        </div>
+      )}
               </div>
             </div>
           </section>
