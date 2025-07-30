@@ -97,13 +97,6 @@ type ConteudoParceiro = {
 };
 
 export default function PainelParceiro() {
-  const [codigos, setCodigos] = useState<CodigoCashback[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ valor: '', quantidade: '1' });
-  const [saving, setSaving] = useState(false);
-  const valorRef = useRef<HTMLInputElement>(null);
-  const [editando, setEditando] = useState<CodigoCashback | null>(null);
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [loadingTransacoes, setLoadingTransacoes] = useState(true);
   const [estatisticas, setEstatisticas] = useState<Estatisticas | null>(null);
@@ -116,7 +109,7 @@ export default function PainelParceiro() {
   const [loadingSolicitacoes, setLoadingSolicitacoes] = useState(true);
   const [parceiro, setParceiro] = useState<any>(null);
   const [loadingParceiro, setLoadingParceiro] = useState(true);
-  const [copiado, setCopiado] = useState<string | null>(null);
+
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authorized, setAuthorized] = useState(false);
@@ -1036,42 +1029,7 @@ export default function PainelParceiro() {
             </div>
           </section>
 
-          {/* Gestão de Códigos */}
 
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                </button>
-                              )}
-                </div>
-
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => copiarCodigo(codigo.codigo)}
-                                className="bg-blue-600 hover:bg-blue-700 text-sss-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                              >
-                                {copiado === codigo.codigo ? 'Copiado!' : 'Copiar'}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <CreditCardIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">Nenhum código gerado ainda</p>
-                    <button
-                      onClick={() => setShowModal(true)}
-                      className="mt-4 bg-sss-accent text-sss-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
-                    >
-                      Gerar Primeiro Código
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
 
           {/* Transações Recentes */}
           <section className="mb-8">
