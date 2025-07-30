@@ -107,7 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { usuarioId: criador.usuarioId }
     })
 
-    // 13. Remover conversas
+    // 13. Remover conversas (mantendo mensagens)
     await prisma.conversa.deleteMany({
       where: { 
         OR: [
@@ -117,10 +117,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // 14. Remover mensagens
-    await prisma.mensagem.deleteMany({
-      where: { remetenteId: criador.usuarioId }
-    })
+    // 14. MANTER mensagens (não remover)
+    // await prisma.mensagem.deleteMany({
+    //   where: { remetenteId: criador.usuarioId }
+    // })
 
     // 15. Remover o registro do criador
     await prisma.criador.delete({

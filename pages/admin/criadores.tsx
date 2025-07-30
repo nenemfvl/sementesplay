@@ -8,7 +8,8 @@ import {
   PencilIcon,
   TrashIcon,
   PlusIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
@@ -38,6 +39,8 @@ export default function AdminCriadores() {
     supremos: 0,
     suspensos: 0
   })
+  const [showRemoveById, setShowRemoveById] = useState(false)
+  const [criadorIdToRemove, setCriadorIdToRemove] = useState('')
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -134,7 +137,7 @@ export default function AdminCriadores() {
   }
 
   const removerCriador = async (criador: Criador) => {
-    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas e mensagens\n• Candidatura de criador\n\nO usuário voltará ao nível comum.`)) {
+    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas\n• Candidatura de criador\n\n💬 As mensagens de chat privado serão mantidas\n\nO usuário voltará ao nível comum.`)) {
       try {
         const response = await fetch(`/api/admin/criadores/${criador.id}/suspender`, {
           method: 'POST',
@@ -146,6 +149,51 @@ export default function AdminCriadores() {
 
         if (response.ok) {
           alert('Criador removido com sucesso!')
+          loadCriadores() // Recarregar lista
+        } else {
+          const error = await response.text()
+          alert(`Erro ao remover criador: ${error}`)
+        }
+      } catch (error) {
+        console.error('Erro ao remover criador:', error)
+        alert('Erro ao remover criador')
+      }
+    }
+  }
+
+  const removerCriadorPorId = async (criadorId?: string) => {
+    const idToRemove = criadorId || criadorIdToRemove
+    
+    if (!idToRemove.trim()) {
+      alert('Selecione um criador para remover')
+      return
+    }
+
+    // Encontrar o criador na lista para mostrar o nome
+    const criador = criadores.find(c => c.id === idToRemove)
+    const nomeCriador = criador ? criador.nome : `ID: ${idToRemove}`
+
+    if (confirm(`Tem certeza que deseja remover o criador "${nomeCriador}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas\n• Candidatura de criador\n\n💬 As mensagens de chat privado serão mantidas\n\nO usuário voltará ao nível comum.`)) {
+      try {
+        const token = localStorage.getItem('sementesplay_token')
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json'
+        }
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+
+        const response = await fetch(`/api/admin/criadores/${idToRemove}/suspender`, {
+          method: 'POST',
+          credentials: 'include',
+          headers
+        })
+
+        if (response.ok) {
+          alert('Criador removido com sucesso!')
+          setCriadorIdToRemove('')
+          setShowRemoveById(false)
           loadCriadores() // Recarregar lista
         } else {
           const error = await response.text()
@@ -290,19 +338,82 @@ export default function AdminCriadores() {
                   />
                 </div>
                 <div>
-                                     <select
-                     value={filterStatus}
-                     onChange={(e) => setFilterStatus(e.target.value)}
-                     className="bg-sss-dark border border-sss-light rounded-lg px-4 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
-                     aria-label="Filtrar por status"
-                   >
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="bg-sss-dark border border-sss-light rounded-lg px-4 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                    aria-label="Filtrar por status"
+                  >
                     <option value="todos">Todos os Status</option>
                     <option value="ativo">Ativos</option>
                     <option value="suspenso">Suspensos</option>
                     <option value="pendente">Pendentes</option>
                   </select>
                 </div>
+                <div>
+                  <button
+                    onClick={() => setShowRemoveById(!showRemoveById)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <MagnifyingGlassIcon className="w-4 h-4" />
+                    Remover por ID
+                  </button>
+                </div>
               </div>
+              
+              {/* Remove by ID section */}
+              {showRemoveById && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg"
+                >
+                  <div className="mb-4">
+                    <h3 className="text-lg font-medium text-red-400 mb-2">
+                      Selecione o Criador para Remover
+                    </h3>
+                    <p className="text-sm text-red-300">
+                      Clique no criador que deseja remover da plataforma
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto">
+                    {criadores.map((criador) => (
+                      <button
+                        key={criador.id}
+                        onClick={() => removerCriadorPorId(criador.id)}
+                        className="p-3 bg-sss-dark border border-red-500/30 rounded-lg hover:bg-red-900/20 transition-colors text-left"
+                      >
+                        <div className="font-medium text-sss-white">{criador.nome}</div>
+                        <div className="text-sm text-gray-400">{criador.email}</div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getNivelColor(criador.nivel)}`}>
+                            {criador.nivel}
+                          </span>
+                          <span className="text-xs text-red-400">Clique para remover</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={() => {
+                        setShowRemoveById(false)
+                        setCriadorIdToRemove('')
+                      }}
+                      className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  
+                  <p className="text-xs text-red-400 mt-2">
+                    ⚠️ Esta ação irá remover completamente o criador e todos os seus dados
+                  </p>
+                </motion.div>
+              )}
             </div>
 
             {/* Criadores Table */}
