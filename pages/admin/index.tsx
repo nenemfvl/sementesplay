@@ -283,6 +283,14 @@ export default function AdminDashboard() {
                         </Link>
                         
                         <Link href="/admin/candidaturas" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                          <DocumentTextIcon className="w-6 h-6 text-blue-500" />
+                          <div>
+                            <p className="text-sss-white font-medium">Candidaturas Criadores</p>
+                            <p className="text-gray-400 text-sm">Revisar candidaturas pendentes</p>
+                          </div>
+                        </Link>
+                        
+                        <Link href="/admin/candidaturas" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <TrophyIcon className="w-6 h-6 text-yellow-500" />
                           <div>
                             <p className="text-sss-white font-medium">Gerenciar Criadores</p>
@@ -290,11 +298,19 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/candidaturas" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
-                          <DocumentTextIcon className="w-6 h-6 text-blue-500" />
+                        <Link href="/admin/parceiros" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                          <DocumentTextIcon className="w-6 h-6 text-purple-500" />
                           <div>
-                            <p className="text-sss-white font-medium">Candidaturas</p>
-                            <p className="text-gray-400 text-sm">Revisar candidaturas pendentes</p>
+                            <p className="text-sss-white font-medium">Candidaturas Parceiros</p>
+                            <p className="text-gray-400 text-sm">Revisar candidaturas de parceiros</p>
+                          </div>
+                        </Link>
+                        
+                        <Link href="/admin/parceiros" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                          <UserGroupIcon className="w-6 h-6 text-indigo-500" />
+                          <div>
+                            <p className="text-sss-white font-medium">Gerenciar Parceiros</p>
+                            <p className="text-gray-400 text-sm">Aprovar e gerenciar parceiros</p>
                           </div>
                         </Link>
                         
