@@ -31,9 +31,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Já existe uma candidatura para este email' })
       }
 
+      // Buscar usuário pelo email
+      const usuario = await prisma.usuario.findFirst({
+        where: { email }
+      })
+
+      if (!usuario) {
+        return res.status(400).json({ error: 'Usuário não encontrado' })
+      }
+
       // Criar candidatura
       const candidatura = await prisma.candidaturaParceiro.create({
         data: {
+          usuarioId: usuario.id,
           nome,
           email,
           telefone,
