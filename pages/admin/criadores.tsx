@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { 
   TrophyIcon,
   UsersIcon,
-  ChartBarIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon,
