@@ -95,11 +95,16 @@ export default function Cashback() {
       return
     }
     setUser(currentUser)
-    loadCodigos()
-    loadHistorico()
-    loadSolicitacoesPendentes()
-    loadEstatisticas()
   }, [])
+
+  useEffect(() => {
+    if (user?.id) {
+      loadCodigos()
+      loadHistorico()
+      loadSolicitacoesPendentes()
+      loadEstatisticas()
+    }
+  }, [user?.id])
 
   const loadCodigos = async () => {
     try {
@@ -135,8 +140,10 @@ export default function Cashback() {
   }
 
   const loadSolicitacoesPendentes = async () => {
+    if (!user?.id) return
+    
     try {
-      const response = await fetch(`/api/cashback/solicitacoes-pendentes?usuarioId=${user?.id}`)
+      const response = await fetch(`/api/cashback/solicitacoes-pendentes?usuarioId=${user.id}`)
       const data = await response.json()
       if (response.ok) {
         setSolicitacoesPendentes(data.solicitacoes.map((s: any) => ({
@@ -154,8 +161,10 @@ export default function Cashback() {
   }
 
   const loadEstatisticas = async () => {
+    if (!user?.id) return
+    
     try {
-      const response = await fetch(`/api/cashback/estatisticas?usuarioId=${user?.id}`)
+      const response = await fetch(`/api/cashback/estatisticas?usuarioId=${user.id}`)
       const data = await response.json()
       if (response.ok) {
         setEstatisticas(data.estatisticas)

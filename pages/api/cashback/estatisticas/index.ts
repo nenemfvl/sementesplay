@@ -17,12 +17,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Buscar dados reais do usuário
     const [comprasPendentes, comprasAprovadas, codigosUsados] = await Promise.all([
-      // Compras pendentes
+      // Compras pendentes (todas exceto cashback_liberado)
       prisma.compraParceiro.findMany({
         where: {
           usuarioId: String(usuarioId),
           status: {
-            in: ['aguardando_repasse', 'repasse_pendente']
+            not: 'cashback_liberado'
           }
         }
       }),
