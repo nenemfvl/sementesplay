@@ -88,6 +88,12 @@ export default function Status() {
 
   // Carregar favoritos do localStorage
   useEffect(() => {
+    // Só validar favoritos se os criadores já foram carregados
+    if (criadores.length === 0) {
+      console.log('Aguardando criadores carregarem...')
+      return
+    }
+
     const favoritosSalvos = localStorage.getItem('criadoresFavoritos')
     if (favoritosSalvos) {
       try {
