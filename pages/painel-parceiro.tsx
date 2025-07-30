@@ -175,7 +175,6 @@ export default function PainelParceiro() {
   useEffect(() => {
     if (authorized && user) {
       fetchParceiro();
-      fetchCodigos();
       fetchTransacoes();
       fetchEstatisticas();
       fetchNotificacoes();
@@ -199,19 +198,7 @@ export default function PainelParceiro() {
     }
   }
 
-  async function fetchCodigos() {
-    try {
-      const response = await fetch(`/api/parceiros/codigos?usuarioId=${user?.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setCodigos(data);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar códigos:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
+
 
   async function fetchTransacoes() {
     try {
@@ -349,73 +336,7 @@ export default function PainelParceiro() {
     }
   }
 
-  async function handleGerarCodigo(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form.valor || !form.quantidade) {
-      alert('Preencha todos os campos');
-      return;
-    }
 
-    setSaving(true);
-    try {
-      const response = await fetch('/api/parceiros/gerar-codigo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          valor: parseFloat(form.valor),
-          quantidade: parseInt(form.quantidade),
-          usuarioId: user?.id
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCodigos(prev => [...data.codigos, ...prev]);
-        setForm({ valor: '', quantidade: '1' });
-        setShowModal(false);
-        alert('Códigos gerados com sucesso!');
-        fetchCodigos();
-        fetchEstatisticas();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erro ao gerar códigos');
-      }
-    } catch (error) {
-      alert('Erro ao gerar códigos');
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleRemoverCodigo(id: string) {
-    if (!confirm('Tem certeza que deseja remover este código?')) return;
-
-    try {
-      const response = await fetch(`/api/parceiros/codigos/${id}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        setCodigos(prev => prev.filter(c => c.id !== id));
-        alert('Código removido com sucesso!');
-        fetchEstatisticas();
-      } else {
-        alert('Erro ao remover código');
-      }
-    } catch (error) {
-      alert('Erro ao remover código');
-    }
-  }
-
-  async function copiarCodigo(codigo: string) {
-    try {
-      await navigator.clipboard.writeText(codigo);
-      setCopiado(codigo);
-      setTimeout(() => setCopiado(null), 2000);
-    } catch (error) {
-      alert('Erro ao copiar código');
-    }
-  }
 
   const getProgressWidthClass = (value: number, max: number) => {
     const percentage = (value / max) * 100;
@@ -660,84 +581,7 @@ export default function PainelParceiro() {
         <title>Painel do Parceiro | SementesPLAY</title>
       </Head>
 
-      {/* Modal de gerar código */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-md border border-sss-light shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-sss-white">
-                Gerar Códigos de Cashback
-              </h2>
-              <button 
-                onClick={() => { setShowModal(false); setEditando(null); }}
-                className="text-gray-400 hover:text-sss-white transition-colors"
-                aria-label="Fechar modal"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <form onSubmit={handleGerarCodigo} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Valor do Código (R$)</label>
-                <input 
-                  ref={valorRef}
-                  required 
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="10.00" 
-                  value={form.valor} 
-                  onChange={e => setForm(f => ({ ...f, valor: e.target.value }))} 
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Quantidade de Códigos</label>
-                <input 
-                  required 
-                  type="number"
-                  min="1"
-                  max="100"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="1" 
-                  value={form.quantidade} 
-                  onChange={e => setForm(f => ({ ...f, quantidade: e.target.value }))} 
-                />
-                </div>
-              
-              <div className="flex gap-3 pt-4">
-                <button 
-                  type="submit" 
-                  className="flex-1 bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
-                      Gerando...
-                    </>
-                  ) : (
-                    <>
-                      <CheckIcon className="w-4 h-4" />
-                      Gerar Códigos
-                    </>
-                  )}
-                </button>
-                <button 
-                  type="button" 
-                  className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
-                  onClick={() => { setShowModal(false); setEditando(null); }} 
-                  disabled={saving}
-                >
-                  Cancelar
-                </button>
-                </div>
-          </form>
-              </div>
-            </div>
-      )}
+
 
       {/* Modal de conteúdo */}
       {showModalConteudo && (
@@ -1113,13 +957,7 @@ export default function PainelParceiro() {
                       </div>
               </div>
               
-              <button 
-                onClick={() => setShowModal(true)}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 text-sss-white px-4 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 flex items-center gap-2 shadow-lg"
-              >
-                <PlusIcon className="w-4 h-4" />
-                Gerar Códigos
-              </button>
+
                     </div>
                   </div>
                 </div>
@@ -1199,106 +1037,7 @@ export default function PainelParceiro() {
           </section>
 
           {/* Gestão de Códigos */}
-          <section className="mb-8">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6 border-b border-sss-light">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                      <CreditCardIcon className="w-5 h-5 text-sss-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-sss-white">Seus Códigos de Cashback</h2>
-                      <p className="text-sm text-gray-400">Gerencie seus códigos de desconto</p>
-                    </div>
-                  </div>
-                </div>
-                </div>
 
-              <div className="p-6">
-                {loading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                    <span className="ml-3 text-gray-400">Carregando códigos...</span>
-                  </div>
-                ) : codigos && codigos.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {codigos.map((codigo) => (
-                      <div key={codigo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
-                        <div className="p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-2">
-                              <CreditCardIcon className="w-5 h-5 text-blue-400" />
-                          <span className="text-sss-white font-medium">Código</span>
-                        </div>
-                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          codigo.usado 
-                            ? 'bg-red-500/20 text-red-400' 
-                            : 'bg-green-500/20 text-green-400'
-                        }`}>
-                          {codigo.usado ? 'Usado' : 'Ativo'}
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <p className="text-sm text-gray-400">Código</p>
-                          <div className="flex items-center space-x-2">
-                            <p className="text-lg font-mono text-sss-white">{codigo.codigo}</p>
-                            <button
-                              onClick={() => copiarCodigo(codigo.codigo)}
-                                  className="text-blue-400 hover:text-blue-300 transition-colors"
-                                  aria-label={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
-                                  title={copiado === codigo.codigo ? "Código copiado" : "Copiar código"}
-                            >
-                              {copiado === codigo.codigo ? (
-                                <CheckIcon className="w-4 h-4" />
-                              ) : (
-                                <ClipboardDocumentIcon className="w-4 h-4" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <p className="text-sm text-gray-400">Valor</p>
-                          <p className="text-lg font-bold text-sss-accent">
-                            R$ {codigo.valor.toFixed(2)}
-                          </p>
-                        </div>
-                        
-                        <div className="flex justify-between text-sm">
-                          <div>
-                            <p className="text-gray-400">Gerado em</p>
-                            <p className="text-sss-white">
-                              {new Date(codigo.dataGeracao).toLocaleDateString('pt-BR')}
-                            </p>
-                          </div>
-                          {codigo.dataUso && (
-                            <div>
-                              <p className="text-gray-400">Usado em</p>
-                              <p className="text-sss-white">
-                                {new Date(codigo.dataUso).toLocaleDateString('pt-BR')}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                            
-                            {codigo.usuario && (
-                              <div>
-                                <p className="text-sm text-gray-400">Usado por</p>
-                                <p className="text-sss-white">{codigo.usuario.nome}</p>
-                      </div>
-                            )}
-                    </div>
-                          
-                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
-                            <div className="flex space-x-2">
-                              {!codigo.usado && (
-                                <button 
-                                  className="text-red-400 hover:text-red-300 transition-colors p-1" 
-                                  onClick={() => handleRemoverCodigo(codigo.id)}
-                                  title="Remover"
                                 >
                                   <TrashIcon className="w-4 h-4" />
                                 </button>
