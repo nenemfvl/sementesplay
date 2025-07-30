@@ -54,7 +54,7 @@ export default function RegistrarCompra() {
   const loadParceiros = async () => {
     try {
       console.log('🔄 Carregando parceiros...')
-      const response = await fetch('/api/parceiros/ranking')
+      const response = await fetch('/api/parceiros')
       console.log('📡 Response status:', response.status)
       
       if (response.ok) {
