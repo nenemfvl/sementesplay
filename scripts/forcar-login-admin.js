@@ -3,17 +3,19 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 async function forcarLoginAdmin() {
-  console.log('🔧 FORÇANDO LOGIN ADMIN')
-  console.log('=======================\n')
-
   try {
-    // Buscar admin
+    console.log('🔧 FORÇANDO LOGIN DO ADMIN')
+    console.log('==========================\n')
+
+    // Buscar admin existente
     const admin = await prisma.usuario.findFirst({
-      where: { nivel: '5' }
+      where: {
+        nivel: '5'
+      }
     })
 
     if (!admin) {
-      console.log('❌ Admin não encontrado!')
+      console.log('❌ Nenhum admin encontrado!')
       return
     }
 
@@ -21,34 +23,30 @@ async function forcarLoginAdmin() {
     console.log(`   • Nome: ${admin.nome}`)
     console.log(`   • Email: ${admin.email}`)
     console.log(`   • Nível: ${admin.nivel}`)
-
-    // Criar dados do usuário para localStorage
+    console.log(`   • ID: ${admin.id}`)
+    console.log('\n📋 COMANDO PARA COLAR NO CONSOLE DO NAVEGADOR:')
+    console.log('=' * 50)
+    
     const userData = {
       id: admin.id,
       nome: admin.nome,
       email: admin.email,
-      tipo: admin.tipo,
+      tipo: 'usuario',
+      sementes: admin.sementes || 0,
       nivel: admin.nivel,
-      sementes: admin.sementes,
-      pontuacao: admin.pontuacao
+      pontuacao: admin.pontuacao || 0,
+      dataCriacao: admin.dataCriacao?.toISOString()
     }
 
-    console.log('\n📋 Comando para colar no console do navegador:')
-    console.log('='.repeat(80))
-    console.log(`localStorage.setItem('sementesplay_user', '${JSON.stringify(userData)}')`)
-    console.log('='.repeat(80))
-
-    console.log('\n🌐 URLs para testar:')
-    console.log('   • http://localhost:3000/admin/saques')
-    console.log('   • http://localhost:3000/admin/painel')
-    console.log('   • http://localhost:3000/admin')
-
-    console.log('\n📝 Passos:')
-    console.log('1. Abra o navegador')
-    console.log('2. Pressione F12 (console)')
-    console.log('3. Cole o comando acima')
-    console.log('4. Acesse uma das URLs')
-    console.log('5. Pronto! 🎉')
+    const localStorageCommand = `localStorage.setItem('sementesplay_user', '${JSON.stringify(userData)}'); location.reload();`
+    
+    console.log(localStorageCommand)
+    console.log('\n📝 INSTRUÇÕES:')
+    console.log('1. Abra o console do navegador (F12)')
+    console.log('2. Cole o comando acima')
+    console.log('3. Pressione Enter')
+    console.log('4. A página será recarregada automaticamente')
+    console.log('5. Agora você deve conseguir acessar "Gerenciar Saques"')
 
   } catch (error) {
     console.error('❌ Erro:', error)
@@ -57,5 +55,4 @@ async function forcarLoginAdmin() {
   }
 }
 
-// Executar
 forcarLoginAdmin() 

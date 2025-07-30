@@ -43,7 +43,7 @@ export default function AdminSaques() {
 
   useEffect(() => {
     const currentUser = auth.getUser()
-    if (!currentUser || currentUser.tipo !== 'admin') {
+    if (!currentUser || currentUser.nivel !== '5') {
       window.location.href = '/login'
       return
     }
