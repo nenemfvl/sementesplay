@@ -248,7 +248,7 @@ export default function PainelParceiro() {
 
   async function fetchRepasses() {
     try {
-      const response = await fetch(`/api/repasses-parceiro?usuarioId=${user?.id}`);
+      const response = await fetch(`/api/parceiros/repasses-pendentes?usuarioId=${user?.id}`);
       if (response.ok) {
         const data = await response.json();
         setRepasses(data);
