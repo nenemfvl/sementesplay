@@ -54,12 +54,12 @@ export default function CriadoresFavoritos() {
         </Head>
         <div className="min-h-screen bg-sss-dark flex flex-col">
           <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
-            <button
-              className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none"
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              aria-label="Ir para o topo"
-            >
+                      <button
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            aria-label="Ir para o topo"
+            title="Ir para o topo"
+          >
               <span className="text-2xl text-sss-accent">🌱</span>
               <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
             </button>
@@ -82,10 +82,10 @@ export default function CriadoresFavoritos() {
         {/* Header */}
         <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
           <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             aria-label="Ir para o topo"
+            title="Ir para o topo"
           >
             <span className="text-2xl text-sss-accent">🌱</span>
             <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
@@ -142,6 +142,8 @@ export default function CriadoresFavoritos() {
                           <button
                             onClick={() => toggleFavorito(criador.id)}
                             className="text-lg hover:scale-110 transition-transform"
+                            aria-label="Remover dos favoritos"
+                            title="Remover dos favoritos"
                           >
                             <FaHeart className="text-red-500" />
                           </button>
@@ -155,6 +157,8 @@ export default function CriadoresFavoritos() {
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   className="text-[#9147ff] text-lg hover:scale-110 transition-transform"
+                                  aria-label="Canal do Twitch"
+                                  title="Canal do Twitch"
                                 >
                                   <FaTwitch />
                                 </a>
@@ -165,6 +169,8 @@ export default function CriadoresFavoritos() {
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   className="text-[#ff0000] text-lg hover:scale-110 transition-transform"
+                                  aria-label="Canal do YouTube"
+                                  title="Canal do YouTube"
                                 >
                                   <FaYoutube />
                                 </a>
@@ -175,6 +181,8 @@ export default function CriadoresFavoritos() {
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   className="text-[#000] text-lg hover:scale-110 transition-transform"
+                                  aria-label="Perfil do TikTok"
+                                  title="Perfil do TikTok"
                                 >
                                   <FaTiktok />
                                 </a>
@@ -185,6 +193,8 @@ export default function CriadoresFavoritos() {
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   className="text-[#e1306c] text-lg hover:scale-110 transition-transform"
+                                  aria-label="Perfil do Instagram"
+                                  title="Perfil do Instagram"
                                 >
                                   <FaInstagram />
                                 </a>
