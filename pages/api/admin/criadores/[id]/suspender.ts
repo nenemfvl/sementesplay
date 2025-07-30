@@ -39,13 +39,56 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Criador não encontrado' })
     }
 
-    // Atualizar o nível do usuário para "comum" (remover status de criador)
+    // Remover todos os dados relacionados ao criador
+    console.log(`🗑️ Removendo dados do criador ${criador.usuario.nome}...`)
+
+    // 1. Remover votos em enquetes
+    await prisma.votoEnquete.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 2. Remover recados
+    await prisma.recado.deleteMany({
+      where: { 
+        OR: [
+          { remetenteId: criador.usuarioId },
+          { destinatarioId: criador.usuarioId }
+        ]
+      }
+    })
+
+    // 3. Remover interações com conteúdo
+    await prisma.interacaoConteudo.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 4. Remover enquetes
+    await prisma.enquete.deleteMany({
+      where: { criadorId: criador.id }
+    })
+
+    // 5. Remover conteúdo
+    await prisma.conteudo.deleteMany({
+      where: { criadorId: criador.id }
+    })
+
+    // 6. Remover candidatura de criador
+    await prisma.candidaturaCriador.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 7. Remover o registro do criador
+    await prisma.criador.delete({
+      where: { id: criador.id }
+    })
+
+    // 8. Atualizar o nível do usuário para "comum"
     await prisma.usuario.update({
       where: { id: criador.usuarioId },
       data: { nivel: 'comum' }
     })
 
-    console.log(`✅ Criador ${criador.usuario.nome} removido com sucesso`)
+    console.log(`✅ Criador ${criador.usuario.nome} e todos os dados relacionados removidos com sucesso`)
 
     return res.status(200).json({ 
       message: 'Criador removido com sucesso',
