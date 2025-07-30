@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         valorRepasse: repasse.valor,
         status: 'repasse_pendente',
         dataCompra: repasse.compra.dataCompra,
-        dataRepasse: repasse.dataCriacao,
+        dataRepasse: repasse.dataRepasse,
         comprovante: repasse.comprovanteUrl,
         usuario: repasse.compra.usuario,
         tipo: 'repasse'
