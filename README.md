@@ -94,7 +94,7 @@ npx prisma db push
 npm run dev
 ```
 
-O site estará disponível em: http://localhost:3000
+site estará disponível em: <http://localhost:3000>
 
 ## 📁 Estrutura do Projeto
 
@@ -268,4 +268,3 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 ---
 
 ## 🎯 Desenvolvido com ❤️ para a comunidade FiveM
-
