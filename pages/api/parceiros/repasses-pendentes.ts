@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       },
       orderBy: {
-        dataCriacao: 'desc'
+        dataRepasse: 'desc'
       }
     })
 
