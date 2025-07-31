@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     
     // Atualizar nível do usuário para 'comum'
-    await prisma.usuario.update({
+    const usuarioAtualizado = await prisma.usuario.update({
       where: { id: String(usuarioId) },
       data: { nivel: 'comum' }
     });
@@ -54,7 +54,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         lida: false
       }
     });
-    res.status(200).json({ message: 'Parceiro removido com sucesso' });
+    res.status(200).json({ 
+      message: 'Parceiro removido com sucesso',
+      usuarioAtualizado: {
+        id: usuarioAtualizado.id,
+        nome: usuarioAtualizado.nome,
+        email: usuarioAtualizado.email,
+        nivel: usuarioAtualizado.nivel,
+        tipo: usuarioAtualizado.tipo
+      }
+    });
   } catch (error) {
     console.error('Erro ao remover parceiro:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

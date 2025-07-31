@@ -65,7 +65,7 @@ interface Estatisticas {
 }
 
 export default function AdminParceiros() {
-  const [, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [parceiros, setParceiros] = useState<Parceiro[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -253,6 +253,18 @@ export default function AdminParceiros() {
         })
 
         if (response.ok) {
+          const data = await response.json()
+          
+          // Se o usuário removido for o usuário atual, atualizar a sessão
+          if (data.usuarioAtualizado && data.usuarioAtualizado.id === user?.id) {
+            // Atualizar dados do usuário na sessão
+            const { auth } = await import('../../lib/auth')
+            auth.updateUser({
+              nivel: data.usuarioAtualizado.nivel,
+              tipo: data.usuarioAtualizado.tipo
+            })
+          }
+          
           alert('Parceiro removido com sucesso!')
           setParceiroIdToRemove('')
           setShowRemoveById(false)
