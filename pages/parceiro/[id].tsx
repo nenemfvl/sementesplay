@@ -131,21 +131,21 @@ export default function ParceiroPerfil() {
         const conteudosResponse = await fetch(`/api/parceiros/conteudos?parceiroId=${parceiroId}`)
         if (conteudosResponse.ok) {
           const conteudosData = await conteudosResponse.json()
-          setConteudos(conteudosData)
+          setConteudos(Array.isArray(conteudosData.conteudos) ? conteudosData.conteudos : [])
         }
 
         // Carregar transações do parceiro
         const transacoesResponse = await fetch(`/api/parceiros/transacoes?parceiroId=${parceiroId}`)
         if (transacoesResponse.ok) {
           const transacoesData = await transacoesResponse.json()
-          setTransacoes(transacoesData)
+          setTransacoes(Array.isArray(transacoesData) ? transacoesData : [])
         }
 
         // Carregar códigos do parceiro
         const codigosResponse = await fetch(`/api/parceiros/codigos?parceiroId=${parceiroId}`)
         if (codigosResponse.ok) {
           const codigosData = await codigosResponse.json()
-          setCodigos(codigosData)
+          setCodigos(Array.isArray(codigosData) ? codigosData : [])
         }
       } else if (response.status === 404) {
         // Parceiro não encontrado - não carregar outros dados
