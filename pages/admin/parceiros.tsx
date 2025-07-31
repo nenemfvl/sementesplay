@@ -80,6 +80,8 @@ export default function AdminParceiros() {
   const [showBanModal, setShowBanModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [motivo, setMotivo] = useState('');
+  const [showRemoveById, setShowRemoveById] = useState(false);
+  const [parceiroIdToRemove, setParceiroIdToRemove] = useState('');
 
   useEffect(() => {
     const currentUser = auth.getUser();
@@ -220,6 +222,52 @@ export default function AdminParceiros() {
     }
   };
 
+  const removerParceiroPorId = async (parceiroId?: string) => {
+    const idToRemove = parceiroId || parceiroIdToRemove
+    
+    if (!idToRemove.trim()) {
+      alert('Selecione um parceiro para remover')
+      return
+    }
+
+    // Encontrar o parceiro na lista para mostrar o nome
+    const parceiro = parceiros.find(p => p.id === idToRemove)
+    const nomeParceiro = parceiro ? parceiro.usuario.nome : `ID: ${idToRemove}`
+
+    if (confirm(`Tem certeza que deseja remover o parceiro "${nomeParceiro}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Status de parceiro\n• Todos os códigos de cashback gerados\n• Todas as transações relacionadas\n• Todas as estatísticas de parceiro\n• Todas as notificações de parceiro\n• Todas as permissões de parceiro\n\n💬 O usuário voltará ao nível comum.`)) {
+      try {
+        const token = localStorage.getItem('sementesplay_token')
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json'
+        }
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+
+        const response = await fetch(`/api/admin/parceiros/${parceiro?.usuarioId || idToRemove}/remover`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers,
+          body: JSON.stringify({ motivo: 'Remoção por ID - Admin' })
+        })
+
+        if (response.ok) {
+          alert('Parceiro removido com sucesso!')
+          setParceiroIdToRemove('')
+          setShowRemoveById(false)
+          loadParceiros() // Recarregar lista
+        } else {
+          const error = await response.text()
+          alert(`Erro ao remover parceiro: ${error}`)
+        }
+      } catch (error) {
+        console.error('Erro ao remover parceiro:', error)
+        alert('Erro ao remover parceiro')
+      }
+    }
+  }
+
   const parceirosFiltrados = parceiros.filter(parceiro => {
     const termo = searchTerm.toLowerCase();
     return (
@@ -259,16 +307,81 @@ export default function AdminParceiros() {
 
           {/* Search Bar */}
           <div className="mb-6">
-            <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar por nome, email ou cidade..."
-                className="w-full pl-12 pr-4 py-3 bg-sss-medium border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-sss-accent"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nome, email ou cidade..."
+                  className="w-full pl-12 pr-4 py-3 bg-sss-medium border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:border-sss-accent"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div>
+                <button
+                  onClick={() => setShowRemoveById(!showRemoveById)}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <MagnifyingGlassIcon className="w-4 h-4" />
+                  Remover por ID
+                </button>
+              </div>
             </div>
+            
+            {/* Remove by ID section */}
+            {showRemoveById && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg"
+              >
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-red-400 mb-2">
+                    Selecione o Parceiro para Remover
+                  </h3>
+                  <p className="text-sm text-red-300">
+                    Clique no parceiro que deseja remover da plataforma
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto">
+                  {parceiros.map((parceiro) => (
+                    <button
+                      key={parceiro.id}
+                      onClick={() => removerParceiroPorId(parceiro.id)}
+                      className="p-3 bg-sss-dark border border-red-500/30 rounded-lg hover:bg-red-900/20 transition-colors text-left"
+                    >
+                      <div className="font-medium text-sss-white">{parceiro.usuario.nome}</div>
+                      <div className="text-sm text-gray-400">{parceiro.usuario.email}</div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          Parceiro
+                        </span>
+                        <span className="text-xs text-red-400">Clique para remover</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setShowRemoveById(false)
+                      setParceiroIdToRemove('')
+                    }}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+                
+                <p className="text-xs text-red-400 mt-2">
+                  ⚠️ Esta ação irá remover completamente o parceiro e todos os seus dados
+                </p>
+              </motion.div>
+            )}
           </div>
 
           {/* Loading State */}
