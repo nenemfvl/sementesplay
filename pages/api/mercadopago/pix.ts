@@ -26,6 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Configurar access token do Mercado Pago
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
     
+    console.log('Access Token configurado:', accessToken ? 'SIM' : 'NÃO')
+    
     if (!accessToken) {
       console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
       return res.status(500).json({ 
@@ -48,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       notification_url: `${process.env.NEXTAUTH_URL || 'https://sementesplay.vercel.app'}/api/mercadopago/webhook`
     }
 
-    console.log('Criando pagamento no Mercado Pago:', payment_data)
+    console.log('Criando pagamento no Mercado Pago:', JSON.stringify(payment_data, null, 2))
 
     // Fazer requisição para a API do Mercado Pago
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
@@ -60,23 +62,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify(payment_data)
     })
 
+    console.log('Status da resposta Mercado Pago:', response.status)
+    console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()))
+
     if (!response.ok) {
       const errorData = await response.json()
-      console.error('Erro na API do Mercado Pago:', errorData)
+      console.error('Erro na API do Mercado Pago:', JSON.stringify(errorData, null, 2))
       return res.status(400).json({ 
         error: 'Erro ao gerar PIX',
         details: errorData.message || 'Erro na integração com Mercado Pago',
-        mercadopago_error: errorData
+        mercadopago_error: errorData,
+        status: response.status
       })
     }
 
     const payment = await response.json()
-    console.log('Pagamento criado no Mercado Pago:', payment.id)
+    console.log('Pagamento criado no Mercado Pago:', JSON.stringify(payment, null, 2))
 
     if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
       const pixData = payment.point_of_interaction?.transaction_data
 
       if (!pixData) {
+        console.error('Dados PIX não disponíveis no pagamento:', payment)
         return res.status(400).json({ error: 'Dados PIX não disponíveis' })
       }
 
