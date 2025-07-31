@@ -12,20 +12,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'PaymentId e usuarioId obrigatórios' })
     }
 
-    // Simular verificação de pagamento
-    const tempoDecorrido = Date.now() - parseInt(paymentId.split('_')[1])
-    const confirmado = tempoDecorrido > 10000 // 10 segundos para simular confirmação
-
-    if (confirmado) {
-      return res.status(200).json({
-        status: 'confirmado',
-        message: 'Pagamento confirmado com sucesso!'
-      })
-    }
+    // IMPORTANTE: Aqui você deve integrar com uma API real de verificação PIX
+    // Por exemplo: API do banco, API do PIX, etc.
+    
+    // Por enquanto, vamos simular que NUNCA foi pago automaticamente
+    // Só confirma se o usuário realmente fez o pagamento
+    
+    // Para testar, você pode:
+    // 1. Fazer o pagamento real via QR Code
+    // 2. Depois acessar: /api/verificar-pagamento-simple?paymentId=SEU_PAYMENT_ID&usuarioId=SEU_USUARIO_ID
+    // 3. E retornar status: 'confirmado' manualmente
 
     return res.status(200).json({
       status: 'pendente',
-      message: 'Aguardando confirmação do pagamento'
+      message: 'Aguardando confirmação do pagamento real',
+      instrucoes: [
+        '1. Faça o pagamento usando o QR Code ou chave PIX',
+        '2. Aguarde alguns minutos para processamento',
+        '3. O status será atualizado automaticamente quando confirmado'
+      ]
     })
 
   } catch (error) {
