@@ -21,6 +21,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Parceiro não encontrado' })
     }
 
+    // Buscar solicitações de compra pendentes
+    const solicitacoesPendentes = await prisma.solicitacaoCompra.findMany({
+      where: {
+        parceiroId: parceiro.id,
+        status: 'pendente'
+      },
+      include: {
+        usuario: {
+          select: {
+            nome: true,
+            email: true
+          }
+        }
+      },
+      orderBy: {
+        dataCompra: 'desc'
+      }
+    })
+
     // Buscar compras aguardando repasse
     const comprasAguardandoRepasse = await prisma.compraParceiro.findMany({
       where: {
@@ -67,6 +86,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Formatar dados para o frontend
     const repassesFormatados = [
+      // Solicitações pendentes
+      ...solicitacoesPendentes.map(solicitacao => ({
+        id: solicitacao.id,
+        valorCompra: solicitacao.valorCompra,
+        valorRepasse: solicitacao.valorCompra * 0.10, // 10% da compra
+        status: 'solicitacao_pendente',
+        dataCompra: solicitacao.dataCompra,
+        dataRepasse: null,
+        comprovante: solicitacao.comprovanteUrl,
+        usuario: solicitacao.usuario,
+        tipo: 'solicitacao'
+      })),
       // Compras aguardando repasse
       ...comprasAguardandoRepasse.map(compra => ({
         id: compra.id,

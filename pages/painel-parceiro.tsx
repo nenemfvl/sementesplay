@@ -404,6 +404,8 @@ export default function PainelParceiro() {
   const [pagamentoPIX, setPagamentoPIX] = useState<any>(null);
   const [verificandoPagamento, setVerificandoPagamento] = useState(false);
 
+
+
   async function handleFazerPagamentoPIX(repasse: Repasse) {
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
@@ -1067,12 +1069,12 @@ export default function PainelParceiro() {
                                 Comprovante
                               </button>
                             )}
-                            <button
-                              onClick={() => handleFazerPagamentoPIX(repasse)}
-                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                            >
-                              Pagar PIX
-                            </button>
+                                                         <button
+                               onClick={() => handleFazerPagamentoPIX(repasse)}
+                               className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
+                             >
+                               Pagar PIX
+                             </button>
                           </div>
                         </div>
                       </div>
