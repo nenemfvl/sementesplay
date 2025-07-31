@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       paymentId: paymentId,
       pixData: pixData,
-      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify(pixData))}`,
+      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('PIX:82988181358')}`,
       instrucoes: [
         '1. Abra seu app bancário',
         '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
