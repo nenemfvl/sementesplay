@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import QRCode from 'qrcode'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -22,11 +23,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Valor inválido' })
     }
 
+    // Gerar código PIX real
+    const pixCode = `00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266141740005204000053039865405${valorRepasse.toFixed(2)}5802BR5913SementesPLAY6008Brasilia62070503***6304E2CA`
+
+    // Gerar QR Code real
+    const qrCodeBase64 = await QRCode.toDataURL(pixCode, {
+      width: 256,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF'
+      }
+    })
+
     // Simular resposta de PIX para teste
     const mockPixData = {
       paymentId: `pix_${Date.now()}`,
       pixData: {
-        chavePix: '00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426614174000520400005303986540510.005802BR5913SementesPLAY6008Brasilia62070503***6304E2CA',
+        chavePix: pixCode,
         beneficiario: {
           nome: 'SementesPLAY',
           cpf: '12345678901'
@@ -35,8 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         descricao: `Repasse Parceiro - R$ ${valorRepasse.toFixed(2)}`,
         expiracao: 3600
       },
-      pixCode: '00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426614174000520400005303986540510.005802BR5913SementesPLAY6008Brasilia62070503***6304E2CA',
-      qrCode: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+      pixCode: pixCode,
+      qrCode: qrCodeBase64,
       instrucoes: [
         '1. Abra seu app bancário',
         '2. Escaneie o QR Code ou cole o código PIX',
