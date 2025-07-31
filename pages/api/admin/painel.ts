@@ -16,7 +16,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Repasses pendentes
     const repassesPendentes = await prisma.repasseParceiro.findMany({
       where: { status: 'pendente' },
-      include: { parceiro: true, compra: true }
+      include: { 
+    parceiro: true, 
+    compraParceiro: {
+      include: {
+        usuario: true
+      }
+    }
+  }
     })
 
     // Fundo de sementes atual (não distribuído)
