@@ -23,12 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Valor inválido' })
     }
 
-    // Gerar código PIX válido no formato EMV
-    const valorFormatado = valorRepasse.toFixed(2).replace('.', '')
-    const valorLength = valorFormatado.length.toString().padStart(2, '0')
-    
-    // Código PIX EMV válido
-    const pixCode = `00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-42661417400052040000530398654${valorLength}${valorFormatado}5802BR5913SementesPLAY6008Brasilia62070503***6304E2CA`
+    // QR Code PIX simples para demonstração
+    // Em produção, isso seria gerado por um gateway de pagamento real
+    const pixCode = `PIX DEMO - R$ ${valorRepasse.toFixed(2)} - SementesPLAY`
 
     // Gerar QR Code real
     const qrCodeBase64 = await QRCode.toDataURL(pixCode, {
@@ -63,10 +60,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         '5. Faça o pagamento',
         '6. Aguarde a confirmação automática'
       ],
-      status: 'pendente'
+      status: 'pendente',
+      observacao: 'Este é um QR Code de demonstração. Para PIX real, será necessário integrar com Mercado Pago ou outro gateway.'
     }
 
-    console.log('Retornando dados PIX simulados')
+    console.log('Retornando dados PIX de demonstração com valor:', valorRepasse)
     return res.status(200).json(mockPixData)
 
   } catch (error) {
