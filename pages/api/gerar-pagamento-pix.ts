@@ -44,6 +44,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Gerar paymentId
     const paymentId = `pix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
+    // Gerar dados do PIX
+    const pixData = {
+      chavePix: '82988181358',
+      beneficiario: {
+        nome: 'SementesPLAY',
+        cpf: '12345678901'
+      },
+      valor: repasse.valor,
+      descricao: `Repasse Parceiro - R$ ${repasse.valor.toFixed(2)}`,
+      expiracao: 3600
+    }
+
     // Atualizar repasse
     await prisma.repasseParceiro.update({
       where: { id: repasseId },
@@ -55,7 +67,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({
       paymentId: paymentId,
-      valor: repasse.valor,
+      pixData: pixData,
+      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify(pixData))}`,
+      instrucoes: [
+        '1. Abra seu app bancário',
+        '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
+        '3. Confirme o valor do repasse (10% da compra)',
+        '4. Faça o pagamento do valor do repasse',
+        '5. Aguarde a confirmação automática'
+      ],
       status: 'pendente'
     })
 

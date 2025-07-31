@@ -411,10 +411,14 @@ export default function PainelParceiro() {
     setShowModalPIX(true);
     
     try {
-      const response = await fetch('/api/simple-test', {
+      const response = await fetch('/api/gerar-pagamento-pix', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+          repasseId: repasse.id,
+          parceiroId: parceiro?.id,
+          usuarioId: user?.id
+        })
       });
 
       if (response.ok) {
