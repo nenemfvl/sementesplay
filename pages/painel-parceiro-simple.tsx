@@ -13,7 +13,8 @@ export default function PainelParceiroSimple() {
         body: JSON.stringify({
           repasseId: 'teste',
           parceiroId: 'teste',
-          usuarioId: 'teste'
+          usuarioId: 'teste',
+          valor: 6.00 // Valor real do repasse (10% de R$ 60.00)
         })
       });
 
