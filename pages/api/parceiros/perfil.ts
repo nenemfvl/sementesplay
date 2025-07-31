@@ -54,18 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
     }
-      include: {
-        usuario: {
-          select: {
-            id: true,
-            nome: true,
-            email: true,
-            tipo: true,
-            nivel: true
-          }
-        }
-      }
-    })
 
     if (!parceiro) {
       return res.status(404).json({ error: 'Parceiro não encontrado' })
