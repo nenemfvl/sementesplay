@@ -761,18 +761,24 @@ export default function PainelParceiro() {
                   </div>
 
               {pagamentoPIX ? (
-                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 max-h-[80vh] overflow-y-auto">
                   <h3 className="text-green-400 font-semibold mb-4">Pagamento PIX Integrado</h3>
                   
                   {/* QR Code */}
                   <div className="text-center mb-4">
-                    <Image 
+                    <img 
                       src={pagamentoPIX.qrCode} 
                       alt="QR Code PIX" 
-                      width={192}
-                      height={192}
-                      className="mx-auto bg-white rounded-lg p-2"
+                      className="mx-auto bg-white rounded-lg p-2 w-48 h-48"
                     />
+                  </div>
+
+                  {/* Código PIX */}
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-400 mb-2">Código PIX (copie e cole no app):</p>
+                    <div className="bg-gray-700 p-3 rounded-lg">
+                      <code className="text-xs text-white break-all">{pagamentoPIX.pixCode}</code>
+                    </div>
                   </div>
 
                   {/* Dados do PIX */}
