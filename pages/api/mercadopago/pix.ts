@@ -15,11 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const valorRepasse = parseFloat(valor)
 
-    // Configurar Mercado Pago
-    mercadopago.configure({
-      access_token: process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
-    })
-
     // Criar pagamento PIX no Mercado Pago
     const payment_data = {
       transaction_amount: valorRepasse,
@@ -34,13 +29,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mercadopago/webhook`
     }
 
-    const payment = await mercadopago.payment.save(payment_data)
+    // Configurar access token
+    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
+    
+    // Fazer requisição direta para a API do Mercado Pago
+    const response = await fetch('https://api.mercadopago.com/v1/payments', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payment_data)
+    })
 
-    if (payment.body.status === 'pending' && payment.body.payment_method_id === 'pix') {
-      const pixData = payment.body.point_of_interaction.transaction_data
+    const payment = await response.json()
+
+    if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
+      const pixData = payment.point_of_interaction.transaction_data
 
       return res.status(200).json({
-        paymentId: payment.body.id,
+        paymentId: payment.id,
         pixData: {
           chavePix: pixData.qr_code,
           beneficiario: {
