@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -6,13 +7,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Verificar autenticação via cookie
+    const cookies = req.headers.cookie
+    if (!cookies) {
+      return res.status(401).json({ error: 'Não autorizado' })
+    }
+
+    const userCookie = cookies.split(';').find(c => c.trim().startsWith('sementesplay_user='))
+    if (!userCookie) {
+      return res.status(401).json({ error: 'Não autorizado' })
+    }
+
+    const userData = decodeURIComponent(userCookie.split('=')[1])
+    const user = JSON.parse(userData)
+
+    if (!user?.id) {
+      return res.status(401).json({ error: 'Não autorizado' })
+    }
+
     const { repasseId, parceiroId, usuarioId, valor } = req.body
 
     if (!repasseId || !parceiroId || !usuarioId || !valor) {
       return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
     }
 
+    // Verificar se o usuário é o parceiro correto
+    const parceiro = await prisma.parceiro.findFirst({
+      where: {
+        id: parceiroId,
+        usuarioId: user.id
+      }
+    })
+
+    if (!parceiro) {
+      return res.status(403).json({ error: 'Acesso negado' })
+    }
+
     const valorRepasse = parseFloat(valor)
+
+    if (isNaN(valorRepasse) || valorRepasse <= 0) {
+      return res.status(400).json({ error: 'Valor inválido' })
+    }
 
     // Criar pagamento PIX no Mercado Pago
     const payment_data = {
@@ -25,11 +60,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         last_name: 'SementesPLAY'
       },
       external_reference: repasseId,
-      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mercadopago/webhook`
+      notification_url: `${process.env.NEXTAUTH_URL || 'https://sementesplay.vercel.app'}/api/mercadopago/webhook`
     }
 
     // Configurar access token
-    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
+    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
+    
+    if (!accessToken) {
+      console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
+      return res.status(500).json({ error: 'Configuração de pagamento não disponível' })
+    }
     
     // Fazer requisição direta para a API do Mercado Pago
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
@@ -41,10 +81,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify(payment_data)
     })
 
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Erro na API do Mercado Pago:', errorData)
+      return res.status(400).json({ 
+        error: 'Erro ao gerar PIX',
+        details: errorData.message || 'Erro na integração com Mercado Pago'
+      })
+    }
+
     const payment = await response.json()
 
     if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
-      const pixData = payment.point_of_interaction.transaction_data
+      const pixData = payment.point_of_interaction?.transaction_data
+
+      if (!pixData) {
+        return res.status(400).json({ error: 'Dados PIX não disponíveis' })
+      }
 
       return res.status(200).json({
         paymentId: payment.id,
@@ -71,7 +124,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'pendente'
       })
     } else {
-      return res.status(400).json({ error: 'Erro ao gerar PIX' })
+      console.error('Status de pagamento inválido:', payment)
+      return res.status(400).json({ error: 'Erro ao gerar PIX - status inválido' })
     }
 
   } catch (error) {
