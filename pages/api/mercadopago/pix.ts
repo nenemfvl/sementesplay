@@ -27,6 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
     
     console.log('Access Token configurado:', accessToken ? 'SIM' : 'NÃO')
+    console.log('Access Token (primeiros 10 chars):', accessToken ? accessToken.substring(0, 10) + '...' : 'NÃO')
     
     if (!accessToken) {
       console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
@@ -63,6 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     console.log('Status da resposta Mercado Pago:', response.status)
+    console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()))
 
     if (!response.ok) {
       const errorData = await response.json()
@@ -71,7 +73,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         error: 'Erro ao gerar PIX',
         details: errorData.message || 'Erro na integração com Mercado Pago',
         mercadopago_error: errorData,
-        status: response.status
+        status: response.status,
+        debug_info: {
+          access_token_length: accessToken.length,
+          access_token_start: accessToken.substring(0, 10) + '...',
+          payment_data: payment_data
+        }
       })
     }
 
