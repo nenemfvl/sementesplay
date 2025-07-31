@@ -122,12 +122,23 @@ export default function PainelParceiro() {
     const checkAuth = async () => {
       try {
         const currentUser = auth.getUser();
-    if (!currentUser) {
+        if (!currentUser) {
           window.location.href = '/login';
           return;
-    }
-    
-    if (currentUser.nivel !== 'parceiro') {
+        }
+        
+        // Verificar se o usuário é parceiro no banco de dados
+        const response = await fetch(`/api/parceiros/perfil?usuarioId=${currentUser.id}`);
+        if (!response.ok) {
+          // Se não conseguir buscar o perfil de parceiro, o usuário não é parceiro
+          alert('Acesso negado. Apenas parceiros podem acessar esta área.');
+          window.location.href = '/perfil';
+          return;
+        }
+        
+        const parceiroData = await response.json();
+        if (!parceiroData || !parceiroData.id) {
+          // Se não retornou dados de parceiro, o usuário não é parceiro
           alert('Acesso negado. Apenas parceiros podem acessar esta área.');
           window.location.href = '/perfil';
           return;
