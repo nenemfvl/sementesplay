@@ -24,6 +24,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { usuarioId: String(usuarioId) }
     });
     
+    // Atualizar nível do usuário para 'comum'
+    await prisma.usuario.update({
+      where: { id: String(usuarioId) },
+      data: { nivel: 'comum' }
+    });
+    
     // Remover permissões usando o PermissionsManager
     await PermissionsManager.removeParceiroPermissions(String(usuarioId));
     const { motivo } = req.body;
