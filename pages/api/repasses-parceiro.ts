@@ -39,13 +39,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Cria registro do repasse
     const repasse = await prisma.repasseParceiro.create({
-      data: {
-        parceiroId,
-        compraId,
-        valor: parseFloat(valor),
-        comprovanteUrl: comprovanteUrl || null,
-        status: 'pendente',
-      }
+          data: {
+      parceiroId,
+      compraParceiroId: compraId,
+      valorRepasse: parseFloat(valor),
+      comprovanteUrl: comprovanteUrl || null,
+      status: 'pendente',
+    }
     })
 
     // Atualiza status da compra para aguardando confirmação do repasse
