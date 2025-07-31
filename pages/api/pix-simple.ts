@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const pixData = {
       chavePix: '82988181358',
       beneficiario: {
-        nome: 'SementesPLAY',
+        nome: 'VANISLAN LEOPOLDINO DA SILVA',
         cpf: '12345678901'
       },
       valor: 7.50,
