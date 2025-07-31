@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../auth/[...nextauth]'
 import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,14 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const session = await getServerSession(req, res, authOptions)
-    if (!session?.user?.id) {
-      return res.status(401).json({ error: 'Não autorizado' })
-    }
+    const { repasseId, parceiroId, usuarioId } = req.body
 
-    const { repasseId, parceiroId } = req.body
-
-    if (!repasseId || !parceiroId) {
+    if (!repasseId || !parceiroId || !usuarioId) {
       return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
     }
 
@@ -24,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const parceiro = await prisma.parceiro.findFirst({
       where: {
         id: parceiroId,
-        usuarioId: session.user.id
+        usuarioId: usuarioId
       }
     })
 

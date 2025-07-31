@@ -416,7 +416,8 @@ export default function PainelParceiro() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           repasseId: repasse.id,
-          parceiroId: parceiro?.id
+          parceiroId: parceiro?.id,
+          usuarioId: user?.id
         })
       });
 
@@ -439,7 +440,7 @@ export default function PainelParceiro() {
     
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`/api/pix/verificar-pagamento?paymentId=${paymentId}`);
+        const response = await fetch(`/api/pix/verificar-pagamento?paymentId=${paymentId}&usuarioId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
           
