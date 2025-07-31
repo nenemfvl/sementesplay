@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           usuarioId: 'admin',
           tipo: 'repasse_confirmado',
           titulo: 'Novo Comprovante PIX Recebido',
-          mensagem: `Parceiro enviou comprovante PIX para repasse de R$ ${repasse.valor.toFixed(2)}`,
+          mensagem: `Parceiro enviou comprovante PIX para repasse de R$ ${repasse.valorRepasse.toFixed(2)}`,
           data: new Date()
         }
       })

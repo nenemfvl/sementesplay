@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Calcula as porcentagens - NOVO FLUXO
-    const valor = repasse.valor
+    const valor = repasse.valorRepasse
     const pctUsuario = Math.round(valor * 0.05)    // 5% para jogador
     const pctSistema = valor * 0.025               // 2,5% para sistema SementesPLAY
     const pctFundo = valor * 0.025                 // 2,5% para fundo de distribuição
