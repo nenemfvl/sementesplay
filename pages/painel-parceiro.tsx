@@ -740,23 +740,23 @@ export default function PainelParceiro() {
             </div>
             
             <div className="space-y-4">
-              <div className="bg-sss-light/30 rounded-lg p-4">
-                <h3 className="text-sss-white font-semibold mb-2">Detalhes do Repasse</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Valor da Compra:</span>
-                    <span className="text-sss-white">R$ {repasseSelecionado.valorCompra.toFixed(2)}</span>
+                                <div className="bg-sss-light/30 rounded-lg p-4">
+                    <h3 className="text-sss-white font-semibold mb-2">Detalhes do Repasse</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Valor da Compra:</span>
+                        <span className="text-sss-white">R$ {repasseSelecionado.valorCompra.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Valor do Repasse (10%):</span>
+                        <span className="text-sss-accent font-semibold">R$ {repasseSelecionado.valorRepasse.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Data da Compra:</span>
+                        <span className="text-sss-white">{new Date(repasseSelecionado.dataCompra).toLocaleDateString('pt-BR')}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Valor do Repasse:</span>
-                    <span className="text-sss-accent font-semibold">R$ {repasseSelecionado.valorRepasse.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Data da Compra:</span>
-                    <span className="text-sss-white">{new Date(repasseSelecionado.dataCompra).toLocaleDateString('pt-BR')}</span>
-                  </div>
-                </div>
-              </div>
 
               {pagamentoPIX ? (
                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">

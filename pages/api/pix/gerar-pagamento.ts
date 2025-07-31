@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         nome: 'SementesPLAY',
         cpf: '12345678901' // CPF do beneficiário
       },
-      valor: repasse.valorRepasse,
+      valor: repasse.valorRepasse, // Apenas o valor do repasse (10% da compra)
       descricao: `Repasse Parceiro - R$ ${repasse.valorRepasse.toFixed(2)}`,
       expiracao: 3600 // 1 hora
     }
@@ -79,8 +79,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       instrucoes: [
         '1. Abra seu app bancário',
         '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
-        '3. Confirme o valor e descrição',
-        '4. Faça o pagamento',
+        '3. Confirme o valor do repasse (10% da compra)',
+        '4. Faça o pagamento do valor do repasse',
         '5. Aguarde a confirmação automática'
       ],
       status: 'pendente'
