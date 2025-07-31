@@ -676,7 +676,7 @@ export default function Cashback() {
                         <p className="text-gray-400">Você não tem compras aguardando aprovação de cashback</p>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
                         {solicitacoesPendentes.map((solicitacao) => (
                           <motion.div
                             key={solicitacao.id}
