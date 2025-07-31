@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { status: 'pendente' },
       include: { 
     parceiro: true, 
-    compraParceiro: {
+    compra: {
       include: {
         usuario: true
       }

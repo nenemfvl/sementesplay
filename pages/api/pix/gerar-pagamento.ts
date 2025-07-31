@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'pendente'
       },
       include: {
-        compraParceiro: true
+        compra: true
       }
     })
 
@@ -51,8 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         nome: 'SementesPLAY',
         cpf: '12345678901' // CPF do beneficiário
       },
-      valor: repasse.valorRepasse, // Apenas o valor do repasse (10% da compra)
-      descricao: `Repasse Parceiro - R$ ${repasse.valorRepasse.toFixed(2)}`,
+      valor: repasse.valor, // Apenas o valor do repasse (10% da compra)
+      descricao: `Repasse Parceiro - R$ ${repasse.valor.toFixed(2)}`,
       expiracao: 3600 // 1 hora
     }
 

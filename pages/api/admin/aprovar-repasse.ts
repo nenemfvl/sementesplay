@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const repasse = await prisma.repasseParceiro.findUnique({
       where: { id: repasseId },
       include: { 
-        compraParceiro: {
+        compra: {
           include: {
             parceiro: true
           }
@@ -31,14 +31,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Repasse já processado' })
     }
 
-    const compra = repasse.compraParceiro
-    const parceiro = repasse.compraParceiro.parceiro
+    const compra = repasse.compra
+    const parceiro = repasse.compra.parceiro
     if (!compra || !parceiro) {
       return res.status(400).json({ error: 'Dados inconsistentes' })
     }
 
     // Calcula as porcentagens - NOVO FLUXO
-    const valor = repasse.valorRepasse
+    const valor = repasse.valor
     const pctUsuario = Math.round(valor * 0.05)    // 5% para jogador
     const pctSistema = valor * 0.025               // 2,5% para sistema SementesPLAY
     const pctFundo = valor * 0.025                 // 2,5% para fundo de distribuição

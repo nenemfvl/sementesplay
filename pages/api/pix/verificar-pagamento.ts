@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       include: {
         parceiro: true,
-        compraParceiro: true
+        compra: true
       }
     })
 
@@ -48,16 +48,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Atualizar status da compra
       await prisma.compraParceiro.update({
-        where: { id: repasse.compraParceiro.id },
+        where: { id: repasse.compra.id },
         data: {
           status: 'cashback_liberado'
         }
       })
 
       // Adicionar sementes ao usuário
-      const valorSementes = repasse.compraParceiro.valorCompra * 0.05 // 5% para o usuário
+      const valorSementes = repasse.compra.valorCompra * 0.05 // 5% para o usuário
       await prisma.usuario.update({
-        where: { id: repasse.compraParceiro.usuarioId },
+        where: { id: repasse.compra.usuarioId },
         data: {
           sementes: {
             increment: valorSementes
@@ -68,9 +68,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Criar notificação para o usuário
       await prisma.notificacao.create({
         data: {
-          usuarioId: repasse.compraParceiro.usuarioId,
+          usuarioId: repasse.compra.usuarioId,
           titulo: 'Cashback Liberado!',
-          mensagem: `Seu cashback de ${valorSementes} Sementes foi liberado pela compra de R$ ${repasse.compraParceiro.valorCompra.toFixed(2)}.`,
+          mensagem: `Seu cashback de ${valorSementes} Sementes foi liberado pela compra de R$ ${repasse.compra.valorCompra.toFixed(2)}.`,
           tipo: 'cashback_liberado'
         }
       })

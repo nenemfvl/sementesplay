@@ -666,18 +666,17 @@ model CompraParceiro {
 
 // NOVO: Registro de repasses feitos pelo parceiro
 model RepasseParceiro {
-  id             String    @id @default(cuid())
+  id             String   @id @default(cuid())
   parceiroId     String
-  compraParceiroId String  @unique
-  valorRepasse   Float
-  dataRepasse    DateTime  @default(now())
-  dataPagamento  DateTime?
+  compraId       String   @unique
+  valor          Float
+  dataRepasse    DateTime @default(now())
   comprovanteUrl String?
-  paymentId      String?   // ID único do pagamento PIX
-  status         String    @default("pendente") // pendente, aguardando_pagamento, pago, rejeitado
+  paymentId      String? // ID único do pagamento PIX
+  status         String   @default("pendente") // pendente, aguardando_pagamento, pago, rejeitado
 
-  parceiro       Parceiro       @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
-  compraParceiro CompraParceiro @relation(fields: [compraParceiroId], references: [id], onDelete: Cascade)
+  parceiro  Parceiro       @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  compra    CompraParceiro @relation(fields: [compraId], references: [id], onDelete: Cascade)
 
   @@map("repasses_parceiro")
 }
