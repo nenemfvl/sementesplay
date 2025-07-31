@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'pendente'
       },
       include: {
-        compra: {
+        compraParceiro: {
           include: {
             usuario: {
               select: {
@@ -113,13 +113,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Repasses pendentes
       ...repassesPendentes.map(repasse => ({
         id: repasse.id,
-        valorCompra: repasse.compra.valorCompra,
-        valorRepasse: repasse.valor,
+        valorCompra: repasse.compraParceiro.valorCompra,
+        valorRepasse: repasse.valorRepasse,
         status: 'repasse_pendente',
-        dataCompra: repasse.compra.dataCompra,
+        dataCompra: repasse.compraParceiro.dataCompra,
         dataRepasse: repasse.dataRepasse,
         comprovante: repasse.comprovanteUrl,
-        usuario: repasse.compra.usuario,
+        usuario: repasse.compraParceiro.usuario,
         tipo: 'repasse'
       }))
     ]

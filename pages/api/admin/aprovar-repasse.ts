@@ -16,7 +16,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Busca o repasse e a compra vinculada
     const repasse = await prisma.repasseParceiro.findUnique({
       where: { id: repasseId },
-      include: { compra: true, parceiro: true }
+      include: { 
+        compraParceiro: {
+          include: {
+            parceiro: true
+          }
+        }
+      }
     })
     if (!repasse) {
       return res.status(404).json({ error: 'Repasse não encontrado' })
@@ -25,8 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Repasse já processado' })
     }
 
-    const compra = repasse.compra
-    const parceiro = repasse.parceiro
+    const compra = repasse.compraParceiro
+    const parceiro = repasse.compraParceiro.parceiro
     if (!compra || !parceiro) {
       return res.status(400).json({ error: 'Dados inconsistentes' })
     }

@@ -15,7 +15,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Busca o repasse
     const repasse = await prisma.repasseParceiro.findUnique({
       where: { id: repasseId },
-      include: { compra: true }
+      include: { 
+        compraParceiro: {
+          include: {
+            parceiro: true
+          }
+        }
+      }
     })
 
     if (!repasse) {
@@ -34,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Atualizar status da compra para rejeitada
     await prisma.compraParceiro.update({
-      where: { id: repasse.compraId },
+      where: { id: repasse.compraParceiroId },
       data: { status: 'rejeitada' }
     })
 

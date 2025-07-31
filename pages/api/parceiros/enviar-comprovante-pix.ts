@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Atualizar status da compra relacionada
     await prisma.compraParceiro.update({
-      where: { id: repasse.compraId },
+      where: { id: repasse.compraParceiroId },
       data: { status: 'cashback_liberado' }
     })
 
