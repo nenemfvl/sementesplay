@@ -699,7 +699,8 @@ export default function Cashback() {
                               <div className="text-right">
                                 <p className="text-yellow-500 font-semibold">+{solicitacao.valorCashback} Sementes</p>
                                 <p className="text-sm text-yellow-400">
-                                  {solicitacao.status === 'aguardando_repasse' ? 'Aguardando repasse' : 'Repasse pendente'}
+                                  {solicitacao.status === 'solicitacao_pendente' ? 'Solicitação pendente' : 
+                                   solicitacao.status === 'aguardando_repasse' ? 'Aguardando repasse' : 'Repasse pendente'}
                                 </p>
                               </div>
                             </div>
