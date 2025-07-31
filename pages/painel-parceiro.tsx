@@ -59,14 +59,6 @@ type Repasse = {
   usuario?: { nome: string; email: string };
 };
 
-type SolicitacaoCompra = {
-  id: string;
-  valorCompra: number;
-  dataCompra: string;
-  comprovanteUrl?: string;
-  usuario: { nome: string; email: string; avatar?: string };
-};
-
 type ConteudoParceiro = {
   id: string;
   titulo: string;
@@ -98,6 +90,7 @@ export default function PainelParceiro() {
   const [repasses, setRepasses] = useState<Repasse[]>([]);
   const [loadingRepasses, setLoadingRepasses] = useState(true);
   const [parceiro, setParceiro] = useState<any>(null);
+  const [loadingParceiro, setLoadingParceiro] = useState(true);
 
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -251,58 +244,6 @@ export default function PainelParceiro() {
       setLoadingConteudos(false);
     }
   }
-
-
-
-  async function handleAprovarSolicitacao(solicitacaoId: string) {
-    if (!confirm('Tem certeza que deseja aprovar esta solicitação de compra?')) return;
-
-    try {
-      const response = await fetch(`/api/parceiros/solicitacoes/${solicitacaoId}/aprovar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ parceiroId: parceiro?.id })
-      });
-
-      if (response.ok) {
-        alert('Solicitação aprovada com sucesso!');
-        fetchSolicitacoes();
-        fetchRepasses();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erro ao aprovar solicitação');
-      }
-    } catch (error) {
-      alert('Erro ao aprovar solicitação');
-    }
-  }
-
-  async function handleRejeitarSolicitacao(solicitacaoId: string) {
-    const motivo = prompt('Digite o motivo da rejeição (opcional):');
-    
-    try {
-      const response = await fetch(`/api/parceiros/solicitacoes/${solicitacaoId}/rejeitar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          parceiroId: parceiro?.id,
-          motivoRejeicao: motivo
-        })
-      });
-
-      if (response.ok) {
-        alert('Solicitação rejeitada com sucesso!');
-        fetchSolicitacoes();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erro ao rejeitar solicitação');
-      }
-    } catch (error) {
-      alert('Erro ao rejeitar solicitação');
-    }
-  }
-
-
 
   const getProgressWidthClass = (value: number, max: number) => {
     const percentage = (value / max) * 100;
@@ -788,7 +729,6 @@ export default function PainelParceiro() {
                 onClick={() => { 
                   setShowModalPIX(false); 
                   setRepasseSelecionado(null);
-                  setComprovantePIX(null);
                 }}
                 className="text-gray-400 hover:text-sss-white transition-colors"
                 aria-label="Fechar modal"
@@ -1065,9 +1005,6 @@ export default function PainelParceiro() {
                 </div>
               </div>
           </section>
-
-          {/* Solicitações Pendentes */}
-
 
           {/* Repasses Pendentes */}
           <section className="mb-8">
