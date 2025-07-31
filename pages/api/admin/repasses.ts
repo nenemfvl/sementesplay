@@ -20,16 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           }
         },
-        compra: {
-          include: {
-            usuario: {
-              select: {
-                nome: true,
-                email: true
-              }
-            }
-          }
+          compraParceiro: {
+    include: {
+      usuario: {
+        select: {
+          nome: true,
+          email: true
         }
+      }
+    }
+  }
       },
       orderBy: {
         dataRepasse: 'desc'
