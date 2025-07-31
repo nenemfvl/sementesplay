@@ -27,38 +27,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       expiracao: 3600
     }
 
-    // Gerar QR Code PIX real (formato EMV QR Code)
-    const qrCodeData = {
-      payloadFormatIndicator: "01",
-      pointOfInitiationMethod: "12",
-      merchantAccountInformation: {
-        gui: "0014BR.GOV.BCB.PIX",
-        key: "82988181358"
-      },
-      merchantCategoryCode: "0000",
-      transactionCurrency: "986",
-      transactionAmount: "7.50",
-      countryCode: "BR",
-      merchantName: "VANISLAN LEOPOLDINO DA SILVA",
-      merchantCity: "BRASIL",
-      additionalDataFieldTemplate: {
-        referenceLabel: `Repasse Parceiro - R$ 7.50`
-      }
-    }
+    // Gerar código PIX válido (formato EMV)
+    const pixCode = `00020126580014br.gov.bcb.pix01368298818135852040000530398654047.505802BR5913VANISLAN LEOPOLDINO DA SILVA6006BRASIL62070503***6304`
 
-    // Converter para string EMV
-    const emvString = JSON.stringify(qrCodeData)
-    
-    // QR Code usando API confiável
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(emvString)}&format=png&margin=10&ecc=M`
+    // QR Code usando API mais simples
+    const qrCodeUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}&choe=UTF-8`
 
     return res.status(200).json({
       paymentId: paymentId,
       pixData: pixData,
+      pixCode: pixCode, // Código PIX para copiar
       qrCode: qrCodeUrl,
       instrucoes: [
         '1. Abra seu app bancário',
-        '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
+        '2. Escaneie o QR Code ou cole o código PIX',
         '3. Confirme o valor: R$ 7.50',
         '4. Confirme o beneficiário: VANISLAN LEOPOLDINO DA SILVA',
         '5. Faça o pagamento',

@@ -79,10 +79,31 @@ export default function PainelParceiroSimple() {
 
             {pagamentoPIX && (
               <div className="mt-6 bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-2">Pagamento PIX</h3>
-                <p className="text-gray-300">Chave PIX: {pagamentoPIX.pixData.chavePix}</p>
-                <p className="text-gray-300">Valor: R$ {pagamentoPIX.pixData.valor}</p>
-                <p className="text-gray-300">Beneficiário: {pagamentoPIX.pixData.beneficiario.nome}</p>
+                                 <h3 className="text-lg font-semibold text-white mb-2">Pagamento PIX</h3>
+                 
+                 {/* QR Code */}
+                 {pagamentoPIX.qrCode && (
+                   <div className="mb-4 text-center">
+                     <img 
+                       src={pagamentoPIX.qrCode} 
+                       alt="QR Code PIX" 
+                       className="mx-auto border-2 border-gray-600 rounded-lg"
+                       style={{ maxWidth: '300px', height: 'auto' }}
+                     />
+                   </div>
+                 )}
+                 
+                 {/* Código PIX */}
+                 <div className="mb-4">
+                   <p className="text-gray-300 mb-2">Código PIX (copie e cole no app):</p>
+                   <div className="bg-gray-600 p-3 rounded-lg">
+                     <code className="text-sm text-white break-all">{pagamentoPIX.pixCode}</code>
+                   </div>
+                 </div>
+                 
+                 <p className="text-gray-300">Chave PIX: {pagamentoPIX.pixData.chavePix}</p>
+                 <p className="text-gray-300">Valor: R$ {pagamentoPIX.pixData.valor}</p>
+                 <p className="text-gray-300">Beneficiário: {pagamentoPIX.pixData.beneficiario.nome}</p>
                 
                 {verificandoPagamento && (
                   <div className="mt-4 text-yellow-400">
