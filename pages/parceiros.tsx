@@ -339,7 +339,7 @@ export default function Parceiros() {
                         <span>Códigos: {formatarNumero(top1.codigosGerados)}</span>
                       </div>
                       <button
-                        onClick={() => router.push(`/painel-parceiro/${top1.id}`)}
+                        onClick={() => router.push(`/parceiro/${top1.id}`)}
                         className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors mt-3"
                       >
                         Ver Detalhes
