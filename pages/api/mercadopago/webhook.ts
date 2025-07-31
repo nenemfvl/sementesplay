@@ -1,10 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import mercadopago from 'mercadopago'
-
-// Configurar Mercado Pago
-mercadopago.configure({
-  access_token: process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
-})
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -15,12 +9,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data } = req.body
 
     if (data && data.id) {
-      // Buscar detalhes do pagamento
-      const payment = await mercadopago.payment.findById(data.id)
+      // Configurar access token
+      const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
+      
+      // Buscar detalhes do pagamento via API direta
+      const response = await fetch(`https://api.mercadopago.com/v1/payments/${data.id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
 
-      if (payment.body.status === 'approved') {
+      const payment = await response.json()
+
+      if (payment.status === 'approved') {
         // Pagamento aprovado
-        const repasseId = payment.body.external_reference
+        const repasseId = payment.external_reference
 
         // Aqui você pode atualizar o status do repasse no banco
         console.log(`Pagamento aprovado para repasse: ${repasseId}`)
