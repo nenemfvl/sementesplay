@@ -58,7 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': `${repasseId}-${Date.now()}`
       },
       body: JSON.stringify(payment_data)
     })
