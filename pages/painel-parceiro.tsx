@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { auth } from '../lib/auth';
@@ -9,7 +9,7 @@ import {
   CreditCardIcon,
   PlusIcon,
   BellIcon,
-  ClipboardDocumentIcon,
+
   CheckIcon,
   XMarkIcon,
   PencilIcon,
@@ -21,15 +21,7 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
 
-type CodigoCashback = {
-  id: string;
-  codigo: string;
-  valor: number;
-  usado: boolean;
-  dataGeracao: string;
-  dataUso?: string;
-  usuario?: { nome: string; email: string };
-};
+
 
 type Transacao = {
   id: string;
@@ -105,10 +97,7 @@ export default function PainelParceiro() {
   const [loadingNotificacoes, setLoadingNotificacoes] = useState(true);
   const [repasses, setRepasses] = useState<Repasse[]>([]);
   const [loadingRepasses, setLoadingRepasses] = useState(true);
-  const [solicitacoes, setSolicitacoes] = useState<SolicitacaoCompra[]>([]);
-  const [loadingSolicitacoes, setLoadingSolicitacoes] = useState(true);
   const [parceiro, setParceiro] = useState<any>(null);
-  const [loadingParceiro, setLoadingParceiro] = useState(true);
 
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -134,8 +123,7 @@ export default function PainelParceiro() {
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
-  const [comprovantePIX, setComprovantePIX] = useState<File | null>(null);
-  const [enviandoPIX, setEnviandoPIX] = useState(false);
+
 
   useEffect(() => {
     const checkAuth = async () => {
