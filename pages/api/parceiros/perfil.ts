@@ -10,16 +10,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Buscar o usuário logado (simulado - em produção seria via token/session)
-    const { usuarioId } = req.query
+    const { usuarioId, parceiroId } = req.query
 
-    if (!usuarioId) {
-      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    if (!usuarioId && !parceiroId) {
+      return res.status(400).json({ error: 'ID do usuário ou do parceiro é obrigatório' })
     }
 
-    const parceiro = await prisma.parceiro.findUnique({
-      where: {
-        usuarioId: String(usuarioId)
-      },
+    let parceiro
+    if (parceiroId) {
+      // Se foi passado o ID do parceiro, buscar por ele
+      parceiro = await prisma.parceiro.findUnique({
+        where: {
+          id: String(parceiroId)
+        },
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              tipo: true,
+              nivel: true
+            }
+          }
+        }
+      })
+    } else {
+      // Se foi passado o ID do usuário, buscar por ele
+      parceiro = await prisma.parceiro.findUnique({
+        where: {
+          usuarioId: String(usuarioId)
+        },
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nome: true,
+              email: true,
+              tipo: true,
+              nivel: true
+            }
+          }
+        }
+      })
+    }
       include: {
         usuario: {
           select: {

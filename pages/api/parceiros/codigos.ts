@@ -9,18 +9,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { usuarioId } = req.query
+    const { usuarioId, parceiroId } = req.query
 
-    if (!usuarioId) {
-      return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    if (!usuarioId && !parceiroId) {
+      return res.status(400).json({ error: 'ID do usuário ou do parceiro é obrigatório' })
     }
 
     // Buscar o parceiro
-    const parceiro = await prisma.parceiro.findUnique({
-      where: {
-        usuarioId: String(usuarioId)
-      }
-    })
+    let parceiro
+    if (parceiroId) {
+      parceiro = await prisma.parceiro.findUnique({
+        where: {
+          id: String(parceiroId)
+        }
+      })
+    } else {
+      parceiro = await prisma.parceiro.findUnique({
+        where: {
+          usuarioId: String(usuarioId)
+        }
+      })
+    }
 
     if (!parceiro) {
       return res.status(404).json({ error: 'Parceiro não encontrado' })

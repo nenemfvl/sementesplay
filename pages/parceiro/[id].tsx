@@ -121,35 +121,40 @@ export default function ParceiroPerfil() {
     setLoading(true)
     try {
       // Carregar dados do parceiro
-      const response = await fetch(`/api/parceiros/perfil?usuarioId=${parceiroId}`)
+      const response = await fetch(`/api/parceiros/perfil?parceiroId=${parceiroId}`)
       if (response.ok) {
         const data = await response.json()
         setParceiro(data)
-      }
+        
+        // Só carregar outros dados se o parceiro existir
+        // Carregar conteúdos do parceiro
+        const conteudosResponse = await fetch(`/api/parceiros/conteudos?parceiroId=${parceiroId}`)
+        if (conteudosResponse.ok) {
+          const conteudosData = await conteudosResponse.json()
+          setConteudos(conteudosData)
+        }
 
-      // Carregar conteúdos do parceiro
-      const conteudosResponse = await fetch(`/api/parceiros/conteudos?usuarioId=${parceiroId}`)
-      if (conteudosResponse.ok) {
-        const conteudosData = await conteudosResponse.json()
-        setConteudos(conteudosData)
-      }
+        // Carregar transações do parceiro
+        const transacoesResponse = await fetch(`/api/parceiros/transacoes?parceiroId=${parceiroId}`)
+        if (transacoesResponse.ok) {
+          const transacoesData = await transacoesResponse.json()
+          setTransacoes(transacoesData)
+        }
 
-      // Carregar transações do parceiro
-      const transacoesResponse = await fetch(`/api/parceiros/transacoes?usuarioId=${parceiroId}`)
-      if (transacoesResponse.ok) {
-        const transacoesData = await transacoesResponse.json()
-        setTransacoes(transacoesData)
-      }
-
-      // Carregar códigos do parceiro
-      const codigosResponse = await fetch(`/api/parceiros/codigos?usuarioId=${parceiroId}`)
-      if (codigosResponse.ok) {
-        const codigosData = await codigosResponse.json()
-        setCodigos(codigosData)
+        // Carregar códigos do parceiro
+        const codigosResponse = await fetch(`/api/parceiros/codigos?parceiroId=${parceiroId}`)
+        if (codigosResponse.ok) {
+          const codigosData = await codigosResponse.json()
+          setCodigos(codigosData)
+        }
+      } else if (response.status === 404) {
+        // Parceiro não encontrado - não carregar outros dados
+        setParceiro(null)
       }
 
     } catch (error) {
       console.error('Erro ao carregar dados do parceiro:', error)
+      setParceiro(null)
     } finally {
       setLoading(false)
     }
