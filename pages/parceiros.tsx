@@ -61,13 +61,26 @@ export default function Parceiros() {
 
   const verificarCandidatura = async (usuarioId: string) => {
     try {
-      const response = await fetch(`/api/parceiros/candidaturas?usuarioId=${usuarioId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setCandidaturaStatus(data.status)
+      // Primeiro buscar o usuário para obter o email
+      const userResponse = await fetch(`/api/usuario/atual?id=${usuarioId}`)
+      if (userResponse.ok) {
+        const userData = await userResponse.json()
+        const email = userData.email
+        
+        // Agora verificar a candidatura usando o email
+        const response = await fetch(`/api/parceiros/candidaturas?email=${email}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.candidatura) {
+            setCandidaturaStatus(data.candidatura.status)
+          } else {
+            setCandidaturaStatus('nenhuma')
+          }
+        }
       }
     } catch (error) {
       console.error('Erro ao verificar candidatura:', error)
+      setCandidaturaStatus('nenhuma')
     }
   }
 
