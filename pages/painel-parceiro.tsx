@@ -417,7 +417,8 @@ export default function PainelParceiro() {
         body: JSON.stringify({
           repasseId: repasse.id,
           parceiroId: parceiro?.id,
-          usuarioId: user?.id
+          usuarioId: user?.id,
+          valor: repasse.valorRepasse
         })
       });
 
