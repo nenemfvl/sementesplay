@@ -201,14 +201,12 @@ export default function Navbar() {
                     >
                       ⭐ Criadores Favoritos
                     </button>
-                    {user?.nivel === 'parceiro' && (
-                      <button
-                        onClick={() => handleMenuItemClick('/painel-parceiro')}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-sss-accent"
-                      >
-                        🏢 Painel Parceiro
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleMenuItemClick('/parceiros-favoritos')}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-sss-accent"
+                    >
+                      🏢 Parceiros Favoritos
+                    </button>
                   </div>
                 </div>
               )}
