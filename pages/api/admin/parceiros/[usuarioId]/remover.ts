@@ -24,6 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { usuarioId: String(usuarioId) }
     });
     
+    // Remover candidatura de parceiro (se existir)
+    await prisma.candidaturaParceiro.deleteMany({
+      where: { usuarioId: String(usuarioId) }
+    });
+    
     // Atualizar nível do usuário para 'comum'
     const usuarioAtualizado = await prisma.usuario.update({
       where: { id: String(usuarioId) },
