@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import mercadopago from 'mercadopago'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
