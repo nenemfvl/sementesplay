@@ -126,8 +126,39 @@ export default function RegistrarCompra() {
     setEnviando(true)
     
     try {
-      // Upload do comprovante (simulado - em produção usar Cloudinary ou similar)
-      const comprovanteUrl = formData.comprovante ? URL.createObjectURL(formData.comprovante) : ''
+      let comprovanteUrl = ''
+      
+      // Upload do comprovante para o Cloudinary
+      if (formData.comprovante) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('file', formData.comprovante)
+        
+        // Converter para base64 para enviar via JSON
+        const reader = new FileReader()
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result)
+          reader.readAsDataURL(formData.comprovante!)
+        })
+        
+        const base64Image = await base64Promise
+        
+        const uploadResponse = await fetch('/api/upload-comprovante', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            image: base64Image
+          })
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          comprovanteUrl = uploadData.url
+        } else {
+          throw new Error('Erro ao fazer upload do comprovante')
+        }
+      }
       
       const response = await fetch('/api/compras-parceiro', {
         method: 'POST',
