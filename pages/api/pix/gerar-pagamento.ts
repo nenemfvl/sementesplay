@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
     }
 
-    // Verificar se o parceiro existe e pertence ao usuário
+    // Verificar se o parceiro existe
     const parceiro = await prisma.parceiro.findFirst({
       where: {
         id: parceiroId,
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Parceiro não encontrado' })
     }
 
-    // Verificar se o repasse existe e está pendente
+    // Verificar se o repasse existe
     const repasse = await prisma.repasseParceiro.findFirst({
       where: {
         id: repasseId,
@@ -41,22 +41,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Repasse não encontrado ou já processado' })
     }
 
-    // Gerar um ID único para o pagamento
+    // Gerar paymentId
     const paymentId = `pix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-    // Gerar dados do PIX para a chave 82988181358
-    const pixData = {
-      chavePix: '82988181358',
-      beneficiario: {
-        nome: 'SementesPLAY',
-        cpf: '12345678901' // CPF do beneficiário
-      },
-      valor: repasse.valor, // Apenas o valor do repasse (10% da compra)
-      descricao: `Repasse Parceiro - R$ ${repasse.valor.toFixed(2)}`,
-      expiracao: 3600 // 1 hora
-    }
-
-    // Atualizar o repasse com o paymentId
+    // Atualizar repasse
     await prisma.repasseParceiro.update({
       where: { id: repasseId },
       data: {
@@ -67,15 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({
       paymentId: paymentId,
-      pixData: pixData,
-      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify(pixData))}`,
-      instrucoes: [
-        '1. Abra seu app bancário',
-        '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
-        '3. Confirme o valor do repasse (10% da compra)',
-        '4. Faça o pagamento do valor do repasse',
-        '5. Aguarde a confirmação automática'
-      ],
+      valor: repasse.valor,
       status: 'pendente'
     })
 
