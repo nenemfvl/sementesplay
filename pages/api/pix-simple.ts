@@ -34,8 +34,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const valorFormatado = valorRepasse.toFixed(2).replace('.', '')
     const pixCode = `00020126580014br.gov.bcb.pix01368298818135852040000530398654${valorFormatado.length.toString().padStart(2, '0')}${valorFormatado}5802BR5913VANISLAN LEOPOLDINO DA SILVA6006BRASIL62070503***6304`
 
-    // QR Code usando API mais simples e confiável
-    const qrCodeUrl = `https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(pixCode)}&choe=UTF-8&chld=M|0`
+    // QR Code usando API mais simples
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(pixCode)}&format=png&margin=10&ecc=M`
 
     return res.status(200).json({
       paymentId: paymentId,
