@@ -23,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Valor inválido' })
     }
 
-    // Gerar código PIX real
-    const pixCode = `00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266141740005204000053039865405${valorRepasse.toFixed(2)}5802BR5913SementesPLAY6008Brasilia62070503***6304E2CA`
+    // Código PIX simples para teste (chave aleatória)
+    const pixCode = `sementesplay.${Date.now()}@teste.com`
 
     // Gerar QR Code real
     const qrCodeBase64 = await QRCode.toDataURL(pixCode, {
