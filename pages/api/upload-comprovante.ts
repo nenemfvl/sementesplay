@@ -13,16 +13,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Imagem é obrigatória' })
     }
 
-    // Upload para o Cloudinary
+    // Upload para o Cloudinary usando base64
     const result = await cloudinary.uploader.upload(image, {
       folder: 'sementesplay/comprovantes',
       resource_type: 'auto',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
       transformation: [
         { quality: 'auto:good' },
         { fetch_format: 'auto' }
       ]
     })
+
+    console.log('Upload realizado com sucesso:', result.secure_url)
 
     return res.status(200).json({
       success: true,
@@ -32,6 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   } catch (error) {
     console.error('Erro ao fazer upload:', error)
-    return res.status(500).json({ error: 'Erro ao fazer upload da imagem' })
+    return res.status(500).json({ 
+      error: 'Erro ao fazer upload da imagem',
+      details: error instanceof Error ? error.message : 'Erro desconhecido'
+    })
   }
 } 
