@@ -106,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           descricao: `Repasse Parceiro - R$ ${valorRepasse.toFixed(2)}`,
           expiracao: 3600
         },
-        pixCode: pixData.qr_code_base64,
+        pixCode: `data:image/png;base64,${pixData.qr_code_base64}`,
         qrCode: pixData.qr_code,
         instrucoes: [
           '1. Abra seu app bancário',
