@@ -440,7 +440,7 @@ export default function PainelParceiro() {
     
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`/api/pix/verificar-pagamento?paymentId=${paymentId}&usuarioId=${user?.id}`);
+        const response = await fetch(`/api/verificar-pagamento-simple?paymentId=${paymentId}&usuarioId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
           
