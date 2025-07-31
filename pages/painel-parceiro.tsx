@@ -767,7 +767,7 @@ export default function PainelParceiro() {
                   {/* QR Code */}
                   <div className="text-center mb-4">
                     <img 
-                      src={pagamentoPIX.qrCode} 
+                      src={pagamentoPIX.pixCode} 
                       alt="QR Code PIX" 
                       className="mx-auto bg-white rounded-lg p-2 w-48 h-48"
                     />
@@ -777,7 +777,7 @@ export default function PainelParceiro() {
                   <div className="mb-4">
                     <p className="text-sm text-gray-400 mb-2">Código PIX (copie e cole no app):</p>
                     <div className="bg-gray-700 p-3 rounded-lg">
-                      <code className="text-xs text-white break-all">{pagamentoPIX.pixCode}</code>
+                      <code className="text-xs text-white break-all">{pagamentoPIX.qrCode}</code>
                     </div>
                   </div>
 
