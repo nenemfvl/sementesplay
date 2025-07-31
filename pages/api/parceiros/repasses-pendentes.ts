@@ -75,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'aguardando_repasse',
         dataCompra: compra.dataCompra,
         dataRepasse: null,
-        comprovante: null,
+        comprovante: compra.comprovanteUrl,
         usuario: compra.usuario,
         tipo: 'compra'
       })),
