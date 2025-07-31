@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import mercadopago from 'mercadopago'
 
-// Configurar Mercado Pago
-mercadopago.configure({
-  access_token: process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
-})
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' })
@@ -19,6 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const valorRepasse = parseFloat(valor)
+
+    // Configurar Mercado Pago
+    mercadopago.configure({
+      access_token: process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-123456789'
+    })
 
     // Criar pagamento PIX no Mercado Pago
     const payment_data = {
