@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]'
 import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -7,20 +9,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { paymentId } = req.query
-
-    if (!paymentId) {
-      return res.status(400).json({ error: 'ID do pagamento obrigatório' })
+    const session = await getServerSession(req, res, authOptions)
+    if (!session?.user?.id) {
+      return res.status(401).json({ error: 'Não autorizado' })
     }
 
-    // Buscar repasse pelo paymentId
+    const { paymentId } = req.query
+
+    if (!paymentId || typeof paymentId !== 'string') {
+      return res.status(400).json({ error: 'PaymentId obrigatório' })
+    }
+
+    // Buscar o repasse pelo paymentId
     const repasse = await prisma.repasseParceiro.findFirst({
       where: {
-        paymentId: String(paymentId),
-        status: 'aguardando_pagamento'
+        paymentId: paymentId,
+        parceiro: {
+          usuarioId: session.user.id
+        }
       },
       include: {
-        compra: true
+        parceiro: true,
+        compraParceiro: true
       }
     })
 
@@ -28,59 +38,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Pagamento não encontrado' })
     }
 
-    // Simular verificação de pagamento (em produção, integrar com API bancária)
-    // Por enquanto, vamos simular que o pagamento foi confirmado após 30 segundos
-    const tempoAguardando = Date.now() - new Date(repasse.dataRepasse).getTime()
-    const pagamentoConfirmado = tempoAguardando > 30000 // 30 segundos
+    // Simular verificação de pagamento (você pode integrar com um provedor real)
+    // Por enquanto, vamos simular que o pagamento foi confirmado após alguns segundos
+    const tempoDecorrido = Date.now() - parseInt(paymentId.split('_')[1])
+    const confirmado = tempoDecorrido > 5000 // 5 segundos para simular confirmação
 
-    if (pagamentoConfirmado) {
+    if (confirmado && repasse.status === 'aguardando_pagamento') {
       // Atualizar status do repasse
       await prisma.repasseParceiro.update({
         where: { id: repasse.id },
         data: {
-          status: 'confirmado',
-          dataRepasse: new Date()
+          status: 'pago',
+          dataPagamento: new Date()
         }
       })
 
       // Atualizar status da compra
       await prisma.compraParceiro.update({
-        where: { id: repasse.compraId },
-        data: { status: 'cashback_liberado' }
+        where: { id: repasse.compraParceiro.id },
+        data: {
+          status: 'cashback_liberado'
+        }
       })
 
-      // Criar notificação
-      try {
-        await prisma.notificacao.create({
-          data: {
-            usuarioId: 'admin',
-            tipo: 'repasse_confirmado',
-            titulo: 'Pagamento PIX Confirmado',
-            mensagem: `Pagamento PIX confirmado para repasse de R$ ${repasse.valor.toFixed(2)}`,
-            data: new Date()
+      // Adicionar sementes ao usuário
+      const valorSementes = repasse.compraParceiro.valorCompra * 0.05 // 5% para o usuário
+      await prisma.usuario.update({
+        where: { id: repasse.compraParceiro.usuarioId },
+        data: {
+          sementes: {
+            increment: valorSementes
           }
-        })
-      } catch (notifError) {
-        console.log('Erro ao criar notificação:', notifError)
-      }
+        }
+      })
+
+      // Criar notificação para o usuário
+      await prisma.notificacao.create({
+        data: {
+          usuarioId: repasse.compraParceiro.usuarioId,
+          titulo: 'Cashback Liberado!',
+          mensagem: `Seu cashback de ${valorSementes} Sementes foi liberado pela compra de R$ ${repasse.compraParceiro.valorCompra.toFixed(2)}.`,
+          tipo: 'cashback_liberado'
+        }
+      })
 
       return res.status(200).json({
-        success: true,
         status: 'confirmado',
         message: 'Pagamento confirmado com sucesso!'
       })
     }
 
-    // Pagamento ainda pendente
     return res.status(200).json({
-      success: true,
-      status: 'pendente',
-      message: 'Aguardando confirmação do pagamento...',
-      tempoAguardando: Math.floor(tempoAguardando / 1000)
+      status: repasse.status === 'pago' ? 'confirmado' : 'pendente',
+      message: repasse.status === 'pago' ? 'Pagamento já foi confirmado' : 'Aguardando confirmação do pagamento'
     })
 
   } catch (error) {
     console.error('Erro ao verificar pagamento:', error)
-    res.status(500).json({ error: 'Erro interno do servidor' })
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 
