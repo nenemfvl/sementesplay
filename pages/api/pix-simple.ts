@@ -30,22 +30,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       expiracao: 3600
     }
 
-    // Gerar código PIX válido (formato EMV)
-    const valorFormatado = valorRepasse.toFixed(2).replace('.', '')
-    const pixCode = `00020101021226840014br.gov.bcb.pix01368298818135852040000530398654${valorFormatado.length.toString().padStart(2, '0')}${valorFormatado}5802BR5913VANISLAN LEOPOLDINO DA SILVA6006BRASIL62070503***6304`
+    // Código PIX simples - apenas chave PIX
+    const pixCode = `82988181358`
 
-    // QR Code usando API mais simples
+    // QR Code simples da chave PIX
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(pixCode)}&format=png&margin=10&ecc=M`
 
     return res.status(200).json({
       paymentId: paymentId,
       pixData: pixData,
-      pixCode: pixCode, // Código PIX para copiar
+      pixCode: pixCode, // Chave PIX para copiar
       qrCode: qrCodeUrl,
       instrucoes: [
         '1. Abra seu app bancário',
-        '2. Escaneie o QR Code ou cole o código PIX',
-        `3. Confirme o valor: R$ ${valorRepasse.toFixed(2)}`,
+        '2. Escaneie o QR Code ou use a chave PIX: 82988181358',
+        `3. Digite o valor: R$ ${valorRepasse.toFixed(2)}`,
         '4. Confirme o beneficiário: VANISLAN LEOPOLDINO DA SILVA',
         '5. Faça o pagamento',
         '6. Aguarde a confirmação automática (pode demorar alguns minutos)'
