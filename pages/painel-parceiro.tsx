@@ -1248,7 +1248,8 @@ export default function PainelParceiro() {
                                 </button>
                               </>
                             )}
-                            {(repasse.tipo === 'repasse' || repasse.tipo === 'compra') && (
+                            {(repasse.tipo === 'repasse' || repasse.tipo === 'compra') && 
+                             (repasse.status === 'pendente' || repasse.status === 'aguardando_repasse') && (
                               <button
                                 onClick={() => handleFazerPagamentoPIX(repasse)}
                                 className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"

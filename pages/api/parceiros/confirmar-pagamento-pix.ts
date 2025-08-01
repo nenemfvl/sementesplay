@@ -87,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await tx.repasseParceiro.update({
         where: { id: repasseId },
         data: { 
-          status: 'confirmado',
+          status: 'pago',
           comprovanteUrl: comprovanteUrl || null
         }
       })
