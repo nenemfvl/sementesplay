@@ -800,17 +800,19 @@ export default function PainelParceiro() {
                   <div className="space-y-2 mb-3">
                     <div>
                       <p className="text-sm text-gray-400">Chave PIX:</p>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sss-white font-mono text-sm">{pagamentoPIX.pixData.chavePix}</p>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(pagamentoPIX.pixData.chavePix);
-                            alert('Chave PIX copiada!');
-                          }}
-                          className="text-sss-accent hover:text-sss-accent/80"
-                        >
-                          📋
-                        </button>
+                      <div className="bg-gray-700 p-2 rounded-lg">
+                        <div className="flex items-start gap-2">
+                          <code className="text-xs text-white break-all flex-1">{pagamentoPIX.pixData.chavePix}</code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(pagamentoPIX.pixData.chavePix);
+                              alert('Chave PIX copiada!');
+                            }}
+                            className="text-sss-accent hover:text-sss-accent/80 flex-shrink-0"
+                          >
+                            📋
+                          </button>
+                        </div>
                       </div>
                     </div>
                     <div>
