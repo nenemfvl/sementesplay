@@ -454,18 +454,22 @@ export default function PainelParceiro() {
     
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`/api/verificar-pagamento-simple?paymentId=${paymentId}&usuarioId=${user?.id}`);
+        const response = await fetch(`/api/mercadopago/verificar-pagamento?paymentId=${paymentId}`);
         if (response.ok) {
           const data = await response.json();
           
           if (data.status === 'confirmado') {
             clearInterval(interval);
             setVerificandoPagamento(false);
-            alert('Pagamento confirmado com sucesso!');
+            alert('Pagamento confirmado com sucesso! O botão "Confirmar Pagamento" agora está disponível.');
+            // Não fecha o modal, apenas para a verificação e mostra o botão
+          } else if (data.status === 'rejeitado' || data.status === 'cancelado') {
+            clearInterval(interval);
+            setVerificandoPagamento(false);
+            alert(`Pagamento ${data.status}. Tente novamente.`);
             setShowModalPIX(false);
             setRepasseSelecionado(null);
             setPagamentoPIX(null);
-            fetchRepasses();
           }
         }
       } catch (error) {
@@ -883,16 +887,16 @@ export default function PainelParceiro() {
                     </div>
                   )}
 
-                  {/* Botão para confirmar pagamento manualmente */}
-                  {!verificandoPagamento && (
+                  {/* Botão para confirmar pagamento manualmente - só aparece quando pagamento está confirmado */}
+                  {!verificandoPagamento && pagamentoPIX && (
                     <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center mb-3">
-                      <p className="text-green-400 text-sm mb-2">Pagamento realizado?</p>
-                      <p className="text-gray-400 text-xs mb-3">Clique no botão abaixo para confirmar e distribuir os valores</p>
+                      <p className="text-green-400 text-sm mb-2">✅ Pagamento confirmado!</p>
+                      <p className="text-gray-400 text-xs mb-3">Clique no botão abaixo para distribuir os valores automaticamente</p>
                       <button 
                         onClick={handleConfirmarPagamento}
                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
                       >
-                        ✅ Confirmar Pagamento
+                        💰 Distribuir Valores
                       </button>
                     </div>
                   )}

@@ -38,6 +38,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Repasse já processado' })
     }
 
+    // Verificar se o pagamento foi realmente aprovado no MercadoPago
+    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
+    if (accessToken && repasse.paymentId) {
+      try {
+        const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${repasse.paymentId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (mpResponse.ok) {
+          const mpPayment = await mpResponse.json()
+          if (mpPayment.status !== 'approved') {
+            return res.status(400).json({ 
+              error: 'Pagamento não foi aprovado no MercadoPago',
+              mercadopago_status: mpPayment.status
+            })
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar pagamento no MercadoPago:', error)
+        // Se não conseguir verificar, continua (pode ser um problema temporário)
+      }
+    }
+
     const compra = repasse.compra
     const parceiro = repasse.compra.parceiro
     const usuario = repasse.compra.usuario
