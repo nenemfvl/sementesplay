@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "sementes" ALTER COLUMN "quantidade" SET DATA TYPE DOUBLE PRECISION;

@@ -16,7 +16,7 @@ model Usuario {
   email           String   @unique
   senha           String
   tipo            String   @default("usuario") // sempre "usuario" (nunca muda)
-  sementes        Int      @default(0)
+  sementes        Float    @default(0)
   nivel           String   @default("comum") // comum, criador-iniciante, criador-comum, criador-parceiro, criador-supremo, parceiro, 5
   pontuacao       Int      @default(0)
   dataCriacao     DateTime @default(now())
@@ -165,7 +165,7 @@ model Criador {
   redesSociais String // JSON como string
   portfolio    String // JSON como string
   nivel        String   @default("comum")
-  sementes     Int      @default(0)
+  sementes     Float    @default(0)
   apoiadores   Int      @default(0)
   doacoes      Int      @default(0)
   dataCriacao  DateTime @default(now())
@@ -265,7 +265,7 @@ model Parceiro {
 model Semente {
   id         String   @id @default(cuid())
   usuarioId  String
-  quantidade Int
+  quantidade Float
   tipo       String // gerada, doada, resgatada
   data       DateTime @default(now())
   descricao  String
@@ -280,7 +280,7 @@ model Doacao {
   id         String   @id @default(cuid())
   doadorId   String
   criadorId  String
-  quantidade Int
+  quantidade Float
   data       DateTime @default(now())
   mensagem   String?
 

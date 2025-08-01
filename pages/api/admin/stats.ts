@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalUsuarios,
       totalCriadores,
       totalDoacoes,
-      totalSementes,
+      fundoSementes,
       doacoesHoje,
       novosUsuariosHoje,
       cashbacksResgatados,
@@ -29,11 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Total de doações
       prisma.doacao.count(),
       
-      // Total de sementes em circulação
-      prisma.usuario.aggregate({
-        _sum: {
-          sementes: true
-        }
+      // Sementes em circulação (valor do fundo)
+      prisma.fundoSementes.findFirst({
+        where: { distribuido: false },
+        orderBy: { ciclo: 'desc' }
       }),
       
       // Doações hoje
@@ -70,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalUsuarios,
       totalCriadores,
       totalDoacoes,
-      totalSementes: totalSementes._sum.sementes || 0,
+      totalSementes: fundoSementes?.valorTotal || 0,
       doacoesHoje,
       novosUsuariosHoje,
       cashbacksResgatados,
