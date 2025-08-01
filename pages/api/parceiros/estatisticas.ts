@@ -80,19 +80,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // Usuários únicos que usaram códigos deste parceiro
-    const usuariosUnicos = await prisma.transacao.findMany({
+    // Usuários únicos que receberam repasses deste parceiro
+    const usuariosComRepasse = await prisma.repasseParceiro.findMany({
       where: {
-        codigoParceiro: {
-          in: codigos
-        },
-        status: 'aprovada'
+        parceiroId: parceiro.id,
+        status: 'pago'
       },
       select: {
-        usuarioId: true
-      },
-      distinct: ['usuarioId']
+        compra: {
+          select: {
+            usuarioId: true
+          }
+        }
+      }
     })
+
+    // Extrair usuários únicos dos repasses
+    const usuariosIds = usuariosComRepasse.map(r => r.compra.usuarioId)
+    const usuariosUnicosComRepasse = usuariosIds.filter((id, index) => usuariosIds.indexOf(id) === index)
 
     const estatisticas = {
       totalVendas: totalRepasses, // Agora mostra o total de repasses realizados
@@ -100,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       codigosAtivos,
       repassesRealizados: quantidadeRepasses, // Agora mostra a quantidade de repasses realizados
       transacoesMes,
-      usuariosAtivos: usuariosUnicos.length
+      usuariosAtivos: usuariosUnicosComRepasse.length
     }
 
     res.status(200).json(estatisticas)

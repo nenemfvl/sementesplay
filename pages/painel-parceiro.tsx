@@ -1083,7 +1083,7 @@ export default function PainelParceiro() {
                     <div className="text-2xl font-bold text-sss-white">
                       {!loadingEstatisticas ? estatisticas?.usuariosAtivos || 0 : '--'}
                     </div>
-                    <div className="text-sm text-yellow-300">Usuários Ativos</div>
+                                          <div className="text-sm text-yellow-300">Usuários com Repasse</div>
                   </div>
                 </div>
                 <div className="h-1 bg-yellow-500/20 rounded-full overflow-hidden">
