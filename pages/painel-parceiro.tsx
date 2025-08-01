@@ -736,7 +736,7 @@ export default function PainelParceiro() {
 
       {/* Modal de Pagamento PIX */}
       {showModalPIX && repasseSelecionado && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
           <div className="bg-sss-medium rounded-2xl p-4 w-full max-w-md border border-sss-light shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-sss-white">
