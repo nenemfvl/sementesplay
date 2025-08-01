@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const totalRepasses = repassesRealizados.reduce((sum, r) => sum + r.valor, 0)
     const totalComissoes = transacoes.reduce((sum, t) => sum + t.valor, 0) * 0.1 // 10% de comissão
     const codigosAtivos = codigosParceiro.filter(c => !c.usado).length
-    const codigosUsados = codigosParceiro.filter(c => c.usado).length
+    const quantidadeRepasses = repassesRealizados.length // Quantidade de repasses realizados
 
     // Transações deste mês
     const inicioMes = new Date()
@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalVendas: totalRepasses, // Agora mostra o total de repasses realizados
       totalComissoes,
       codigosAtivos,
-      codigosUsados,
+      repassesRealizados: quantidadeRepasses, // Agora mostra a quantidade de repasses realizados
       transacoesMes,
       usuariosAtivos: usuariosUnicos.length
     }

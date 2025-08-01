@@ -36,7 +36,7 @@ type Estatisticas = {
   totalVendas: number; // Agora representa o total de repasses realizados
   totalComissoes: number;
   codigosAtivos: number;
-  codigosUsados: number;
+  repassesRealizados: number; // Agora representa a quantidade de repasses realizados
   transacoesMes: number;
   usuariosAtivos: number;
 };
@@ -1064,13 +1064,13 @@ export default function PainelParceiro() {
               </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-sss-white">
-                      {!loadingEstatisticas ? estatisticas?.codigosUsados || 0 : '--'}
+                      {!loadingEstatisticas ? estatisticas?.repassesRealizados || 0 : '--'}
                     </div>
-                    <div className="text-sm text-purple-300">Códigos Usados</div>
+                                          <div className="text-sm text-purple-300">Repasses Realizados</div>
                   </div>
                 </div>
                 <div className="h-1 bg-purple-500/20 rounded-full overflow-hidden">
-                  <div className={`h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full ${getProgressWidthClass(estatisticas?.codigosUsados || 0, 50)}`}></div>
+                  <div className={`h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full ${getProgressWidthClass(estatisticas?.repassesRealizados || 0, 50)}`}></div>
                 </div>
               </div>
 
