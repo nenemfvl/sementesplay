@@ -63,7 +63,7 @@ async function processarPagamentoManual() {
           parceiroId: compra.parceiroId,
           compraId: compra.id,
           valor: valorRepasse,
-          status: 'processado',
+          status: 'pago',
           dataRepasse: new Date()
         }
       });
