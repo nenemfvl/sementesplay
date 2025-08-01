@@ -39,6 +39,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const codigos = codigosParceiro.map(c => c.codigo)
 
+    // Buscar repasses realizados pelo parceiro
+    const repassesRealizados = await prisma.repasseParceiro.findMany({
+      where: {
+        parceiroId: parceiro.id,
+        status: 'pago'
+      }
+    })
+
     // Buscar transações que usaram códigos deste parceiro
     const transacoes = await prisma.transacao.findMany({
       where: {
@@ -50,8 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     // Calcular estatísticas
-    const totalVendas = transacoes.reduce((sum, t) => sum + t.valor, 0)
-    const totalComissoes = totalVendas * 0.1 // 10% de comissão
+    const totalRepasses = repassesRealizados.reduce((sum, r) => sum + r.valor, 0)
+    const totalComissoes = transacoes.reduce((sum, t) => sum + t.valor, 0) * 0.1 // 10% de comissão
     const codigosAtivos = codigosParceiro.filter(c => !c.usado).length
     const codigosUsados = codigosParceiro.filter(c => c.usado).length
 
@@ -87,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     const estatisticas = {
-      totalVendas,
+      totalVendas: totalRepasses, // Agora mostra o total de repasses realizados
       totalComissoes,
       codigosAtivos,
       codigosUsados,

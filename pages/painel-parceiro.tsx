@@ -33,7 +33,7 @@ type Transacao = {
 };
 
 type Estatisticas = {
-  totalVendas: number;
+  totalVendas: number; // Agora representa o total de repasses realizados
   totalComissoes: number;
   codigosAtivos: number;
   codigosUsados: number;
@@ -1032,7 +1032,7 @@ export default function PainelParceiro() {
                     <div className="text-2xl font-bold text-sss-white">
                       {!loadingEstatisticas ? `R$ ${estatisticas?.totalVendas.toFixed(2) || '0.00'}` : '--'}
                               </div>
-                    <div className="text-sm text-green-300">Total de Vendas</div>
+                    <div className="text-sm text-green-300">Total de Repasses</div>
                               </div>
                 </div>
                 <div className="h-1 bg-green-500/20 rounded-full overflow-hidden">
