@@ -175,7 +175,7 @@ export default function RegistrarCompra() {
       })
       
       if (response.ok) {
-        const data = await response.json()
+        await response.json()
         setSuccess(true)
         setFormData({
           parceiroId: '',

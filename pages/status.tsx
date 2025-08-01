@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar'
 import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-import { auth, User } from '../lib/auth'
+import { auth } from '../lib/auth'
 
 const redes = [
   { nome: 'Todos', valor: 'todos', icon: null },

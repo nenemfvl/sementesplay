@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -12,10 +12,7 @@ import {
   HeartIcon,
   CurrencyDollarIcon,
   ClockIcon,
-  ExclamationTriangleIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  ArrowDownTrayIcon
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
@@ -93,9 +90,9 @@ export default function Ranking() {
     loadCategorias()
     loadPeriodos()
     loadEstatisticas()
-  }, [selectedCategoria, selectedPeriodo])
+  }, [loadRanking])
 
-  const loadRanking = async () => {
+  const loadRanking = useCallback(async () => {
     try {
       let response
       if (selectedCategoria === 'criador') {
@@ -142,7 +139,7 @@ export default function Ranking() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedCategoria, selectedPeriodo])
 
   const loadCategorias = async () => {
     try {
