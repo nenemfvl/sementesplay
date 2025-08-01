@@ -94,9 +94,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
           // Calcula as porcentagens
           const valor = repasse.valor
-          const pctUsuario = Math.round(valor * 0.05)    // 5% para jogador (em sementes)
-          const pctSistema = valor * 0.025               // 2,5% para sistema SementesPLAY
-          const pctFundo = valor * 0.025                 // 2,5% para fundo de distribuição
+          const pctUsuario = Math.max(1, Math.round(valor * 0.50))    // 50% para jogador (em sementes), mínimo 1
+          const pctSistema = valor * 0.25               // 25% para sistema SementesPLAY
+          const pctFundo = valor * 0.25                 // 25% para fundo de distribuição
 
           // Transação: atualiza tudo de uma vez
           await prisma.$transaction(async (tx) => {

@@ -55,7 +55,7 @@ async function criarTesteRepasse() {
       data: {
         usuarioId: usuario.id,
         parceiroId: parceiro.id,
-        valorCompra: 10.00,
+        valorCompra: 10.00, // Valor da compra
         cupomUsado: 'sementesplay20',
         status: 'aguardando_repasse'
       },
