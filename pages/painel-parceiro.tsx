@@ -458,12 +458,19 @@ export default function PainelParceiro() {
         if (response.ok) {
           const data = await response.json();
           
-          if (data.status === 'confirmado') {
+          if (data.status === 'approved') {
             clearInterval(interval);
             setVerificandoPagamento(false);
-            alert('Pagamento confirmado com sucesso! O botão "Confirmar Pagamento" agora está disponível.');
-            // Não fecha o modal, apenas para a verificação e mostra o botão
-          } else if (data.status === 'rejeitado' || data.status === 'cancelado') {
+            
+            // Processar repasse automaticamente
+            await processarRepasseAutomaticamente(paymentId);
+            
+            alert('Pagamento confirmado e repasse processado automaticamente!');
+            setShowModalPIX(false);
+            setRepasseSelecionado(null);
+            setPagamentoPIX(null);
+            fetchRepasses();
+          } else if (data.status === 'rejected' || data.status === 'cancelled') {
             clearInterval(interval);
             setVerificandoPagamento(false);
             alert(`Pagamento ${data.status}. Tente novamente.`);
@@ -484,8 +491,8 @@ export default function PainelParceiro() {
     }, 300000);
   }
 
-  async function handleConfirmarPagamento() {
-    if (!repasseSelecionado) return
+  async function processarRepasseAutomaticamente(paymentId: string) {
+    if (!repasseSelecionado) return;
 
     try {
       const response = await fetch('/api/parceiros/confirmar-pagamento-pix', {
@@ -495,30 +502,23 @@ export default function PainelParceiro() {
         },
         body: JSON.stringify({
           repasseId: repasseSelecionado.id,
-          comprovanteUrl: null // Pode ser adicionado upload de comprovante depois
+          comprovanteUrl: null
         })
-      })
+      });
 
       if (response.ok) {
-        const result = await response.json()
-        alert(`✅ ${result.message}\n\nValores distribuídos:\n• Usuário: ${result.dados.pctUsuario} sementes\n• Sistema: R$ ${result.dados.pctSistema.toFixed(2)}\n• Fundo: R$ ${result.dados.pctFundo.toFixed(2)}`)
-        
-        // Fecha o modal e atualiza os dados
-        setShowModalPIX(false)
-        setRepasseSelecionado(null)
-        setPagamentoPIX(null)
-        
-        // Recarrega os repasses
-        fetchRepasses()
+        const result = await response.json();
+        console.log('Repasse processado automaticamente:', result);
       } else {
-        const error = await response.json()
-        alert(`❌ Erro: ${error.error}`)
+        const error = await response.json();
+        console.error('Erro ao processar repasse automaticamente:', error);
       }
     } catch (error) {
-      console.error('Erro ao confirmar pagamento:', error)
-      alert('Erro ao confirmar pagamento. Tente novamente.')
+      console.error('Erro ao processar repasse automaticamente:', error);
     }
   }
+
+
 
 
 
@@ -883,23 +883,11 @@ export default function PainelParceiro() {
                     <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2 text-center">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-400 mx-auto mb-2"></div>
                       <p className="text-yellow-400 text-sm">Verificando pagamento...</p>
-                      <p className="text-gray-400 text-xs">Aguarde a confirmação automática</p>
+                      <p className="text-gray-400 text-xs">O repasse será processado automaticamente quando confirmado</p>
                     </div>
                   )}
 
-                  {/* Botão para confirmar pagamento manualmente - só aparece quando pagamento está confirmado */}
-                  {!verificandoPagamento && pagamentoPIX && (
-                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center mb-3">
-                      <p className="text-green-400 text-sm mb-2">✅ Pagamento confirmado!</p>
-                      <p className="text-gray-400 text-xs mb-3">Clique no botão abaixo para distribuir os valores automaticamente</p>
-                      <button 
-                        onClick={handleConfirmarPagamento}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
-                      >
-                        💰 Distribuir Valores
-                      </button>
-                    </div>
-                  )}
+
 
                   <div className="flex gap-3 pt-3">
                     <button 
