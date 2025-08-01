@@ -79,19 +79,6 @@ export default function Ranking() {
   const [selectedItem, setSelectedItem] = useState<RankingItem | null>(null)
   const [showModal, setShowModal] = useState(false)
 
-  useEffect(() => {
-    const currentUser = auth.getUser()
-    if (!currentUser) {
-      window.location.href = '/login'
-      return
-    }
-    setUser(currentUser)
-    loadRanking()
-    loadCategorias()
-    loadPeriodos()
-    loadEstatisticas()
-  }, [loadRanking])
-
   const loadRanking = useCallback(async () => {
     try {
       let response
@@ -140,6 +127,19 @@ export default function Ranking() {
       setLoading(false)
     }
   }, [selectedCategoria, selectedPeriodo])
+
+  useEffect(() => {
+    const currentUser = auth.getUser()
+    if (!currentUser) {
+      window.location.href = '/login'
+      return
+    }
+    setUser(currentUser)
+    loadRanking()
+    loadCategorias()
+    loadPeriodos()
+    loadEstatisticas()
+  }, [loadRanking])
 
   const loadCategorias = async () => {
     try {

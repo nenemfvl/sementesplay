@@ -82,6 +82,21 @@ export default function Status() {
       .then(data => setCriadores(data.criadores || []))
   }, [])
 
+  const loadRankingMissoesConquistas = useCallback(async () => {
+    setLoadingRanking(true)
+    try {
+      const response = await fetch(`/api/ranking/missoes-conquistas?tipo=${categoriaRanking}`)
+      if (response.ok) {
+        const data = await response.json()
+        setRankingMissoesConquistas(data.ranking || [])
+      }
+    } catch (error) {
+      console.error('Erro ao carregar ranking:', error)
+    } finally {
+      setLoadingRanking(false)
+    }
+  }, [categoriaRanking])
+
   useEffect(() => {
     loadRankingMissoesConquistas()
   }, [loadRankingMissoesConquistas])
@@ -116,21 +131,6 @@ export default function Status() {
       }
     }
   }, [criadores])
-
-  const loadRankingMissoesConquistas = useCallback(async () => {
-    setLoadingRanking(true)
-    try {
-      const response = await fetch(`/api/ranking/missoes-conquistas?tipo=${categoriaRanking}`)
-      if (response.ok) {
-        const data = await response.json()
-        setRankingMissoesConquistas(data.ranking || [])
-      }
-    } catch (error) {
-      console.error('Erro ao carregar ranking:', error)
-    } finally {
-      setLoadingRanking(false)
-    }
-  }, [categoriaRanking])
 
   // Função para filtrar criadores pela rede social
   const criadoresFiltrados = filtroRede === 'todos'
