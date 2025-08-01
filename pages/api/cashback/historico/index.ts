@@ -39,10 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // Buscar histórico de códigos de cashback usados
+    // Buscar histórico de códigos de cashback usados pelo usuário específico
     const codigosUsados = await prisma.codigoCashback.findMany({
       where: {
-        usado: true
+        usado: true,
+        usuarioId: String(usuarioId)
       },
       include: {
         parceiro: {

@@ -57,6 +57,7 @@ model Usuario {
   comprasParceiro      CompraParceiro[]
   DistribuicaoFundo    DistribuicaoFundo[]
   solicitacoesCompra   SolicitacaoCompra[]         @relation("SolicitacaoCompraUsuario")
+  codigosCashback      CodigoCashback[]
 
   @@map("usuarios")
 }
@@ -313,9 +314,12 @@ model CodigoCashback {
   usado       Boolean   @default(false)
   dataGeracao DateTime  @default(now())
   dataUso     DateTime?
+  usuarioId   String?   // ID do usuário que usou o código
+  dataExpiracao DateTime? // Data de expiração do código
 
   // Relacionamentos
   parceiro Parceiro @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
+  usuario  Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
 
   @@map("codigos_cashback")
 }

@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: {
         usuarioId: String(usuarioId),
         status: {
-          in: ['aguardando_repasse', 'repasse_confirmado', 'aguardando_pagamento']
+          in: ['aguardando_repasse', 'repasse_confirmado']
         }
       },
       include: {

@@ -125,8 +125,10 @@ export default function Cashback() {
   }
 
   const loadHistorico = async () => {
+    if (!user?.id) return
+    
     try {
-      const response = await fetch('/api/cashback/historico')
+      const response = await fetch(`/api/cashback/historico?usuarioId=${user.id}`)
       const data = await response.json()
       if (response.ok) {
         setHistorico(data.historico.map((h: any) => ({
@@ -175,10 +177,16 @@ export default function Cashback() {
   }
 
   const resgatarCodigo = async (codigoId: string) => {
+    if (!user?.id) return
+    
     setResgateLoading(true)
     try {
       const response = await fetch(`/api/cashback/codigos/${codigoId}/resgatar`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ usuarioId: user.id })
       })
 
       if (response.ok) {

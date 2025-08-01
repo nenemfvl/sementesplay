@@ -33,10 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           status: 'cashback_liberado'
         }
       }),
-      // Códigos de cashback usados
+      // Códigos de cashback usados pelo usuário específico
       prisma.codigoCashback.findMany({
         where: {
-          usado: true
+          usado: true,
+          usuarioId: String(usuarioId)
         }
       })
     ])
@@ -48,6 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const totalResgatado = comprasAprovadas.reduce((total, compra) => {
       return total + (compra.valorCompra * 0.05) // 5% para o usuário
+    }, 0)
+
+    // Adicionar valor dos códigos usados ao total resgatado
+    const totalCodigosUsados = codigosUsados.reduce((total, codigo) => {
+      return total + codigo.valor
     }, 0)
 
     const economiaTotal = comprasAprovadas.reduce((total, compra) => {
@@ -68,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       : 0
 
     const estatisticas = {
-      totalResgatado: Math.round(totalResgatado),
+      totalResgatado: Math.round(totalResgatado + totalCodigosUsados),
       totalPendente: Math.round(totalPendente),
       codigosUsados: codigosUsados.length,
       economiaTotal: Math.round(economiaTotal),
