@@ -71,7 +71,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const repassesProcessados = await prisma.repasseParceiro.findMany({
       where: {
         parceiroId: parceiro.id,
-        status: 'processado'
+        status: {
+          in: ['pago', 'processado'] // Incluir ambos os status
+        }
       },
       include: {
         compra: {
