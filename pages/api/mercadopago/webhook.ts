@@ -100,11 +100,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
           // Transação: atualiza tudo de uma vez
           await prisma.$transaction(async (tx) => {
-            // Atualiza repasse para confirmado
+            // Atualiza repasse para pago
             await tx.repasseParceiro.update({
               where: { id: repasseId },
               data: { 
-                status: 'confirmado',
+                status: 'pago',
                 dataRepasse: new Date()
               }
             })
