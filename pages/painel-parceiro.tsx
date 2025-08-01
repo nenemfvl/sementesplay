@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { auth } from '../lib/auth';
@@ -90,7 +90,6 @@ export default function PainelParceiro() {
   const [repasses, setRepasses] = useState<Repasse[]>([]);
   const [loadingRepasses, setLoadingRepasses] = useState(true);
   const [parceiro, setParceiro] = useState<any>(null);
-  const [loadingParceiro, setLoadingParceiro] = useState(true);
 
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -164,18 +163,7 @@ export default function PainelParceiro() {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (authorized && user) {
-      fetchParceiro();
-      fetchTransacoes();
-      fetchEstatisticas();
-      fetchNotificacoes();
-      fetchRepasses();
-      fetchConteudos();
-    }
-  }, [authorized, user, parceiro?.id, fetchParceiro, fetchTransacoes, fetchEstatisticas, fetchNotificacoes, fetchRepasses, fetchConteudos]);
-
-  async function fetchParceiro() {
+  const fetchParceiro = useCallback(async () => {
     try {
       const response = await fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`);
       if (response.ok) {
@@ -184,14 +172,10 @@ export default function PainelParceiro() {
       }
     } catch (error) {
       console.error('Erro ao carregar dados do parceiro:', error);
-    } finally {
-      setLoadingParceiro(false);
     }
-  }
+  }, [user?.id]);
 
-
-
-  async function fetchTransacoes() {
+  const fetchTransacoes = useCallback(async () => {
     try {
       const response = await fetch(`/api/parceiros/transacoes?usuarioId=${user?.id}`);
       if (response.ok) {
@@ -203,9 +187,9 @@ export default function PainelParceiro() {
     } finally {
       setLoadingTransacoes(false);
     }
-  }
+  }, [user?.id]);
 
-  async function fetchEstatisticas() {
+  const fetchEstatisticas = useCallback(async () => {
     try {
       const response = await fetch(`/api/parceiros/estatisticas?usuarioId=${user?.id}`);
       if (response.ok) {
@@ -217,9 +201,9 @@ export default function PainelParceiro() {
     } finally {
       setLoadingEstatisticas(false);
     }
-  }
+  }, [user?.id]);
 
-  async function fetchNotificacoes() {
+  const fetchNotificacoes = useCallback(async () => {
     try {
       const response = await fetch(`/api/notificacoes?usuarioId=${user?.id}`);
       if (response.ok) {
@@ -231,9 +215,9 @@ export default function PainelParceiro() {
     } finally {
       setLoadingNotificacoes(false);
     }
-  }
+  }, [user?.id]);
 
-  async function fetchRepasses() {
+  const fetchRepasses = useCallback(async () => {
     try {
       const response = await fetch(`/api/parceiros/repasses-pendentes?usuarioId=${user?.id}`);
       if (response.ok) {
@@ -245,9 +229,9 @@ export default function PainelParceiro() {
     } finally {
       setLoadingRepasses(false);
     }
-  }
+  }, [user?.id]);
 
-  async function fetchConteudos() {
+  const fetchConteudos = useCallback(async () => {
     try {
       const response = await fetch(`/api/parceiros/conteudos?parceiroId=${parceiro?.id}`);
       if (response.ok) {
@@ -261,7 +245,18 @@ export default function PainelParceiro() {
     } finally {
       setLoadingConteudos(false);
     }
-  }
+  }, [parceiro?.id]);
+
+  useEffect(() => {
+    if (authorized && user) {
+      fetchParceiro();
+      fetchTransacoes();
+      fetchEstatisticas();
+      fetchNotificacoes();
+      fetchRepasses();
+      fetchConteudos();
+    }
+  }, [authorized, user, parceiro?.id, fetchParceiro, fetchTransacoes, fetchEstatisticas, fetchNotificacoes, fetchRepasses, fetchConteudos]);
 
   const getProgressWidthClass = (value: number, max: number) => {
     const percentage = (value / max) * 100;
