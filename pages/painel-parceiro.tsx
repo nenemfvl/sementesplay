@@ -454,9 +454,13 @@ export default function PainelParceiro() {
     
     const interval = setInterval(async () => {
       try {
+        console.log('Verificando pagamento:', paymentId);
         const response = await fetch(`/api/mercadopago/verificar-pagamento?paymentId=${paymentId}`);
+        console.log('Resposta da API:', response.status);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('Dados da resposta:', data);
           
           if (data.status === 'approved') {
             clearInterval(interval);

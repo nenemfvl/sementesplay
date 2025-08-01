@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (payment.status) {
       case 'approved':
-        status = 'confirmado'
+        status = 'approved' // Mudança importante: usar 'approved' em vez de 'confirmado'
         message = 'Pagamento aprovado!'
         break
       case 'pending':
@@ -66,21 +66,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         message = 'Pagamento em processamento'
         break
       case 'rejected':
-        status = 'rejeitado'
+        status = 'rejected'
         message = 'Pagamento rejeitado'
         break
       case 'cancelled':
-        status = 'cancelado'
+        status = 'cancelled'
         message = 'Pagamento cancelado'
         break
       case 'refunded':
-        status = 'reembolsado'
+        status = 'refunded'
         message = 'Pagamento reembolsado'
         break
       default:
         status = 'pending'
         message = 'Status desconhecido'
     }
+
+    console.log('Resposta final da API:', {
+      paymentId,
+      status,
+      message,
+      mercadopago_status: payment.status
+    })
 
     return res.status(200).json({
       paymentId,
