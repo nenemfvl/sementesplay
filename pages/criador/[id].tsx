@@ -776,8 +776,7 @@ export default function CriadorPerfil() {
                                   </button>
                                   <div className="w-24 bg-sss-light rounded-full h-2">
                                     <div 
-                                      className="bg-sss-accent h-2 rounded-full transition-all duration-300" 
-                                      style={{ width: `${porcentagem}%` }}
+                                      className={`bg-sss-accent h-2 rounded-full transition-all duration-300 ${porcentagem <= 10 ? 'w-[10%]' : porcentagem <= 20 ? 'w-[20%]' : porcentagem <= 30 ? 'w-[30%]' : porcentagem <= 40 ? 'w-[40%]' : porcentagem <= 50 ? 'w-[50%]' : porcentagem <= 60 ? 'w-[60%]' : porcentagem <= 70 ? 'w-[70%]' : porcentagem <= 80 ? 'w-[80%]' : porcentagem <= 90 ? 'w-[90%]' : 'w-full'}`}
                                     ></div>
                                   </div>
                                   <span className="text-gray-400 text-sm w-8 text-right">

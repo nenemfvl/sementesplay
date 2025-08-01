@@ -173,7 +173,7 @@ export default function PainelParceiro() {
       fetchRepasses();
       fetchConteudos();
     }
-  }, [authorized, user, parceiro?.id]);
+  }, [authorized, user, parceiro?.id, fetchParceiro, fetchTransacoes, fetchEstatisticas, fetchNotificacoes, fetchRepasses, fetchConteudos]);
 
   async function fetchParceiro() {
     try {
@@ -784,10 +784,12 @@ export default function PainelParceiro() {
                   
                   {/* QR Code */}
                   <div className="text-center mb-4">
-                    <img 
+                    <Image 
                       src={pagamentoPIX.pixCode} 
                       alt="QR Code PIX" 
-                      className="mx-auto bg-white rounded-lg p-2 w-48 h-48"
+                      width={192}
+                      height={192}
+                      className="mx-auto bg-white rounded-lg p-2"
                     />
                   </div>
 
