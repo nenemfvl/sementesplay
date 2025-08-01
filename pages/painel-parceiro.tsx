@@ -271,6 +271,110 @@ export default function PainelParceiro() {
     return 'w-full';
   };
 
+  // Função para obter informações da plataforma
+  function getPlataformaInfo(plataforma: string, url: string) {
+    const plataformaLower = plataforma?.toLowerCase() || '';
+    const urlLower = url?.toLowerCase() || '';
+    
+    // YouTube
+    if (plataformaLower.includes('youtube') || urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+      const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
+      if (yt) {
+        return {
+          nome: 'YouTube',
+          cor: 'bg-red-600',
+          hoverCor: 'hover:bg-red-700',
+          icon: '▶️',
+          thumbnail: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
+          link: `https://www.youtube.com/watch?v=${yt[1]}`
+        };
+      }
+    }
+    
+    // Twitch
+    if (plataformaLower.includes('twitch') || urlLower.includes('twitch.tv')) {
+      return {
+        nome: 'Twitch',
+        cor: 'bg-purple-600',
+        hoverCor: 'hover:bg-purple-700',
+        icon: '🎮',
+        thumbnail: null,
+        link: url
+      };
+    }
+    
+    // Instagram
+    if (plataformaLower.includes('instagram') || urlLower.includes('instagram.com')) {
+      return {
+        nome: 'Instagram',
+        cor: 'bg-pink-600',
+        hoverCor: 'hover:bg-pink-700',
+        icon: '📷',
+        thumbnail: null,
+        link: url
+      };
+    }
+    
+    // TikTok
+    if (plataformaLower.includes('tiktok') || urlLower.includes('tiktok.com')) {
+      return {
+        nome: 'TikTok',
+        cor: 'bg-black',
+        hoverCor: 'hover:bg-gray-800',
+        icon: '🎵',
+        thumbnail: null,
+        link: url
+      };
+    }
+    
+    // Facebook
+    if (plataformaLower.includes('facebook') || urlLower.includes('facebook.com')) {
+      return {
+        nome: 'Facebook',
+        cor: 'bg-blue-600',
+        hoverCor: 'hover:bg-blue-700',
+        icon: '📘',
+        thumbnail: null,
+        link: url
+      };
+    }
+    
+    // Default
+    return {
+      nome: plataforma || 'Link',
+      cor: 'bg-gray-600',
+      hoverCor: 'hover:bg-gray-700',
+      icon: '🔗',
+      thumbnail: null,
+      link: url
+    };
+  }
+
+  // Adicione a função getPreview após getPlataformaInfo
+  function getPreview(url: string) {
+    if (!url) return null;
+    // YouTube
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" title="YouTube video" />;
+    }
+    // Twitch
+    const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
+    if (tw) {
+      return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" title="Twitch stream" />;
+    }
+    // Instagram
+    if (url.includes('instagram.com')) {
+      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-pink-600 underline my-2 block">Ver no Instagram</a>;
+    }
+    // TikTok
+    if (url.includes('tiktok.com')) {
+      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-black underline my-2 block">Ver no TikTok</a>;
+    }
+    // Outro
+    return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
+  }
+
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
     if (!formConteudo.titulo || !formConteudo.url || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.cidade) {
@@ -1305,137 +1409,71 @@ export default function PainelParceiro() {
                   </div>
                 ) : conteudos && conteudos.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {conteudos.map((conteudo) => (
-                      <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
-                        <div className="p-4">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-2">
-                              <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
-                              <span className="text-sss-white font-medium">{conteudo.tipo}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              {conteudo.fixado && (
-                                <div className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
-                                  Fixado
-              </div>
-            )}
-                              <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                conteudo.categoria === 'eventos' ? 'bg-blue-500/20 text-blue-400' :
-                                conteudo.categoria === 'promoções' ? 'bg-green-500/20 text-green-400' :
-                                'bg-purple-500/20 text-purple-400'
-                              }`}>
-                                {conteudo.categoria}
+                    {conteudos.map((conteudo) => {
+                      const plataformaInfo = getPlataformaInfo(conteudo.plataforma || '', conteudo.url);
+                      
+                      return (
+                        <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
+                          <div className="p-4">
+                            {/* Preview da plataforma */}
+                            {getPreview(conteudo.url)}
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-2">
+                                <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
+                                <span className="text-sss-white font-medium">{conteudo.tipo}</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                {conteudo.fixado && (
+                                  <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
+                                    Fixado
+                                  </span>
+                                )}
+                                <button
+                                  className="text-red-400 hover:text-red-300 transition-colors p-1"
+                                  onClick={() => handleRemoverConteudo(conteudo.id)}
+                                  title="Remover"
+                                >
+                                  <TrashIcon className="w-4 h-4" />
+                                </button>
                               </div>
                             </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <div>
-                              <p className="text-sm text-gray-400">Título</p>
-                              <p className="text-lg font-bold text-sss-white">{conteudo.titulo}</p>
-                            </div>
-                            
-                            {conteudo.descricao && (
-                    <div>
-                                <p className="text-sm text-gray-400">Descrição</p>
-                                <p className="text-sm text-sss-white">{conteudo.descricao}</p>
-                    </div>
-                            )}
-                    
-                    <div>
-                              <p className="text-sm text-gray-400">Cidade</p>
-                              <p className="text-sss-white">{conteudo.cidade}</p>
-                    </div>
-                            
-                            {conteudo.endereco && (
-                              <div>
-                                <p className="text-sm text-gray-400">Endereço</p>
-                                <p className="text-sm text-sss-white">{conteudo.endereco}</p>
-              </div>
-            )}
-                            
-                            {conteudo.dataEvento && (
-                              <div>
-                                <p className="text-sm text-gray-400">Data do Evento</p>
-                                <p className="text-sss-white">
-                                  {new Date(conteudo.dataEvento).toLocaleDateString('pt-BR')}
-                                </p>
-        </div>
-                            )}
-                            
-                            {conteudo.preco && (
-                              <div>
-                                <p className="text-sm text-gray-400">Preço</p>
-                                <p className="text-sss-accent font-semibold">{conteudo.preco}</p>
-            </div>
-                            )}
-            
-                            {conteudo.vagas && (
-              <div>
-                                <p className="text-sm text-gray-400">Vagas</p>
-                                <p className="text-sss-white">{conteudo.vagas} disponíveis</p>
-              </div>
-                            )}
-              
-                            <div className="flex justify-between text-sm">
-              <div>
-                                <p className="text-gray-400">Visualizações</p>
-                                <p className="text-sss-white">{conteudo.visualizacoes}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-400">Curtidas</p>
-                                <p className="text-sss-white">{conteudo.curtidas}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-400">Comentários</p>
-                                <p className="text-sss-white">{conteudo.comentarios}</p>
-                              </div>
-              </div>
-            </div>
-            
-                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-sss-light">
-                            <div className="flex space-x-2">
-              <button
-                                className="text-blue-400 hover:text-blue-300 transition-colors p-1" 
-                                onClick={() => {
-                                  setEditandoConteudo(conteudo);
-                                  setFormConteudo({
-                                    titulo: conteudo.titulo,
-                                    url: conteudo.url,
-                                    tipo: conteudo.tipo,
-                                    categoria: conteudo.categoria,
-                                    descricao: conteudo.descricao || '',
-                                    plataforma: conteudo.plataforma || '',
-                                    cidade: conteudo.cidade,
-                                    endereco: conteudo.endereco || '',
-                                    dataEvento: conteudo.dataEvento || '',
-                                    preco: conteudo.preco || '',
-                                    vagas: conteudo.vagas?.toString() || '',
-                                    fixado: conteudo.fixado
-                                  });
-                                  setShowModalConteudo(true);
-                                }}
-                                title="Editar"
+                            {/* Links clicáveis para URL e Plataforma */}
+                            <div className="flex gap-2 mb-2">
+                              <a
+                                href={conteudo.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-sss-white transition-colors"
                               >
-                                <PencilIcon className="w-4 h-4" />
-              </button>
-              <button
-                                className="text-red-400 hover:text-red-300 transition-colors p-1" 
-                                onClick={() => handleRemoverConteudo(conteudo.id)}
-                                title="Remover"
-                              >
-                                <TrashIcon className="w-4 h-4" />
-              </button>
-            </div>
-                            
-                            <div className="flex space-x-2">
+                                Link
+                              </a>
+                              {conteudo.plataforma && (
+                                <a
+                                  href={conteudo.plataforma.startsWith('http') ? conteudo.plataforma : undefined}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1 rounded-lg text-sm font-semibold bg-pink-600 hover:bg-pink-700 text-sss-white transition-colors"
+                                >
+                                  {conteudo.plataforma}
+                                </a>
+                              )}
+                            </div>
+                            {/* Outras informações do conteúdo */}
+                            <div className="flex flex-col gap-1">
+                              <div>
+                                <p className="text-sm text-gray-400">Categoria</p>
+                                <p className="text-sss-white">{conteudo.categoria}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-400">Cidade</p>
+                                <p className="text-sss-white">{conteudo.cidade}</p>
+                              </div>
+                              {/* Adicione outros campos se necessário */}
+                            </div>
+                            <div className="flex space-x-2 mt-4">
                               <button
                                 onClick={() => handleFixarConteudo(conteudo.id, !conteudo.fixado)}
-                                className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
-                                  conteudo.fixado 
-                                    ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' 
-                                    : 'bg-gray-600 hover:bg-gray-700 text-sss-white'
-                                }`}
+                                className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
                               >
                                 {conteudo.fixado ? 'Desfixar' : 'Fixar'}
                               </button>
@@ -1450,8 +1488,8 @@ export default function PainelParceiro() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-12">
@@ -1463,8 +1501,8 @@ export default function PainelParceiro() {
                     >
                       Criar Primeiro Conteúdo
                     </button>
-        </div>
-      )}
+                  </div>
+                )}
               </div>
             </div>
           </section>
