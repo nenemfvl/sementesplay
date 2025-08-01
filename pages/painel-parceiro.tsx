@@ -480,6 +480,42 @@ export default function PainelParceiro() {
     }, 300000);
   }
 
+  async function handleConfirmarPagamento() {
+    if (!repasseSelecionado) return
+
+    try {
+      const response = await fetch('/api/parceiros/confirmar-pagamento-pix', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          repasseId: repasseSelecionado.id,
+          comprovanteUrl: null // Pode ser adicionado upload de comprovante depois
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        alert(`✅ ${result.message}\n\nValores distribuídos:\n• Usuário: ${result.dados.pctUsuario} sementes\n• Sistema: R$ ${result.dados.pctSistema.toFixed(2)}\n• Fundo: R$ ${result.dados.pctFundo.toFixed(2)}`)
+        
+        // Fecha o modal e atualiza os dados
+        setShowModalPIX(false)
+        setRepasseSelecionado(null)
+        setPagamentoPIX(null)
+        
+        // Recarrega os repasses
+        fetchRepasses()
+      } else {
+        const error = await response.json()
+        alert(`❌ Erro: ${error.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao confirmar pagamento:', error)
+      alert('Erro ao confirmar pagamento. Tente novamente.')
+    }
+  }
+
 
 
   // Mostrar loading enquanto verifica autorização
@@ -844,6 +880,20 @@ export default function PainelParceiro() {
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-400 mx-auto mb-2"></div>
                       <p className="text-yellow-400 text-sm">Verificando pagamento...</p>
                       <p className="text-gray-400 text-xs">Aguarde a confirmação automática</p>
+                    </div>
+                  )}
+
+                  {/* Botão para confirmar pagamento manualmente */}
+                  {!verificandoPagamento && (
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center mb-3">
+                      <p className="text-green-400 text-sm mb-2">Pagamento realizado?</p>
+                      <p className="text-gray-400 text-xs mb-3">Clique no botão abaixo para confirmar e distribuir os valores</p>
+                      <button 
+                        onClick={handleConfirmarPagamento}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                      >
+                        ✅ Confirmar Pagamento
+                      </button>
                     </div>
                   )}
 
