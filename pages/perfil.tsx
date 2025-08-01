@@ -298,6 +298,7 @@ export default function Perfil() {
                       className="hidden"
                       onChange={handleAvatarChange}
                       disabled={uploading}
+                      aria-label="Upload de avatar"
                     />
                   </label>
                   {uploading && (
@@ -466,7 +467,7 @@ export default function Perfil() {
                                 <div className="text-xs text-gray-400">{conquista.progresso}%</div>
                                 <div className="w-16 h-2 bg-gray-600 rounded-full">
                                   <div 
-                                    className="h-2 bg-sss-accent rounded-full" 
+                                    className="progress-bar"
                                     style={{ width: `${conquista.progresso}%` }}
                                   ></div>
                                 </div>

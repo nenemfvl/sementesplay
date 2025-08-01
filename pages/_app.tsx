@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import Head from 'next/head'
-import PWABanner from '../components/PWABanner'
+// import PWABanner from '../components/PWABanner'
 import OfflineIndicator from '../components/OfflineIndicator'
 import '../styles/globals.css'
 import { auth } from '../lib/auth'
@@ -26,12 +26,12 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   return (
     <SessionProvider session={session}>
       <Head>
+        <link rel="apple-touch-icon" href="/icons/icon-144x144.png" />
         <meta name="application-name" content="SementesPLAY" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="SementesPLAY" />
         <meta name="description" content="Plataforma completa para apoiar criadores de conteúdo" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/icons/browserconfig.xml" />
