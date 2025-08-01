@@ -38,18 +38,18 @@ async function processarPagamentoManual() {
     const valorRepasse = compra.valorCompra * 0.10;
     console.log(`💰 VALOR DO REPASSE: R$ ${valorRepasse.toFixed(2)}`);
 
-    // Calcular distribuição
-    const pctUsuario = valorRepasse * 0.50; // 50% para usuário (em sementes)
-    const pctSistema = valorRepasse * 0.25; // 25% para sistema
-    const pctFundo = valorRepasse * 0.25; // 25% para fundo
+    // Calcular distribuição CORRETA
+    const pctUsuario = valorRepasse * 0.50; // 50% para usuário (em sementes) - valor exato sem arredondamento
+    const pctSistema = valorRepasse * 0.25; // 25% para sistema (em reais)
+    const pctFundo = valorRepasse * 0.25; // 25% para fundo (em reais)
 
     console.log(`📊 DISTRIBUIÇÃO:`);
-    console.log(`   Usuário: ${pctUsuario.toFixed(2)} sementes`);
-    console.log(`   Sistema: R$ ${pctSistema.toFixed(2)}`);
-    console.log(`   Fundo: R$ ${pctFundo.toFixed(2)}`);
+    console.log(`   Usuário: ${pctUsuario} sementes (50% de R$ ${valorRepasse.toFixed(2)})`);
+    console.log(`   Sistema: R$ ${pctSistema.toFixed(3)} (25%)`);
+    console.log(`   Fundo: R$ ${pctFundo.toFixed(3)} (25%)`);
     console.log('');
 
-    // Processar em transação
+    // Processar em transação simplificada
     const resultado = await prisma.$transaction(async (tx) => {
       // 1. Atualizar status da compra
       const compraAtualizada = await tx.compraParceiro.update({
@@ -68,64 +68,63 @@ async function processarPagamentoManual() {
         }
       });
 
-      // 3. Criar registro de semente para o usuário
+      // 3. Creditar sementes para o usuário
+      await tx.usuario.update({
+        where: { id: compra.usuarioId },
+        data: { sementes: { increment: pctUsuario } }
+      });
+
+      // 4. Criar registro de semente para o usuário
       await tx.semente.create({
         data: {
           usuarioId: compra.usuarioId,
           quantidade: pctUsuario,
-          tipo: 'cashback',
-          descricao: `Cashback de R$ ${valorRepasse.toFixed(2)} da compra ${compra.id}`
-        }
-      });
-
-      // 4. Atualizar fundo de sementes
-      const fundoSementes = await tx.fundoSementes.findFirst();
-      if (fundoSementes) {
-        await tx.fundoSementes.update({
-          where: { id: fundoSementes.id },
-          data: { valorTotal: { increment: pctFundo } }
-        });
-      }
-
-      // 6. Criar notificação para o usuário
-      await tx.notificacao.create({
-        data: {
-          usuarioId: compra.usuarioId,
-          titulo: 'Cashback Liberado!',
-          mensagem: `Seu cashback de R$ ${valorRepasse.toFixed(2)} foi liberado! Você recebeu ${pctUsuario.toFixed(2)} sementes.`,
-          tipo: 'cashback_liberado',
-          lida: false
-        }
-      });
-
-      // 7. Criar notificação para o parceiro
-      await tx.notificacao.create({
-        data: {
-          usuarioId: compra.parceiro.usuarioId,
-          titulo: 'Repasse Processado!',
-          mensagem: `O repasse de R$ ${valorRepasse.toFixed(2)} da compra de ${compra.usuario.nome} foi processado com sucesso.`,
-          tipo: 'repasse_processado',
-          lida: false
-        }
-      });
-
-      // 8. Log de auditoria
-      await tx.logAuditoria.create({
-        data: {
-          usuarioId: compra.usuarioId,
-          acao: 'pagamento_processado_manual',
-          detalhes: `Compra ${compra.id} processada manualmente. Repasse: R$ ${valorRepasse.toFixed(2)}, Sementes: ${pctUsuario.toFixed(2)}`,
-          timestamp: new Date()
+          tipo: 'resgatada',
+          descricao: `Cashback compra parceiro ${compra.id}`
         }
       });
 
       return { compraAtualizada, repasse };
+    }, {
+      timeout: 10000 // Aumentar timeout para 10 segundos
     });
 
     console.log('✅ PAGAMENTO PROCESSADO COM SUCESSO!');
     console.log(`   Compra ID: ${resultado.compraAtualizada.id}`);
     console.log(`   Repasse ID: ${resultado.repasse.id}`);
+    console.log(`   Sementes creditadas: ${pctUsuario}`);
     console.log('');
+
+    // Operações fora da transação para evitar timeout
+    try {
+      // Atualizar fundo de sementes
+      const fundoSementes = await prisma.fundoSementes.findFirst({
+        where: { distribuido: false }
+      });
+      
+      if (fundoSementes) {
+        await prisma.fundoSementes.update({
+          where: { id: fundoSementes.id },
+          data: { valorTotal: { increment: pctFundo } }
+        });
+        console.log('✅ Fundo de sementes atualizado');
+      }
+
+      // Criar notificação para o usuário
+      await prisma.notificacao.create({
+        data: {
+          usuarioId: compra.usuarioId,
+          titulo: 'Cashback Liberado!',
+          mensagem: `Seu cashback de R$ ${valorRepasse.toFixed(2)} foi liberado! Você recebeu ${pctUsuario} sementes.`,
+          tipo: 'cashback',
+          lida: false
+        }
+      });
+      console.log('✅ Notificação criada para o usuário');
+
+    } catch (error) {
+      console.log('⚠️ Erro nas operações secundárias:', error.message);
+    }
 
   } catch (error) {
     console.error('❌ Erro ao processar pagamento:', error);
