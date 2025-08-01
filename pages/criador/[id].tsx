@@ -495,6 +495,8 @@ export default function CriadorPerfil() {
                 <button
                   onClick={() => router.back()}
                   className="text-sss-white hover:text-sss-accent transition-colors"
+                  title="Voltar"
+                  aria-label="Voltar"
                 >
                   <ArrowLeftIcon className="w-6 h-6" />
                 </button>
@@ -774,7 +776,7 @@ export default function CriadorPerfil() {
                                   </button>
                                   <div className="w-24 bg-sss-light rounded-full h-2">
                                     <div 
-                                      className="bg-sss-accent h-2 rounded-full" 
+                                      className="bg-sss-accent h-2 rounded-full transition-all duration-300" 
                                       style={{ width: `${porcentagem}%` }}
                                     ></div>
                                   </div>

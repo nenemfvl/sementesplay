@@ -10,10 +10,6 @@ import {
   FireIcon,
   GiftIcon,
   ChartBarIcon,
-  UserGroupIcon,
-  CurrencyDollarIcon,
-  HeartIcon,
-  BoltIcon,
   CalendarIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
