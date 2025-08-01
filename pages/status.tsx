@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/outline'
@@ -84,7 +84,7 @@ export default function Status() {
 
   useEffect(() => {
     loadRankingMissoesConquistas()
-  }, [categoriaRanking])
+  }, [loadRankingMissoesConquistas])
 
   // Carregar favoritos do localStorage
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function Status() {
     }
   }, [criadores])
 
-  const loadRankingMissoesConquistas = async () => {
+  const loadRankingMissoesConquistas = useCallback(async () => {
     setLoadingRanking(true)
     try {
       const response = await fetch(`/api/ranking/missoes-conquistas?tipo=${categoriaRanking}`)
@@ -130,7 +130,7 @@ export default function Status() {
     } finally {
       setLoadingRanking(false)
     }
-  }
+  }, [categoriaRanking])
 
   // Função para filtrar criadores pela rede social
   const criadoresFiltrados = filtroRede === 'todos'

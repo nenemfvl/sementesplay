@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { 
   UserIcon,
   EnvelopeIcon,
-  GlobeAltIcon,
+
   DocumentTextIcon,
   PhotoIcon,
   VideoCameraIcon,

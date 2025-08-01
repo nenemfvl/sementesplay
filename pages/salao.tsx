@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline'
+
 import { auth } from '../lib/auth'
 import Navbar from '../components/Navbar';
 

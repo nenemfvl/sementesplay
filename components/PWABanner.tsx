@@ -4,7 +4,7 @@ import {
   ArrowDownTrayIcon,
   XMarkIcon,
   DevicePhoneMobileIcon,
-  WifiIcon,
+
   CloudArrowDownIcon
 } from '@heroicons/react/24/outline'
 import { usePWA } from '../hooks/usePWA'

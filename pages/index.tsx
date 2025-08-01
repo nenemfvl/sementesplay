@@ -10,7 +10,7 @@ import {
   ChartBarIcon,
   PlayIcon,
   StarIcon,
-  ArrowLeftOnRectangleIcon
+
 } from '@heroicons/react/24/outline'
 import { auth } from '../lib/auth';
 import Navbar from '../components/Navbar';

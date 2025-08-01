@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
-import { GlobeAltIcon } from '@heroicons/react/24/outline';
+
 
 interface UserWithCriador extends User {
   criador?: {
