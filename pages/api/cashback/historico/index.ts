@@ -15,10 +15,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
     }
 
-    // Buscar histórico de compras do usuário
+    // Buscar histórico de compras liberadas do usuário
     const compras = await prisma.compraParceiro.findMany({
       where: {
-        usuarioId: String(usuarioId)
+        usuarioId: String(usuarioId),
+        status: 'cashback_liberado'
       },
       include: {
         parceiro: {

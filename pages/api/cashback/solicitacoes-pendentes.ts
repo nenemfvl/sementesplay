@@ -31,12 +31,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // Buscar compras aprovadas que ainda não foram liberadas
+    // Buscar compras que ainda não foram liberadas (apenas as realmente pendentes)
     const comprasAprovadas = await prisma.compraParceiro.findMany({
       where: {
         usuarioId: String(usuarioId),
         status: {
-          not: 'cashback_liberado'
+          in: ['aguardando_repasse', 'repasse_confirmado', 'aguardando_pagamento']
         }
       },
       include: {
