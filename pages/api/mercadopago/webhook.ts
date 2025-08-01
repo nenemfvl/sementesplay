@@ -183,4 +183,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Erro no webhook:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
-} 
+}
