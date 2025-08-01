@@ -164,15 +164,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               paymentId: payment.id
             })
           }
-      } else {
-        console.log('Pagamento não aprovado:', payment.status)
-        return res.status(200).json({ 
-          success: true, 
-          message: 'Webhook recebido - pagamento não aprovado',
-          status: payment.status
-        })
+        } else {
+          console.log('Pagamento não aprovado:', payment.status)
+          return res.status(200).json({ 
+            success: true, 
+            message: 'Webhook recebido - pagamento não aprovado',
+            status: payment.status
+          })
+        }
       }
-    }
 
     return res.status(200).json({ 
       success: true, 
