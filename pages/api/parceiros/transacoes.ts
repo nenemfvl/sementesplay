@@ -67,7 +67,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    res.status(200).json(transacoes)
+    // Buscar repasses processados do parceiro
+    const repassesProcessados = await prisma.repasseParceiro.findMany({
+      where: {
+        parceiroId: parceiro.id,
+        status: 'processado'
+      },
+      include: {
+        compra: {
+          include: {
+            usuario: {
+              select: {
+                nome: true,
+                email: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        dataRepasse: 'desc'
+      }
+    })
+
+    // Combinar e formatar os dados
+    const todasTransacoes = [
+      // Transações com códigos
+      ...transacoes.map(t => ({
+        id: t.id,
+        tipo: 'transacao',
+        valor: t.valor,
+        data: t.data,
+        status: t.status,
+        usuario: t.usuario,
+        descricao: `Transação com código ${t.codigoParceiro}`
+      })),
+      // Repasses processados
+      ...repassesProcessados.map(r => ({
+        id: r.id,
+        tipo: 'repasse',
+        valor: r.valor,
+        data: r.dataRepasse,
+        status: r.status,
+        usuario: r.compra.usuario,
+        descricao: `Repasse processado - Compra R$ ${r.compra.valorCompra.toFixed(2)}`
+      }))
+    ]
+
+    // Ordenar por data (mais recente primeiro)
+    todasTransacoes.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+
+    res.status(200).json(todasTransacoes)
   } catch (error) {
     console.error('Erro ao buscar transações do parceiro:', error)
     res.status(500).json({ error: 'Erro interno do servidor' })
