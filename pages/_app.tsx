@@ -30,14 +30,13 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="SementesPLAY" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
         <meta name="description" content="Plataforma completa para apoiar criadores de conteúdo" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/icons/browserconfig.xml" />
         <meta name="msapplication-TileColor" content="#dc2626" />
         <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="theme-color" content="#dc2626" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png" />
         <link rel="manifest" href="/manifest.json" />
