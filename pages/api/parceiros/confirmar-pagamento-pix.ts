@@ -75,11 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Dados inconsistentes' })
     }
 
-                             // Calcula as porcentagens
-           const valor = repasse.valor
-           const pctUsuario = Math.max(1, Math.round(valor * 0.50))    // 50% para jogador (em sementes), mínimo 1
-           const pctSistema = valor * 0.25               // 25% para sistema SementesPLAY
-           const pctFundo = valor * 0.25                 // 25% para fundo de distribuição
+                                                           // Calcula as porcentagens
+            const valor = repasse.valor
+            const pctUsuario = valor * 0.50    // 50% para jogador (em sementes)
+            const pctSistema = valor * 0.25               // 25% para sistema SementesPLAY
+            const pctFundo = valor * 0.25                 // 25% para fundo de distribuição
 
     // Transação: atualiza tudo de uma vez
     await prisma.$transaction(async (tx) => {

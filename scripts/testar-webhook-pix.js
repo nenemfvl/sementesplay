@@ -58,11 +58,11 @@ async function testarWebhookPIX() {
     const parceiro = repasse.compra.parceiro;
     const usuario = repasse.compra.usuario;
 
-                   // Calcula as porcentagens
-      const valor = repasse.valor;
-      const pctUsuario = Math.max(1, Math.round(valor * 0.50));    // 50% para jogador (em sementes), mínimo 1
-      const pctSistema = valor * 0.25;               // 25% para sistema SementesPLAY
-      const pctFundo = valor * 0.25;                 // 25% para fundo de distribuição
+                                       // Calcula as porcentagens
+       const valor = repasse.valor;
+       const pctUsuario = Math.round(valor * 0.50);    // 50% para jogador (em sementes)
+       const pctSistema = valor * 0.25;               // 25% para sistema SementesPLAY
+       const pctFundo = valor * 0.25;                 // 25% para fundo de distribuição
 
     console.log('\n📊 Calculando distribuição:');
     console.log(`   Valor total: R$ ${valor}`);

@@ -10,8 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id } = req.query
     const { parceiroId, motivoRejeicao } = req.body
 
-    if (!id || !parceiroId) {
-      return res.status(400).json({ error: 'ID da solicitação e ID do parceiro são obrigatórios' })
+    if (!id || !parceiroId || !motivoRejeicao) {
+      return res.status(400).json({ error: 'ID da solicitação, ID do parceiro e motivo da rejeição são obrigatórios' })
     }
 
     // Verifica se a solicitação existe e pertence ao parceiro
@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         status: 'rejeitada',
         dataRejeicao: new Date(),
-        motivoRejeicao: motivoRejeicao || 'Rejeitada pelo parceiro'
+        motivoRejeicao: motivoRejeicao as string
       }
     })
 
@@ -46,9 +46,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         usuarioId: solicitacao.usuarioId,
         titulo: 'Solicitação de Compra Rejeitada',
-        mensagem: `Sua solicitação de compra de R$ ${solicitacao.valorCompra.toFixed(2)} foi rejeitada pelo parceiro ${solicitacao.parceiro.nomeCidade}.${motivoRejeicao ? ` Motivo: ${motivoRejeicao}` : ''}`,
+        mensagem: `Sua solicitação de compra de R$ ${solicitacao.valorCompra.toFixed(2)} foi rejeitada pelo parceiro ${solicitacao.parceiro.nomeCidade}. Motivo: ${motivoRejeicao}`,
         tipo: 'solicitacao_rejeitada',
-
+        lida: false
       }
     })
 

@@ -57,6 +57,7 @@ type Repasse = {
   dataRepasse?: string;
   comprovante?: string;
   usuario?: { nome: string; email: string };
+  tipo?: string; // 'solicitacao', 'compra', 'repasse'
 };
 
 type ConteudoParceiro = {
@@ -115,6 +116,8 @@ export default function PainelParceiro() {
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
+  const [aprovarLoading, setAprovarLoading] = useState<string | null>(null);
+  const [rejeitarLoading, setRejeitarLoading] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -524,6 +527,76 @@ export default function PainelParceiro() {
       }
     } catch (error) {
       console.error('Erro ao processar repasse automaticamente:', error);
+    }
+  }
+
+  async function aprovarSolicitacao(solicitacaoId: string) {
+    if (!parceiro) return;
+    
+    setAprovarLoading(solicitacaoId);
+    try {
+      const response = await fetch(`/api/parceiros/solicitacoes/${solicitacaoId}/aprovar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          parceiroId: parceiro.id
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Solicitação aprovada:', result);
+        alert('Solicitação aprovada com sucesso!');
+        fetchRepasses(); // Recarregar repasses
+      } else {
+        const error = await response.json();
+        console.error('Erro ao aprovar solicitação:', error);
+        alert(`Erro ao aprovar solicitação: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Erro ao aprovar solicitação:', error);
+      alert('Erro ao aprovar solicitação');
+    } finally {
+      setAprovarLoading(null);
+    }
+  }
+
+  async function rejeitarSolicitacao(solicitacaoId: string) {
+    if (!parceiro) return;
+    
+    const motivo = prompt('Motivo da rejeição:');
+    if (!motivo) return;
+    
+    setRejeitarLoading(solicitacaoId);
+    try {
+      const response = await fetch(`/api/parceiros/solicitacoes/${solicitacaoId}/rejeitar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          parceiroId: parceiro.id,
+          motivoRejeicao: motivo
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Solicitação rejeitada:', result);
+        alert('Solicitação rejeitada com sucesso!');
+        fetchRepasses(); // Recarregar repasses
+      } else {
+        const error = await response.json();
+        console.error('Erro ao rejeitar solicitação:', error);
+        alert(`Erro ao rejeitar solicitação: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Erro ao rejeitar solicitação:', error);
+      alert('Erro ao rejeitar solicitação');
+    } finally {
+      setRejeitarLoading(null);
     }
   }
 
@@ -1145,12 +1218,44 @@ export default function PainelParceiro() {
                                 Comprovante
                               </button>
                             )}
-                                                         <button
-                               onClick={() => handleFazerPagamentoPIX(repasse)}
-                               className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                             >
-                               Pagar PIX
-                             </button>
+                            {repasse.tipo === 'solicitacao' && (
+                              <>
+                                <button
+                                  onClick={() => aprovarSolicitacao(repasse.id)}
+                                  disabled={aprovarLoading === repasse.id}
+                                  className="bg-green-600 hover:bg-green-700 disabled:bg-green-600/50 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
+                                  title="Aprovar solicitação"
+                                >
+                                  {aprovarLoading === repasse.id ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                  ) : (
+                                    <CheckIcon className="w-4 h-4" />
+                                  )}
+                                  {aprovarLoading === repasse.id ? 'Aprovando...' : 'Aprovar'}
+                                </button>
+                                <button
+                                  onClick={() => rejeitarSolicitacao(repasse.id)}
+                                  disabled={rejeitarLoading === repasse.id}
+                                  className="bg-red-600 hover:bg-red-700 disabled:bg-red-600/50 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
+                                  title="Rejeitar solicitação"
+                                >
+                                  {rejeitarLoading === repasse.id ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                  ) : (
+                                    <XMarkIcon className="w-4 h-4" />
+                                  )}
+                                  {rejeitarLoading === repasse.id ? 'Rejeitando...' : 'Rejeitar'}
+                                </button>
+                              </>
+                            )}
+                            {repasse.tipo === 'repasse' && (
+                              <button
+                                onClick={() => handleFazerPagamentoPIX(repasse)}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
+                              >
+                                Pagar PIX
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
