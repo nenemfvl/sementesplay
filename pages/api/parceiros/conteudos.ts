@@ -73,6 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           tipo: conteudo.tipo || '',
           categoria: conteudo.categoria || '',
           descricao: conteudo.descricao || '',
+          plataforma: conteudo.plataforma || '',
           data: conteudo.dataPublicacao ? conteudo.dataPublicacao.toISOString() : new Date().toISOString(),
           visualizacoes: conteudo.visualizacoes || 0,
           curtidas: conteudo.curtidas || 0,

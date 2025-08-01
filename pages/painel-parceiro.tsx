@@ -67,6 +67,7 @@ type ConteudoParceiro = {
   categoria: string;
   descricao?: string;
   url: string;
+  plataforma?: string;
   cidade: string;
   endereco?: string;
   dataEvento?: string;
@@ -1404,7 +1405,7 @@ export default function PainelParceiro() {
                                     tipo: conteudo.tipo,
                                     categoria: conteudo.categoria,
                                     descricao: conteudo.descricao || '',
-                                    plataforma: '',
+                                    plataforma: conteudo.plataforma || '',
                                     cidade: conteudo.cidade,
                                     endereco: conteudo.endereco || '',
                                     dataEvento: conteudo.dataEvento || '',
