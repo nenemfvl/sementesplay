@@ -473,7 +473,11 @@ export default function PainelParceiro() {
             setShowModalPIX(false);
             setRepasseSelecionado(null);
             setPagamentoPIX(null);
-            fetchRepasses();
+            
+            // Aguardar um pouco antes de atualizar a lista
+            setTimeout(() => {
+              fetchRepasses();
+            }, 1000);
           } else if (data.status === 'rejected' || data.status === 'cancelled') {
             clearInterval(interval);
             setVerificandoPagamento(false);
@@ -506,7 +510,8 @@ export default function PainelParceiro() {
         },
         body: JSON.stringify({
           repasseId: repasseSelecionado.id,
-          comprovanteUrl: null
+          comprovanteUrl: null,
+          paymentId: paymentId
         })
       });
 

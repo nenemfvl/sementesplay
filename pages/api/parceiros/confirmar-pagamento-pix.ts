@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { repasseId, comprovanteUrl } = req.body
+    const { repasseId, comprovanteUrl, paymentId } = req.body
     if (!repasseId) {
       return res.status(400).json({ error: 'ID do repasse obrigatório' })
     }
@@ -40,9 +40,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Verificar se o pagamento foi realmente aprovado no MercadoPago
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
-    if (accessToken && repasse.paymentId) {
+    const paymentIdToCheck = paymentId || repasse.paymentId
+    
+    if (accessToken && paymentIdToCheck) {
       try {
-        const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${repasse.paymentId}`, {
+        const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentIdToCheck}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${accessToken}`,

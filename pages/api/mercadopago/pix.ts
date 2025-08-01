@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import QRCode from 'qrcode'
+import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -85,6 +86,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const payment = await response.json()
     console.log('Pagamento criado no Mercado Pago:', payment.id)
+
+    // Salvar o paymentId no repasse
+    try {
+      await prisma.repasseParceiro.update({
+        where: { id: repasseId },
+        data: { 
+          paymentId: payment.id,
+          status: 'aguardando_pagamento'
+        }
+      })
+      console.log('PaymentId salvo no repasse:', payment.id)
+    } catch (dbError) {
+      console.error('Erro ao salvar paymentId no repasse:', dbError)
+      // Não falhar se não conseguir salvar, apenas logar o erro
+    }
 
     if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
       const pixData = payment.point_of_interaction?.transaction_data
