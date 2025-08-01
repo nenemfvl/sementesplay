@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         valorCompra: solicitacao.valorCompra,
         dataCompra: solicitacao.dataCompra,
         comprovanteUrl: solicitacao.comprovanteUrl,
-        status: 'aguardando_pagamento',
+        status: 'aguardando_repasse',
         cupomUsado: solicitacao.cupomUsado
       }
     })
