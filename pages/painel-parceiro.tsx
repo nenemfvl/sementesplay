@@ -737,9 +737,9 @@ export default function PainelParceiro() {
       {/* Modal de Pagamento PIX */}
       {showModalPIX && repasseSelecionado && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-md border border-sss-light shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-sss-white">
+          <div className="bg-sss-medium rounded-2xl p-4 w-full max-w-md border border-sss-light shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-sss-white">
                 Pagamento PIX
               </h2>
               <button 
@@ -750,14 +750,14 @@ export default function PainelParceiro() {
                 className="text-gray-400 hover:text-sss-white transition-colors"
                 aria-label="Fechar modal"
               >
-                <XMarkIcon className="w-6 h-6" />
+                <XMarkIcon className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="space-y-4">
-                                <div className="bg-sss-light/30 rounded-lg p-4">
+            <div className="space-y-3">
+                                <div className="bg-sss-light/30 rounded-lg p-3">
                     <h3 className="text-sss-white font-semibold mb-2">Detalhes do Repasse</h3>
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Valor da Compra:</span>
                         <span className="text-sss-white">R$ {repasseSelecionado.valorCompra.toFixed(2)}</span>
@@ -774,34 +774,34 @@ export default function PainelParceiro() {
                   </div>
 
               {pagamentoPIX ? (
-                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 max-h-[80vh] overflow-y-auto">
-                  <h3 className="text-green-400 font-semibold mb-4">Pagamento PIX Integrado</h3>
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 max-h-[70vh] overflow-y-auto">
+                  <h3 className="text-green-400 font-semibold mb-3">Pagamento PIX Integrado</h3>
                   
                   {/* QR Code */}
-                  <div className="text-center mb-4">
+                  <div className="text-center mb-3">
                     <Image 
                       src={pagamentoPIX.pixCode} 
                       alt="QR Code PIX" 
-                      width={192}
-                      height={192}
+                      width={160}
+                      height={160}
                       className="mx-auto bg-white rounded-lg p-2"
                     />
                   </div>
 
                   {/* Código PIX */}
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <p className="text-sm text-gray-400 mb-2">Código PIX (copie e cole no app):</p>
-                    <div className="bg-gray-700 p-3 rounded-lg">
+                    <div className="bg-gray-700 p-2 rounded-lg">
                       <code className="text-xs text-white break-all">{pagamentoPIX.qrCode}</code>
                     </div>
                   </div>
 
                   {/* Dados do PIX */}
-                  <div className="space-y-3 mb-4">
+                  <div className="space-y-2 mb-3">
                     <div>
                       <p className="text-sm text-gray-400">Chave PIX:</p>
                       <div className="flex items-center gap-2">
-                        <p className="text-sss-white font-mono text-lg">{pagamentoPIX.pixData.chavePix}</p>
+                        <p className="text-sss-white font-mono text-sm">{pagamentoPIX.pixData.chavePix}</p>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(pagamentoPIX.pixData.chavePix);
@@ -815,7 +815,7 @@ export default function PainelParceiro() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Valor a pagar:</p>
-                      <p className="text-green-400 font-bold text-xl">R$ {pagamentoPIX.pixData.valor.toFixed(2)}</p>
+                      <p className="text-green-400 font-bold text-lg">R$ {pagamentoPIX.pixData.valor.toFixed(2)}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Descrição:</p>
@@ -824,7 +824,7 @@ export default function PainelParceiro() {
                   </div>
 
                   {/* Instruções */}
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-4">
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-2 mb-3">
                     <h4 className="text-blue-400 font-semibold mb-2">Instruções:</h4>
                     <ul className="text-sm text-gray-300 space-y-1">
                       {pagamentoPIX.instrucoes.map((instrucao: string, index: number) => (
@@ -838,17 +838,17 @@ export default function PainelParceiro() {
 
                   {/* Status do pagamento */}
                   {verificandoPagamento && (
-                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-400 mx-auto mb-2"></div>
+                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2 text-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-400 mx-auto mb-2"></div>
                       <p className="text-yellow-400 text-sm">Verificando pagamento...</p>
                       <p className="text-gray-400 text-xs">Aguarde a confirmação automática</p>
                     </div>
                   )}
 
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-3 pt-3">
                     <button 
                       type="button" 
-                      className="flex-1 bg-sss-light text-sss-white px-6 py-3 rounded-lg hover:bg-sss-light transition-colors" 
+                      className="flex-1 bg-sss-light text-sss-white px-4 py-2 rounded-lg hover:bg-sss-light transition-colors" 
                       onClick={() => { 
                         setShowModalPIX(false); 
                         setRepasseSelecionado(null);
