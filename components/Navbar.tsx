@@ -88,21 +88,7 @@ export default function Navbar() {
             </div>
             Salão
           </Link>
-          <a
-            href="#"
-            onClick={e => {
-              e.preventDefault();
-              const user = auth.getUser();
-              if (!user) {
-                window.location.href = '/login';
-                return;
-              }
-              window.location.href = '/buscar';
-            }}
-            className={`${router.asPath.startsWith('/buscar') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}
-          >
-            Buscar Criadores
-          </a>
+
           <Link href="/parceiros" className={`${router.asPath.startsWith('/parceiros') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Parceiros</Link>
           {(user?.nivel === 'criador-iniciante' || user?.nivel === 'criador-comum' || user?.nivel === 'criador-parceiro' || user?.nivel === 'criador-supremo') && (
             <Link href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</Link>
