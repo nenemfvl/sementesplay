@@ -865,16 +865,6 @@ export default function PainelParceiro() {
                   onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
                 />
               </div>
-
-                      {/* Preview do conteúdo */}
-                      {formConteudo.url && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Preview do Conteúdo</label>
-                          <div className="bg-sss-light/30 rounded-lg p-3">
-                            {getPreview(formConteudo.url)}
-                          </div>
-                        </div>
-                      )}
               
               <div className="flex gap-3 pt-4">
                 <button 
