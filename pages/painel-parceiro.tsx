@@ -1365,8 +1365,6 @@ export default function PainelParceiro() {
                       return (
                         <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
                           <div className="p-4">
-                            {/* Preview da plataforma */}
-                            {getPreview(conteudo.url)}
                             <div className="flex items-center justify-between mb-4">
                               <div className="flex items-center space-x-2">
                                 <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
