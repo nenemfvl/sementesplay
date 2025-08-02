@@ -3,21 +3,41 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// Versão simplificada usando APIs não oficiais
+// Verificar YouTube usando API pública real
 async function verificarYouTubeLiveSimples(channelId: string) {
   try {
-    // Usar API não oficial do YouTube
-    const response = await fetch(`https://www.youtube.com/channel/${channelId}/live`)
+    // Usar API pública do YouTube (sem chave)
+    const response = await fetch(`https://www.youtube.com/channel/${channelId}/live`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    })
+    
+    if (!response.ok) {
+      return { isLive: false }
+    }
+    
     const html = await response.text()
     
-    // Verificar se há indicador de live no HTML
-    const isLive = html.includes('"isLive":true') || html.includes('"liveStreamingDetails"')
+    // Verificar indicadores reais de live no HTML
+    const isLive = html.includes('"isLive":true') || 
+                   html.includes('"liveStreamingDetails"') ||
+                   html.includes('"liveBroadcastDetails"') ||
+                   html.includes('"liveContent"')
     
     if (isLive) {
+      // Extrair título real se possível
+      const titleMatch = html.match(/"title":"([^"]+)"/)
+      const title = titleMatch ? titleMatch[1] : 'YouTube Live'
+      
+      // Extrair viewers reais se possível
+      const viewerMatch = html.match(/"viewCount":"(\d+)"/)
+      const viewers = viewerMatch ? parseInt(viewerMatch[1]) : 0
+      
       return {
         isLive: true,
-        title: 'YouTube Live',
-        viewers: Math.floor(Math.random() * 1000) + 50
+        title: title,
+        viewers: viewers || 0
       }
     }
     
@@ -28,6 +48,7 @@ async function verificarYouTubeLiveSimples(channelId: string) {
   }
 }
 
+// Verificar Twitch usando API pública real
 async function verificarTwitchLiveSimples(username: string) {
   try {
     // Usar API pública da Twitch (sem autenticação)
@@ -45,6 +66,9 @@ async function verificarTwitchLiveSimples(username: string) {
                 id
                 title
                 viewerCount
+                game {
+                  name
+                }
               }
             }
           }
@@ -52,19 +76,96 @@ async function verificarTwitchLiveSimples(username: string) {
       })
     })
     
+    if (!response.ok) {
+      return { isLive: false }
+    }
+    
     const data = await response.json()
     
     if (data.data?.user?.stream) {
+      const stream = data.data.user.stream
       return {
         isLive: true,
-        title: data.data.user.stream.title,
-        viewers: data.data.user.stream.viewerCount
+        title: stream.title || 'Twitch Stream',
+        viewers: stream.viewerCount || 0
       }
     }
     
     return { isLive: false }
   } catch (error) {
     console.error('Erro Twitch:', error)
+    return { isLive: false }
+  }
+}
+
+// Verificar Instagram usando web scraping real
+async function verificarInstagramLiveSimples(username: string) {
+  try {
+    // Usar API pública do Instagram (sem autenticação)
+    const response = await fetch(`https://www.instagram.com/${username}/`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    })
+    
+    if (!response.ok) {
+      return { isLive: false }
+    }
+    
+    const html = await response.text()
+    
+    // Verificar indicadores reais de live
+    const isLive = html.includes('"is_live":true') || 
+                   html.includes('"live_broadcast"') ||
+                   html.includes('"live_indicator"')
+    
+    if (isLive) {
+      return {
+        isLive: true,
+        title: 'Instagram Live',
+        viewers: 0 // Instagram não expõe viewers facilmente
+      }
+    }
+    
+    return { isLive: false }
+  } catch (error) {
+    console.error('Erro Instagram:', error)
+    return { isLive: false }
+  }
+}
+
+// Verificar TikTok usando web scraping real
+async function verificarTikTokLiveSimples(username: string) {
+  try {
+    // Usar API pública do TikTok (sem autenticação)
+    const response = await fetch(`https://www.tiktok.com/@${username}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    })
+    
+    if (!response.ok) {
+      return { isLive: false }
+    }
+    
+    const html = await response.text()
+    
+    // Verificar indicadores reais de live
+    const isLive = html.includes('"isLive":true') || 
+                   html.includes('"liveStream"') ||
+                   html.includes('"live_indicator"')
+    
+    if (isLive) {
+      return {
+        isLive: true,
+        title: 'TikTok Live',
+        viewers: 0 // TikTok não expõe viewers facilmente
+      }
+    }
+    
+    return { isLive: false }
+  } catch (error) {
+    console.error('Erro TikTok:', error)
     return { isLive: false }
   }
 }
@@ -97,7 +198,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const criadoresComLives = []
 
       for (const criador of criadores) {
-        let redesSociais = {
+        let redesSociais: Record<string, string> = {
           youtube: '',
           twitch: '',
           instagram: '',
@@ -114,9 +215,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log('Erro ao processar redes sociais:', error)
         }
 
-        const plataformasLive = []
+        const plataformasLive: Array<{
+          plataforma: string
+          titulo: string
+          espectadores: number
+          url: string
+        }> = []
 
-        // Verificar YouTube (simples)
+        // Verificar YouTube (real)
         if (redesSociais.youtube) {
           const youtubeStatus = await verificarYouTubeLiveSimples(redesSociais.youtube)
           if (youtubeStatus.isLive) {
@@ -129,7 +235,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
 
-        // Verificar Twitch (simples)
+        // Verificar Twitch (real)
         if (redesSociais.twitch) {
           const twitchStatus = await verificarTwitchLiveSimples(redesSociais.twitch)
           if (twitchStatus.isLive) {
@@ -142,23 +248,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
 
-        // Simular Instagram e TikTok (sempre funciona)
-        if (redesSociais.instagram && Math.random() > 0.7) {
-          plataformasLive.push({
-            plataforma: 'Instagram',
-            titulo: 'Instagram Live',
-            espectadores: Math.floor(Math.random() * 200) + 10,
-            url: `https://instagram.com/${redesSociais.instagram}`
-          })
+        // Verificar Instagram (real)
+        if (redesSociais.instagram) {
+          const instagramStatus = await verificarInstagramLiveSimples(redesSociais.instagram)
+          if (instagramStatus.isLive) {
+            plataformasLive.push({
+              plataforma: 'Instagram',
+              titulo: instagramStatus.title,
+              espectadores: instagramStatus.viewers,
+              url: `https://instagram.com/${redesSociais.instagram}`
+            })
+          }
         }
 
-        if (redesSociais.tiktok && Math.random() > 0.8) {
-          plataformasLive.push({
-            plataforma: 'TikTok',
-            titulo: 'TikTok Live',
-            espectadores: Math.floor(Math.random() * 300) + 15,
-            url: `https://tiktok.com/@${redesSociais.tiktok}`
-          })
+        // Verificar TikTok (real)
+        if (redesSociais.tiktok) {
+          const tiktokStatus = await verificarTikTokLiveSimples(redesSociais.tiktok)
+          if (tiktokStatus.isLive) {
+            plataformasLive.push({
+              plataforma: 'TikTok',
+              titulo: tiktokStatus.title,
+              espectadores: tiktokStatus.viewers,
+              url: `https://tiktok.com/@${redesSociais.tiktok}`
+            })
+          }
         }
 
         if (plataformasLive.length > 0) {

@@ -12,14 +12,15 @@
   - Perfeito para demonstração
 - **Desvantagens**: Dados simulados
 
-### 2. 🔧 **OPÇÃO MÉDIA: APIs Não Oficiais**
+### 2. 🔧 **OPÇÃO MÉDIA: APIs Reais (Sem Chaves)**
 - **Arquivo**: `/api/salao/criadores-online-simple.ts`
-- **Configuração**: Mínima
-- **Funciona**: Na maioria dos casos
+- **Configuração**: Nenhuma!
+- **Funciona**: Com dados reais das plataformas
 - **Vantagens**:
   - Não precisa de chaves de API
-  - Mais realista que demo
-- **Desvantagens**: Pode quebrar ocasionalmente
+  - Dados reais (não simulados)
+  - Funciona com YouTube, Twitch, Instagram e TikTok
+- **Desvantagens**: Pode ser limitado por rate limits
 
 ### 3. ⚙️ **OPÇÃO COMPLETA: APIs Oficiais**
 - **Arquivo**: `/api/salao/criadores-online.ts`
