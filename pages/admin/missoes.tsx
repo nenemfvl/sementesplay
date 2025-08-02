@@ -32,6 +32,14 @@ export default function AdminMissoes() {
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [editingMissao, setEditingMissao] = useState<Missao | null>(null)
+  const [formData, setFormData] = useState({
+    titulo: '',
+    descricao: '',
+    objetivo: '',
+    recompensa: 0,
+    tipo: 'diaria',
+    emblema: ''
+  })
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -99,6 +107,84 @@ export default function AdminMissoes() {
     }
   }
 
+  const openCreateModal = () => {
+    setFormData({
+      titulo: '',
+      descricao: '',
+      objetivo: '',
+      recompensa: 0,
+      tipo: 'diaria',
+      emblema: ''
+    })
+    setEditingMissao(null)
+    setShowCreateModal(true)
+  }
+
+  const openEditModal = (missao: Missao) => {
+    setFormData({
+      titulo: missao.titulo,
+      descricao: missao.descricao,
+      objetivo: missao.objetivo,
+      recompensa: missao.recompensa,
+      tipo: missao.tipo,
+      emblema: missao.emblema || ''
+    })
+    setEditingMissao(missao)
+    setShowCreateModal(true)
+  }
+
+  const closeModal = () => {
+    setShowCreateModal(false)
+    setEditingMissao(null)
+    setFormData({
+      titulo: '',
+      descricao: '',
+      objetivo: '',
+      recompensa: 0,
+      tipo: 'diaria',
+      emblema: ''
+    })
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      const url = editingMissao 
+        ? `/api/missoes/${editingMissao.id}` 
+        : '/api/missoes'
+      
+      const method = editingMissao ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        closeModal()
+        loadMissoes() // Recarregar lista
+      } else {
+        const error = await response.json()
+        alert(`Erro: ${error.message || 'Falha ao salvar missão'}`)
+      }
+    } catch (error) {
+      console.error('Erro ao salvar missão:', error)
+      alert('Erro ao salvar missão. Tente novamente.')
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'recompensa' ? Number(value) : value
+    }))
+  }
+
   if (!user || loading) {
     return (
       <div className="min-h-screen bg-sss-dark flex items-center justify-center">
@@ -131,7 +217,7 @@ export default function AdminMissoes() {
                 <p className="text-gray-400 mt-2">Gerencie missões e recompensas da plataforma</p>
               </div>
               <button
-                onClick={() => setShowCreateModal(true)}
+                onClick={openCreateModal}
                 className="bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
               >
                 <PlusIcon className="w-5 h-5" />
@@ -193,7 +279,7 @@ export default function AdminMissoes() {
                     <h3 className="text-lg font-semibold text-sss-white mb-2">Nenhuma missão encontrada</h3>
                     <p className="text-gray-400 mb-4">Crie sua primeira missão para começar</p>
                     <button
-                      onClick={() => setShowCreateModal(true)}
+                      onClick={openCreateModal}
                       className="bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                     >
                       Criar Missão
@@ -240,7 +326,7 @@ export default function AdminMissoes() {
                           
                           <div className="flex items-center space-x-2">
                             <button
-                              onClick={() => setEditingMissao(missao)}
+                              onClick={() => openEditModal(missao)}
                               className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
                               title="Editar"
                             >
@@ -277,6 +363,147 @@ export default function AdminMissoes() {
           </motion.div>
         </div>
       </div>
+
+      {/* Modal de Criar/Editar Missão */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4 border border-sss-light"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-sss-white">
+                {editingMissao ? 'Editar Missão' : 'Nova Missão'}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-white"
+                title="Fechar modal"
+                aria-label="Fechar modal"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Título
+                </label>
+                <input
+                  type="text"
+                  name="titulo"
+                  value={formData.titulo}
+                  onChange={handleInputChange}
+                  placeholder="Digite o título da missão"
+                  title="Título da missão"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Descrição
+                </label>
+                <textarea
+                  name="descricao"
+                  value={formData.descricao}
+                  onChange={handleInputChange}
+                  rows={3}
+                  placeholder="Descreva a missão"
+                  title="Descrição da missão"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Objetivo
+                </label>
+                <textarea
+                  name="objetivo"
+                  value={formData.objetivo}
+                  onChange={handleInputChange}
+                  rows={2}
+                  placeholder="Digite o objetivo da missão"
+                  title="Objetivo da missão"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Recompensa (Sementes)
+                </label>
+                <input
+                  type="number"
+                  name="recompensa"
+                  value={formData.recompensa}
+                  onChange={handleInputChange}
+                  min="0"
+                  placeholder="0"
+                  title="Recompensa em sementes"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Tipo
+                </label>
+                <select
+                  name="tipo"
+                  value={formData.tipo}
+                  onChange={handleInputChange}
+                  title="Tipo de missão"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                >
+                  <option value="diaria">Diária</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="mensal">Mensal</option>
+                  <option value="unica">Única</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Emblema (Emoji)
+                </label>
+                <input
+                  type="text"
+                  name="emblema"
+                  value={formData.emblema}
+                  onChange={handleInputChange}
+                  placeholder="🏆"
+                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  {editingMissao ? 'Atualizar' : 'Criar'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </>
   )
 } 
