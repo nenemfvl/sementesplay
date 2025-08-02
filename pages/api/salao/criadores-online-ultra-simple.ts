@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const criadoresComLives = []
 
       for (const criador of criadores) {
-        let redesSociais = {
+        let redesSociais: Record<string, string> = {
           youtube: '',
           twitch: '',
           instagram: '',
