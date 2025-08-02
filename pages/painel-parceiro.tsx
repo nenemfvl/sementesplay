@@ -1513,14 +1513,6 @@ export default function PainelParceiro() {
                               >
                                 {conteudo.fixado ? 'Desfixar' : 'Fixar'}
                               </button>
-                              <a
-                                href={conteudo.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-indigo-600 hover:bg-indigo-700 text-sss-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors"
-                              >
-                                Ver
-                              </a>
                             </div>
                           </div>
                         </div>
