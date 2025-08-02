@@ -860,7 +860,7 @@ export default function PainelParceiro() {
                 <input 
                   type="text"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Endereço do evento/local" 
+                  placeholder="Endereço do local" 
                   value={formConteudo.endereco} 
                   onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
                 />
