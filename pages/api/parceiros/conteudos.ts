@@ -109,24 +109,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { parceiroId, titulo, url, tipo, categoria, descricao, plataforma, cidade, endereco, dataEvento, preco, vagas } = req.body;
       
-      if (!parceiroId || !titulo || !url || !tipo || !categoria || !cidade) {
+      if (!parceiroId || !url || !categoria || !cidade) {
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
 
       const novo = await prisma.conteudoParceiro.create({
         data: {
           parceiroId,
-          titulo,
+          titulo: 'Conteúdo do Parceiro', // Título padrão
           url,
-          tipo,
+          tipo: 'evento', // Tipo padrão
           categoria,
           descricao: descricao || '',
           plataforma: plataforma || '',
           cidade,
           endereco: endereco || '',
           dataEvento: dataEvento ? new Date(dataEvento) : null,
-          preco: preco || '',
-          vagas: vagas ? parseInt(vagas) : null,
         }
       });
       
@@ -147,17 +145,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { id },
         data: {
           parceiroId,
-          titulo,
+          titulo: 'Conteúdo do Parceiro', // Título padrão
           url,
-          tipo,
+          tipo: 'evento', // Tipo padrão
           categoria,
           descricao,
           plataforma,
           cidade,
           endereco,
           dataEvento: dataEvento ? new Date(dataEvento) : null,
-          preco,
-          vagas: vagas ? parseInt(vagas) : null,
         }
       });
       
