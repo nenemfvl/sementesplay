@@ -100,17 +100,13 @@ export default function PainelParceiro() {
   const [loadingConteudos, setLoadingConteudos] = useState(true);
   const [showModalConteudo, setShowModalConteudo] = useState(false);
   const [formConteudo, setFormConteudo] = useState({ 
-    titulo: '', 
     url: '', 
-    tipo: '', 
     categoria: '', 
     descricao: '', 
     plataforma: '', 
     cidade: '', 
     endereco: '', 
     dataEvento: '', 
-    preco: '', 
-    vagas: '',
     fixado: false
   });
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
@@ -377,7 +373,7 @@ export default function PainelParceiro() {
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
-    if (!formConteudo.titulo || !formConteudo.url || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.cidade) {
+    if (!formConteudo.url || !formConteudo.categoria || !formConteudo.cidade) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -397,17 +393,13 @@ export default function PainelParceiro() {
         const data = await response.json();
         setConteudos(prev => [data.conteudo, ...prev]);
         setFormConteudo({ 
-          titulo: '', 
           url: '', 
-          tipo: '', 
           categoria: '', 
           descricao: '', 
           plataforma: '', 
           cidade: '', 
           endereco: '', 
           dataEvento: '', 
-          preco: '', 
-          vagas: '',
           fixado: false
         });
         setShowModalConteudo(false);
@@ -443,17 +435,13 @@ export default function PainelParceiro() {
         const data = await response.json();
         setConteudos(prev => prev.map(c => c.id === editandoConteudo.id ? data.conteudo : c));
         setFormConteudo({ 
-          titulo: '', 
           url: '', 
-          tipo: '', 
           categoria: '', 
           descricao: '', 
           plataforma: '', 
           cidade: '', 
           endereco: '', 
           dataEvento: '', 
-          preco: '', 
-          vagas: '',
           fixado: false
         });
         setEditandoConteudo(null);
@@ -747,17 +735,13 @@ export default function PainelParceiro() {
                   setShowModalConteudo(false); 
                   setEditandoConteudo(null);
                   setFormConteudo({ 
-                    titulo: '', 
                     url: '', 
-                    tipo: '', 
                     categoria: '', 
                     descricao: '', 
                     plataforma: '', 
                     cidade: '', 
                     endereco: '', 
                     dataEvento: '', 
-                    preco: '', 
-                    vagas: '',
                     fixado: false
                   });
                 }}
@@ -923,17 +907,13 @@ export default function PainelParceiro() {
                     setShowModalConteudo(false); 
                     setEditandoConteudo(null);
                     setFormConteudo({ 
-                      titulo: '', 
                       url: '', 
-                      tipo: '', 
                       categoria: '', 
                       descricao: '', 
                       plataforma: '', 
                       cidade: '', 
                       endereco: '', 
                       dataEvento: '', 
-                      preco: '', 
-                      vagas: '',
                       fixado: false
                     });
                   }} 
