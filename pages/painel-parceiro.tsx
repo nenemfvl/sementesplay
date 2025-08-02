@@ -805,23 +805,6 @@ export default function PainelParceiro() {
                   value={formConteudo.url} 
                   onChange={e => setFormConteudo(f => ({ ...f, url: e.target.value }))} 
                 />
-                {/* Preview da URL */}
-                {formConteudo.url && (
-                  <div className="mt-2">
-                    <a 
-                      href={formConteudo.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 text-sm transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                      </svg>
-                      <span>Ver link</span>
-                    </a>
-                  </div>
-                )}
               </div>
               
               <div>
@@ -833,15 +816,6 @@ export default function PainelParceiro() {
                   value={formConteudo.plataforma} 
                   onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
                 />
-                {/* Preview da plataforma */}
-                {formConteudo.plataforma && (
-                  <div className="mt-2 p-2 bg-sss-light/30 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      {getPlataformaInfo(formConteudo.plataforma, formConteudo.url).icon}
-                      <span className="text-sss-white text-sm">{formConteudo.plataforma}</span>
-                    </div>
-                  </div>
-                )}
               </div>
               
               <div>
@@ -852,17 +826,6 @@ export default function PainelParceiro() {
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={formConteudo.dataEvento} 
                   onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
-                <input 
-                  type="text"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Endereço do local" 
-                  value={formConteudo.endereco} 
-                  onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
                 />
               </div>
               
