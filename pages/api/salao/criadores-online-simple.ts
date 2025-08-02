@@ -228,8 +228,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (youtubeStatus.isLive) {
             plataformasLive.push({
               plataforma: 'YouTube',
-              titulo: youtubeStatus.title,
-              espectadores: youtubeStatus.viewers,
+              titulo: youtubeStatus.title || 'YouTube Live',
+              espectadores: youtubeStatus.viewers || 0,
               url: `https://youtube.com/channel/${redesSociais.youtube}`
             })
           }
@@ -241,8 +241,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (twitchStatus.isLive) {
             plataformasLive.push({
               plataforma: 'Twitch',
-              titulo: twitchStatus.title,
-              espectadores: twitchStatus.viewers,
+              titulo: twitchStatus.title || 'Twitch Stream',
+              espectadores: twitchStatus.viewers || 0,
               url: `https://twitch.tv/${redesSociais.twitch}`
             })
           }
@@ -254,8 +254,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (instagramStatus.isLive) {
             plataformasLive.push({
               plataforma: 'Instagram',
-              titulo: instagramStatus.title,
-              espectadores: instagramStatus.viewers,
+              titulo: instagramStatus.title || 'Instagram Live',
+              espectadores: instagramStatus.viewers || 0,
               url: `https://instagram.com/${redesSociais.instagram}`
             })
           }
@@ -267,8 +267,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (tiktokStatus.isLive) {
             plataformasLive.push({
               plataforma: 'TikTok',
-              titulo: tiktokStatus.title,
-              espectadores: tiktokStatus.viewers,
+              titulo: tiktokStatus.title || 'TikTok Live',
+              espectadores: tiktokStatus.viewers || 0,
               url: `https://tiktok.com/@${redesSociais.tiktok}`
             })
           }
