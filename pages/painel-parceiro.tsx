@@ -848,7 +848,7 @@ export default function PainelParceiro() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Data e Hora</label>
                 <input 
                   type="datetime-local"
-                  aria-label="Data e hora do evento"
+                  aria-label="Data e hora"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={formConteudo.dataEvento} 
                   onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
