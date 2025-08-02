@@ -61,20 +61,21 @@ export default function Salao() {
     carregarFavoritos()
   }, [])
 
-  const carregarCriadoresLive = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch('/api/salao/criadores-online')
-      const data = await response.json()
-      if (data.success) {
-        setCriadoresLive(data.criadores)
-      }
-    } catch (error) {
-      console.error('Erro ao carregar criadores ao vivo:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+           const carregarCriadoresLive = async () => {
+           setLoading(true)
+           try {
+             // Usar a versão mais fácil (demo)
+             const response = await fetch('/api/salao/criadores-online-demo')
+             const data = await response.json()
+             if (data.success) {
+               setCriadoresLive(data.criadores)
+             }
+           } catch (error) {
+             console.error('Erro ao carregar criadores ao vivo:', error)
+           } finally {
+             setLoading(false)
+           }
+         }
 
   const carregarFavoritos = () => {
     const favoritosSalvos = localStorage.getItem('criadoresFavoritos')
