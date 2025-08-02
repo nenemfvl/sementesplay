@@ -64,8 +64,8 @@ export default function Salao() {
            const carregarCriadoresLive = async () => {
            setLoading(true)
            try {
-             // Usar a versão mais fácil (demo)
-             const response = await fetch('/api/salao/criadores-online-demo')
+             // Usar a versão com dados reais (sem chaves de API)
+             const response = await fetch('/api/salao/criadores-online-simple')
              const data = await response.json()
              if (data.success) {
                setCriadoresLive(data.criadores)
