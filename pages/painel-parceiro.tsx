@@ -874,28 +874,7 @@ export default function PainelParceiro() {
                   />
                       </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Preço</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Ex: R$ 50,00 ou Gratuito" 
-                    value={formConteudo.preco} 
-                    onChange={e => setFormConteudo(f => ({ ...f, preco: e.target.value }))} 
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Vagas</label>
-                  <input 
-                    type="number"
-                    min="0"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Número de vagas disponíveis" 
-                    value={formConteudo.vagas} 
-                    onChange={e => setFormConteudo(f => ({ ...f, vagas: e.target.value }))} 
-                  />
-                    </div>
+
                   </div>
 
                       <div>
