@@ -309,7 +309,7 @@ export default function AdminDashboard() {
                         
 
                         
-                        <Link href="/admin/usuarios" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                        <Link href="/admin/missoes" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <TrophyIcon className="w-6 h-6 text-purple-500" />
                           <div>
                             <p className="text-sss-white font-medium">Sistema de Missões</p>
