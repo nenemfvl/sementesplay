@@ -50,7 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log('Erro ao processar redes sociais:', error)
         }
 
-        const plataformasLive = []
+        const plataformasLive: Array<{
+          plataforma: string
+          titulo: string
+          espectadores: number
+          url: string
+        }> = []
 
         // Simular lives baseado no ID do criador (sempre mostra alguns)
         const shouldShowLive = (criador.id.charCodeAt(0) % 3) === 0 // 33% de chance
