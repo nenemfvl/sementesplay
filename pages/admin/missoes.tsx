@@ -310,9 +310,9 @@ export default function AdminMissoes() {
                                 <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
                                   {missao.tipo}
                                 </span>
-                                <span className="text-xs bg-green-700 text-green-300 px-2 py-1 rounded">
-                                  {missao.recompensa} Sementes
-                                </span>
+                                                                 <span className="text-xs bg-green-700 text-green-300 px-2 py-1 rounded">
+                                   {missao.recompensa} XP
+                                 </span>
                                 <span className={`text-xs px-2 py-1 rounded ${
                                   missao.ativa 
                                     ? 'bg-green-700 text-green-300' 
@@ -436,22 +436,22 @@ export default function AdminMissoes() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Recompensa (Sementes)
-                </label>
-                <input
-                  type="number"
-                  name="recompensa"
-                  value={formData.recompensa}
-                  onChange={handleInputChange}
-                  min="0"
-                  placeholder="0"
-                  title="Recompensa em sementes"
-                  className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
-                  required
-                />
-              </div>
+                             <div>
+                 <label className="block text-sm font-medium text-gray-300 mb-2">
+                   Recompensa (Pontos XP)
+                 </label>
+                 <input
+                   type="number"
+                   name="recompensa"
+                   value={formData.recompensa}
+                   onChange={handleInputChange}
+                   min="0"
+                   placeholder="0"
+                   title="Recompensa em pontos de experiência"
+                   className="w-full bg-sss-dark border border-sss-light rounded-lg px-3 py-2 text-sss-white focus:outline-none focus:border-sss-accent"
+                   required
+                 />
+               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
