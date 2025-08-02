@@ -417,27 +417,27 @@ export default function AdminParceiros() {
 
           {/* Parceiros Grid */}
           {!loading && parceirosFiltrados.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {parceirosFiltrados.map((parceiro, index) => (
                 <motion.div
                   key={parceiro.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="bg-sss-medium rounded-lg p-6 border border-sss-light hover:border-sss-accent transition-all duration-300 hover:shadow-lg"
+                  className="bg-sss-medium rounded-lg p-6 border border-sss-light hover:border-sss-accent transition-all duration-300 hover:shadow-lg overflow-hidden"
                 >
                   {/* Header do Card */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <div className="flex items-center flex-1 min-w-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
                         <BuildingOfficeIcon className="w-6 h-6 text-white" />
                       </div>
-                      <div className="ml-3">
-                        <h3 className="font-semibold text-sss-white">{parceiro.usuario.nome}</h3>
-                        <p className="text-sm text-gray-400">{parceiro.usuario.email}</p>
+                      <div className="ml-3 min-w-0 flex-1">
+                        <h3 className="font-semibold text-sss-white truncate">{parceiro.usuario.nome}</h3>
+                        <p className="text-sm text-gray-400 truncate">{parceiro.usuario.email}</p>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 flex-shrink-0 ml-2">
                       <button
                         onClick={() => abrirDetalhes(parceiro)}
                         className="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
