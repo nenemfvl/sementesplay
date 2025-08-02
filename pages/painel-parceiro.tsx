@@ -753,37 +753,46 @@ export default function PainelParceiro() {
             </div>
             
             <form onSubmit={editandoConteudo ? handleEditConteudo : handleAddConteudo} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
-                  <select 
-                    required
-                    aria-label="Categoria do conteúdo"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
-                    value={formConteudo.categoria}
-                    onChange={e => setFormConteudo(f => ({ ...f, categoria: e.target.value }))}
-                  >
-                    <option value="">Selecione a categoria</option>
-                    <option value="eventos">Eventos</option>
-                    <option value="promoções">Promoções</option>
-                    <option value="notícias">Notícias</option>
-                    <option value="tours">Tours</option>
-                    <option value="workshops">Workshops</option>
-                    <option value="competições">Competições</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
-                  <input 
-                    required 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Ex: São Paulo" 
-                    value={formConteudo.cidade} 
-                    onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
+                <select 
+                  required
+                  aria-label="Categoria do conteúdo"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                  value={formConteudo.categoria}
+                  onChange={e => setFormConteudo(f => ({ ...f, categoria: e.target.value }))}
+                >
+                  <option value="">Selecione a categoria</option>
+                  <option value="eventos">Eventos</option>
+                  <option value="promoções">Promoções</option>
+                  <option value="notícias">Notícias</option>
+                  <option value="tours">Tours</option>
+                  <option value="workshops">Workshops</option>
+                  <option value="competições">Competições</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                <textarea 
+                  rows={4}
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Descrição detalhada do conteúdo..." 
+                  value={formConteudo.descricao} 
+                  onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
+                <input 
+                  required 
+                  type="text"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Ex: São Paulo" 
+                  value={formConteudo.cidade} 
+                  onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
+                />
               </div>
               
               <div>
@@ -815,62 +824,47 @@ export default function PainelParceiro() {
                 )}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Plataforma</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Ex: Site, Instagram, Facebook" 
-                    value={formConteudo.plataforma} 
-                    onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
-                  />
-                  {/* Preview da plataforma */}
-                  {formConteudo.plataforma && (
-                    <div className="mt-2 p-2 bg-sss-light/30 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        {getPlataformaInfo(formConteudo.plataforma, formConteudo.url).icon}
-                        <span className="text-sss-white text-sm">{formConteudo.plataforma}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                      <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Endereço do evento/local" 
-                    value={formConteudo.endereco} 
-                    onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
-                  />
-                      </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
-                  <input 
-                    type="datetime-local"
-                    aria-label="Data e hora do evento"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    value={formConteudo.dataEvento} 
-                    onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
-                  />
-                      </div>
-                
-
-                  </div>
-
-                      <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
-                <textarea 
-                  rows={4}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Plataforma</label>
+                <input 
+                  type="text"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Descrição detalhada do conteúdo..." 
-                  value={formConteudo.descricao} 
-                  onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
+                  placeholder="Ex: Site, Instagram, Facebook" 
+                  value={formConteudo.plataforma} 
+                  onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
                 />
-                      </div>
+                {/* Preview da plataforma */}
+                {formConteudo.plataforma && (
+                  <div className="mt-2 p-2 bg-sss-light/30 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      {getPlataformaInfo(formConteudo.plataforma, formConteudo.url).icon}
+                      <span className="text-sss-white text-sm">{formConteudo.plataforma}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Data e Hora</label>
+                <input 
+                  type="datetime-local"
+                  aria-label="Data e hora do evento"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  value={formConteudo.dataEvento} 
+                  onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
+                <input 
+                  type="text"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Endereço do evento/local" 
+                  value={formConteudo.endereco} 
+                  onChange={e => setFormConteudo(f => ({ ...f, endereco: e.target.value }))} 
+                />
+              </div>
 
                       {/* Preview do conteúdo */}
                       {formConteudo.url && (
