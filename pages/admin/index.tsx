@@ -90,7 +90,6 @@ export default function AdminDashboard() {
     { id: 'usuarios', label: 'Usuários', icon: UsersIcon },
     { id: 'criadores', label: 'Criadores', icon: TrophyIcon },
     { id: 'doacoes', label: 'Doações', icon: CurrencyDollarIcon },
-    { id: 'cashback', label: 'Cashback', icon: GiftIcon },
     { id: 'missoes', label: 'Missões', icon: TrophyIcon },
     { id: 'chat', label: 'Chat', icon: ChatBubbleLeftIcon },
     { id: 'configuracoes', label: 'Configurações', icon: CogIcon }
@@ -308,13 +307,7 @@ export default function AdminDashboard() {
                           </div>
                         </Link>
                         
-                        <Link href="/admin/usuarios" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
-                          <GiftIcon className="w-6 h-6 text-green-500" />
-                          <div>
-                            <p className="text-sss-white font-medium">Códigos Cashback</p>
-                            <p className="text-gray-400 text-sm">Criar e gerenciar códigos</p>
-                          </div>
-                        </Link>
+
                         
                         <Link href="/admin/usuarios" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
                           <TrophyIcon className="w-6 h-6 text-purple-500" />
@@ -435,21 +428,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 )}
 
-                {activeTab === 'cashback' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-center py-12"
-                  >
-                    <GiftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-sss-white mb-2">Sistema de Cashback</h3>
-                    <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                      Gerenciar Cashback
-                    </Link>
-                  </motion.div>
-                )}
+
 
                 {activeTab === 'missoes' && (
                   <motion.div
