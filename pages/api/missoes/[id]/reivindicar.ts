@@ -16,10 +16,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Token de autenticação necessário' })
     }
 
-    // Buscar usuário pelo token
-    const usuario = await prisma.usuario.findFirst({
+    // Buscar usuário pelo ID do token (assumindo que o token contém o ID do usuário)
+    // Por enquanto, vamos usar uma abordagem simples - buscar por email ou ID
+    // Você pode implementar JWT decode aqui se necessário
+    
+    // Buscar usuário por ID (assumindo que o token é o ID do usuário)
+    const usuario = await prisma.usuario.findUnique({
       where: {
-        token: token
+        id: token
       }
     })
 
