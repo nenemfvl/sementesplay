@@ -27,7 +27,7 @@ export default function Noticias() {
     const fetchConteudos = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/conteudos/recentes?limit=10');
+        const response = await fetch('/api/conteudos/recentes?limit=5');
         if (response.ok) {
           const data = await response.json();
           setConteudos(data.noticias || []);
@@ -89,7 +89,7 @@ export default function Noticias() {
           </h2>
           
           {/* Banner informativo */}
-          <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 min-h-[192px] p-6">
+          <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-6 h-full flex items-center justify-center">
             <div className="text-center">
               <div className="text-4xl mb-3">🎬</div>
               <div className="text-lg font-bold text-sss-white mb-2">Conteúdos Recentes</div>
@@ -104,7 +104,7 @@ export default function Noticias() {
         </div>
 
         {/* Lista de conteúdos à direita */}
-        <div className="flex-1 w-full mt-16 md:mt-12">
+        <div className="flex-1 w-full">
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sss-accent mx-auto mb-4"></div>
