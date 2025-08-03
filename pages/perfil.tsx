@@ -32,6 +32,7 @@ export default function Perfil() {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+  const [xpData, setXpData] = useState<any>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -74,6 +75,7 @@ export default function Perfil() {
   useEffect(() => {
     if (user) {
       loadStats()
+      loadXPData()
     }
   }, [user])
 
@@ -133,6 +135,21 @@ export default function Perfil() {
       console.error('Erro ao carregar estatísticas:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadXPData = async () => {
+    try {
+      const token = localStorage.getItem('sementesplay_token');
+      const res = await fetch('/api/usuario/xp', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setXpData(data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados de XP:', error);
     }
   }
 
@@ -252,7 +269,8 @@ export default function Perfil() {
     { id: 'overview', label: 'Visão Geral', icon: ChartBarIcon },
     { id: 'doacoes', label: 'Histórico de Doações', icon: HeartIcon },
     { id: 'cashback', label: 'Histórico de Cashback', icon: GiftIcon },
-    { id: 'conquistas', label: 'Conquistas', icon: TrophyIcon }
+    { id: 'conquistas', label: 'Conquistas', icon: TrophyIcon },
+    { id: 'xp', label: 'Histórico XP', icon: StarIcon }
   ]
 
   return (
@@ -318,6 +336,35 @@ export default function Perfil() {
                   </div>
                   
                   <p className="text-gray-400 mb-2">{user.email}</p>
+                  
+                  {/* XP e Nível do Usuário */}
+                  {xpData && (
+                    <div className="mb-2">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="text-sm text-blue-400 font-medium">
+                          Nível {xpData.usuario.nivelUsuario}
+                        </span>
+                        <span className="text-sm text-gray-400">
+                          ({xpData.usuario.xp} XP)
+                        </span>
+                        {user.streakLogin > 0 && (
+                          <span className="text-sm text-orange-400">
+                            🔥 {user.streakLogin} dias
+                          </span>
+                        )}
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min(xpData.progressoNivel, 100)}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {xpData.usuario.xp} / {xpData.xpProximoNivel} XP para o próximo nível
+                      </p>
+                    </div>
+                  )}
+                  
                   <p className="text-sm text-gray-500">
                     Membro desde {new Date(user.dataCriacao || Date.now()).toLocaleDateString('pt-BR')}
                   </p>
@@ -344,7 +391,7 @@ export default function Perfil() {
               </div>
             ) : (
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -404,6 +451,37 @@ export default function Perfil() {
                     </div>
                   </div>
                 </div>
+
+                {xpData && (
+                  <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-300 text-sm">Experiência</p>
+                        <p className="text-2xl font-bold text-sss-white">
+                          {xpData.usuario.xp} XP
+                        </p>
+                        <p className="text-sm text-blue-400">
+                          Nível {xpData.usuario.nivelUsuario}
+                        </p>
+                      </div>
+                      <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <StarIcon className="w-6 h-6 text-blue-500" />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>Progresso</span>
+                        <span>{Math.round(xpData.progressoNivel)}%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min(xpData.progressoNivel, 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -579,6 +657,70 @@ export default function Perfil() {
                         </div>
                       )}
                     </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'xp' && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h3 className="text-lg font-semibold text-sss-white mb-4">Histórico de Experiência</h3>
+                    {xpData ? (
+                      <div className="space-y-4">
+                        <div className="bg-sss-dark rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sss-white font-medium">Resumo</span>
+                            <span className="text-blue-400 font-bold">{xpData.usuario.xp} XP Total</span>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div>
+                              <p className="text-2xl font-bold text-blue-400">{xpData.usuario.nivelUsuario}</p>
+                              <p className="text-xs text-gray-400">Nível Atual</p>
+                            </div>
+                            <div>
+                              <p className="text-2xl font-bold text-purple-400">{xpData.xpProximoNivel}</p>
+                              <p className="text-xs text-gray-400">XP Próximo Nível</p>
+                            </div>
+                            <div>
+                              <p className="text-2xl font-bold text-green-400">{Math.round(xpData.progressoNivel)}%</p>
+                              <p className="text-xs text-gray-400">Progresso</p>
+                            </div>
+                            <div>
+                              <p className="text-2xl font-bold text-orange-400">{user.streakLogin || 0}</p>
+                              <p className="text-xs text-gray-400">Dias Consecutivos</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-sss-dark rounded-lg p-4">
+                          <h4 className="text-sss-white font-medium mb-3">Como ganhar XP</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-green-400">💝</span>
+                              <span className="text-gray-300">Doações: 25 XP cada</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-blue-400">🎯</span>
+                              <span className="text-gray-300">Missões: 50 XP cada</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-purple-400">🔥</span>
+                              <span className="text-gray-300">Login diário: 10 XP</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-yellow-400">⭐</span>
+                              <span className="text-gray-300">Conquistas: 50-1000 XP</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-400">Carregando dados de XP...</p>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </div>
