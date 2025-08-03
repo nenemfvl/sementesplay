@@ -13,12 +13,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Buscar conteúdos mais recentes dos criadores
     const conteudos = await prisma.conteudo.findMany({
-      where: {
-        ativo: true, // Apenas conteúdos ativos
-        criador: {
-          ativo: true // Apenas criadores ativos
-        }
-      },
       include: {
         criador: {
           include: {
