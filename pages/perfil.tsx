@@ -487,44 +487,38 @@ export default function Perfil() {
                   </div>
                 )}
 
-                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
-                   <div className="flex items-center justify-between mb-3">
-                     <div>
-                       <p className="text-gray-300 text-sm">Missões Ativas</p>
-                       <p className="text-2xl font-bold text-green-400">
-                         {missoesUsuario.filter(m => !m.concluida).length}
-                       </p>
-                       <p className="text-sm text-gray-400">
-                         {missoesUsuario.filter(m => m.concluida).length} concluídas
-                       </p>
+                                                                   <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-300 text-sm">Total de XP Ganho</p>
+                        <p className="text-2xl font-bold text-purple-400">
+                          {xpData?.usuario?.xp || 0} XP
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          Nível {xpData?.usuario?.nivelUsuario || 1}
+                        </p>
+                      </div>
+                      <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <StarIcon className="w-5 h-5 text-purple-400" />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                     <div className="flex justify-between text-xs text-gray-400 mb-1">
+                       <span>Progresso</span>
+                       <span>{Math.round(xpData?.progressoNivel || 0)}%</span>
                      </div>
-                     <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                       <TrophyIcon className="w-5 h-5 text-green-400" />
+                     <div className="w-full bg-gray-700 rounded-full h-2">
+                       <div 
+                         className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                         style={{ 
+                           width: `${Math.min(xpData?.progressoNivel || 0, 100)}%` 
+                         }}
+                       ></div>
                      </div>
+                     <p className="text-xs text-gray-400 mt-1">
+                       {xpData?.usuario?.xp || 0} / {xpData?.xpProximoNivel || 100} XP
+                     </p>
                    </div>
-                   <div className="mt-2">
-                    <div className="flex justify-between text-xs text-gray-400 mb-1">
-                      <span>Progresso Geral</span>
-                      <span>
-                        {missoesUsuario.length > 0 
-                          ? Math.round((missoesUsuario.filter(m => m.concluida).length / missoesUsuario.length) * 100)
-                          : 0}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${missoesUsuario.length > 0 
-                            ? (missoesUsuario.filter(m => m.concluida).length / missoesUsuario.length) * 100
-                            : 0}%` 
-                        }}
-                      ></div>
-                    </div>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {missoesUsuario.filter(m => !m.concluida).length} disponíveis
-                    </p>
-                  </div>
                 </div>
               </motion.div>
             )}
