@@ -20,7 +20,7 @@ interface Missao {
   id: string
   titulo: string
   descricao: string
-  tipo: 'diaria' | 'semanal' | 'mensal' | 'especial'
+  tipo: 'diaria' | 'semanal' | 'mensal' | 'unica'
   categoria: 'doacao' | 'social' | 'criador' | 'sistema' | 'ranking'
   objetivo: number
   progresso: number
