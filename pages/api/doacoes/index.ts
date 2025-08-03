@@ -57,8 +57,8 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
             concluida = true
             // Criar conquista se a missão for completada
             await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
-            // Dar recompensa da missão
-            await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
+            // Dar recompensa da missão (removido - agora apenas XP)
+            // await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
           }
           break
         case 'valor_doacao':
@@ -69,8 +69,8 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
               console.log('Missão completada! Criando conquista e dando recompensa...')
               concluida = true
               await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
-              // Dar recompensa da missão
-              await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
+              // Dar recompensa da missão (removido - agora apenas XP)
+              // await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
             }
           }
           break
