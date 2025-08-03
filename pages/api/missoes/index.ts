@@ -17,20 +17,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: {
           ativa: true
         },
-        include: {
-          usuarios: {
-            where: {
-              usuarioId: String(usuarioId)
-            }
-          }
-        },
         orderBy: {
           dataInicio: 'desc'
         }
       })
 
+      // Buscar progresso do usuário em todas as missões
+      const progressosUsuario = await prisma.missaoUsuario.findMany({
+        where: {
+          usuarioId: String(usuarioId)
+        }
+      })
+
       const missoesFormatadas = missoes.map(missao => {
-        const missaoUsuario = missao.usuarios[0]
+        const missaoUsuario = progressosUsuario.find(p => p.missaoId === missao.id)
         
         return {
           id: missao.id,
