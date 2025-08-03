@@ -17,9 +17,9 @@ const redes = [
 ]
 
 const categoriasRanking = [
-  { id: 'geral', nome: 'Geral', icone: '🏆', descricao: 'Missões + Conquistas' },
-  { id: 'missoes', nome: 'Missões', icone: '🎯', descricao: 'Missões Completadas' },
-  { id: 'conquistas', nome: 'Conquistas', icone: '⭐', descricao: 'Conquistas Desbloqueadas' },
+  { id: 'geral', nome: 'Geral', icone: '🏆', descricao: 'Doações + Pontos' },
+  { id: 'doacoes', nome: 'Doações', icone: '💝', descricao: 'Sementes Doadas' },
+  { id: 'pontos', nome: 'Pontos', icone: '⭐', descricao: 'Pontuação Total' },
 ]
 
 function getStatusIcon(status: string) {
@@ -215,9 +215,9 @@ export default function Status() {
             <Noticias />
           </section>
 
-          {/* Ranking de Missões e Conquistas */}
+          {/* Ranking de Doadores e Criadores */}
           <section className="w-full max-w-5xl mx-auto mb-10">
-            <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">🏆 Ranking de Missões e Conquistas</h2>
+            <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">🏆 Ranking de Doadores e Criadores</h2>
             
             {/* Filtros de categoria */}
             <div className="flex justify-center mb-6">
@@ -265,12 +265,12 @@ export default function Status() {
                       {categoriaRanking === 'geral' && (
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Missões:</span>
-                            <span className="text-sss-white">{item.missoes}</span>
+                            <span className="text-gray-400">Doações:</span>
+                            <span className="text-sss-white">{item.doacoes}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Conquistas:</span>
-                            <span className="text-sss-white">{item.conquistas}</span>
+                            <span className="text-gray-400">Pontos:</span>
+                            <span className="text-sss-white">{item.pontos}</span>
                           </div>
                           <div className="flex justify-between font-bold">
                             <span className="text-gray-400">Total:</span>
@@ -279,20 +279,20 @@ export default function Status() {
                         </div>
                       )}
                       
-                      {categoriaRanking === 'missoes' && (
+                      {categoriaRanking === 'doacoes' && (
                         <div className="text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Missões:</span>
-                            <span className="text-sss-accent font-bold">{item.totalMissoes}</span>
+                            <span className="text-gray-400">Doações:</span>
+                            <span className="text-sss-accent font-bold">{item.totalDoacoes}</span>
                           </div>
                         </div>
                       )}
                       
-                      {categoriaRanking === 'conquistas' && (
+                      {categoriaRanking === 'pontos' && (
                         <div className="text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Conquistas:</span>
-                            <span className="text-sss-accent font-bold">{item.totalConquistas}</span>
+                            <span className="text-gray-400">Pontos:</span>
+                            <span className="text-sss-accent font-bold">{item.totalPontos}</span>
                           </div>
                         </div>
                       )}
@@ -315,12 +315,12 @@ export default function Status() {
                       {categoriaRanking === 'geral' && (
                         <div className="text-sm space-y-1">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Missões:</span>
-                            <span className="text-sss-white">{item.missoes}</span>
+                            <span className="text-gray-400">Doações:</span>
+                            <span className="text-sss-white">{item.doacoes}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Conquistas:</span>
-                            <span className="text-sss-white">{item.conquistas}</span>
+                            <span className="text-gray-400">Pontos:</span>
+                            <span className="text-sss-white">{item.pontos}</span>
                           </div>
                           <div className="flex justify-between font-bold">
                             <span className="text-gray-400">Total:</span>
@@ -329,20 +329,20 @@ export default function Status() {
                         </div>
                       )}
                       
-                      {categoriaRanking === 'missoes' && (
+                      {categoriaRanking === 'doacoes' && (
                         <div className="text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Missões:</span>
-                            <span className="text-sss-accent font-bold">{item.totalMissoes}</span>
+                            <span className="text-gray-400">Doações:</span>
+                            <span className="text-sss-accent font-bold">{item.totalDoacoes}</span>
                           </div>
                         </div>
                       )}
                       
-                      {categoriaRanking === 'conquistas' && (
+                      {categoriaRanking === 'pontos' && (
                         <div className="text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Conquistas:</span>
-                            <span className="text-sss-accent font-bold">{item.totalConquistas}</span>
+                            <span className="text-gray-400">Pontos:</span>
+                            <span className="text-sss-accent font-bold">{item.totalPontos}</span>
                           </div>
                         </div>
                       )}
