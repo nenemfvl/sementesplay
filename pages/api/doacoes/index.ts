@@ -174,57 +174,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log('Dando XP por doação...')
         const xpPorDoacao = 10 // 10 XP por doação
         
-        // Atualizar XP do usuário
-        await tx.usuario.update({
-          where: { id: String(doadorId) },
-          data: { 
-            xp: { increment: xpPorDoacao }
-          }
-        })
-        
-        // Buscar dados atualizados para criar histórico
-        const doadorAtualizado = await tx.usuario.findUnique({
-          where: { id: String(doadorId) },
-          select: { xp: true, nivel: true }
-        })
-        
-        if (doadorAtualizado) {
-          const novoNivel = Math.floor(doadorAtualizado.xp / 100) + 1
+        try {
+          // Atualizar XP do usuário
+          await tx.usuario.update({
+            where: { id: String(doadorId) },
+            data: { 
+              xp: { increment: xpPorDoacao }
+            }
+          })
           
-          // Atualizar nível se necessário
-          if (novoNivel > parseInt(doadorAtualizado.nivel)) {
-            await tx.usuario.update({
-              where: { id: String(doadorId) },
-              data: { nivel: novoNivel.toString() }
+          // Buscar dados atualizados para criar histórico
+          const doadorAtualizado = await tx.usuario.findUnique({
+            where: { id: String(doadorId) },
+            select: { xp: true, nivel: true }
+          })
+          
+          if (doadorAtualizado) {
+            const novoNivel = Math.floor(doadorAtualizado.xp / 100) + 1
+            
+            // Atualizar nível se necessário
+            if (novoNivel > parseInt(doadorAtualizado.nivel)) {
+              await tx.usuario.update({
+                where: { id: String(doadorId) },
+                data: { nivel: novoNivel.toString() }
+              })
+            }
+            
+            // Criar histórico de XP
+            await tx.historicoXP.create({
+              data: {
+                usuarioId: String(doadorId),
+                xpGanho: xpPorDoacao,
+                xpAnterior: doadorAtualizado.xp - xpPorDoacao,
+                xpPosterior: doadorAtualizado.xp,
+                nivelAnterior: parseInt(doadorAtualizado.nivel),
+                nivelPosterior: novoNivel,
+                fonte: 'doacao',
+                descricao: `XP ganho por doação de ${quantidade} sementes`
+              }
             })
+            
+            // Criar notificação
+            await tx.notificacao.create({
+              data: {
+                usuarioId: String(doadorId),
+                tipo: 'doacao',
+                titulo: 'XP Ganho!',
+                mensagem: `Você ganhou ${xpPorDoacao} XP por fazer uma doação!`,
+                lida: false
+              }
+            })
+            
+            console.log(`XP dado: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
           }
-          
-          // Criar histórico de XP
-          await tx.historicoXP.create({
-            data: {
-              usuarioId: String(doadorId),
-              xpGanho: xpPorDoacao,
-              xpAnterior: doadorAtualizado.xp - xpPorDoacao,
-              xpPosterior: doadorAtualizado.xp,
-              nivelAnterior: parseInt(doadorAtualizado.nivel),
-              nivelPosterior: novoNivel,
-              fonte: 'doacao',
-              descricao: `XP ganho por doação de ${quantidade} sementes`
-            }
-          })
-          
-          // Criar notificação
-          await tx.notificacao.create({
-            data: {
-              usuarioId: String(doadorId),
-              tipo: 'doacao',
-              titulo: 'XP Ganho!',
-              mensagem: `Você ganhou ${xpPorDoacao} XP por fazer uma doação!`,
-              lida: false
-            }
-          })
-          
-          console.log(`XP dado: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
+        } catch (xpError) {
+          console.error('Erro ao dar XP:', xpError)
+          // Continuar mesmo se der erro no XP
         }
 
         console.log('Transação concluída com sucesso')
