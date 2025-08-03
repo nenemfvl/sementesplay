@@ -127,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })),
       ...conquistasUsuario.map(c => ({
         descricao: `Desbloqueou a conquista: ${c.conquista.titulo}`,
-        data: c.dataConquista.toLocaleDateString('pt-BR')
+        data: c.dataConquista?.toLocaleDateString('pt-BR') || new Date().toLocaleDateString('pt-BR')
       }))
     ].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()).slice(0, 5)
 
