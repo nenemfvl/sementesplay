@@ -104,8 +104,8 @@ export default function Noticias() {
           </div>
         </div>
 
-        {/* Lista de conteúdos à direita */}
-        <div className="flex-1 w-full">
+                 {/* Lista de conteúdos à direita */}
+         <div className="flex-1 w-full mt-8">
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sss-accent mx-auto mb-4"></div>
