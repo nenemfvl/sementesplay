@@ -101,17 +101,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const userId = authHeader.replace('Bearer ', '')
       
-      // Verificar se o usuário existe
-      const user = await prisma.usuario.findUnique({
-        where: { id: userId }
-      })
-
-      if (!user) {
-        return res.status(401).json({ error: 'Usuário não encontrado' })
-      }
-
+      // Buscar dados do usuário
       const usuario = await prisma.usuario.findUnique({
-        where: { id: user.id },
+        where: { id: userId },
         select: {
           id: true,
           nome: true,
