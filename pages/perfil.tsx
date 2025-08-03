@@ -620,16 +620,21 @@ export default function Perfil() {
                         
                         <div className="bg-sss-dark rounded-lg p-4">
                           <h4 className="text-sss-white font-medium mb-3">Como ganhar XP</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-green-400">💝</span>
-                              <span className="text-gray-300">Doações: 25 XP cada</span>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2">
-                              <span className="text-purple-400">🔥</span>
-                              <span className="text-gray-300">Login diário: 10 XP</span>
-                            </div>
+                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                             <div className="flex items-center space-x-2">
+                               <span className="text-green-400">💝</span>
+                               <span className="text-gray-300">Fazer doação: 10 XP cada</span>
+                             </div>
+                             
+                             <div className="flex items-center space-x-2">
+                               <span className="text-blue-400">🎁</span>
+                               <span className="text-gray-300">Receber doação: 5 XP cada</span>
+                             </div>
+                             
+                             <div className="flex items-center space-x-2">
+                               <span className="text-purple-400">🔥</span>
+                               <span className="text-gray-300">Login diário: 10 XP</span>
+                             </div>
 
                           </div>
                         </div>
