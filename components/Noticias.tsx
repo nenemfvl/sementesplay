@@ -81,15 +81,15 @@ export default function Noticias() {
   };
 
   return (
-    <section className="w-full max-w-5xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-36 items-start">
-      <div className="w-full md:w-auto flex flex-col md:flex-row md:items-start gap-36">
+    <section className="w-full max-w-5xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-36 items-stretch">
+      <div className="w-full md:w-auto flex flex-col md:flex-row md:items-stretch gap-36">
         <div className="w-full md:w-80 flex-shrink-0">
           <h2 className="text-2xl font-bold text-sss-white mb-4 md:mb-6 md:text-left text-center">
             Conteúdos dos Criadores
           </h2>
           
           {/* Banner informativo */}
-          <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-6 h-full flex items-center justify-center">
+          <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-6 flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <div className="text-4xl mb-3">🎬</div>
               <div className="text-lg font-bold text-sss-white mb-2">Conteúdos Recentes</div>
