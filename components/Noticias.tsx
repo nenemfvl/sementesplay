@@ -184,18 +184,15 @@ export default function Noticias() {
                                  <span>{getTipoLabel(conteudo.tipo)}</span>
                                  <span>•</span>
                                  <span>{conteudo.data}</span>
-                                 {/* Indicador de popularidade no slider */}
-                                 {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
-                                   <>
-                                     <span>•</span>
-                                     <span className="flex items-center space-x-1">
-                                       <span className="text-yellow-400">🔥</span>
-                                       <span className="text-yellow-400">
-                                         {conteudo.visualizacoes || 0}
-                                       </span>
-                                     </span>
-                                   </>
-                                 )}
+                                                                   {/* Indicador de popularidade no slider */}
+                                  {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
+                                    <>
+                                      <span>•</span>
+                                      <span className="text-yellow-400">
+                                        🔥 {conteudo.visualizacoes || 0} view
+                                      </span>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -330,18 +327,15 @@ export default function Noticias() {
                              </span>
                            </>
                          )}
-                                                   {/* Indicador de popularidade */}
-                          {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
-                            <>
-                              <span className="text-gray-500">•</span>
-                              <div className="flex items-center space-x-1">
-                                <span className="text-xs text-yellow-400">🔥</span>
-                                <span className="text-xs text-yellow-400 font-medium whitespace-nowrap">
-                                  {conteudo.visualizacoes || 0} visualizações
-                                </span>
-                              </div>
-                            </>
-                          )}
+                                                                                                       {/* Indicador de popularidade */}
+                           {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
+                             <>
+                               <span className="text-gray-500">•</span>
+                               <span className="text-xs text-yellow-400 font-medium">
+                                 🔥 {conteudo.visualizacoes || 0} view
+                               </span>
+                             </>
+                           )}
                       </div>
                     </div>
                     
