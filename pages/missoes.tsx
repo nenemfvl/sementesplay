@@ -16,7 +16,7 @@ export default function Missoes() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('sementesplay_token')
     if (!token) {
       router.push('/login')
       return
@@ -27,7 +27,7 @@ export default function Missoes() {
 
   const loadUsuario = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('sementesplay_token')
       if (!token) return
 
       const response = await fetch(`/api/usuario/atual`, {
