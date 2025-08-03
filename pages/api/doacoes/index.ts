@@ -176,7 +176,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const pontuacaoPorDoacao = quantidade // 1 ponto por semente doada
         
         try {
-          // Atualizar XP e pontuação do usuário
+          // Atualizar XP e pontuação do DOADOR
+          console.log('Atualizando XP do doador...')
           await tx.usuario.update({
             where: { id: String(doadorId) },
             data: { 
@@ -185,7 +186,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           })
           
-          // Buscar dados atualizados para criar histórico
+          // Buscar dados atualizados do doador para criar histórico
           const doadorAtualizado = await tx.usuario.findUnique({
             where: { id: String(doadorId) },
             select: { xp: true, nivelUsuario: true }
@@ -202,7 +203,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               })
             }
             
-            // Criar histórico de XP
+            // Criar histórico de XP do doador
             await tx.historicoXP.create({
               data: {
                 usuarioId: String(doadorId),
@@ -216,7 +217,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             })
             
-            // Criar notificação
+            // Criar notificação para o doador
             await tx.notificacao.create({
               data: {
                 usuarioId: String(doadorId),
@@ -227,7 +228,66 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             })
             
-            console.log(`XP dado: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
+            console.log(`XP dado ao doador: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
+          }
+
+          // Atualizar XP e pontuação do CRIADOR que recebeu a doação
+          if (criador) {
+            console.log('Atualizando XP do criador que recebeu a doação...')
+            const xpPorReceber = 5 // 5 XP por doação recebida (menos que o doador)
+            
+            await tx.usuario.update({
+              where: { id: criador.usuarioId },
+              data: { 
+                xp: { increment: xpPorReceber },
+                pontuacao: { increment: pontuacaoPorDoacao } // Mesma pontuação
+              }
+            })
+            
+            // Buscar dados atualizados do criador para criar histórico
+            const criadorAtualizado = await tx.usuario.findUnique({
+              where: { id: criador.usuarioId },
+              select: { xp: true, nivelUsuario: true }
+            })
+            
+            if (criadorAtualizado) {
+              const novoNivelCriador = Math.floor(criadorAtualizado.xp / 100) + 1
+              
+              // Atualizar nível se necessário
+              if (novoNivelCriador > criadorAtualizado.nivelUsuario) {
+                await tx.usuario.update({
+                  where: { id: criador.usuarioId },
+                  data: { nivelUsuario: novoNivelCriador }
+                })
+              }
+              
+              // Criar histórico de XP do criador
+              await tx.historicoXP.create({
+                data: {
+                  usuarioId: criador.usuarioId,
+                  xpGanho: xpPorReceber,
+                  xpAnterior: criadorAtualizado.xp - xpPorReceber,
+                  xpPosterior: criadorAtualizado.xp,
+                  nivelAnterior: criadorAtualizado.nivelUsuario,
+                  nivelPosterior: novoNivelCriador,
+                  fonte: 'doacao_recebida',
+                  descricao: `XP ganho por receber doação de ${quantidade} sementes`
+                }
+              })
+              
+              // Criar notificação para o criador
+              await tx.notificacao.create({
+                data: {
+                  usuarioId: criador.usuarioId,
+                  tipo: 'doacao_recebida',
+                  titulo: 'Doação Recebida!',
+                  mensagem: `Você recebeu ${quantidade} sementes e ganhou ${xpPorReceber} XP!`,
+                  lida: false
+                }
+              })
+              
+              console.log(`XP dado ao criador: ${xpPorReceber} (Total: ${criadorAtualizado.xp}, Nível: ${novoNivelCriador})`)
+            }
           }
         } catch (xpError) {
           console.error('Erro ao dar XP:', xpError)
