@@ -47,6 +47,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       codigosGerados: parceiro.codigosGerados,
       posicao: index + 1,
       dataCriacao: parceiro.usuario.dataCriacao,
+      // Redes Sociais
+      instagram: parceiro.instagram,
+      twitch: parceiro.twitch,
+      youtube: parceiro.youtube,
+      tiktok: parceiro.tiktok,
       // Aqui você pode adicionar mais campos específicos dos parceiros
       // como conteúdo, promoções, etc.
     }))

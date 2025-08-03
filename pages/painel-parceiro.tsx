@@ -18,7 +18,8 @@ import {
   DocumentTextIcon,
   UsersIcon,
   ClockIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 
 
@@ -98,6 +99,14 @@ export default function PainelParceiro() {
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
+  const [showModalRedesSociais, setShowModalRedesSociais] = useState(false);
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: '',
+    twitch: '',
+    youtube: '',
+    tiktok: ''
+  });
+  const [savingRedesSociais, setSavingRedesSociais] = useState(false);
   const [aprovarLoading, setAprovarLoading] = useState<string | null>(null);
   const [rejeitarLoading, setRejeitarLoading] = useState<string | null>(null);
 
@@ -553,6 +562,56 @@ export default function PainelParceiro() {
     }
   }
 
+  async function handleSalvarRedesSociais(e: React.FormEvent) {
+    e.preventDefault();
+    if (!parceiro) return;
+
+    setSavingRedesSociais(true);
+    try {
+      const response = await fetch(`/api/parceiros/redes-sociais`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          parceiroId: parceiro.id,
+          redesSociais
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Redes sociais salvas:', result);
+        alert('Redes sociais salvas com sucesso!');
+        setShowModalRedesSociais(false);
+        // Atualizar dados do parceiro
+        if (result.parceiro) {
+          setParceiro(result.parceiro);
+        }
+      } else {
+        const error = await response.json();
+        console.error('Erro ao salvar redes sociais:', error);
+        alert(`Erro ao salvar redes sociais: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar redes sociais:', error);
+      alert('Erro ao salvar redes sociais');
+    } finally {
+      setSavingRedesSociais(false);
+    }
+  }
+
+  async function carregarRedesSociais() {
+    if (!parceiro) return;
+    
+    setRedesSociais({
+      instagram: parceiro.instagram || '',
+      twitch: parceiro.twitch || '',
+      youtube: parceiro.youtube || '',
+      tiktok: parceiro.tiktok || ''
+    });
+  }
+
 
 
 
@@ -720,6 +779,106 @@ export default function PainelParceiro() {
             </form>
                     </div>
                   </div>
+      )}
+
+      {/* Modal de Redes Sociais */}
+      {showModalRedesSociais && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-sss-medium rounded-2xl p-6 w-full max-w-2xl border border-sss-light shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-sss-white">
+                Configurar Redes Sociais
+              </h2>
+              <button
+                onClick={() => { 
+                  setShowModalRedesSociais(false); 
+                  carregarRedesSociais(); // Resetar para valores originais
+                }}
+                className="text-gray-400 hover:text-sss-white transition-colors"
+                aria-label="Fechar modal"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSalvarRedesSociais} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Instagram</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://instagram.com/seu-usuario" 
+                  value={redesSociais.instagram} 
+                  onChange={e => setRedesSociais(f => ({ ...f, instagram: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Twitch</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://twitch.tv/seu-canal" 
+                  value={redesSociais.twitch} 
+                  onChange={e => setRedesSociais(f => ({ ...f, twitch: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">YouTube</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://youtube.com/@seu-canal" 
+                  value={redesSociais.youtube} 
+                  onChange={e => setRedesSociais(f => ({ ...f, youtube: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">TikTok</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://tiktok.com/@seu-usuario" 
+                  value={redesSociais.tiktok} 
+                  onChange={e => setRedesSociais(f => ({ ...f, tiktok: e.target.value }))} 
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button 
+                  type="submit" 
+                  className="flex-1 bg-sss-accent text-sss-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                  disabled={savingRedesSociais}
+                >
+                  {savingRedesSociais ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sss-white"></div>
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckIcon className="w-4 h-4" />
+                      Salvar Redes Sociais
+                    </>
+                  )}
+                </button>
+                <button 
+                  type="button" 
+                  className="px-6 py-3 bg-sss-light text-sss-white rounded-lg hover:bg-sss-light transition-colors" 
+                  onClick={() => { 
+                    setShowModalRedesSociais(false); 
+                    carregarRedesSociais(); // Resetar para valores originais
+                  }} 
+                  disabled={savingRedesSociais}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       {/* Modal de Pagamento PIX */}
@@ -959,7 +1118,107 @@ export default function PainelParceiro() {
             </div>
           </section>
 
+          {/* Configurações */}
+          <section className="mb-8">
+            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
+              <div className="p-6 border-b border-sss-light">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <Cog6ToothIcon className="w-5 h-5 text-sss-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-sss-white">Configurações</h2>
+                    <p className="text-sm text-gray-400">Gerencie suas informações e redes sociais</p>
+                  </div>
+                </div>
+              </div>
 
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Informações da Cidade */}
+                  <div className="bg-sss-light/30 rounded-lg p-4">
+                    <h3 className="text-sss-white font-semibold mb-3">Informações da Cidade</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm text-gray-400">Nome da Cidade</p>
+                        <p className="text-sss-white font-medium">{parceiro?.nomeCidade || 'Não definido'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Comissão Mensal</p>
+                        <p className="text-sss-white font-medium">{parceiro?.comissaoMensal ? `R$ ${parceiro.comissaoMensal.toFixed(2)}` : 'Não definido'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Redes Sociais */}
+                  <div className="bg-sss-light/30 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sss-white font-semibold">Redes Sociais</h3>
+                      <button
+                        onClick={() => {
+                          carregarRedesSociais();
+                          setShowModalRedesSociais(true);
+                        }}
+                        className="text-sss-accent hover:text-red-400 text-sm font-medium transition-colors"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Instagram:</span>
+                        <span className="text-sss-white text-sm">
+                          {parceiro?.instagram ? (
+                            <a href={parceiro.instagram} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                              Ver perfil
+                            </a>
+                          ) : (
+                            'Não configurado'
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Twitch:</span>
+                        <span className="text-sss-white text-sm">
+                          {parceiro?.twitch ? (
+                            <a href={parceiro.twitch} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                              Ver canal
+                            </a>
+                          ) : (
+                            'Não configurado'
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">YouTube:</span>
+                        <span className="text-sss-white text-sm">
+                          {parceiro?.youtube ? (
+                            <a href={parceiro.youtube} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                              Ver canal
+                            </a>
+                          ) : (
+                            'Não configurado'
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">TikTok:</span>
+                        <span className="text-sss-white text-sm">
+                          {parceiro?.tiktok ? (
+                            <a href={parceiro.tiktok} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                              Ver perfil
+                            </a>
+                          ) : (
+                            'Não configurado'
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* Transações Recentes */}
           <section className="mb-8">

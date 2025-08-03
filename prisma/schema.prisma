@@ -256,6 +256,12 @@ model Parceiro {
   totalVendas    Float  @default(0)
   codigosGerados Int    @default(0)
   saldoDevedor   Float  @default(0) // NOVO: saldo devedor do parceiro
+  
+  // Redes Sociais
+  instagram      String? // URL do Instagram
+  twitch         String? // URL da Twitch
+  youtube        String? // URL do YouTube
+  tiktok         String? // URL do TikTok
 
   // Relacionamentos
   usuario         Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)

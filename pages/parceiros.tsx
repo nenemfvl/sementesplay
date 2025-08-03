@@ -279,6 +279,56 @@ export default function Parceiros() {
                           <span className="text-gray-400">Comissão:</span>
                           <span className="text-sss-accent">R$ {parceiro.comissaoMensal}</span>
                           </div>
+                        
+                        {/* Redes Sociais */}
+                        {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
+                          <div className="flex gap-2 mt-3 pt-3 border-t border-gray-600">
+                            {parceiro.instagram && (
+                              <a 
+                                href={parceiro.instagram} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-pink-400 hover:text-pink-300 transition-colors"
+                                title="Instagram"
+                              >
+                                <FaInstagram className="w-4 h-4" />
+                              </a>
+                            )}
+                            {parceiro.twitch && (
+                              <a 
+                                href={parceiro.twitch} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-purple-400 hover:text-purple-300 transition-colors"
+                                title="Twitch"
+                              >
+                                <FaTwitch className="w-4 h-4" />
+                              </a>
+                            )}
+                            {parceiro.youtube && (
+                              <a 
+                                href={parceiro.youtube} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-red-400 hover:text-red-300 transition-colors"
+                                title="YouTube"
+                              >
+                                <FaYoutube className="w-4 h-4" />
+                              </a>
+                            )}
+                            {parceiro.tiktok && (
+                              <a 
+                                href={parceiro.tiktok} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                                title="TikTok"
+                              >
+                                <FaTiktok className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                        )}
                         </div>
                       </div>
                     ))}
@@ -338,6 +388,56 @@ export default function Parceiros() {
                         <span>Vendas: {formatarNumero(top1.totalVendas)}</span>
                         <span>Códigos: {formatarNumero(top1.codigosGerados)}</span>
                       </div>
+                      
+                      {/* Redes Sociais */}
+                      {(top1.instagram || top1.twitch || top1.youtube || top1.tiktok) && (
+                        <div className="flex gap-3 mt-3">
+                          {top1.instagram && (
+                            <a 
+                              href={top1.instagram} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-pink-400 hover:text-pink-300 transition-colors"
+                              title="Instagram"
+                            >
+                              <FaInstagram className="w-5 h-5" />
+                            </a>
+                          )}
+                          {top1.twitch && (
+                            <a 
+                              href={top1.twitch} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-purple-400 hover:text-purple-300 transition-colors"
+                              title="Twitch"
+                            >
+                              <FaTwitch className="w-5 h-5" />
+                            </a>
+                          )}
+                          {top1.youtube && (
+                            <a 
+                              href={top1.youtube} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-red-400 hover:text-red-300 transition-colors"
+                              title="YouTube"
+                            >
+                              <FaYoutube className="w-5 h-5" />
+                            </a>
+                          )}
+                          {top1.tiktok && (
+                            <a 
+                              href={top1.tiktok} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                              title="TikTok"
+                            >
+                              <FaTiktok className="w-5 h-5" />
+                            </a>
+                          )}
+                        </div>
+                      )}
                       <button
                         onClick={() => router.push(`/parceiro/${top1.id}`)}
                         className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors mt-3"
@@ -376,7 +476,57 @@ export default function Parceiros() {
                           <div className="font-bold text-sss-white">{i + 2}º {parceiro.nome}</div>
                           <div className="text-sm text-gray-400">{parceiro.nomeCidade}</div>
                           <div className="text-xs text-gray-500">Vendas: {formatarNumero(parceiro.totalVendas)}</div>
-            </div>
+                          
+                          {/* Redes Sociais */}
+                          {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
+                            <div className="flex gap-1 mt-2">
+                              {parceiro.instagram && (
+                                <a 
+                                  href={parceiro.instagram} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-pink-400 hover:text-pink-300 transition-colors"
+                                  title="Instagram"
+                                >
+                                  <FaInstagram className="w-3 h-3" />
+                                </a>
+                              )}
+                              {parceiro.twitch && (
+                                <a 
+                                  href={parceiro.twitch} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                                  title="Twitch"
+                                >
+                                  <FaTwitch className="w-3 h-3" />
+                                </a>
+                              )}
+                              {parceiro.youtube && (
+                                <a 
+                                  href={parceiro.youtube} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-red-400 hover:text-red-300 transition-colors"
+                                  title="YouTube"
+                                >
+                                  <FaYoutube className="w-3 h-3" />
+                                </a>
+                              )}
+                              {parceiro.tiktok && (
+                                <a 
+                                  href={parceiro.tiktok} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                                  title="TikTok"
+                                >
+                                  <FaTiktok className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
             </div>
                       {/* Botão Favoritar - Borda Direita */}
                       <div className="flex flex-col items-end gap-2">
