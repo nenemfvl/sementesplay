@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       link: `/criador/${conteudo.criador.id}`,
       tipo: conteudo.tipo,
       url: conteudo.url,
+      preview: conteudo.preview,
       criador: {
         nome: conteudo.criador.usuario.nome,
         avatarUrl: conteudo.criador.usuario.avatarUrl

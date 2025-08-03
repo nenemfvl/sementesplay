@@ -11,6 +11,7 @@ interface Conteudo {
   link: string;
   tipo: string;
   url?: string;
+  preview?: string;
   criador: {
     nome: string;
     avatarUrl?: string;
@@ -126,61 +127,74 @@ export default function Noticias() {
           ) : (
             <div className="space-y-4">
               {conteudos.map((conteudo) => (
-                <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center group-hover:border-blue-400/50 transition-colors">
-                        {getTipoIcon(conteudo.tipo)}
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <Link
-                        href={conteudo.link}
-                        className="block text-lg text-sss-white font-semibold hover:text-sss-accent truncate transition-colors"
-                        title={conteudo.titulo}
-                      >
-                        {conteudo.titulo}
-                      </Link>
-                      <div className="flex items-center space-x-3 mt-2">
-                        <div className="flex items-center space-x-2">
-                          {conteudo.criador.avatarUrl && (
-                            <div className="w-5 h-5 rounded-full overflow-hidden border border-sss-light/30">
-                              <Image
-                                src={conteudo.criador.avatarUrl.replace('http://', 'https://')}
-                                alt={conteudo.criador.nome}
-                                width={20}
-                                height={20}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          )}
-                          <span className="text-sm text-gray-300 font-medium">
-                            {conteudo.criador.nome}
-                          </span>
-                        </div>
-                        <span className="text-gray-500">•</span>
-                        <span className="text-sm text-blue-400 font-medium">
-                          {getTipoLabel(conteudo.tipo)}
-                        </span>
-                        {conteudo.categoria && (
-                          <>
-                            <span className="text-gray-500">•</span>
-                            <span className="text-sm text-purple-400 font-medium">
-                              {conteudo.categoria}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="flex-shrink-0">
-                      <span className="text-sm text-gray-400 bg-sss-light/10 px-3 py-1 rounded-full border border-sss-light/20">
-                        {conteudo.data}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                                 <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
+                   <div className="flex items-start space-x-4">
+                     {/* Preview do conteúdo */}
+                     <div className="flex-shrink-0">
+                       {conteudo.preview ? (
+                         <div className="w-20 h-20 rounded-lg overflow-hidden border border-sss-light/30 bg-sss-dark/30">
+                           <Image
+                             src={conteudo.preview.replace('http://', 'https://')}
+                             alt={conteudo.titulo}
+                             width={80}
+                             height={80}
+                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                           />
+                         </div>
+                       ) : (
+                         <div className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center group-hover:border-blue-400/50 transition-colors">
+                           {getTipoIcon(conteudo.tipo)}
+                         </div>
+                       )}
+                     </div>
+                     
+                     <div className="flex-1 min-w-0">
+                       <Link
+                         href={conteudo.link}
+                         className="block text-lg text-sss-white font-semibold hover:text-sss-accent truncate transition-colors"
+                         title={conteudo.titulo}
+                       >
+                         {conteudo.titulo}
+                       </Link>
+                       <div className="flex items-center space-x-3 mt-2">
+                         <div className="flex items-center space-x-2">
+                           {conteudo.criador.avatarUrl && (
+                             <div className="w-5 h-5 rounded-full overflow-hidden border border-sss-light/30">
+                               <Image
+                                 src={conteudo.criador.avatarUrl.replace('http://', 'https://')}
+                                 alt={conteudo.criador.nome}
+                                 width={20}
+                                 height={20}
+                                 className="w-full h-full object-cover"
+                               />
+                             </div>
+                           )}
+                           <span className="text-sm text-gray-300 font-medium">
+                             {conteudo.criador.nome}
+                           </span>
+                         </div>
+                         <span className="text-gray-500">•</span>
+                         <span className="text-sm text-blue-400 font-medium">
+                           {getTipoLabel(conteudo.tipo)}
+                         </span>
+                         {conteudo.categoria && (
+                           <>
+                             <span className="text-gray-500">•</span>
+                             <span className="text-sm text-purple-400 font-medium">
+                               {conteudo.categoria}
+                             </span>
+                           </>
+                         )}
+                       </div>
+                     </div>
+                     
+                     <div className="flex-shrink-0">
+                       <span className="text-sm text-gray-400 bg-sss-light/10 px-3 py-1 rounded-full border border-sss-light/20">
+                         {conteudo.data}
+                       </span>
+                     </div>
+                   </div>
+                 </div>
               ))}
             </div>
           )}
