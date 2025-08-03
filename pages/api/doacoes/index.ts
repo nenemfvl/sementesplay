@@ -173,7 +173,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Dar XP e pontuação por doação (sistema simplificado)
         console.log('Dando XP e pontuação por doação...')
         const xpPorDoacao = 10 // 10 XP por doação
-        const pontuacaoPorDoacao = 1 // 1 ponto por doação
+        const pontuacaoPorDoacao = quantidade // 1 ponto por semente doada
         
         try {
           // Atualizar XP e pontuação do usuário
