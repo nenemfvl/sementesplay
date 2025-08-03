@@ -29,7 +29,7 @@ const nextConfig = {
 
   // Configurações de imagens
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'sementesplay.vercel.app'],
+    domains: ['localhost', 'res.cloudinary.com', 'sementesplay.vercel.app', 'img.youtube.com'],
     formats: ['image/webp', 'image/avif'],
   },
 
