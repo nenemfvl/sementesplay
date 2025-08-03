@@ -99,11 +99,12 @@ export default function Missoes() {
               // Missão diária expira no final do dia
               dataFim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1, 0, 0, 0)
               break
-            case 'semanal':
+            case 'semanal': {
               // Missão semanal expira no final da semana (domingo)
               const diasParaDomingo = 7 - agora.getDay()
               dataFim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + diasParaDomingo, 0, 0, 0)
               break
+            }
             case 'mensal':
               // Missão mensal expira no final do mês
               dataFim = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 0, 0, 0)
@@ -671,4 +672,4 @@ export default function Missoes() {
       </div>
     </>
   )
-} 
+}
