@@ -36,10 +36,10 @@ export default function Missoes() {
         }
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        setUsuario(data)
-      }
+             if (response.ok) {
+         const data = await response.json()
+         setUsuario(data.usuario)
+       }
     } catch (error) {
       console.error('Erro ao carregar usuário:', error)
     } finally {
