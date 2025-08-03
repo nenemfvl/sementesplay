@@ -38,17 +38,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Pontuação base: sementes recebidas (1 semente = 1 ponto)
       const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
       
-      // Pontos extras por missões completadas (10 pontos por missão)
-      const pontosMissoes = criador.usuario.missaoUsuarios.length * 10
-      
-      // Pontos extras por conquistas desbloqueadas (20 pontos por conquista)
-      const pontosConquistas = criador.usuario.conquistas.length * 20
-      
-      // Pontos do campo pontuacao do usuário (se existir)
+      // Pontos do campo pontuacao do usuário (se ele também doar)
       const pontosUsuario = criador.usuario.pontuacao || 0
       
+      // Buscar dados adicionais do criador
+      const [conteudos, enquetes, recadosPublicos] = await Promise.all([
+        // Total de visualizações dos conteúdos
+        prisma.conteudo.aggregate({
+          where: { criadorId: criador.id },
+          _sum: { visualizacoes: true }
+        }),
+        
+        // Quantidade de enquetes criadas
+        prisma.enquete.count({
+          where: { criadorId: criador.usuarioId }
+        }),
+        
+        // Quantidade de recados públicos (caixa de perguntas)
+        prisma.recado.count({
+          where: { 
+            destinatarioId: criador.usuarioId,
+            publico: true 
+          }
+        })
+      ])
+      
+      // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
+      const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
+      
+      // Pontos por enquetes (5 pontos por enquete)
+      const pontosEnquetes = enquetes * 5
+      
+      // Pontos por recados públicos (2 pontos por recado público)
+      const pontosRecadosPublicos = recadosPublicos * 2
+      
       // Pontuação total composta
-      const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
+      const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
 
               return {
           id: criador.id,
@@ -58,13 +83,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           nivel: criador.usuario.nivel,
           sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
           sementesRecebidas,
-          pontosMissoes,
-          pontosConquistas,
           pontosUsuario,
+          pontosVisualizacoes,
+          pontosEnquetes,
+          pontosRecadosPublicos,
           pontuacaoTotal,
           totalDoacoes: criador.doacoesRecebidas.length,
-          missoesCompletadas: criador.usuario.missaoUsuarios.length,
-          conquistasDesbloqueadas: criador.usuario.conquistas.length,
+          totalVisualizacoes: conteudos._sum.visualizacoes || 0,
+          totalEnquetes: enquetes,
+          totalRecadosPublicos: recadosPublicos,
           redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
         }
     })
