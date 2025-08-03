@@ -87,7 +87,7 @@ export default function Noticias() {
     if (conteudos.length > 0) {
       const timer = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % Math.min(conteudos.length, 3));
-      }, 5000); // Change slide every 5 seconds
+      }, 8000); // Change slide every 8 seconds
 
       return () => clearInterval(timer);
     }
@@ -155,57 +155,57 @@ export default function Noticias() {
                            </div>
                          )}
                          
-                         {/* Content Overlay */}
-                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                           <div className="text-center text-white p-6 max-w-md">
-                             <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
-                             <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
-                             <div className="flex items-center justify-center space-x-4 text-xs">
-                               <span className="flex items-center space-x-1">
-                                 <div className="w-4 h-4 rounded-full overflow-hidden border border-white/30">
-                                   {conteudo.criador.avatarUrl && (
-                                     <Image
-                                       src={conteudo.criador.avatarUrl}
-                                       alt={conteudo.criador.nome}
-                                       width={16}
-                                       height={16}
-                                       className="w-full h-full object-cover"
-                                     />
-                                   )}
-                                 </div>
-                                 <span>{conteudo.criador.nome}</span>
-                               </span>
-                               <span>•</span>
-                               <span>{getTipoLabel(conteudo.tipo)}</span>
-                               <span>•</span>
-                               <span>{conteudo.data}</span>
-                             </div>
-                           </div>
-                         </div>
+                                                   {/* Content Overlay */}
+                          <Link href={conteudo.link} className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/30 transition-colors cursor-pointer">
+                            <div className="text-center text-white p-6 max-w-md">
+                              <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
+                              <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
+                              <div className="flex items-center justify-center space-x-4 text-xs">
+                                <span className="flex items-center space-x-1">
+                                  <div className="w-4 h-4 rounded-full overflow-hidden border border-white/30">
+                                    {conteudo.criador.avatarUrl && (
+                                      <Image
+                                        src={conteudo.criador.avatarUrl}
+                                        alt={conteudo.criador.nome}
+                                        width={16}
+                                        height={16}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    )}
+                                  </div>
+                                  <span>{conteudo.criador.nome}</span>
+                                </span>
+                                <span>•</span>
+                                <span>{getTipoLabel(conteudo.tipo)}</span>
+                                <span>•</span>
+                                <span>{conteudo.data}</span>
+                              </div>
+                            </div>
+                          </Link>
                        </div>
                      </div>
                    ))}
                  </div>
 
-                 {/* Navigation Arrows */}
-                 {conteudos.length > 1 && (
-                   <>
-                     <button
-                       onClick={prevSlide}
-                       title="Slide anterior"
-                       className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                     >
-                       ←
-                     </button>
-                     <button
-                       onClick={nextSlide}
-                       title="Próximo slide"
-                       className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                     >
-                       →
-                     </button>
-                   </>
-                 )}
+                                   {/* Navigation Arrows */}
+                  {conteudos.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevSlide}
+                        title="Slide anterior"
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-10"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        onClick={nextSlide}
+                        title="Próximo slide"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-10"
+                      >
+                        ›
+                      </button>
+                    </>
+                  )}
 
                  {/* Dots Indicator */}
                  {conteudos.length > 1 && (
