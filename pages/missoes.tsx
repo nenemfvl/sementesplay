@@ -121,14 +121,15 @@ export default function Missoes() {
             dataInicio: new Date(),
             dataFim: dataFim,
             status: m.completada ? 'completada' : m.progresso > 0 ? 'em_progresso' : 'disponivel',
-          reivindicada: m.reivindicada || false,
-          recompensa: {
-            sementes: 0,
-            experiencia: m.recompensa,
-            badge: m.emblema
-          },
-          icone: m.emblema || '🎯',
-          cor: 'blue'
+            reivindicada: m.reivindicada || false,
+            recompensa: {
+              sementes: 0,
+              experiencia: m.recompensa,
+              badge: m.emblema
+            },
+            icone: m.emblema || '🎯',
+            cor: 'blue'
+          }
         })))
       }
     } catch (error) {
