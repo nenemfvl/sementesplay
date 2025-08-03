@@ -3,238 +3,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// Função para atualizar missões e conquistas
-async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: string, valor?: number) {
-  try {
-    console.log('Atualizando missões para usuário:', usuarioId, 'tipo:', tipoAcao, 'valor:', valor)
-    
-    // Buscar missões ativas relacionadas à ação
-    let missoes = []
-    
-    if (tipoAcao === 'doacao') {
-      // Para doações, buscar apenas missões que são realmente relacionadas a doações
-      missoes = await tx.missao.findMany({
-        where: {
-          ativa: true,
-          OR: [
-            { titulo: { contains: 'Doador' } },
-            { titulo: { contains: 'Doação' } }
-          ]
-        }
-      })
-    } else {
-      // Para outros tipos, usar o tipo original
-      missoes = await tx.missao.findMany({
-        where: {
-          ativa: true,
-          tipo: tipoAcao
-        }
-      })
-    }
-
-    console.log('Missões encontradas:', missoes.length)
-
-    for (const missao of missoes) {
-      console.log('Processando missão:', missao.titulo, 'objetivo:', missao.objetivo)
-      
-      // Verificar se o usuário já tem progresso nesta missão
-      let missaoUsuario = await tx.missaoUsuario.findFirst({
-        where: {
-          missaoId: missao.id,
-          usuarioId: usuarioId
-        }
-      })
-
-      if (!missaoUsuario) {
-        console.log('Criando novo progresso para missão:', missao.titulo)
-        // Criar novo progresso
-        missaoUsuario = await tx.missaoUsuario.create({
-          data: {
-            missaoId: missao.id,
-            usuarioId: usuarioId,
-            progresso: 0,
-            concluida: false
-          }
-        })
-      }
-
-      console.log('Progresso atual:', missaoUsuario.progresso, 'concluída:', missaoUsuario.concluida)
-
-      // Atualizar progresso baseado no tipo de ação
-      let novoProgresso = missaoUsuario.progresso
-      let concluida = missaoUsuario.concluida
-
-      switch (tipoAcao) {
-        case 'doacao':
-          novoProgresso += 1 // Contar número de doações
-          console.log('Novo progresso após doação:', novoProgresso, 'objetivo:', missao.objetivo)
-          if (novoProgresso >= missao.objetivo && !concluida) {
-            console.log('Missão completada! Criando conquista e dando recompensa...')
-            concluida = true
-            // Criar conquista se a missão for completada
-            await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
-            // Dar recompensa da missão (removido - agora apenas XP)
-            // await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
-          }
-          break
-        case 'valor_doacao':
-          if (valor) {
-            novoProgresso += valor // Somar valor das doações
-            console.log('Novo progresso após valor:', novoProgresso, 'objetivo:', missao.objetivo)
-            if (novoProgresso >= missao.objetivo && !concluida) {
-              console.log('Missão completada! Criando conquista e dando recompensa...')
-              concluida = true
-              await criarConquistaSeNecessario(tx, usuarioId, missao.titulo)
-              // Dar recompensa da missão (removido - agora apenas XP)
-              // await darRecompensaMissao(tx, usuarioId, missao.recompensa, missao.titulo, missao.emblema)
-            }
-          }
-          break
-      }
-
-      // Atualizar missão do usuário
-      await tx.missaoUsuario.update({
-        where: { id: missaoUsuario.id },
-        data: {
-          progresso: novoProgresso,
-          concluida: concluida,
-          dataConclusao: concluida && !missaoUsuario.concluida ? new Date() : missaoUsuario.dataConclusao
-        }
-      })
-      
-      console.log('Missão atualizada - progresso:', novoProgresso, 'concluída:', concluida)
-    }
-  } catch (error) {
-    console.error('Erro ao atualizar missões:', error)
-  }
-}
-
-// Função para dar recompensa da missão
-async function darRecompensaMissao(tx: any, usuarioId: string, recompensa: number, tituloMissao: string, emblema?: string) {
-  try {
-    if (recompensa > 0) {
-      console.log('Dando recompensa de', recompensa, 'sementes para missão:', tituloMissao)
-      
-      // Adicionar sementes ao usuário
-      await tx.usuario.update({
-        where: { id: usuarioId },
-        data: { sementes: { increment: recompensa } }
-      })
-      
-      // Registrar histórico de sementes
-      await tx.semente.create({
-        data: {
-          usuarioId: usuarioId,
-          quantidade: recompensa,
-          tipo: 'recompensa_missao',
-          descricao: `Recompensa da missão: ${tituloMissao}`
-        }
-      })
-    }
-    
-    if (emblema) {
-      console.log('Dando emblema', emblema, 'para missão:', tituloMissao)
-      // Salvar emblema do usuário
-      await tx.emblemaUsuario.create({
-        data: {
-          usuarioId: usuarioId,
-          emblema: emblema,
-          titulo: tituloMissao
-        }
-      })
-      console.log('Emblema salvo com sucesso!')
-    }
-    
-    console.log('Recompensa dada com sucesso!')
-  } catch (error) {
-    console.error('Erro ao dar recompensa:', error)
-  }
-}
-
-// Função para criar conquista se necessário
-async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMissao: string) {
-  try {
-    console.log('Tentando criar conquista para missão:', tituloMissao, 'usuário:', usuarioId)
-    
-    // Mapear missões para conquistas
-    const mapeamentoConquistas: { [key: string]: string } = {
-      'Primeira Doação': 'Primeira Doação',
-      'Doador Frequente': 'Doador Frequente',
-      'Apoiador de Criadores': 'Apoiador de Criadores'
-    }
-
-    const nomeConquista = mapeamentoConquistas[tituloMissao]
-    console.log('Nome da conquista mapeada:', nomeConquista)
-    
-    if (!nomeConquista) {
-      console.log('Nenhuma conquista mapeada para missão:', tituloMissao)
-      
-      // Criar notificação mesmo sem conquista
-      await tx.notificacao.create({
-        data: {
-          usuarioId: usuarioId,
-          tipo: 'missao',
-          titulo: 'Missão Completada!',
-          mensagem: `Você completou a missão "${tituloMissao}"!`,
-          lida: false
-        }
-      })
-      console.log('Notificação criada para missão sem conquista!')
-      return
-    }
-
-    // Buscar conquista
-    const conquista = await tx.conquista.findFirst({
-      where: { titulo: nomeConquista }
-    })
-
-    console.log('Conquista encontrada:', conquista)
-
-    if (conquista) {
-      // Verificar se o usuário já tem esta conquista
-      const conquistaExistente = await tx.conquistaUsuario.findFirst({
-        where: {
-          conquistaId: conquista.id,
-          usuarioId: usuarioId
-        }
-      })
-
-      console.log('Conquista existente para usuário:', conquistaExistente)
-
-      if (!conquistaExistente) {
-        console.log('Criando nova conquista para usuário...')
-        // Criar conquista para o usuário
-        const novaConquista = await tx.conquistaUsuario.create({
-          data: {
-            conquistaId: conquista.id,
-            usuarioId: usuarioId,
-            dataConquista: new Date()
-          }
-        })
-        console.log('Conquista criada com sucesso:', novaConquista)
-        
-        // Criar notificação
-        await tx.notificacao.create({
-          data: {
-            usuarioId: usuarioId,
-            tipo: 'missao',
-            titulo: 'Missão Completada!',
-            mensagem: `Você completou a missão "${tituloMissao}" e ganhou uma conquista!`,
-            lida: false
-          }
-        })
-        console.log('Notificação criada com sucesso!')
-      } else {
-        console.log('Usuário já possui esta conquista')
-      }
-    } else {
-      console.log('Conquista não encontrada no banco de dados:', nomeConquista)
-    }
-  } catch (error) {
-    console.error('Erro ao criar conquista:', error)
-  }
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
@@ -402,10 +170,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log('Criador não encontrado para registrar histórico')
         }
 
-        // Atualizar missões e conquistas do doador
-        console.log('Atualizando missões e conquistas...')
-        await atualizarMissoesConquistas(tx, String(doadorId), 'doacao', quantidade)
-        console.log('Missões e conquistas atualizadas')
+        // Dar XP diretamente por doação (sistema simplificado)
+        console.log('Dando XP por doação...')
+        const xpPorDoacao = 10 // 10 XP por doação
+        
+        // Atualizar XP do usuário
+        await tx.usuario.update({
+          where: { id: String(doadorId) },
+          data: { 
+            xp: { increment: xpPorDoacao }
+          }
+        })
+        
+        // Buscar dados atualizados para criar histórico
+        const doadorAtualizado = await tx.usuario.findUnique({
+          where: { id: String(doadorId) },
+          select: { xp: true, nivel: true }
+        })
+        
+        if (doadorAtualizado) {
+          const novoNivel = Math.floor(doadorAtualizado.xp / 100) + 1
+          
+          // Atualizar nível se necessário
+          if (novoNivel > parseInt(doadorAtualizado.nivel)) {
+            await tx.usuario.update({
+              where: { id: String(doadorId) },
+              data: { nivel: novoNivel.toString() }
+            })
+          }
+          
+          // Criar histórico de XP
+          await tx.historicoXP.create({
+            data: {
+              usuarioId: String(doadorId),
+              xpGanho: xpPorDoacao,
+              xpAnterior: doadorAtualizado.xp - xpPorDoacao,
+              xpPosterior: doadorAtualizado.xp,
+              nivelAnterior: parseInt(doadorAtualizado.nivel),
+              nivelPosterior: novoNivel,
+              fonte: 'doacao',
+              descricao: `XP ganho por doação de ${quantidade} sementes`
+            }
+          })
+          
+          // Criar notificação
+          await tx.notificacao.create({
+            data: {
+              usuarioId: String(doadorId),
+              tipo: 'doacao',
+              titulo: 'XP Ganho!',
+              mensagem: `Você ganhou ${xpPorDoacao} XP por fazer uma doação!`,
+              lida: false
+            }
+          })
+          
+          console.log(`XP dado: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
+        }
 
         console.log('Transação concluída com sucesso')
         return doacao
