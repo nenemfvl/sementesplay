@@ -65,27 +65,9 @@ type ConteudoParceiro = {
   titulo: string;
   tipo: string;
   categoria: string;
-  descricao?: string;
-  preview?: string;
-  nomeCidade: string;
-  linkCidade?: string;
-  ipCidade?: string;
-  portCidade?: string;
-  linkYoutube?: string;
-  linkTwitch?: string;
-  linkInstagram?: string;
-  linkTiktok?: string;
-  dataEvento?: string;
-  enderecoEvento?: string;
-  precoEvento?: string;
-  vagasEvento?: number;
-  visualizacoes: number;
-  curtidas: number;
-  dislikes: number;
-  compartilhamentos: number;
-  comentarios: number;
-  dataPublicacao: string;
-  fixado: boolean;
+  url: string;
+  dataPublicacao?: string;
+  fixado?: boolean;
 };
 
 export default function PainelParceiro() {
@@ -109,21 +91,7 @@ export default function PainelParceiro() {
     titulo: '',
     tipo: '',
     categoria: '', 
-    descricao: '', 
-    preview: '',
-    nomeCidade: '', 
-    linkCidade: '',
-    ipCidade: '',
-    portCidade: '',
-    linkYoutube: '',
-    linkTwitch: '',
-    linkInstagram: '',
-    linkTiktok: '',
-    dataEvento: '', 
-    enderecoEvento: '',
-    precoEvento: '',
-    vagasEvento: '',
-    fixado: false
+    url: ''
   });
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
   const [savingConteudo, setSavingConteudo] = useState(false);
@@ -283,113 +251,11 @@ export default function PainelParceiro() {
     return 'w-full';
   };
 
-  // Função para obter informações da plataforma
-  function getPlataformaInfo(plataforma: string, url: string) {
-    const plataformaLower = plataforma?.toLowerCase() || '';
-    const urlLower = url?.toLowerCase() || '';
-    
-    // YouTube
-    if (plataformaLower.includes('youtube') || urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
-      const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
-      if (yt) {
-        return {
-          nome: 'YouTube',
-          cor: 'bg-red-600',
-          hoverCor: 'hover:bg-red-700',
-          icon: '▶️',
-          thumbnail: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
-          link: `https://www.youtube.com/watch?v=${yt[1]}`
-        };
-      }
-    }
-    
-    // Twitch
-    if (plataformaLower.includes('twitch') || urlLower.includes('twitch.tv')) {
-      return {
-        nome: 'Twitch',
-        cor: 'bg-purple-600',
-        hoverCor: 'hover:bg-purple-700',
-        icon: '🎮',
-        thumbnail: null,
-        link: url
-      };
-    }
-    
-    // Instagram
-    if (plataformaLower.includes('instagram') || urlLower.includes('instagram.com')) {
-      return {
-        nome: 'Instagram',
-        cor: 'bg-pink-600',
-        hoverCor: 'hover:bg-pink-700',
-        icon: '📷',
-        thumbnail: null,
-        link: url
-      };
-    }
-    
-    // TikTok
-    if (plataformaLower.includes('tiktok') || urlLower.includes('tiktok.com')) {
-      return {
-        nome: 'TikTok',
-        cor: 'bg-black',
-        hoverCor: 'hover:bg-gray-800',
-        icon: '🎵',
-        thumbnail: null,
-        link: url
-      };
-    }
-    
-    // Facebook
-    if (plataformaLower.includes('facebook') || urlLower.includes('facebook.com')) {
-      return {
-        nome: 'Facebook',
-        cor: 'bg-blue-600',
-        hoverCor: 'hover:bg-blue-700',
-        icon: '📘',
-        thumbnail: null,
-        link: url
-      };
-    }
-    
-    // Default
-    return {
-      nome: plataforma || 'Link',
-      cor: 'bg-gray-600',
-      hoverCor: 'hover:bg-gray-700',
-      icon: '🔗',
-      thumbnail: null,
-      link: url
-    };
-  }
 
-  // Adicione a função getPreview após getPlataformaInfo
-  function getPreview(url: string) {
-    if (!url) return null;
-    // YouTube
-    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
-    if (yt) {
-      return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" title="YouTube video" />;
-    }
-    // Twitch
-    const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
-    if (tw) {
-      return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" title="Twitch stream" />;
-    }
-    // Instagram
-    if (url.includes('instagram.com')) {
-      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-pink-600 underline my-2 block">Ver no Instagram</a>;
-    }
-    // TikTok
-    if (url.includes('tiktok.com')) {
-      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-black underline my-2 block">Ver no TikTok</a>;
-    }
-    // Outro
-    return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
-  }
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
-    if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.nomeCidade) {
+    if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.url) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -412,21 +278,7 @@ export default function PainelParceiro() {
           titulo: '',
           tipo: '',
           categoria: '', 
-          descricao: '', 
-          preview: '',
-          nomeCidade: '', 
-          linkCidade: '',
-          ipCidade: '',
-          portCidade: '',
-          linkYoutube: '',
-          linkTwitch: '',
-          linkInstagram: '',
-          linkTiktok: '',
-          dataEvento: '', 
-          enderecoEvento: '',
-          precoEvento: '',
-          vagasEvento: '',
-          fixado: false
+          url: ''
         });
         setShowModalConteudo(false);
         alert('Conteúdo criado com sucesso!');
@@ -462,21 +314,7 @@ export default function PainelParceiro() {
           titulo: '',
           tipo: '',
           categoria: '', 
-          descricao: '', 
-          preview: '',
-          nomeCidade: '', 
-          linkCidade: '',
-          ipCidade: '',
-          portCidade: '',
-          linkYoutube: '',
-          linkTwitch: '',
-          linkInstagram: '',
-          linkTiktok: '',
-          dataEvento: '', 
-          enderecoEvento: '',
-          precoEvento: '',
-          vagasEvento: '',
-          fixado: false
+          url: ''
         });
         setEditandoConteudo(null);
         setShowModalConteudo(false);
@@ -757,21 +595,7 @@ export default function PainelParceiro() {
                     titulo: '',
                     tipo: '',
                     categoria: '', 
-                    descricao: '', 
-                    preview: '',
-                    nomeCidade: '', 
-                    linkCidade: '',
-                    ipCidade: '',
-                    portCidade: '',
-                    linkYoutube: '',
-                    linkTwitch: '',
-                    linkInstagram: '',
-                    linkTiktok: '',
-                    dataEvento: '', 
-                    enderecoEvento: '',
-                    precoEvento: '',
-                    vagasEvento: '',
-                    fixado: false
+                    url: ''
                   });
                 }}
                 className="text-gray-400 hover:text-sss-white transition-colors"
@@ -791,6 +615,18 @@ export default function PainelParceiro() {
                   placeholder="Título do conteúdo" 
                   value={formConteudo.titulo} 
                   onChange={e => setFormConteudo(f => ({ ...f, titulo: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">URL *</label>
+                <input 
+                  required 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Link do conteúdo" 
+                  value={formConteudo.url} 
+                  onChange={e => setFormConteudo(f => ({ ...f, url: e.target.value }))} 
                 />
               </div>
 
@@ -828,165 +664,6 @@ export default function PainelParceiro() {
                 </select>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
-                <textarea 
-                  rows={4}
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Descrição detalhada do conteúdo..." 
-                  value={formConteudo.descricao} 
-                  onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Preview (URL da imagem)</label>
-                <input 
-                  type="url"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="https://exemplo.com/imagem.jpg" 
-                  value={formConteudo.preview} 
-                  onChange={e => setFormConteudo(f => ({ ...f, preview: e.target.value }))} 
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Nome da Cidade FiveM *</label>
-                <input 
-                  required 
-                  type="text"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Ex: São Paulo RP" 
-                  value={formConteudo.nomeCidade} 
-                  onChange={e => setFormConteudo(f => ({ ...f, nomeCidade: e.target.value }))} 
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Link da Cidade FiveM</label>
-                <input 
-                  type="url"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="https://exemplo.com/cidade" 
-                  value={formConteudo.linkCidade} 
-                  onChange={e => setFormConteudo(f => ({ ...f, linkCidade: e.target.value }))} 
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">IP da Cidade</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="192.168.1.1" 
-                    value={formConteudo.ipCidade} 
-                    onChange={e => setFormConteudo(f => ({ ...f, ipCidade: e.target.value }))} 
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Porta da Cidade</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="30120" 
-                    value={formConteudo.portCidade} 
-                    onChange={e => setFormConteudo(f => ({ ...f, portCidade: e.target.value }))} 
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Link YouTube</label>
-                  <input 
-                    type="url"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="https://youtube.com/..." 
-                    value={formConteudo.linkYoutube} 
-                    onChange={e => setFormConteudo(f => ({ ...f, linkYoutube: e.target.value }))} 
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Link Twitch</label>
-                  <input 
-                    type="url"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="https://twitch.tv/..." 
-                    value={formConteudo.linkTwitch} 
-                    onChange={e => setFormConteudo(f => ({ ...f, linkTwitch: e.target.value }))} 
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Link Instagram</label>
-                  <input 
-                    type="url"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="https://instagram.com/..." 
-                    value={formConteudo.linkInstagram} 
-                    onChange={e => setFormConteudo(f => ({ ...f, linkInstagram: e.target.value }))} 
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Link TikTok</label>
-                  <input 
-                    type="url"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="https://tiktok.com/..." 
-                    value={formConteudo.linkTiktok} 
-                    onChange={e => setFormConteudo(f => ({ ...f, linkTiktok: e.target.value }))} 
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
-                <input 
-                  type="datetime-local"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  value={formConteudo.dataEvento} 
-                  onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Endereço do Evento</label>
-                <input 
-                  type="text"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Endereço do evento" 
-                  value={formConteudo.enderecoEvento} 
-                  onChange={e => setFormConteudo(f => ({ ...f, enderecoEvento: e.target.value }))} 
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Preço do Evento</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="Ex: Gratuito, R$ 50,00" 
-                    value={formConteudo.precoEvento} 
-                    onChange={e => setFormConteudo(f => ({ ...f, precoEvento: e.target.value }))} 
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Vagas do Evento</label>
-                  <input 
-                    type="number"
-                    aria-label="Número de vagas do evento"
-                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                    placeholder="50" 
-                    value={formConteudo.vagasEvento} 
-                    onChange={e => setFormConteudo(f => ({ ...f, vagasEvento: e.target.value }))} 
-                  />
-                </div>
-              </div>
-              
               <div className="flex gap-3 pt-4">
                 <button 
                   type="submit" 
@@ -1015,21 +692,7 @@ export default function PainelParceiro() {
                       titulo: '',
                       tipo: '',
                       categoria: '', 
-                      descricao: '', 
-                      preview: '',
-                      nomeCidade: '', 
-                      linkCidade: '',
-                      ipCidade: '',
-                      portCidade: '',
-                      linkYoutube: '',
-                      linkTwitch: '',
-                      linkInstagram: '',
-                      linkTiktok: '',
-                      dataEvento: '', 
-                      enderecoEvento: '',
-                      precoEvento: '',
-                      vagasEvento: '',
-                      fixado: false
+                      url: ''
                     });
                   }} 
                   disabled={savingConteudo}
@@ -1469,7 +1132,7 @@ export default function PainelParceiro() {
                 </div>
                     <div>
                       <h2 className="text-xl font-bold text-sss-white">Seus Conteúdos</h2>
-                      <p className="text-sm text-gray-400">Gerencie eventos, promoções e notícias da sua cidade</p>
+                      <p className="text-sm text-gray-400">Gerencie seus eventos, notícias e conteúdos</p>
                   </div>
                   </div>
                   <button 
@@ -1525,103 +1188,17 @@ export default function PainelParceiro() {
                               <p className="text-sss-white capitalize">{conteudo.categoria}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-400">Cidade FiveM</p>
-                              <p className="text-sss-white">{conteudo.nomeCidade}</p>
+                              <p className="text-sm text-gray-400">URL</p>
+                              <a
+                                href={conteudo.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 underline text-sm"
+                              >
+                                Ver conteúdo
+                              </a>
                             </div>
-                            {conteudo.descricao && (
-                              <div>
-                                <p className="text-sm text-gray-400">Descrição</p>
-                                <p className="text-sss-white text-sm">{conteudo.descricao}</p>
-                              </div>
-                            )}
                           </div>
-
-                          {/* Links das plataformas */}
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {conteudo.linkCidade && (
-                              <a
-                                href={conteudo.linkCidade}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-sss-white transition-colors"
-                              >
-                                Cidade
-                              </a>
-                            )}
-                            {conteudo.linkYoutube && (
-                              <a
-                                href={conteudo.linkYoutube}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-sss-white transition-colors"
-                              >
-                                YouTube
-                              </a>
-                            )}
-                            {conteudo.linkTwitch && (
-                              <a
-                                href={conteudo.linkTwitch}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-sss-white transition-colors"
-                              >
-                                Twitch
-                              </a>
-                            )}
-                            {conteudo.linkInstagram && (
-                              <a
-                                href={conteudo.linkInstagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-pink-600 hover:bg-pink-700 text-sss-white transition-colors"
-                              >
-                                Instagram
-                              </a>
-                            )}
-                            {conteudo.linkTiktok && (
-                              <a
-                                href={conteudo.linkTiktok}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-black hover:bg-gray-800 text-sss-white transition-colors"
-                              >
-                                TikTok
-                              </a>
-                            )}
-                          </div>
-
-                          {/* Informações do evento */}
-                          {(conteudo.dataEvento || conteudo.enderecoEvento || conteudo.precoEvento || conteudo.vagasEvento) && (
-                            <div className="bg-sss-light/30 rounded-lg p-3 mb-4">
-                              <h4 className="text-sss-white font-semibold mb-2">Informações do Evento</h4>
-                              <div className="space-y-1 text-sm">
-                                {conteudo.dataEvento && (
-                                  <div>
-                                    <span className="text-gray-400">Data:</span>
-                                    <span className="text-sss-white ml-2">{new Date(conteudo.dataEvento).toLocaleString('pt-BR')}</span>
-                                  </div>
-                                )}
-                                {conteudo.enderecoEvento && (
-                                  <div>
-                                    <span className="text-gray-400">Endereço:</span>
-                                    <span className="text-sss-white ml-2">{conteudo.enderecoEvento}</span>
-                                  </div>
-                                )}
-                                {conteudo.precoEvento && (
-                                  <div>
-                                    <span className="text-gray-400">Preço:</span>
-                                    <span className="text-sss-white ml-2">{conteudo.precoEvento}</span>
-                                  </div>
-                                )}
-                                {conteudo.vagasEvento && (
-                                  <div>
-                                    <span className="text-gray-400">Vagas:</span>
-                                    <span className="text-sss-white ml-2">{conteudo.vagasEvento}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
 
                           <div className="flex space-x-2">
                             <button
