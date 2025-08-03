@@ -46,6 +46,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
 
+      // Para Twitch (videos ou streams)
+      if (conteudo.url?.includes('twitch.tv')) {
+        const tw = conteudo.url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
+        if (tw) {
+          // Para vídeos do Twitch, usa a API de thumbnails
+          if (tw[1]) {
+            // É um vídeo
+            return `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/${tw[2]}/thumb/thumb0-320x180.jpg`;
+          } else {
+            // É um canal/stream - usa thumbnail do canal
+            return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${tw[2]}-320x180.jpg`;
+          }
+        }
+      }
+
+      // Para Instagram
+      if (conteudo.url?.includes('instagram.com')) {
+        // Instagram não permite thumbnails diretas, mas podemos usar um placeholder
+        // ou tentar extrair a imagem se for um post de imagem
+        if (conteudo.tipo === 'imagem') {
+          return conteudo.url;
+        }
+        // Para vídeos do Instagram, retorna null (usará ícone)
+        return null;
+      }
+
+      // Para TikTok
+      if (conteudo.url?.includes('tiktok.com')) {
+        // TikTok também não permite thumbnails diretas
+        // Para vídeos do TikTok, retorna null (usará ícone)
+        return null;
+      }
+
       // Para imagens, usa a própria URL
       if (conteudo.tipo === 'imagem' && conteudo.url) {
         return conteudo.url;
