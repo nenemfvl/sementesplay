@@ -124,57 +124,65 @@ export default function Noticias() {
               </div>
             </div>
           ) : (
-            <ul className="divide-y divide-sss-light/15">
+            <div className="space-y-4">
               {conteudos.map((conteudo) => (
-                <li key={conteudo.id} className="flex items-center py-4 group hover:bg-blue-900/5 transition rounded-lg px-2">
-                  <div className="flex items-center space-x-3 flex-1">
-                    {getTipoIcon(conteudo.tipo)}
+                <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center group-hover:border-blue-400/50 transition-colors">
+                        {getTipoIcon(conteudo.tipo)}
+                      </div>
+                    </div>
+                    
                     <div className="flex-1 min-w-0">
                       <Link
                         href={conteudo.link}
-                        className="block text-base text-sss-white font-medium hover:text-sss-accent truncate"
+                        className="block text-lg text-sss-white font-semibold hover:text-sss-accent truncate transition-colors"
                         title={conteudo.titulo}
                       >
                         {conteudo.titulo}
                       </Link>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-xs text-gray-400">
-                          por {conteudo.criador.nome}
-                        </span>
-                        <span className="text-xs text-gray-500">•</span>
-                        <span className="text-xs text-gray-400">
+                      <div className="flex items-center space-x-3 mt-2">
+                        <div className="flex items-center space-x-2">
+                          {conteudo.criador.avatarUrl && (
+                            <div className="w-5 h-5 rounded-full overflow-hidden border border-sss-light/30">
+                              <Image
+                                src={conteudo.criador.avatarUrl.replace('http://', 'https://')}
+                                alt={conteudo.criador.nome}
+                                width={20}
+                                height={20}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          <span className="text-sm text-gray-300 font-medium">
+                            {conteudo.criador.nome}
+                          </span>
+                        </div>
+                        <span className="text-gray-500">•</span>
+                        <span className="text-sm text-blue-400 font-medium">
                           {getTipoLabel(conteudo.tipo)}
                         </span>
                         {conteudo.categoria && (
                           <>
-                            <span className="text-xs text-gray-500">•</span>
-                            <span className="text-xs text-gray-400">
+                            <span className="text-gray-500">•</span>
+                            <span className="text-sm text-purple-400 font-medium">
                               {conteudo.categoria}
                             </span>
                           </>
                         )}
                       </div>
                     </div>
+                    
+                    <div className="flex-shrink-0">
+                      <span className="text-sm text-gray-400 bg-sss-light/10 px-3 py-1 rounded-full border border-sss-light/20">
+                        {conteudo.data}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    {conteudo.criador.avatarUrl && (
-                      <div className="w-6 h-6 rounded-full overflow-hidden">
-                        <Image
-                          src={conteudo.criador.avatarUrl.replace('http://', 'https://')}
-                          alt={conteudo.criador.nome}
-                          width={24}
-                          height={24}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <span className="text-xs text-gray-400 min-w-[80px] text-right">
-                      {conteudo.data}
-                    </span>
-                  </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>
