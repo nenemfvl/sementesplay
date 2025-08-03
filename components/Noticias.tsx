@@ -142,86 +142,91 @@ export default function Noticias() {
                          index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
                        }`}
                      >
-                       <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
-                                                   {/* Background Image */}
-                          {conteudo.preview && (
-                            <div className="absolute inset-0">
-                              <Image
-                                src={conteudo.preview}
-                                alt={conteudo.titulo}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          )}
-                          
-                                                    {/* Content Overlay */}
-                           <Link href={conteudo.link} className="absolute inset-0 bg-black/20 flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer">
-                            <div className="text-center text-white p-6 max-w-md">
-                              <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
-                              <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
-                              <div className="flex items-center justify-center space-x-4 text-xs">
-                                <span className="flex items-center space-x-1">
-                                  <div className="w-4 h-4 rounded-full overflow-hidden border border-white/30">
-                                    {conteudo.criador.avatarUrl && (
-                                      <Image
-                                        src={conteudo.criador.avatarUrl}
-                                        alt={conteudo.criador.nome}
-                                        width={16}
-                                        height={16}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    )}
-                                  </div>
-                                  <span>{conteudo.criador.nome}</span>
-                                </span>
-                                <span>•</span>
-                                <span>{getTipoLabel(conteudo.tipo)}</span>
-                                <span>•</span>
-                                <span>{conteudo.data}</span>
-                              </div>
-                            </div>
-                          </Link>
-                       </div>
+                                               <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
+                                                    {/* Background Image */}
+                           {conteudo.preview && (
+                             <div className="absolute inset-0">
+                               <Image
+                                 src={conteudo.preview}
+                                 alt={conteudo.titulo}
+                                 fill
+                                 className="object-cover"
+                               />
+                             </div>
+                           )}
+                           
+                                                     {/* Content Overlay */}
+                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                             <div className="text-center text-white p-6 max-w-md">
+                               <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
+                               <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
+                               <div className="flex items-center justify-center space-x-4 text-xs">
+                                 <span className="flex items-center space-x-1">
+                                   <div className="w-4 h-4 rounded-full overflow-hidden border border-white/30">
+                                     {conteudo.criador.avatarUrl && (
+                                       <Image
+                                         src={conteudo.criador.avatarUrl}
+                                         alt={conteudo.criador.nome}
+                                         width={16}
+                                         height={16}
+                                         className="w-full h-full object-cover"
+                                       />
+                                     )}
+                                   </div>
+                                   <span>{conteudo.criador.nome}</span>
+                                 </span>
+                                 <span>•</span>
+                                 <span>{getTipoLabel(conteudo.tipo)}</span>
+                                 <span>•</span>
+                                 <span>{conteudo.data}</span>
+                               </div>
+                             </div>
+                           </div>
+                           
+                           {/* Clickable Link Overlay */}
+                           <Link href={conteudo.link} className="absolute inset-0 z-10">
+                             <span className="sr-only">Ver conteúdo: {conteudo.titulo}</span>
+                           </Link>
+                        </div>
                      </div>
                    ))}
                  </div>
 
-                                   {/* Navigation Arrows */}
-                  {conteudos.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevSlide}
-                        title="Slide anterior"
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-10"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        onClick={nextSlide}
-                        title="Próximo slide"
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-10"
-                      >
-                        ›
-                      </button>
-                    </>
-                  )}
-
-                 {/* Dots Indicator */}
-                 {conteudos.length > 1 && (
-                   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                     {conteudos.slice(0, 3).map((_, index) => (
+                                                                       {/* Navigation Arrows */}
+                   {conteudos.length > 1 && (
+                     <>
                        <button
-                         key={index}
-                         onClick={() => setCurrentSlide(index)}
-                         title={`Ir para slide ${index + 1}`}
-                         className={`w-2 h-2 rounded-full transition-colors ${
-                           index === currentSlide ? 'bg-white' : 'bg-white/50'
-                         }`}
-                       />
-                     ))}
-                   </div>
-                 )}
+                         onClick={prevSlide}
+                         title="Slide anterior"
+                         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
+                       >
+                         ‹
+                       </button>
+                       <button
+                         onClick={nextSlide}
+                         title="Próximo slide"
+                         className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
+                       >
+                         ›
+                       </button>
+                     </>
+                   )}
+
+                                   {/* Dots Indicator */}
+                  {conteudos.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                      {conteudos.slice(0, 3).map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentSlide(index)}
+                          title={`Ir para slide ${index + 1}`}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            index === currentSlide ? 'bg-white' : 'bg-white/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                </>
              )}
            </div>
