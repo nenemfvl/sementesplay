@@ -2,7 +2,7 @@
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
-<!-- Forçar redeploy - $(date) - Atualização automática - Teste PIX -->
+<!-- Forçar redeploy - $(date) - Atualização automática - Teste PIX - Deploy Vercel -->
 
 ## 🚀 Como Funciona
 
