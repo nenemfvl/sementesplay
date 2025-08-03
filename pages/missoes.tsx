@@ -34,6 +34,7 @@ interface Missao {
   dataFim: Date
   icone: string
   cor: string
+  reivindicada?: boolean
 }
 
 interface Conquista {
