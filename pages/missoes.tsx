@@ -97,7 +97,7 @@ export default function Missoes() {
           reivindicada: m.reivindicada || false,
           recompensa: {
             sementes: 0,
-            experiencia: m.recompensa || 50,
+            experiencia: m.recompensa,
             badge: m.emblema
           },
           icone: m.emblema || '🎯',
