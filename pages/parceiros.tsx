@@ -405,7 +405,7 @@ export default function Parceiros() {
               onClick={() => router.push('/criadores')}
                       >
               <PlusIcon className="w-5 h-5 mr-2" />
-              Ver Criadores
+              Ver Parceiros
                       </button>
                       <button
               className="flex items-center gap-2 bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-xl text-lg font-medium transition-colors"
