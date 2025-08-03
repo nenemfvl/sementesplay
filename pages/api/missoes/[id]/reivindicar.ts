@@ -74,8 +74,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await prisma.historicoXP.create({
       data: {
         usuarioId: usuario.id,
-        quantidade: missao.recompensa,
-        tipo: 'missao',
+        xpGanho: missao.recompensa,
+        xpAnterior: usuario.xp,
+        xpPosterior: usuario.xp + missao.recompensa,
+        nivelAnterior: parseInt(usuario.nivel) || 1,
+        nivelPosterior: parseInt(usuario.nivel) || 1,
+        fonte: 'missao',
         descricao: `XP ganho por completar a missão: ${missao.titulo}`
       }
     })
