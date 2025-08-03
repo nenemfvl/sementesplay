@@ -25,14 +25,16 @@ interface RankingItem {
   nivelRanking?: string
   sementes: number
   sementesRecebidas?: number
-  pontosMissoes?: number
-  pontosConquistas?: number
   pontosUsuario?: number
+  pontosVisualizacoes?: number
+  pontosEnquetes?: number
+  pontosRecadosPublicos?: number
   pontuacaoTotal?: number
   doacoes: number
   criadoresApoiados: number
-  missoesCompletadas?: number
-  conquistasDesbloqueadas?: number
+  totalVisualizacoes?: number
+  totalEnquetes?: number
+  totalRecadosPublicos?: number
   posicao: number
   categoria: 'doador' | 'criador' | 'missao' | 'social'
   periodo: 'diario' | 'semanal' | 'mensal' | 'total'
@@ -96,14 +98,16 @@ export default function Ranking() {
             nivelRanking: criador.nivelRanking,
             sementes: criador.sementesRecebidas,
             sementesRecebidas: criador.sementesRecebidas,
-            pontosMissoes: criador.pontosMissoes,
-            pontosConquistas: criador.pontosConquistas,
             pontosUsuario: criador.pontosUsuario,
+            pontosVisualizacoes: criador.pontosVisualizacoes,
+            pontosEnquetes: criador.pontosEnquetes,
+            pontosRecadosPublicos: criador.pontosRecadosPublicos,
             pontuacaoTotal: criador.pontuacaoTotal,
             doacoes: criador.totalDoacoes,
             criadoresApoiados: 0,
-            missoesCompletadas: criador.missoesCompletadas,
-            conquistasDesbloqueadas: criador.conquistasDesbloqueadas,
+            totalVisualizacoes: criador.totalVisualizacoes,
+            totalEnquetes: criador.totalEnquetes,
+            totalRecadosPublicos: criador.totalRecadosPublicos,
             posicao: criador.posicao,
             categoria: 'criador' as const,
             periodo: selectedPeriodo as any,
@@ -613,12 +617,12 @@ export default function Ranking() {
                           <p className="text-gray-400">Total de Doações</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sss-white font-semibold">{selectedItem.missoesCompletadas || 0}</p>
-                          <p className="text-gray-400">Missões Completadas</p>
+                          <p className="text-sss-white font-semibold">{selectedItem.totalVisualizacoes || 0}</p>
+                          <p className="text-gray-400">Visualizações</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sss-white font-semibold">{selectedItem.conquistasDesbloqueadas || 0}</p>
-                          <p className="text-gray-400">Conquistas</p>
+                          <p className="text-sss-white font-semibold">{selectedItem.totalEnquetes || 0}</p>
+                          <p className="text-gray-400">Enquetes</p>
                         </div>
                         <div className="text-center">
                           <p className="text-sss-white font-semibold">{selectedItem.pontosUsuario || 0}</p>
