@@ -576,28 +576,7 @@ export default function Perfil() {
                         </div>
                       </div>
 
-                      <div>
-                        <h3 className="text-lg font-semibold text-sss-white mb-4">Próximas Conquistas</h3>
-                        <div className="space-y-3">
-                          {stats?.proximasConquistas?.map((conquista: any, index: number) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
-                              <div>
-                                <p className="text-sss-white text-sm">{conquista.nome}</p>
-                                <p className="text-gray-400 text-xs">{conquista.descricao}</p>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-xs text-gray-400">{conquista.progresso}%</div>
-                                <div className="w-16 h-2 bg-gray-600 rounded-full">
-                                  <div 
-                                    className="progress-bar"
-                                    style={{ width: `${conquista.progresso}%` }}
-                                  ></div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+
                     </div>
                   </motion.div>
                 )}
