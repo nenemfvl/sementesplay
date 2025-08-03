@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { auth } from '../lib/auth'
 
 interface Usuario {
   id: string
@@ -16,36 +17,22 @@ export default function Missoes() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('sementesplay_token')
-    if (!token) {
+    const currentUser = auth.getUser()
+    if (!currentUser) {
       router.push('/login')
       return
     }
 
-    loadUsuario()
+    // Usar dados do usuário já carregados
+    setUsuario({
+      id: currentUser.id,
+      nome: currentUser.nome,
+      xp: currentUser.xp || 0,
+      nivel: currentUser.nivel || '1',
+      nivelUsuario: parseInt(currentUser.nivel) || 1
+    })
+    setLoading(false)
   }, [router])
-
-  const loadUsuario = async () => {
-    try {
-      const token = localStorage.getItem('sementesplay_token')
-      if (!token) return
-
-      const response = await fetch(`/api/usuario/atual`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-
-             if (response.ok) {
-         const data = await response.json()
-         setUsuario(data.usuario)
-       }
-    } catch (error) {
-      console.error('Erro ao carregar usuário:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const calcularProgressoNivel = () => {
     if (!usuario) return 0
