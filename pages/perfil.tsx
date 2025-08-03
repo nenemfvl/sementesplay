@@ -33,6 +33,7 @@ export default function Perfil() {
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
   const [xpData, setXpData] = useState<any>(null)
+  const [missoesUsuario, setMissoesUsuario] = useState<any[]>([])
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -76,6 +77,7 @@ export default function Perfil() {
     if (user) {
       loadStats()
       loadXPData()
+      loadMissoesUsuario()
     }
   }, [user])
 
@@ -150,6 +152,21 @@ export default function Perfil() {
       }
     } catch (error) {
       console.error('Erro ao carregar dados de XP:', error);
+    }
+  }
+
+  const loadMissoesUsuario = async () => {
+    try {
+      const token = localStorage.getItem('sementesplay_token');
+      const res = await fetch('/api/missoes', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMissoesUsuario(data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar missões do usuário:', error);
     }
   }
 
@@ -391,7 +408,7 @@ export default function Perfil() {
               </div>
             ) : (
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -482,6 +499,46 @@ export default function Perfil() {
                     </div>
                   </div>
                 )}
+
+                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-300 text-sm">Missões Ativas</p>
+                      <p className="text-2xl font-bold text-green-400">
+                        {missoesUsuario.filter(m => !m.concluida).length}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        {missoesUsuario.filter(m => m.concluida).length} concluídas
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                      <TrophyIcon className="w-6 h-6 text-green-400" />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <span>Progresso Geral</span>
+                      <span>
+                        {missoesUsuario.length > 0 
+                          ? Math.round((missoesUsuario.filter(m => m.concluida).length / missoesUsuario.length) * 100)
+                          : 0}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${missoesUsuario.length > 0 
+                            ? (missoesUsuario.filter(m => m.concluida).length / missoesUsuario.length) * 100
+                            : 0}%` 
+                        }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {missoesUsuario.filter(m => !m.concluida).length} disponíveis
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             )}
 
