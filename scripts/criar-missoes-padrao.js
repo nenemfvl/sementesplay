@@ -68,6 +68,7 @@ async function criarMissoesPadrao() {
         descricao: 'Realizou sua primeira doação',
         icone: '🎯',
         criterio: '1 doação',
+        tipo: 'unica',
         ativa: true
       },
       {
@@ -75,6 +76,7 @@ async function criarMissoesPadrao() {
         descricao: 'Realizou 10 doações',
         icone: '🏆',
         criterio: '10 doações',
+        tipo: 'unica',
         ativa: true
       },
       {
@@ -82,6 +84,7 @@ async function criarMissoesPadrao() {
         descricao: 'Apoiou 5 criadores diferentes',
         icone: '🌟',
         criterio: '5 criadores diferentes',
+        tipo: 'unica',
         ativa: true
       }
     ]
