@@ -17,6 +17,11 @@ interface Conteudo {
     avatarUrl?: string;
   };
   categoria?: string;
+  // Informações de popularidade
+  visualizacoes?: number;
+  curtidas?: number;
+  compartilhamentos?: number;
+  pontuacaoPopularidade?: number;
 }
 
 export default function Noticias() {
@@ -105,9 +110,9 @@ export default function Noticias() {
     <section className="w-full max-w-5xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-36 items-stretch">
       <div className="w-full md:w-auto flex flex-col md:flex-row md:items-stretch gap-36">
                  <div className="w-full md:w-80 flex-shrink-0 relative">
-          <h2 className="text-2xl font-bold text-sss-white mb-4 md:mb-6 md:text-left text-center">
-            Conteúdos dos Criadores
-          </h2>
+                     <h2 className="text-2xl font-bold text-sss-white mb-4 md:mb-6 md:text-left text-center">
+             Conteúdos Populares
+           </h2>
           
                                            {/* Banner Slider */}
             <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 h-[400px] relative">
@@ -122,10 +127,10 @@ export default function Noticias() {
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
                     <div className="text-4xl mb-3">🎬</div>
-                    <div className="text-lg font-bold text-sss-white mb-2">Conteúdos Recentes</div>
-                    <div className="text-sm text-gray-300">
-                      Descubra os melhores conteúdos dos criadores da comunidade
-                    </div>
+                                         <div className="text-lg font-bold text-sss-white mb-2">Conteúdos Populares</div>
+                     <div className="text-sm text-gray-300">
+                       Descubra os conteúdos mais visualizados, curtidos e compartilhados
+                     </div>
                     <div className="mt-4 text-xs text-gray-400">
                       Atualizado em tempo real
                     </div>
@@ -175,10 +180,22 @@ export default function Noticias() {
                                     </div>
                                     <span>{conteudo.criador.nome}</span>
                                   </span>
-                                  <span>•</span>
-                                  <span>{getTipoLabel(conteudo.tipo)}</span>
-                                  <span>•</span>
-                                  <span>{conteudo.data}</span>
+                                                                   <span>•</span>
+                                 <span>{getTipoLabel(conteudo.tipo)}</span>
+                                 <span>•</span>
+                                 <span>{conteudo.data}</span>
+                                 {/* Indicador de popularidade no slider */}
+                                 {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
+                                   <>
+                                     <span>•</span>
+                                     <span className="flex items-center space-x-1">
+                                       <span className="text-yellow-400">🔥</span>
+                                       <span className="text-yellow-400">
+                                         {conteudo.visualizacoes || 0}
+                                       </span>
+                                     </span>
+                                   </>
+                                 )}
                                 </div>
                               </div>
                             </div>
@@ -305,14 +322,26 @@ export default function Noticias() {
                         <span className="text-sm text-blue-400 font-medium">
                           {getTipoLabel(conteudo.tipo)}
                         </span>
-                        {conteudo.categoria && (
-                          <>
-                            <span className="text-gray-500">•</span>
-                            <span className="text-sm text-purple-400 font-medium">
-                              {conteudo.categoria}
-                            </span>
-                          </>
-                        )}
+                                                 {conteudo.categoria && (
+                           <>
+                             <span className="text-gray-500">•</span>
+                             <span className="text-sm text-purple-400 font-medium">
+                               {conteudo.categoria}
+                             </span>
+                           </>
+                         )}
+                         {/* Indicador de popularidade */}
+                         {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
+                           <>
+                             <span className="text-gray-500">•</span>
+                             <div className="flex items-center space-x-1">
+                               <span className="text-xs text-yellow-400">🔥</span>
+                               <span className="text-xs text-yellow-400 font-medium">
+                                 {conteudo.visualizacoes || 0} visualizações
+                               </span>
+                             </div>
+                           </>
+                         )}
                       </div>
                     </div>
                     

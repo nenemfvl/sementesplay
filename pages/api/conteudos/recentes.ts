@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { limit = 10 } = req.query
 
-    // Buscar conteúdos mais recentes dos criadores
+    // Buscar conteúdos dos criadores
     const conteudos = await prisma.conteudo.findMany({
       include: {
         criador: {
@@ -25,11 +25,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       },
-      orderBy: {
-        dataPublicacao: 'desc'
-      },
       take: parseInt(limit as string) || 10
     })
+
+    // Calcular pontuação de popularidade para cada conteúdo
+    const conteudosComPontuacao = conteudos.map(conteudo => {
+      // Sistema de pontuação: visualizações (1 ponto), curtidas (3 pontos), compartilhamentos (5 pontos)
+      const pontuacao = conteudo.visualizacoes + (conteudo.curtidas * 3) + (conteudo.compartilhamentos * 5)
+      
+      return {
+        ...conteudo,
+        pontuacaoPopularidade: pontuacao
+      }
+    })
+
+    // Ordenar por pontuação de popularidade (mais popular primeiro)
+    conteudosComPontuacao.sort((a, b) => b.pontuacaoPopularidade - a.pontuacaoPopularidade)
 
     // Função para gerar preview baseada no tipo e URL (mesma lógica do painel do criador)
     const gerarPreview = (conteudo: any) => {
@@ -89,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Formatar os conteúdos para o formato de notícias
-    const noticias = conteudos.map((conteudo, index) => ({
+    const noticias = conteudosComPontuacao.map((conteudo, index) => ({
       id: conteudo.id,
       titulo: conteudo.titulo,
       descricao: conteudo.descricao || `Novo conteúdo de ${conteudo.criador.usuario.nome}`,
@@ -102,7 +113,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         nome: conteudo.criador.usuario.nome,
         avatarUrl: conteudo.criador.usuario.avatarUrl
       },
-      categoria: conteudo.categoria
+      categoria: conteudo.categoria,
+      // Informações de popularidade
+      visualizacoes: conteudo.visualizacoes,
+      curtidas: conteudo.curtidas,
+      compartilhamentos: conteudo.compartilhamentos,
+      pontuacaoPopularidade: conteudo.pontuacaoPopularidade
     }))
 
     return res.status(200).json({
