@@ -30,12 +30,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const [totalDoacoes, totalSementes, totalFavoritos] = await Promise.all([
       // Total de doações recebidas
       prisma.doacao.count({
-        where: { destinatarioId: criador.id }
+        where: { criadorId: criador.id }
       }),
       
       // Total de sementes recebidas
       prisma.doacao.aggregate({
-        where: { destinatarioId: criador.id },
+        where: { criadorId: criador.id },
         _sum: { quantidade: true }
       }),
       
