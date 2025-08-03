@@ -476,7 +476,7 @@ export default function Missoes() {
                                 </span>
                               </div>
 
-                              {missao.status === 'em_progresso' && missao.progresso >= missao.objetivo && !missao.reivindicada && (
+                              {missao.status === 'completada' && !missao.reivindicada && (
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation()
