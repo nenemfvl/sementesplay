@@ -648,22 +648,38 @@ export default function Perfil() {
                     transition={{ duration: 0.3 }}
                   >
                     <h3 className="text-lg font-semibold text-sss-white mb-4">Histórico de Cashback</h3>
-                    <div className="space-y-3">
-                      {stats?.historicoCashback?.map((cashback: any, index: number) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <GiftIcon className="w-5 h-5 text-green-500" />
-                            <div>
-                              <p className="text-sss-white">{cashback.codigo}</p>
-                              <p className="text-gray-400 text-sm">{cashback.data}</p>
+                    
+                    {!stats?.historicoCashback || stats.historicoCashback.length === 0 ? (
+                      <div className="text-center py-12">
+                        <GiftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-sss-white mb-2">Nenhum cashback resgatado</h3>
+                        <p className="text-gray-400 mb-4">Você ainda não resgatou nenhum código de cashback</p>
+                        <a 
+                          href="/cashback" 
+                          className="inline-flex items-center px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
+                        >
+                          <GiftIcon className="w-5 h-5 mr-2" />
+                          Ver Códigos Disponíveis
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {stats.historicoCashback.map((cashback: any, index: number) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                            <div className="flex items-center space-x-3">
+                              <GiftIcon className="w-5 h-5 text-green-500" />
+                              <div>
+                                <p className="text-sss-white">{cashback.codigo}</p>
+                                <p className="text-gray-400 text-sm">{cashback.data}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-green-500 font-semibold">+{cashback.valor} Sementes</p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-green-500 font-semibold">+{cashback.valor} Sementes</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )}
 
