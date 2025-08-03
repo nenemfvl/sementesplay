@@ -87,7 +87,7 @@ export default function Noticias() {
     if (conteudos.length > 0) {
       const timer = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % Math.min(conteudos.length, 3));
-      }, 8000); // Change slide every 8 seconds
+      }, 60000); // Change slide every 60 seconds (1 minute)
 
       return () => clearInterval(timer);
     }
@@ -143,20 +143,20 @@ export default function Noticias() {
                        }`}
                      >
                        <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
-                         {/* Background Image */}
-                         {conteudo.preview && (
-                           <div className="absolute inset-0">
-                             <Image
-                               src={conteudo.preview}
-                               alt={conteudo.titulo}
-                               fill
-                               className="object-cover opacity-20"
-                             />
-                           </div>
-                         )}
-                         
-                                                   {/* Content Overlay */}
-                          <Link href={conteudo.link} className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/30 transition-colors cursor-pointer">
+                                                   {/* Background Image */}
+                          {conteudo.preview && (
+                            <div className="absolute inset-0">
+                              <Image
+                                src={conteudo.preview}
+                                alt={conteudo.titulo}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          )}
+                          
+                                                    {/* Content Overlay */}
+                           <Link href={conteudo.link} className="absolute inset-0 bg-black/20 flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer">
                             <div className="text-center text-white p-6 max-w-md">
                               <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
                               <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
