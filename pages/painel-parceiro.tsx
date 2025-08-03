@@ -91,7 +91,8 @@ export default function PainelParceiro() {
     titulo: '',
     tipo: '',
     categoria: '', 
-    url: ''
+    url: '',
+    cidade: ''
   });
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
   const [savingConteudo, setSavingConteudo] = useState(false);
@@ -255,7 +256,7 @@ export default function PainelParceiro() {
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
-    if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.url) {
+    if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.url || !formConteudo.cidade) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -278,7 +279,8 @@ export default function PainelParceiro() {
           titulo: '',
           tipo: '',
           categoria: '', 
-          url: ''
+          url: '',
+          cidade: ''
         });
         setShowModalConteudo(false);
         alert('Conteúdo criado com sucesso!');
@@ -314,7 +316,8 @@ export default function PainelParceiro() {
           titulo: '',
           tipo: '',
           categoria: '', 
-          url: ''
+          url: '',
+          cidade: ''
         });
         setEditandoConteudo(null);
         setShowModalConteudo(false);
@@ -595,7 +598,8 @@ export default function PainelParceiro() {
                     titulo: '',
                     tipo: '',
                     categoria: '', 
-                    url: ''
+                    url: '',
+                    cidade: ''
                   });
                 }}
                 className="text-gray-400 hover:text-sss-white transition-colors"
@@ -663,6 +667,18 @@ export default function PainelParceiro() {
                   <option value="cidade">Cidade</option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
+                <input 
+                  required 
+                  type="text"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Nome da cidade" 
+                  value={formConteudo.cidade} 
+                  onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
+                />
+              </div>
               
               <div className="flex gap-3 pt-4">
                 <button 
@@ -692,7 +708,8 @@ export default function PainelParceiro() {
                       titulo: '',
                       tipo: '',
                       categoria: '', 
-                      url: ''
+                      url: '',
+                      cidade: ''
                     });
                   }} 
                   disabled={savingConteudo}
