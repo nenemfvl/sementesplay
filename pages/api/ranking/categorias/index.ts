@@ -37,33 +37,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const categorias = [
       {
         id: 'doador',
-        nome: 'Doadores',
+        nome: 'Geral',
+        descricao: 'Ranking geral por doações e atividade',
+        icone: '🏆',
+        cor: 'text-yellow-400',
+        totalParticipantes: totalDoadores
+      },
+      {
+        id: 'criador',
+        nome: 'Doações',
         descricao: 'Usuários que mais doaram Sementes',
         icone: '💝',
         cor: 'text-pink-400',
         totalParticipantes: totalDoadores
       },
       {
-        id: 'criador',
-        nome: 'Criadores',
-        descricao: 'Criadores que mais receberam doações',
-        icone: '👨‍🎨',
-        cor: 'text-purple-400',
-        totalParticipantes: totalCriadores
-      },
-      {
-        id: 'missao',
-        nome: 'Missões',
-        descricao: 'Usuários que mais completaram missões',
-        icone: '🎯',
-        cor: 'text-blue-400',
-        totalParticipantes: totalMissoes
-      },
-      {
         id: 'social',
-        nome: 'Social',
-        descricao: 'Usuários mais ativos socialmente',
-        icone: '👥',
+        nome: 'Pontos',
+        descricao: 'Ranking por pontuação total (sementes doadas)',
+        icone: '⭐',
         cor: 'text-green-400',
         totalParticipantes: totalSocial
       }
