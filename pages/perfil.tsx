@@ -625,10 +625,7 @@ export default function Perfil() {
                               <span className="text-green-400">💝</span>
                               <span className="text-gray-300">Doações: 25 XP cada</span>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-blue-400">🎯</span>
-                              <span className="text-gray-300">Missões: 50 XP cada</span>
-                            </div>
+                            
                             <div className="flex items-center space-x-2">
                               <span className="text-purple-400">🔥</span>
                               <span className="text-gray-300">Login diário: 10 XP</span>
