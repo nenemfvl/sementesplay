@@ -19,6 +19,12 @@ model Usuario {
   sementes        Float    @default(0)
   nivel           String   @default("comum") // comum, criador-iniciante, criador-comum, criador-parceiro, criador-supremo, parceiro, 5
   pontuacao       Int      @default(0)
+  xp              Int      @default(0) // Pontos de experiência
+  nivelUsuario    Int      @default(1) // Nível do usuário (1-100)
+  titulo          String?  // Título personalizado
+  corPerfil       String?  // Cor de destaque no perfil
+  streakLogin     Int      @default(0) // Dias consecutivos de login
+  ultimoLogin     DateTime? // Último login para calcular streak
   dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
   avatarUrl       String? // URL da foto de perfil do usuário
@@ -58,6 +64,7 @@ model Usuario {
   DistribuicaoFundo    DistribuicaoFundo[]
   solicitacoesCompra   SolicitacaoCompra[]         @relation("SolicitacaoCompraUsuario")
   codigosCashback      CodigoCashback[]
+  historicoXP          HistoricoXP[]
 
   @@map("usuarios")
 }
@@ -470,9 +477,9 @@ model Missao {
   id          String    @id @default(cuid())
   titulo      String
   descricao   String
-  tipo        String // diaria, semanal, especial
+  tipo        String // diaria, semanal, mensal, unica
   objetivo    Int // quantidade necessária para completar
-  recompensa  Int // sementes, pontos, etc.
+  recompensa  Int // pontos XP
   emblema     String? // emblema como recompensa
   ativa       Boolean   @default(true)
   dataInicio  DateTime  @default(now())
@@ -506,6 +513,8 @@ model Conquista {
   descricao String
   icone     String // url do ícone
   criterio  String // ex: "10 doações", "100 seguidores"
+  recompensaXp Int  @default(0) // XP ganho ao completar
+  tipo      String // diaria, semanal, unica, especial
   ativa     Boolean @default(true)
 
   usuarios ConquistaUsuario[]
@@ -517,7 +526,10 @@ model ConquistaUsuario {
   id            String   @id @default(cuid())
   conquistaId   String
   usuarioId     String
-  dataConquista DateTime @default(now())
+  progresso     Int      @default(0) // Progresso atual
+  concluida     Boolean  @default(false) // Se foi completada
+  dataConquista DateTime? // Data quando foi completada
+  dataInicio    DateTime @default(now()) // Data quando começou
 
   conquista Conquista @relation(fields: [conquistaId], references: [id], onDelete: Cascade)
   usuario   Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
@@ -536,6 +548,23 @@ model EmblemaUsuario {
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("emblemas_usuarios")
+}
+
+model HistoricoXP {
+  id          String   @id @default(cuid())
+  usuarioId   String
+  xpGanho     Int      // Quantidade de XP ganho
+  xpAnterior  Int      // XP antes da ação
+  xpPosterior Int      // XP depois da ação
+  nivelAnterior Int    // Nível antes da ação
+  nivelPosterior Int   // Nível depois da ação
+  fonte       String   // missao, conquista, doacao, login, etc.
+  descricao   String   // Descrição da ação
+  data        DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("historico_xp")
 }
 
 model Amizade {
