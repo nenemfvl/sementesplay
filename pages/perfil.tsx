@@ -142,13 +142,22 @@ export default function Perfil() {
 
   const loadXPData = async () => {
     try {
-      const token = localStorage.getItem('sementesplay_token');
+      const currentUser = auth.getUser();
+      if (!currentUser) {
+        console.error('Usuário não encontrado');
+        return;
+      }
+      
       const res = await fetch('/api/usuario/xp', {
-        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        headers: { 'Authorization': `Bearer ${currentUser.id}` }
       });
+      
       if (res.ok) {
         const data = await res.json();
+        console.log('Dados de XP carregados:', data);
         setXpData(data);
+      } else {
+        console.error('Erro na resposta da API de XP:', res.status, res.statusText);
       }
     } catch (error) {
       console.error('Erro ao carregar dados de XP:', error);
