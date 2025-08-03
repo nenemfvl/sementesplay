@@ -90,7 +90,7 @@ export default function Noticias() {
           </h2>
           
           {/* Banner informativo */}
-          <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-6 flex items-center justify-center min-h-[400px]">
+                     <div className="block w-full rounded-lg overflow-hidden bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-6 flex items-center justify-center h-[600px]">
             <div className="text-center">
               <div className="text-4xl mb-3">🎬</div>
               <div className="text-lg font-bold text-sss-white mb-2">Conteúdos Recentes</div>
@@ -125,8 +125,8 @@ export default function Noticias() {
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              {conteudos.map((conteudo) => (
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-sss-light/30 scrollbar-track-transparent">
+              {conteudos.slice(0, 4).map((conteudo) => (
                 <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
                   <div className="flex items-start space-x-4">
                     {/* Preview do conteúdo */}
