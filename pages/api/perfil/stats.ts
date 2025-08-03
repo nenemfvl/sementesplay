@@ -118,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: d.data.toLocaleDateString('pt-BR')
       })),
       ...cashbacks.map(c => ({
-        descricao: `Resgatou ${c.valor} Sementes do código ${c.codigoParceiro}`,
+        descricao: `Resgatou ${c.valor} Sementes do código ${c.codigoParceiro || 'CASHBACK'}`,
         data: c.data.toLocaleDateString('pt-BR')
       })),
       ...missoesUsuario.filter(m => m.concluida).map(m => ({

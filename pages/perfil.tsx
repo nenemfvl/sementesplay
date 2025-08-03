@@ -347,9 +347,9 @@ export default function Perfil() {
                         <span className="text-sm text-gray-400">
                           ({xpData.usuario.xp} XP)
                         </span>
-                        {user.streakLogin > 0 && (
+                        {(user as any).streakLogin > 0 && (
                           <span className="text-sm text-orange-400">
-                            🔥 {user.streakLogin} dias
+                            🔥 {(user as any).streakLogin} dias
                           </span>
                         )}
                       </div>
@@ -687,10 +687,10 @@ export default function Perfil() {
                               <p className="text-2xl font-bold text-green-400">{Math.round(xpData.progressoNivel)}%</p>
                               <p className="text-xs text-gray-400">Progresso</p>
                             </div>
-                            <div>
-                              <p className="text-2xl font-bold text-orange-400">{user.streakLogin || 0}</p>
-                              <p className="text-xs text-gray-400">Dias Consecutivos</p>
-                            </div>
+                                                         <div>
+                               <p className="text-2xl font-bold text-orange-400">{(user as any).streakLogin || 0}</p>
+                               <p className="text-xs text-gray-400">Dias Consecutivos</p>
+                             </div>
                           </div>
                         </div>
                         
