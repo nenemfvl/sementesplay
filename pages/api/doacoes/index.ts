@@ -12,14 +12,13 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
     let missoes = []
     
     if (tipoAcao === 'doacao') {
-      // Para doações, buscar missões que são relacionadas a doações
+      // Para doações, buscar apenas missões que são realmente relacionadas a doações
       missoes = await tx.missao.findMany({
         where: {
           ativa: true,
           OR: [
-            { titulo: { contains: 'Doação' } },
             { titulo: { contains: 'Doador' } },
-            { descricao: { contains: 'doação' } }
+            { titulo: { contains: 'Doação' } }
           ]
         }
       })
