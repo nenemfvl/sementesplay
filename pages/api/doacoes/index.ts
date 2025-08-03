@@ -186,17 +186,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // Buscar dados atualizados para criar histórico
           const doadorAtualizado = await tx.usuario.findUnique({
             where: { id: String(doadorId) },
-            select: { xp: true, nivel: true }
+            select: { xp: true, nivelUsuario: true }
           })
           
           if (doadorAtualizado) {
             const novoNivel = Math.floor(doadorAtualizado.xp / 100) + 1
             
             // Atualizar nível se necessário
-            if (novoNivel > parseInt(doadorAtualizado.nivel)) {
+            if (novoNivel > doadorAtualizado.nivelUsuario) {
               await tx.usuario.update({
                 where: { id: String(doadorId) },
-                data: { nivel: novoNivel.toString() }
+                data: { nivelUsuario: novoNivel }
               })
             }
             
@@ -207,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 xpGanho: xpPorDoacao,
                 xpAnterior: doadorAtualizado.xp - xpPorDoacao,
                 xpPosterior: doadorAtualizado.xp,
-                nivelAnterior: parseInt(doadorAtualizado.nivel),
+                nivelAnterior: doadorAtualizado.nivelUsuario,
                 nivelPosterior: novoNivel,
                 fonte: 'doacao',
                 descricao: `XP ganho por doação de ${quantidade} sementes`
