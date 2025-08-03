@@ -169,6 +169,18 @@ async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMiss
     
     if (!nomeConquista) {
       console.log('Nenhuma conquista mapeada para missão:', tituloMissao)
+      
+      // Criar notificação mesmo sem conquista
+      await tx.notificacao.create({
+        data: {
+          usuarioId: usuarioId,
+          tipo: 'missao',
+          titulo: 'Missão Completada!',
+          mensagem: `Você completou a missão "${tituloMissao}"!`,
+          lida: false
+        }
+      })
+      console.log('Notificação criada para missão sem conquista!')
       return
     }
 
@@ -201,6 +213,18 @@ async function criarConquistaSeNecessario(tx: any, usuarioId: string, tituloMiss
           }
         })
         console.log('Conquista criada com sucesso:', novaConquista)
+        
+        // Criar notificação
+        await tx.notificacao.create({
+          data: {
+            usuarioId: usuarioId,
+            tipo: 'missao',
+            titulo: 'Missão Completada!',
+            mensagem: `Você completou a missão "${tituloMissao}" e ganhou uma conquista!`,
+            lida: false
+          }
+        })
+        console.log('Notificação criada com sucesso!')
       } else {
         console.log('Usuário já possui esta conquista')
       }
