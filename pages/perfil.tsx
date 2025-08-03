@@ -407,70 +407,70 @@ export default function Perfil() {
                 <p className="text-gray-400 mt-2">Carregando estatísticas...</p>
               </div>
             ) : (
-              <motion.div 
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm">Total Doações</p>
-                      <p className="text-2xl font-bold text-sss-white">
-                        {stats?.totalDoacoes || 0}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
-                      <HeartIcon className="w-6 h-6 text-red-500" />
-                    </div>
-                  </div>
-                </div>
+                             <motion.div 
+                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.6, delay: 0.2 }}
+               >
+                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-gray-300 text-sm">Total Doações</p>
+                       <p className="text-2xl font-bold text-sss-white">
+                         {stats?.totalDoacoes || 0}
+                       </p>
+                     </div>
+                     <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                       <HeartIcon className="w-5 h-5 text-red-500" />
+                     </div>
+                   </div>
+                 </div>
 
-                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm">Criadores Apoiados</p>
-                      <p className="text-2xl font-bold text-sss-white">
-                        {stats?.criadoresApoiados || 0}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                      <UserIcon className="w-6 h-6 text-blue-500" />
-                    </div>
-                  </div>
-                </div>
+                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-gray-300 text-sm">Criadores Apoiados</p>
+                       <p className="text-2xl font-bold text-sss-white">
+                         {stats?.criadoresApoiados || 0}
+                       </p>
+                     </div>
+                     <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                       <UserIcon className="w-5 h-5 text-blue-500" />
+                     </div>
+                   </div>
+                 </div>
 
-                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm">Cashbacks Resgatados</p>
-                      <p className="text-2xl font-bold text-sss-white">
-                        {stats?.cashbacksResgatados || 0}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      <GiftIcon className="w-6 h-6 text-green-500" />
-                    </div>
-                  </div>
-                </div>
+                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-gray-300 text-sm">Cashbacks Resgatados</p>
+                       <p className="text-2xl font-bold text-sss-white">
+                         {stats?.cashbacksResgatados || 0}
+                       </p>
+                     </div>
+                     <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                       <GiftIcon className="w-5 h-5 text-green-500" />
+                     </div>
+                   </div>
+                 </div>
 
-                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm">Pontuação</p>
-                      <p className="text-2xl font-bold text-sss-white">
-                        {user.pontuacao}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                      <TrophyIcon className="w-6 h-6 text-yellow-500" />
-                    </div>
-                  </div>
-                </div>
+                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-gray-300 text-sm">Pontuação</p>
+                       <p className="text-2xl font-bold text-sss-white">
+                         {user.pontuacao}
+                       </p>
+                     </div>
+                     <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                       <TrophyIcon className="w-5 h-5 text-yellow-500" />
+                     </div>
+                   </div>
+                 </div>
 
                 {xpData && (
-                  <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+                  <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-300 text-sm">Experiência</p>
@@ -481,9 +481,9 @@ export default function Perfil() {
                           Nível {xpData.usuario.nivelUsuario}
                         </p>
                       </div>
-                      <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                        <StarIcon className="w-6 h-6 text-blue-500" />
-                      </div>
+                                             <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                         <StarIcon className="w-5 h-5 text-blue-500" />
+                       </div>
                     </div>
                     <div className="mt-3">
                       <div className="flex justify-between text-xs text-gray-400 mb-1">
@@ -500,22 +500,22 @@ export default function Perfil() {
                   </div>
                 )}
 
-                <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm">Missões Ativas</p>
-                      <p className="text-2xl font-bold text-green-400">
-                        {missoesUsuario.filter(m => !m.concluida).length}
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        {missoesUsuario.filter(m => m.concluida).length} concluídas
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      <TrophyIcon className="w-6 h-6 text-green-400" />
-                    </div>
-                  </div>
-                  <div className="mt-3">
+                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                   <div className="flex items-center justify-between mb-3">
+                     <div>
+                       <p className="text-gray-300 text-sm">Missões Ativas</p>
+                       <p className="text-2xl font-bold text-green-400">
+                         {missoesUsuario.filter(m => !m.concluida).length}
+                       </p>
+                       <p className="text-sm text-gray-400">
+                         {missoesUsuario.filter(m => m.concluida).length} concluídas
+                       </p>
+                     </div>
+                     <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                       <TrophyIcon className="w-5 h-5 text-green-400" />
+                     </div>
+                   </div>
+                   <div className="mt-2">
                     <div className="flex justify-between text-xs text-gray-400 mb-1">
                       <span>Progresso Geral</span>
                       <span>
