@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Buscar todas as missões (ativas e inativas)
       const missoes = await prisma.missao.findMany({
         orderBy: {
-          dataCriacao: 'desc'
+          dataInicio: 'desc'
         }
       })
 
@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         recompensa: missao.recompensa,
         tipo: missao.tipo,
         ativa: missao.ativa,
-        dataCriacao: missao.dataCriacao,
+        dataCriacao: missao.dataInicio,
         emblema: missao.emblema
       }))
 
