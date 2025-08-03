@@ -61,7 +61,7 @@ export default function AdminMissoes() {
 
   const loadMissoes = async () => {
     try {
-      const response = await fetch('/api/missoes')
+      const response = await fetch('/api/admin/missoes')
       if (response.ok) {
         const data = await response.json()
         setMissoes(data.missoes || [])
