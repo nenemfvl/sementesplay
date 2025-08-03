@@ -81,8 +81,8 @@ export default function Noticias() {
   };
 
   return (
-    <section className="w-full max-w-5xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-16 items-start">
-      <div className="w-full md:w-auto flex flex-col md:flex-row md:items-start gap-16">
+    <section className="w-full max-w-5xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-24 items-start">
+      <div className="w-full md:w-auto flex flex-col md:flex-row md:items-start gap-24">
         <div className="w-full md:w-80 flex-shrink-0">
           <h2 className="text-2xl font-bold text-sss-white mb-4 md:mb-6 md:text-left text-center">
             Conteúdos dos Criadores
