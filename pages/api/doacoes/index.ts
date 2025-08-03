@@ -9,12 +9,29 @@ async function atualizarMissoesConquistas(tx: any, usuarioId: string, tipoAcao: 
     console.log('Atualizando missões para usuário:', usuarioId, 'tipo:', tipoAcao, 'valor:', valor)
     
     // Buscar missões ativas relacionadas à ação
-    const missoes = await tx.missao.findMany({
-      where: {
-        ativa: true,
-        tipo: tipoAcao
-      }
-    })
+    let missoes = []
+    
+    if (tipoAcao === 'doacao') {
+      // Para doações, buscar missões que são relacionadas a doações
+      missoes = await tx.missao.findMany({
+        where: {
+          ativa: true,
+          OR: [
+            { titulo: { contains: 'Doação' } },
+            { titulo: { contains: 'Doador' } },
+            { descricao: { contains: 'doação' } }
+          ]
+        }
+      })
+    } else {
+      // Para outros tipos, usar o tipo original
+      missoes = await tx.missao.findMany({
+        where: {
+          ativa: true,
+          tipo: tipoAcao
+        }
+      })
+    }
 
     console.log('Missões encontradas:', missoes.length)
 
