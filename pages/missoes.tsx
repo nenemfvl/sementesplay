@@ -89,11 +89,38 @@ export default function Missoes() {
       })
       const data = await response.json()
       if (response.ok) {
-        setMissoes(data.missoes.map((m: any) => ({
-          ...m,
-          dataInicio: new Date(),
-          dataFim: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
-          status: m.completada ? 'completada' : m.progresso > 0 ? 'em_progresso' : 'disponivel',
+        setMissoes(data.missoes.map((m: any) => {
+          // Calcular data de expiração baseada no tipo de missão
+          let dataFim = new Date()
+          const agora = new Date()
+          
+          switch (m.tipo) {
+            case 'diaria':
+              // Missão diária expira no final do dia
+              dataFim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1, 0, 0, 0)
+              break
+            case 'semanal':
+              // Missão semanal expira no final da semana (domingo)
+              const diasParaDomingo = 7 - agora.getDay()
+              dataFim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + diasParaDomingo, 0, 0, 0)
+              break
+            case 'mensal':
+              // Missão mensal expira no final do mês
+              dataFim = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 0, 0, 0)
+              break
+            case 'unica':
+              // Missão única não expira
+              dataFim = new Date(agora.getFullYear() + 10, agora.getMonth(), agora.getDate())
+              break
+            default:
+              dataFim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1, 0, 0, 0)
+          }
+          
+          return {
+            ...m,
+            dataInicio: new Date(),
+            dataFim: dataFim,
+            status: m.completada ? 'completada' : m.progresso > 0 ? 'em_progresso' : 'disponivel',
           reivindicada: m.reivindicada || false,
           recompensa: {
             sementes: 0,
