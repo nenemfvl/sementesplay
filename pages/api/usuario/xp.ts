@@ -93,9 +93,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'GET') {
     try {
-      const user = auth.getUser()
+      // Verificar autenticação via token Bearer
+      const authHeader = req.headers.authorization
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Token de autenticação não fornecido' })
+      }
+
+      const userId = authHeader.replace('Bearer ', '')
+      
+      // Verificar se o usuário existe
+      const user = await prisma.usuario.findUnique({
+        where: { id: userId }
+      })
+
       if (!user) {
-        return res.status(401).json({ error: 'Usuário não autenticado' })
+        return res.status(401).json({ error: 'Usuário não encontrado' })
       }
 
       const usuario = await prisma.usuario.findUnique({
