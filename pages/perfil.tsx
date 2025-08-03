@@ -641,7 +641,7 @@ export default function Perfil() {
                   </motion.div>
                 )}
 
-                {activeTab === 'cashback' && (
+                                {activeTab === 'cashback' && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -653,14 +653,7 @@ export default function Perfil() {
                       <div className="text-center py-12">
                         <GiftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-sss-white mb-2">Nenhum cashback resgatado</h3>
-                        <p className="text-gray-400 mb-4">Você ainda não resgatou nenhum código de cashback</p>
-                                                 <Link 
-                           href="/cashback" 
-                           className="inline-flex items-center px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
-                         >
-                           <GiftIcon className="w-5 h-5 mr-2" />
-                           Ver Códigos Disponíveis
-                         </Link>
+                        <p className="text-gray-400">Você ainda não resgatou nenhum código de cashback</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
