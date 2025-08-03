@@ -301,7 +301,7 @@ export default function Noticias() {
                       >
                         {conteudo.titulo}
                       </Link>
-                      <div className="flex items-center space-x-3 mt-2">
+                                             <div className="flex items-center space-x-3 mt-2 flex-wrap">
                         <div className="flex items-center space-x-2">
                           {conteudo.criador.avatarUrl && (
                             <div className="w-5 h-5 rounded-full overflow-hidden border border-sss-light/30">
@@ -330,18 +330,18 @@ export default function Noticias() {
                              </span>
                            </>
                          )}
-                         {/* Indicador de popularidade */}
-                         {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
-                           <>
-                             <span className="text-gray-500">•</span>
-                             <div className="flex items-center space-x-1">
-                               <span className="text-xs text-yellow-400">🔥</span>
-                               <span className="text-xs text-yellow-400 font-medium">
-                                 {conteudo.visualizacoes || 0} visualizações
-                               </span>
-                             </div>
-                           </>
-                         )}
+                                                   {/* Indicador de popularidade */}
+                          {(conteudo.visualizacoes || conteudo.curtidas || conteudo.compartilhamentos) && (
+                            <>
+                              <span className="text-gray-500">•</span>
+                              <div className="flex items-center space-x-1">
+                                <span className="text-xs text-yellow-400">🔥</span>
+                                <span className="text-xs text-yellow-400 font-medium whitespace-nowrap">
+                                  {conteudo.visualizacoes || 0} visualizações
+                                </span>
+                              </div>
+                            </>
+                          )}
                       </div>
                     </div>
                     
