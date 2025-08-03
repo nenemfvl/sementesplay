@@ -130,7 +130,7 @@ export default function Missoes() {
             icone: m.emblema || '🎯',
             cor: 'blue'
           }
-        })))
+        }))
       }
     } catch (error) {
       console.error('Erro ao carregar missões:', error)
@@ -459,21 +459,21 @@ export default function Missoes() {
                                 ></div>
                               </div>
 
-                                                             <div className="flex items-center justify-between">
-                                 <div className="flex items-center space-x-2">
-                                   <span className="text-blue-400 font-semibold">
-                                     {missao.recompensa.experiencia} XP
-                                   </span>
-                                   {missao.recompensa.badge && (
-                                     <span className="text-purple-400 font-semibold">
-                                       {missao.recompensa.badge}
-                                     </span>
-                                   )}
-                                 </div>
-                                 <span className="text-gray-400 text-xs">
-                                   {formatarTempo(missao.dataFim)}
-                                 </span>
-                               </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-blue-400 font-semibold">
+                                    {missao.recompensa.experiencia} XP
+                                  </span>
+                                  {missao.recompensa.badge && (
+                                    <span className="text-purple-400 font-semibold">
+                                      {missao.recompensa.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-gray-400 text-xs">
+                                  {formatarTempo(missao.dataFim)}
+                                </span>
+                              </div>
 
                               {missao.status === 'em_progresso' && missao.progresso >= missao.objetivo && !missao.reivindicada && (
                                 <button
@@ -587,8 +587,6 @@ export default function Missoes() {
                     </div>
                   </motion.div>
                 )}
-
-
               </div>
             </div>
           </motion.div>
@@ -626,21 +624,21 @@ export default function Missoes() {
                     ></div>
                   </div>
 
-                                     <div className="bg-sss-dark rounded-lg p-4">
-                     <h4 className="text-sss-white font-semibold mb-2">Recompensas</h4>
-                     <div className="flex items-center justify-between">
-                       <div className="flex items-center space-x-2">
-                         <span className="text-blue-400 font-semibold">
-                           {selectedMissao.recompensa.experiencia} XP
-                         </span>
-                         {selectedMissao.recompensa.badge && (
-                           <span className="text-purple-400 font-semibold">
-                             {selectedMissao.recompensa.badge}
-                           </span>
-                         )}
-                       </div>
-                     </div>
-                   </div>
+                  <div className="bg-sss-dark rounded-lg p-4">
+                    <h4 className="text-sss-white font-semibold mb-2">Recompensas</h4>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-blue-400 font-semibold">
+                          {selectedMissao.recompensa.experiencia} XP
+                        </span>
+                        {selectedMissao.recompensa.badge && (
+                          <span className="text-purple-400 font-semibold">
+                            {selectedMissao.recompensa.badge}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="flex items-center justify-between text-sm text-gray-400">
                     <span>Expira em: {formatarTempo(selectedMissao.dataFim)}</span>
