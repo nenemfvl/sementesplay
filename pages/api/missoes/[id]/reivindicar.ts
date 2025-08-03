@@ -62,21 +62,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: { reivindicada: true }
     })
 
-    // Atualizar sementes do usuário
+    // Atualizar XP do usuário (usar recompensa como XP)
     await prisma.usuario.update({
       where: { id: usuario.id },
       data: {
-        sementes: usuario.sementes + missao.recompensa
+        xp: usuario.xp + missao.recompensa
       }
     })
 
-    // Criar registro de semente ganha
-    await prisma.semente.create({
+    // Criar registro de XP ganho
+    await prisma.historicoXP.create({
       data: {
         usuarioId: usuario.id,
         quantidade: missao.recompensa,
-        tipo: 'recompensa_missao',
-        descricao: `Recompensa da missão: ${missao.titulo}`
+        tipo: 'missao',
+        descricao: `XP ganho por completar a missão: ${missao.titulo}`
       }
     })
 
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         usuarioId: usuario.id,
         tipo: 'missao',
         titulo: 'Missão Completada!',
-        mensagem: `Você ganhou ${missao.recompensa} Sementes por completar a missão "${missao.titulo}"!`,
+        mensagem: `Você ganhou ${missao.recompensa} XP por completar a missão "${missao.titulo}"!`,
         lida: false
       }
     })
