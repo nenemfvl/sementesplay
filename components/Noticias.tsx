@@ -169,7 +169,7 @@ export default function Noticias() {
                                   <span className="flex items-center space-x-1">
                                     <div className="w-4 h-4 rounded-full overflow-hidden border border-white/30">
                                       {conteudo.criador.avatarUrl && (
-                                        <Image
+            <Image
                                           src={conteudo.criador.avatarUrl}
                                           alt={conteudo.criador.nome}
                                           width={16}
@@ -342,7 +342,7 @@ export default function Noticias() {
                     <div className="flex-shrink-0">
                       <span className="text-sm text-gray-400 bg-sss-light/10 px-3 py-1 rounded-full border border-sss-light/20">
                         {conteudo.data}
-                      </span>
+                  </span>
                     </div>
                   </div>
                 </div>

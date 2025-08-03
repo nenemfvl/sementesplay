@@ -66,13 +66,19 @@ type ConteudoParceiro = {
   tipo: string;
   categoria: string;
   descricao?: string;
-  url: string;
-  plataforma?: string;
-  cidade: string;
-  endereco?: string;
+  preview?: string;
+  nomeCidade: string;
+  linkCidade?: string;
+  ipCidade?: string;
+  portCidade?: string;
+  linkYoutube?: string;
+  linkTwitch?: string;
+  linkInstagram?: string;
+  linkTiktok?: string;
   dataEvento?: string;
-  preco?: string;
-  vagas?: number;
+  enderecoEvento?: string;
+  precoEvento?: string;
+  vagasEvento?: number;
   visualizacoes: number;
   curtidas: number;
   dislikes: number;
@@ -100,13 +106,23 @@ export default function PainelParceiro() {
   const [loadingConteudos, setLoadingConteudos] = useState(true);
   const [showModalConteudo, setShowModalConteudo] = useState(false);
   const [formConteudo, setFormConteudo] = useState({ 
-    url: '', 
+    titulo: '',
+    tipo: '',
     categoria: '', 
     descricao: '', 
-    plataforma: '', 
-    cidade: '', 
-    endereco: '', 
+    preview: '',
+    nomeCidade: '', 
+    linkCidade: '',
+    ipCidade: '',
+    portCidade: '',
+    linkYoutube: '',
+    linkTwitch: '',
+    linkInstagram: '',
+    linkTiktok: '',
     dataEvento: '', 
+    enderecoEvento: '',
+    precoEvento: '',
+    vagasEvento: '',
     fixado: false
   });
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
@@ -373,7 +389,7 @@ export default function PainelParceiro() {
 
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
-    if (!formConteudo.url || !formConteudo.categoria || !formConteudo.cidade) {
+    if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.nomeCidade) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -393,13 +409,23 @@ export default function PainelParceiro() {
         const data = await response.json();
         setConteudos(prev => [data.conteudo, ...prev]);
         setFormConteudo({ 
-          url: '', 
+          titulo: '',
+          tipo: '',
           categoria: '', 
           descricao: '', 
-          plataforma: '', 
-          cidade: '', 
-          endereco: '', 
+          preview: '',
+          nomeCidade: '', 
+          linkCidade: '',
+          ipCidade: '',
+          portCidade: '',
+          linkYoutube: '',
+          linkTwitch: '',
+          linkInstagram: '',
+          linkTiktok: '',
           dataEvento: '', 
+          enderecoEvento: '',
+          precoEvento: '',
+          vagasEvento: '',
           fixado: false
         });
         setShowModalConteudo(false);
@@ -421,13 +447,11 @@ export default function PainelParceiro() {
 
     setSavingConteudo(true);
     try {
-      const response = await fetch('/api/parceiros/conteudos', {
+      const response = await fetch(`/api/parceiros/conteudos/${editandoConteudo.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: editandoConteudo.id,
-          ...formConteudo,
-          parceiroId: parceiro?.id
+          ...formConteudo
         })
       });
 
@@ -435,13 +459,23 @@ export default function PainelParceiro() {
         const data = await response.json();
         setConteudos(prev => prev.map(c => c.id === editandoConteudo.id ? data.conteudo : c));
         setFormConteudo({ 
-          url: '', 
+          titulo: '',
+          tipo: '',
           categoria: '', 
           descricao: '', 
-          plataforma: '', 
-          cidade: '', 
-          endereco: '', 
+          preview: '',
+          nomeCidade: '', 
+          linkCidade: '',
+          ipCidade: '',
+          portCidade: '',
+          linkYoutube: '',
+          linkTwitch: '',
+          linkInstagram: '',
+          linkTiktok: '',
           dataEvento: '', 
+          enderecoEvento: '',
+          precoEvento: '',
+          vagasEvento: '',
           fixado: false
         });
         setEditandoConteudo(null);
@@ -462,10 +496,8 @@ export default function PainelParceiro() {
     if (!confirm('Tem certeza que deseja remover este conteúdo?')) return;
 
     try {
-      const response = await fetch('/api/parceiros/conteudos', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
+      const response = await fetch(`/api/parceiros/conteudos/${id}`, {
+        method: 'DELETE'
       });
 
       if (response.ok) {
@@ -481,24 +513,11 @@ export default function PainelParceiro() {
 
   async function handleFixarConteudo(id: string, fixar: boolean) {
     try {
-      const response = await fetch('/api/parceiros/conteudos', {
+      const response = await fetch(`/api/parceiros/conteudos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id,
-          parceiroId: parceiro?.id,
-          fixado: fixar,
-          titulo: '',
-          url: '',
-          tipo: '',
-          categoria: '',
-          descricao: '',
-          plataforma: '',
-          cidade: '',
-          endereco: '',
-          dataEvento: '',
-          preco: '',
-          vagas: ''
+          fixado: fixar
         })
       });
 
@@ -735,13 +754,23 @@ export default function PainelParceiro() {
                   setShowModalConteudo(false); 
                   setEditandoConteudo(null);
                   setFormConteudo({ 
-                    url: '', 
+                    titulo: '',
+                    tipo: '',
                     categoria: '', 
                     descricao: '', 
-                    plataforma: '', 
-                    cidade: '', 
-                    endereco: '', 
+                    preview: '',
+                    nomeCidade: '', 
+                    linkCidade: '',
+                    ipCidade: '',
+                    portCidade: '',
+                    linkYoutube: '',
+                    linkTwitch: '',
+                    linkInstagram: '',
+                    linkTiktok: '',
                     dataEvento: '', 
+                    enderecoEvento: '',
+                    precoEvento: '',
+                    vagasEvento: '',
                     fixado: false
                   });
                 }}
@@ -754,6 +783,35 @@ export default function PainelParceiro() {
             
             <form onSubmit={editandoConteudo ? handleEditConteudo : handleAddConteudo} className="space-y-4">
               <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Título *</label>
+                <input 
+                  required 
+                  type="text"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Título do conteúdo" 
+                  value={formConteudo.titulo} 
+                  onChange={e => setFormConteudo(f => ({ ...f, titulo: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Tipo *</label>
+                <select 
+                  required
+                  aria-label="Tipo do conteúdo"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                  value={formConteudo.tipo}
+                  onChange={e => setFormConteudo(f => ({ ...f, tipo: e.target.value }))}
+                >
+                  <option value="">Selecione o tipo</option>
+                  <option value="evento">Evento</option>
+                  <option value="noticia">Notícia</option>
+                  <option value="conteudo">Conteúdo</option>
+                  <option value="cidade">Cidade</option>
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Categoria *</label>
                 <select 
                   required
@@ -764,11 +822,9 @@ export default function PainelParceiro() {
                 >
                   <option value="">Selecione a categoria</option>
                   <option value="eventos">Eventos</option>
-                  <option value="promoções">Promoções</option>
-                  <option value="notícias">Notícias</option>
-                  <option value="tours">Tours</option>
-                  <option value="workshops">Workshops</option>
-                  <option value="competições">Competições</option>
+                  <option value="noticias">Notícias</option>
+                  <option value="conteudos">Conteúdos</option>
+                  <option value="cidade">Cidade</option>
                 </select>
               </div>
               
@@ -782,51 +838,153 @@ export default function PainelParceiro() {
                   onChange={e => setFormConteudo(f => ({ ...f, descricao: e.target.value }))} 
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Cidade *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Preview (URL da imagem)</label>
                 <input 
-                  required 
-                  type="text"
-                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Ex: São Paulo" 
-                  value={formConteudo.cidade} 
-                  onChange={e => setFormConteudo(f => ({ ...f, cidade: e.target.value }))} 
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">URL *</label>
-                <input 
-                  required 
                   type="url"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="https://exemplo.com" 
-                  value={formConteudo.url} 
-                  onChange={e => setFormConteudo(f => ({ ...f, url: e.target.value }))} 
+                  placeholder="https://exemplo.com/imagem.jpg" 
+                  value={formConteudo.preview} 
+                  onChange={e => setFormConteudo(f => ({ ...f, preview: e.target.value }))} 
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Plataforma</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Nome da Cidade FiveM *</label>
                 <input 
+                  required 
                   type="text"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Ex: Site, Instagram, Facebook" 
-                  value={formConteudo.plataforma} 
-                  onChange={e => setFormConteudo(f => ({ ...f, plataforma: e.target.value }))} 
+                  placeholder="Ex: São Paulo RP" 
+                  value={formConteudo.nomeCidade} 
+                  onChange={e => setFormConteudo(f => ({ ...f, nomeCidade: e.target.value }))} 
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Data e Hora</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Link da Cidade FiveM</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://exemplo.com/cidade" 
+                  value={formConteudo.linkCidade} 
+                  onChange={e => setFormConteudo(f => ({ ...f, linkCidade: e.target.value }))} 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">IP da Cidade</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="192.168.1.1" 
+                    value={formConteudo.ipCidade} 
+                    onChange={e => setFormConteudo(f => ({ ...f, ipCidade: e.target.value }))} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Porta da Cidade</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="30120" 
+                    value={formConteudo.portCidade} 
+                    onChange={e => setFormConteudo(f => ({ ...f, portCidade: e.target.value }))} 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Link YouTube</label>
+                  <input 
+                    type="url"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="https://youtube.com/..." 
+                    value={formConteudo.linkYoutube} 
+                    onChange={e => setFormConteudo(f => ({ ...f, linkYoutube: e.target.value }))} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Link Twitch</label>
+                  <input 
+                    type="url"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="https://twitch.tv/..." 
+                    value={formConteudo.linkTwitch} 
+                    onChange={e => setFormConteudo(f => ({ ...f, linkTwitch: e.target.value }))} 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Link Instagram</label>
+                  <input 
+                    type="url"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="https://instagram.com/..." 
+                    value={formConteudo.linkInstagram} 
+                    onChange={e => setFormConteudo(f => ({ ...f, linkInstagram: e.target.value }))} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Link TikTok</label>
+                  <input 
+                    type="url"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="https://tiktok.com/..." 
+                    value={formConteudo.linkTiktok} 
+                    onChange={e => setFormConteudo(f => ({ ...f, linkTiktok: e.target.value }))} 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Data do Evento</label>
                 <input 
                   type="datetime-local"
-                  aria-label="Data e hora"
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
                   value={formConteudo.dataEvento} 
                   onChange={e => setFormConteudo(f => ({ ...f, dataEvento: e.target.value }))} 
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Endereço do Evento</label>
+                <input 
+                  type="text"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="Endereço do evento" 
+                  value={formConteudo.enderecoEvento} 
+                  onChange={e => setFormConteudo(f => ({ ...f, enderecoEvento: e.target.value }))} 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Preço do Evento</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="Ex: Gratuito, R$ 50,00" 
+                    value={formConteudo.precoEvento} 
+                    onChange={e => setFormConteudo(f => ({ ...f, precoEvento: e.target.value }))} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Vagas do Evento</label>
+                  <input 
+                    type="number"
+                    aria-label="Número de vagas do evento"
+                    className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                    placeholder="50" 
+                    value={formConteudo.vagasEvento} 
+                    onChange={e => setFormConteudo(f => ({ ...f, vagasEvento: e.target.value }))} 
+                  />
+                </div>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -854,13 +1012,23 @@ export default function PainelParceiro() {
                     setShowModalConteudo(false); 
                     setEditandoConteudo(null);
                     setFormConteudo({ 
-                      url: '', 
+                      titulo: '',
+                      tipo: '',
                       categoria: '', 
                       descricao: '', 
-                      plataforma: '', 
-                      cidade: '', 
-                      endereco: '', 
+                      preview: '',
+                      nomeCidade: '', 
+                      linkCidade: '',
+                      ipCidade: '',
+                      portCidade: '',
+                      linkYoutube: '',
+                      linkTwitch: '',
+                      linkInstagram: '',
+                      linkTiktok: '',
                       dataEvento: '', 
+                      enderecoEvento: '',
+                      precoEvento: '',
+                      vagasEvento: '',
                       fixado: false
                     });
                   }} 
@@ -1322,77 +1490,150 @@ export default function PainelParceiro() {
                   </div>
                 ) : conteudos && conteudos.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {conteudos.map((conteudo) => {
-                      const plataformaInfo = getPlataformaInfo(conteudo.plataforma || '', conteudo.url);
-                      
-                      return (
-                        <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
-                          <div className="p-4">
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center space-x-2">
-                                <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
-                                <span className="text-sss-white font-medium">{conteudo.tipo}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                {conteudo.fixado && (
-                                  <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
-                                    Fixado
-                                  </span>
-                                )}
-                                <button
-                                  className="text-red-400 hover:text-red-300 transition-colors p-1"
-                                  onClick={() => handleRemoverConteudo(conteudo.id)}
-                                  title="Remover"
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                </button>
-                              </div>
+                    {conteudos.map((conteudo) => (
+                      <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-2">
+                              <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
+                              <span className="text-sss-white font-medium">{conteudo.titulo}</span>
                             </div>
-                            {/* Links clicáveis para URL e Plataforma */}
-                            <div className="flex gap-2 mb-2">
-                              <a
-                                href={conteudo.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-sss-white transition-colors"
-                              >
-                                Link
-                              </a>
-                              {conteudo.plataforma && (
-                                <a
-                                  href={conteudo.plataforma.startsWith('http') ? conteudo.plataforma : undefined}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="px-3 py-1 rounded-lg text-sm font-semibold bg-pink-600 hover:bg-pink-700 text-sss-white transition-colors"
-                                >
-                                  {conteudo.plataforma}
-                                </a>
+                            <div className="flex items-center space-x-2">
+                              {conteudo.fixado && (
+                                <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
+                                  Fixado
+                                </span>
                               )}
-                            </div>
-                            {/* Outras informações do conteúdo */}
-                            <div className="flex flex-col gap-1">
-                              <div>
-                                <p className="text-sm text-gray-400">Categoria</p>
-                                <p className="text-sss-white">{conteudo.categoria}</p>
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-400">Cidade</p>
-                                <p className="text-sss-white">{conteudo.cidade}</p>
-                              </div>
-                              {/* Adicione outros campos se necessário */}
-                            </div>
-                            <div className="flex space-x-2 mt-4">
                               <button
-                                onClick={() => handleFixarConteudo(conteudo.id, !conteudo.fixado)}
-                                className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
+                                className="text-red-400 hover:text-red-300 transition-colors p-1"
+                                onClick={() => handleRemoverConteudo(conteudo.id)}
+                                title="Remover"
                               >
-                                {conteudo.fixado ? 'Desfixar' : 'Fixar'}
+                                <TrashIcon className="w-4 h-4" />
                               </button>
                             </div>
                           </div>
+                          
+                          {/* Informações do conteúdo */}
+                          <div className="space-y-2 mb-4">
+                            <div>
+                              <p className="text-sm text-gray-400">Tipo</p>
+                              <p className="text-sss-white capitalize">{conteudo.tipo}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-400">Categoria</p>
+                              <p className="text-sss-white capitalize">{conteudo.categoria}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-400">Cidade FiveM</p>
+                              <p className="text-sss-white">{conteudo.nomeCidade}</p>
+                            </div>
+                            {conteudo.descricao && (
+                              <div>
+                                <p className="text-sm text-gray-400">Descrição</p>
+                                <p className="text-sss-white text-sm">{conteudo.descricao}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Links das plataformas */}
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {conteudo.linkCidade && (
+                              <a
+                                href={conteudo.linkCidade}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-sss-white transition-colors"
+                              >
+                                Cidade
+                              </a>
+                            )}
+                            {conteudo.linkYoutube && (
+                              <a
+                                href={conteudo.linkYoutube}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-sss-white transition-colors"
+                              >
+                                YouTube
+                              </a>
+                            )}
+                            {conteudo.linkTwitch && (
+                              <a
+                                href={conteudo.linkTwitch}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-sss-white transition-colors"
+                              >
+                                Twitch
+                              </a>
+                            )}
+                            {conteudo.linkInstagram && (
+                              <a
+                                href={conteudo.linkInstagram}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-pink-600 hover:bg-pink-700 text-sss-white transition-colors"
+                              >
+                                Instagram
+                              </a>
+                            )}
+                            {conteudo.linkTiktok && (
+                              <a
+                                href={conteudo.linkTiktok}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 rounded-lg text-sm font-semibold bg-black hover:bg-gray-800 text-sss-white transition-colors"
+                              >
+                                TikTok
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Informações do evento */}
+                          {(conteudo.dataEvento || conteudo.enderecoEvento || conteudo.precoEvento || conteudo.vagasEvento) && (
+                            <div className="bg-sss-light/30 rounded-lg p-3 mb-4">
+                              <h4 className="text-sss-white font-semibold mb-2">Informações do Evento</h4>
+                              <div className="space-y-1 text-sm">
+                                {conteudo.dataEvento && (
+                                  <div>
+                                    <span className="text-gray-400">Data:</span>
+                                    <span className="text-sss-white ml-2">{new Date(conteudo.dataEvento).toLocaleString('pt-BR')}</span>
+                                  </div>
+                                )}
+                                {conteudo.enderecoEvento && (
+                                  <div>
+                                    <span className="text-gray-400">Endereço:</span>
+                                    <span className="text-sss-white ml-2">{conteudo.enderecoEvento}</span>
+                                  </div>
+                                )}
+                                {conteudo.precoEvento && (
+                                  <div>
+                                    <span className="text-gray-400">Preço:</span>
+                                    <span className="text-sss-white ml-2">{conteudo.precoEvento}</span>
+                                  </div>
+                                )}
+                                {conteudo.vagasEvento && (
+                                  <div>
+                                    <span className="text-gray-400">Vagas:</span>
+                                    <span className="text-sss-white ml-2">{conteudo.vagasEvento}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleFixarConteudo(conteudo.id, !conteudo.fixado)}
+                              className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
+                            >
+                              {conteudo.fixado ? 'Desfixar' : 'Fixar'}
+                            </button>
+                          </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="text-center py-12">
