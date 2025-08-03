@@ -285,7 +285,6 @@ export default function Perfil() {
   const tabs = [
     { id: 'overview', label: 'Visão Geral', icon: ChartBarIcon },
     { id: 'doacoes', label: 'Histórico de Doações', icon: HeartIcon },
-    { id: 'cashback', label: 'Histórico de Cashback', icon: GiftIcon },
     { id: 'conquistas', label: 'Conquistas', icon: TrophyIcon },
     { id: 'xp', label: 'Histórico XP', icon: StarIcon }
   ]
@@ -408,7 +407,7 @@ export default function Perfil() {
               </div>
             ) : (
                              <motion.div 
-                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
                  initial={{ opacity: 0, y: 20 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ duration: 0.6, delay: 0.2 }}
@@ -441,19 +440,7 @@ export default function Perfil() {
                    </div>
                  </div>
 
-                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
-                   <div className="flex items-center justify-between">
-                     <div>
-                       <p className="text-gray-300 text-sm">Cashbacks Resgatados</p>
-                       <p className="text-2xl font-bold text-sss-white">
-                         {stats?.cashbacksResgatados || 0}
-                       </p>
-                     </div>
-                     <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                       <GiftIcon className="w-5 h-5 text-green-500" />
-                     </div>
-                   </div>
-                 </div>
+
 
                                  <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
                    <div className="flex items-center justify-between">
@@ -641,40 +628,7 @@ export default function Perfil() {
                   </motion.div>
                 )}
 
-                                {activeTab === 'cashback' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <h3 className="text-lg font-semibold text-sss-white mb-4">Histórico de Cashback</h3>
-                    
-                    {!stats?.historicoCashback || stats.historicoCashback.length === 0 ? (
-                      <div className="text-center py-12">
-                        <GiftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-sss-white mb-2">Nenhum cashback resgatado</h3>
-                        <p className="text-gray-400">Você ainda não resgatou nenhum código de cashback</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {stats.historicoCashback.map((cashback: any, index: number) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
-                            <div className="flex items-center space-x-3">
-                              <GiftIcon className="w-5 h-5 text-green-500" />
-                              <div>
-                                <p className="text-sss-white">{cashback.codigo}</p>
-                                <p className="text-gray-400 text-sm">{cashback.data}</p>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-green-500 font-semibold">+{cashback.valor} Sementes</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                )}
+                
 
                 {activeTab === 'conquistas' && (
                   <motion.div
