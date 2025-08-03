@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     // Calcular pontuação composta para cada criador
-    const criadoresComPontuacao = criadores.map(criador => {
+    const criadoresComPontuacao = await Promise.all(criadores.map(async criador => {
       // Pontuação base: sementes recebidas (1 semente = 1 ponto)
       const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
       
@@ -75,26 +75,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Pontuação total composta
       const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
 
-              return {
-          id: criador.id,
-          nome: criador.usuario.nome,
-          email: criador.usuario.email,
-          avatar: criador.usuario.avatarUrl || '👤',
-          nivel: criador.usuario.nivel,
-          sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
-          sementesRecebidas,
-          pontosUsuario,
-          pontosVisualizacoes,
-          pontosEnquetes,
-          pontosRecadosPublicos,
-          pontuacaoTotal,
-          totalDoacoes: criador.doacoesRecebidas.length,
-          totalVisualizacoes: conteudos._sum.visualizacoes || 0,
-          totalEnquetes: enquetes,
-          totalRecadosPublicos: recadosPublicos,
-          redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
-        }
-    })
+      return {
+        id: criador.id,
+        nome: criador.usuario.nome,
+        email: criador.usuario.email,
+        avatar: criador.usuario.avatarUrl || '👤',
+        nivel: criador.usuario.nivel,
+        sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
+        sementesRecebidas,
+        pontosUsuario,
+        pontosVisualizacoes,
+        pontosEnquetes,
+        pontosRecadosPublicos,
+        pontuacaoTotal,
+        totalDoacoes: criador.doacoesRecebidas.length,
+        totalVisualizacoes: conteudos._sum.visualizacoes || 0,
+        totalEnquetes: enquetes,
+        totalRecadosPublicos: recadosPublicos,
+        redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
+      }
+    }))
 
     // Ordenar por pontuação total (maior para menor)
     criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
