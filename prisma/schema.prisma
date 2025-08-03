@@ -497,6 +497,7 @@ model MissaoUsuario {
   usuarioId     String
   progresso     Int       @default(0)
   concluida     Boolean   @default(false)
+  reivindicada  Boolean   @default(false)
   dataInicio    DateTime  @default(now())
   dataConclusao DateTime?
 

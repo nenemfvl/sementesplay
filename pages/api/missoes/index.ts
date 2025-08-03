@@ -37,16 +37,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           titulo: missao.titulo,
           descricao: missao.descricao,
           tipo: missao.tipo,
-          objetivo: missao.recompensa, // Usar recompensa como objetivo
+          objetivo: missao.objetivo,
           recompensa: missao.recompensa,
           progresso: missaoUsuario?.progresso || 0,
           completada: missaoUsuario?.concluida || false,
-          reivindicada: missaoUsuario?.concluida || false, // Mockado por enquanto
+          reivindicada: missaoUsuario?.reivindicada || false,
           dataCompletada: missaoUsuario?.dataConclusao,
-          dataReivindicada: missaoUsuario?.dataConclusao, // Mockado por enquanto
-          icone: '🎯', // Mockado por enquanto
-          cor: 'blue', // Mockado por enquanto
-          categoria: missao.tipo // Usar tipo como categoria
+          dataReivindicada: missaoUsuario?.dataConclusao,
+          icone: missao.emblema || '🎯',
+          cor: 'blue',
+          categoria: missao.tipo
         }
       })
 

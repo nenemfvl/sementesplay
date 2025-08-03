@@ -7,42 +7,52 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const user = auth.getUser()
-      if (!user) {
-        return res.status(401).json({ error: 'Usuário não autenticado' })
+      const { usuarioId } = req.query
+
+      if (!usuarioId) {
+        return res.status(400).json({ error: 'ID do usuário é obrigatório' })
       }
 
-      // Buscar todas as conquistas ativas
-      const conquistas = await prisma.conquista.findMany({
-        where: { ativa: true },
-        orderBy: { titulo: 'asc' }
+      // Buscar conquistas do usuário
+      const conquistasUsuario = await prisma.conquistaUsuario.findMany({
+        where: {
+          usuarioId: String(usuarioId)
+        },
+        include: {
+          conquista: true
+        },
+        orderBy: {
+          dataConquista: 'desc'
+        }
       })
 
-      // Buscar progresso do usuário em cada conquista
-      const conquistasComProgresso = await Promise.all(
-        conquistas.map(async (conquista) => {
-          const progresso = await prisma.conquistaUsuario.findUnique({
-            where: {
-              conquistaId_usuarioId: {
-                conquistaId: conquista.id,
-                usuarioId: user.id
-              }
-            }
-          })
-
-          return {
-            ...conquista,
-            progresso: progresso?.progresso || 0,
-            concluida: progresso?.concluida || false,
-            dataConquista: progresso?.dataConquista
-          }
-        })
-      )
-
-      return res.status(200).json({
-        conquistas: conquistasComProgresso
+      // Buscar todas as conquistas disponíveis
+      const todasConquistas = await prisma.conquista.findMany({
+        where: {
+          ativa: true
+        }
       })
 
+      // Combinar conquistas do usuário com todas as conquistas
+      const conquistasCompletas = todasConquistas.map(conquista => {
+        const conquistaUsuario = conquistasUsuario.find(cu => cu.conquistaId === conquista.id)
+        
+        return {
+          id: conquista.id,
+          titulo: conquista.titulo,
+          descricao: conquista.descricao,
+          icone: conquista.icone || '🏆',
+          cor: 'yellow',
+          raridade: 'comum',
+          desbloqueada: !!conquistaUsuario,
+          concluida: !!conquistaUsuario,
+          dataConquista: conquistaUsuario?.dataConquista,
+          criterio: conquista.criterio,
+          recompensaXp: conquista.recompensaXp
+        }
+      })
+
+      return res.status(200).json({ conquistas: conquistasCompletas })
     } catch (error) {
       console.error('Erro ao buscar conquistas:', error)
       return res.status(500).json({ error: 'Erro interno do servidor' })

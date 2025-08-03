@@ -82,13 +82,25 @@ export default function Missoes() {
 
   const loadMissoes = async () => {
     try {
-      const response = await fetch('/api/missoes')
+      const token = localStorage.getItem('sementesplay_token');
+      const response = await fetch(`/api/missoes?usuarioId=${user?.id}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      })
       const data = await response.json()
       if (response.ok) {
         setMissoes(data.missoes.map((m: any) => ({
           ...m,
-          dataInicio: new Date(m.dataInicio),
-          dataFim: new Date(m.dataFim)
+          dataInicio: new Date(),
+          dataFim: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
+          status: m.completada ? 'completada' : m.progresso > 0 ? 'em_progresso' : 'disponivel',
+          reivindicada: m.reivindicada || false,
+          recompensa: {
+            sementes: m.recompensa || 0,
+            experiencia: 50,
+            badge: m.emblema
+          },
+          icone: m.emblema || '🎯',
+          cor: 'blue'
         })))
       }
     } catch (error) {
@@ -100,12 +112,16 @@ export default function Missoes() {
 
   const loadConquistas = async () => {
     try {
-      const response = await fetch('/api/conquistas')
+      const token = localStorage.getItem('sementesplay_token');
+      const response = await fetch(`/api/conquistas?usuarioId=${user?.id}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      })
       const data = await response.json()
       if (response.ok) {
         setConquistas(data.conquistas.map((c: any) => ({
           ...c,
-          dataDesbloqueio: c.dataDesbloqueio ? new Date(c.dataDesbloqueio) : undefined
+          dataDesbloqueio: c.dataConquista ? new Date(c.dataConquista) : undefined,
+          desbloqueada: c.concluida || false
         })))
       }
     } catch (error) {
@@ -115,10 +131,18 @@ export default function Missoes() {
 
   const loadBadges = async () => {
     try {
-      const response = await fetch('/api/badges')
+      const token = localStorage.getItem('sementesplay_token');
+      const response = await fetch(`/api/emblemas?usuarioId=${user?.id}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      })
       const data = await response.json()
       if (response.ok) {
-        setBadges(data.badges)
+        setBadges(data.emblemas.map((b: any) => ({
+          ...b,
+          desbloqueada: true,
+          nivel: 1,
+          maxNivel: 1
+        })))
       }
     } catch (error) {
       console.error('Erro ao carregar badges:', error)
@@ -127,13 +151,15 @@ export default function Missoes() {
 
   const completarMissao = async (missaoId: string) => {
     try {
-      const response = await fetch(`/api/missoes/${missaoId}/completar`, {
-        method: 'POST'
+      const token = localStorage.getItem('sementesplay_token');
+      const response = await fetch(`/api/missoes/${missaoId}/reivindicar`, {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       })
 
       if (response.ok) {
         const data = await response.json()
-        alert(`Missão completada! Você ganhou ${data.recompensa.sementes} Sementes e ${data.recompensa.experiencia} XP!`)
+        alert(`Missão completada! Você ganhou ${data.recompensa || 0} Sementes e 50 XP!`)
         loadMissoes()
         loadConquistas()
         loadBadges()
@@ -148,8 +174,11 @@ export default function Missoes() {
 
   const filtrarMissoes = (tipo: string) => {
     return missoes.filter(missao => {
-      if (tipo === 'todas') return true
-      return missao.tipo === tipo
+      if (tipo === 'diarias') return missao.tipo === 'diaria'
+      if (tipo === 'semanais') return missao.tipo === 'semanal'
+      if (tipo === 'mensais') return missao.tipo === 'mensal'
+      if (tipo === 'especiais') return missao.tipo === 'unica'
+      return true
     })
   }
 
@@ -240,7 +269,7 @@ export default function Missoes() {
     { id: 'diarias', label: 'Diárias', icon: CalendarIcon, count: missoes.filter(m => m.tipo === 'diaria').length },
     { id: 'semanais', label: 'Semanais', icon: ChartBarIcon, count: missoes.filter(m => m.tipo === 'semanal').length },
     { id: 'mensais', label: 'Mensais', icon: StarIcon, count: missoes.filter(m => m.tipo === 'mensal').length },
-    { id: 'especiais', label: 'Especiais', icon: FireIcon, count: missoes.filter(m => m.tipo === 'especial').length },
+    { id: 'especiais', label: 'Especiais', icon: FireIcon, count: missoes.filter(m => m.tipo === 'unica').length },
     { id: 'conquistas', label: 'Conquistas', icon: TrophyIcon, count: conquistas.filter(c => c.desbloqueada).length },
     { id: 'badges', label: 'Badges', icon: GiftIcon, count: badges.filter(b => b.desbloqueada).length }
   ]
@@ -341,7 +370,7 @@ export default function Missoes() {
               </div>
 
               <div className="p-6">
-                {activeTab === 'diarias' && (
+                {['diarias', 'semanais', 'mensais', 'especiais'].includes(activeTab) && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -415,7 +444,7 @@ export default function Missoes() {
                                 </span>
                               </div>
 
-                              {missao.status === 'em_progresso' && missao.progresso >= missao.objetivo && (
+                              {missao.status === 'em_progresso' && missao.progresso >= missao.objetivo && !missao.reivindicada && (
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation()
@@ -423,8 +452,13 @@ export default function Missoes() {
                                   }}
                                   className="w-full mt-2 bg-sss-accent hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors text-sm font-semibold"
                                 >
-                                  Completar Missão
+                                  Reivindicar Recompensa
                                 </button>
+                              )}
+                              {missao.reivindicada && (
+                                <div className="w-full mt-2 bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-semibold text-center">
+                                  ✅ Recompensa Reivindicada
+                                </div>
                               )}
                             </div>
                           </motion.div>
@@ -523,21 +557,7 @@ export default function Missoes() {
                   </motion.div>
                 )}
 
-                {/* Outras tabs seguem o mesmo padrão */}
-                {['semanais', 'mensais', 'especiais'].includes(activeTab) && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-center py-12"
-                  >
-                    <TrophyIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-sss-white mb-2">
-                      Missões {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-                    </h3>
-                    <p className="text-gray-400">Em breve...</p>
-                  </motion.div>
-                )}
+
               </div>
             </div>
           </motion.div>
