@@ -170,16 +170,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log('Criador não encontrado para registrar histórico')
         }
 
-        // Dar XP diretamente por doação (sistema simplificado)
-        console.log('Dando XP por doação...')
+        // Dar XP e pontuação por doação (sistema simplificado)
+        console.log('Dando XP e pontuação por doação...')
         const xpPorDoacao = 10 // 10 XP por doação
+        const pontuacaoPorDoacao = 1 // 1 ponto por doação
         
         try {
-          // Atualizar XP do usuário
+          // Atualizar XP e pontuação do usuário
           await tx.usuario.update({
             where: { id: String(doadorId) },
             data: { 
-              xp: { increment: xpPorDoacao }
+              xp: { increment: xpPorDoacao },
+              pontuacao: { increment: pontuacaoPorDoacao }
             }
           })
           
