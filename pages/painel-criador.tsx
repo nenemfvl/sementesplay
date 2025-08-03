@@ -1006,9 +1006,9 @@ export default function PainelCriador() {
         </section>
 
           {/* Grid de seções */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             {/* Estatísticas do Criador */}
-            <div className="space-y-6">
+            <div className="lg:col-span-1">
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
                 <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
@@ -1062,8 +1062,8 @@ export default function PainelCriador() {
               </div>
             </div>
 
-            {/* Histórico de Doações e Ranking */}
-            <div className="space-y-6">
+            {/* Histórico de Doações */}
+            <div className="lg:col-span-1">
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
                 <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
@@ -1077,14 +1077,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-            {loadingDoacoes ? (
+                  {loadingDoacoes ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-            ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
+                  ) : Array.isArray(doacoes) && doacoes.length > 0 ? (
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                {doacoes.map(d => (
+                      {doacoes.map(d => (
                         <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-bold text-green-400">{d.quantidade} sementes</span>
@@ -1106,10 +1106,13 @@ export default function PainelCriador() {
                       <HeartIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhuma doação recebida ainda</p>
                     </div>
-            )}
-          </div>
+                  )}
+                </div>
               </div>
+            </div>
 
+            {/* Ranking de Doadores */}
+            <div className="lg:col-span-1">
               <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
                 <div className="p-6 border-b border-sss-light">
                   <div className="flex items-center space-x-3">
@@ -1123,14 +1126,14 @@ export default function PainelCriador() {
                   </div>
                 </div>
                 <div className="p-6">
-            {loadingRanking ? (
+                  {loadingRanking ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
                       <span className="ml-3 text-gray-400">Carregando...</span>
                     </div>
-            ) : Array.isArray(ranking) && ranking.length > 0 ? (
+                  ) : Array.isArray(ranking) && ranking.length > 0 ? (
                     <div className="space-y-3">
-                {ranking.map((d, i) => (
+                      {ranking.map((d, i) => (
                         <div key={d.id} className="bg-sss-light/50 rounded-xl p-4 border border-sss-light hover:border-gray-500 transition-colors">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -1149,8 +1152,8 @@ export default function PainelCriador() {
                       <ChartBarIcon className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                       <p className="text-gray-400">Nenhum doador no ranking ainda</p>
                     </div>
-            )}
-          </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
