@@ -6,6 +6,8 @@ export interface User {
   sementes: number
   nivel: string
   pontuacao: number
+  xp: number
+  nivelUsuario: number
   dataCriacao?: string
   criador?: any
   parceiro?: any
