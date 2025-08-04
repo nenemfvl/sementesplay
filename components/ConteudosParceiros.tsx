@@ -285,7 +285,18 @@ export default function ConteudosParceiros() {
                                 <span>•</span>
                                 <span>{getTipoLabel(conteudo.tipo)}</span>
                                 <span>•</span>
-                                <span>{new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR')}</span>
+                                <span>
+                                  {conteudo.dataPublicacao ? 
+                                    (() => {
+                                      try {
+                                        return new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR');
+                                      } catch (error) {
+                                        return 'Data inválida';
+                                      }
+                                    })() 
+                                    : 'Data não disponível'
+                                  }
+                                </span>
                                 {/* Indicador de popularidade no slider */}
                                 <span>•</span>
                                 <span className="text-yellow-300">
@@ -441,7 +452,16 @@ export default function ConteudosParceiros() {
                       
                       <div className="flex-shrink-0">
                         <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
-                          {new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR')}
+                          {conteudo.dataPublicacao ? 
+                            (() => {
+                              try {
+                                return new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR');
+                              } catch (error) {
+                                return 'Data inválida';
+                              }
+                            })() 
+                            : 'Data não disponível'
+                          }
                         </span>
                       </div>
                     </div>
