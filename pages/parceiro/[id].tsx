@@ -497,7 +497,7 @@ export default function ParceiroPerfil() {
                    <p className="text-gray-400">Nenhum conteúdo encontrado.</p>
                  </div>
                ) : (
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
                    {conteudos.map((conteudo) => (
                                             <div key={conteudo.id} className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light hover:border-gray-500 transition-all duration-300 group cursor-pointer"
                        onClick={() => {
