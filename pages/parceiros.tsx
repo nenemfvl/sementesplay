@@ -216,7 +216,7 @@ export default function Parceiros() {
 
           {/* Botão Seja Parceiro - Lateral Direita Flutuante */}
           {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
-            <div className="fixed top-32 right-6 z-50">
+            <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-50">
               <button
                 onClick={() => router.push('/candidatura-parceiro')}
                 className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105"
