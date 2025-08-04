@@ -161,24 +161,45 @@ export default function ConteudosParceiros() {
     return numero.toString()
   };
 
-  // Auto-advance slides
-  useEffect(() => {
-    if (conteudos.length > 0) {
-      const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % Math.min(conteudos.length, 3));
-      }, 60000); // Change slide every 60 seconds (1 minute)
-
-      return () => clearInterval(timer);
-    }
-  }, [conteudos.length]);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.min(conteudos.length, 3));
+  // Função para calcular pontuação baseada em visualizações, likes e dislikes
+  const calcularPontuacao = (conteudo: ConteudoParceiro) => {
+    const pontosVisualizacao = conteudo.visualizacoes * 1; // 1 ponto por visualização
+    const pontosLikes = conteudo.curtidas * 10; // 10 pontos por like
+    const pontosDislikes = conteudo.dislikes * -5; // -5 pontos por dislike
+    return pontosVisualizacao + pontosLikes + pontosDislikes;
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.min(conteudos.length, 3)) % Math.min(conteudos.length, 3));
+  // Ordenar conteúdos por pontuação (mais populares primeiro)
+  const getConteudosOrdenados = () => {
+    return [...conteudos]
+      .map(conteudo => ({
+        ...conteudo,
+        pontuacao: calcularPontuacao(conteudo)
+      }))
+      .sort((a, b) => b.pontuacao - a.pontuacao);
   };
+
+     // Auto-advance slides
+   useEffect(() => {
+     const conteudosOrdenados = getConteudosOrdenados();
+     if (conteudosOrdenados.length > 0) {
+       const timer = setInterval(() => {
+         setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
+       }, 60000); // Change slide every 60 seconds (1 minute)
+
+       return () => clearInterval(timer);
+     }
+   }, [conteudos.length]);
+
+   const nextSlide = () => {
+     const conteudosOrdenados = getConteudosOrdenados();
+     setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
+   };
+
+   const prevSlide = () => {
+     const conteudosOrdenados = getConteudosOrdenados();
+     setCurrentSlide((prev) => (prev - 1 + Math.min(conteudosOrdenados.length, 3)) % Math.min(conteudosOrdenados.length, 3));
+   };
 
   return (
     <div className="w-full bg-sss-dark rounded-2xl shadow-lg p-8">
@@ -213,9 +234,9 @@ export default function ConteudosParceiros() {
               </div>
             ) : (
               <>
-                {/* Slides */}
-                <div className="relative h-full overflow-hidden">
-                  {conteudos.slice(0, 3).map((conteudo, index) => {
+                                 {/* Slides */}
+                 <div className="relative h-full overflow-hidden">
+                   {getConteudosOrdenados().slice(0, 3).map((conteudo, index) => {
                     const thumbnail = getThumbnail(conteudo.url);
                     return (
                       <div
@@ -287,8 +308,24 @@ export default function ConteudosParceiros() {
             )}
           </div>
           
-          {/* Navigation Arrows - Abaixo do Banner */}
+          {/* Dots Indicator */}
           {conteudos.length > 1 && (
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+              {conteudos.slice(0, 3).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  title={`Ir para slide ${index + 1}`}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentSlide ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+                     {/* Navigation Arrows - Abaixo do Banner */}
+           {getConteudosOrdenados().length > 1 && (
             <div className="flex justify-center items-center gap-4 mt-4">
               <button
                 onClick={prevSlide}
@@ -304,22 +341,6 @@ export default function ConteudosParceiros() {
               >
                 ›
               </button>
-            </div>
-          )}
-
-          {/* Dots Indicator - Abaixo dos Botões */}
-          {conteudos.length > 1 && (
-            <div className="flex justify-center space-x-2 mt-3">
-              {conteudos.slice(0, 3).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  title={`Ir para slide ${index + 1}`}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentSlide ? 'bg-white' : 'bg-white/50'
-                  }`}
-                />
-              ))}
             </div>
           )}
         </div>
@@ -350,7 +371,7 @@ export default function ConteudosParceiros() {
             </div>
           ) : (
             <div className="space-y-3 max-h-[360px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-              {conteudos.map((conteudo) => {
+              {getConteudosOrdenados().map((conteudo) => {
                 const thumbnail = getThumbnail(conteudo.url);
                 return (
                   <div key={conteudo.id} className="bg-sss-medium border border-gray-600 rounded-lg p-4 hover:border-purple-400 hover:bg-sss-dark transition-all duration-300 group cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
@@ -429,7 +450,7 @@ export default function ConteudosParceiros() {
               })}
               
               {/* Indicador de mais conteúdos */}
-              {conteudos.length > 4 && (
+              {getConteudosOrdenados().length > 4 && (
                 <div className="text-center py-2 border-t border-gray-600 mt-2">
                   <div className="text-xs text-gray-400">
                     Role para ver mais conteúdos
