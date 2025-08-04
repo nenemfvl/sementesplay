@@ -32,9 +32,7 @@ interface ParceiroDetalhes {
   id: string
   nome: string
   nomeCidade: string
-  comissaoMensal: number
   totalVendas: number
-  codigosGerados: number
   usuarioId: string
   usuario: {
     id: string
@@ -478,14 +476,6 @@ export default function ParceiroPerfil() {
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-400">{formatarMoeda(parceiro.totalVendas)}</div>
                       <div className="text-sm text-gray-400">Total de Vendas</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-400">{parceiro.codigosGerados}</div>
-                      <div className="text-sm text-gray-400">Códigos Gerados</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-400">{formatarMoeda(parceiro.comissaoMensal)}</div>
-                      <div className="text-sm text-gray-400">Comissão Mensal</div>
                     </div>
                   </div>
                 </div>
