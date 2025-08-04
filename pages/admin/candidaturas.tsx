@@ -8,6 +8,8 @@ import {
   EyeIcon,
   CheckCircleIcon,
   XCircleIcon,
+  XMarkIcon,
+  ExclamationTriangleIcon,
   ClockIcon,
   UserIcon
 } from '@heroicons/react/24/outline'
@@ -52,6 +54,7 @@ export default function AdminCandidaturas() {
   const [selectedCandidatura, setSelectedCandidatura] = useState<Candidatura | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [observacoes, setObservacoes] = useState('')
+  const [notificacao, setNotificacao] = useState<{ tipo: 'sucesso' | 'erro' | 'info', mensagem: string } | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -61,8 +64,8 @@ export default function AdminCandidaturas() {
     }
     
     if (Number(currentUser.nivel) < 5) {
-      alert('Acesso negado. Apenas administradores podem acessar esta área.')
-              window.location.href = '/admin'
+      setNotificacao({ tipo: 'erro', mensagem: 'Acesso negado. Apenas administradores podem acessar esta área.' })
+      setTimeout(() => window.location.href = '/admin', 2000)
       return
     }
     
@@ -134,30 +137,35 @@ export default function AdminCandidaturas() {
       })
 
       if (response.ok) {
-        alert('Candidatura aprovada com sucesso!')
+        setNotificacao({ tipo: 'sucesso', mensagem: 'Candidatura aprovada com sucesso!' })
         loadCandidaturas()
         setShowModal(false)
         setObservacoes('')
+        setTimeout(() => setNotificacao(null), 3000)
       } else {
         const data = await response.json()
-        alert(`Erro: ${data.error}`)
+        setNotificacao({ tipo: 'erro', mensagem: `Erro: ${data.error}` })
+        setTimeout(() => setNotificacao(null), 5000)
       }
     } catch (error) {
       console.error('Erro ao aprovar candidatura:', error)
-      alert('Erro ao aprovar candidatura')
+      setNotificacao({ tipo: 'erro', mensagem: 'Erro ao aprovar candidatura' })
+      setTimeout(() => setNotificacao(null), 5000)
     }
   }
 
   const rejeitarCandidatura = async (candidaturaId: string) => {
     if (!observacoes.trim()) {
-      alert('Por favor, informe o motivo da rejeição.')
+      setNotificacao({ tipo: 'info', mensagem: 'Por favor, informe o motivo da rejeição.' })
+      setTimeout(() => setNotificacao(null), 3000)
       return
     }
 
     try {
       const currentUser = auth.getUser()
       if (!currentUser) {
-        alert('Usuário não autenticado')
+        setNotificacao({ tipo: 'erro', mensagem: 'Usuário não autenticado' })
+        setTimeout(() => setNotificacao(null), 3000)
         return
       }
 
@@ -173,17 +181,20 @@ export default function AdminCandidaturas() {
       })
 
       if (response.ok) {
-        alert('Candidatura rejeitada com sucesso!')
+        setNotificacao({ tipo: 'sucesso', mensagem: 'Candidatura rejeitada com sucesso!' })
         loadCandidaturas()
         setShowModal(false)
         setObservacoes('')
+        setTimeout(() => setNotificacao(null), 3000)
       } else {
         const data = await response.json()
-        alert(`Erro: ${data.error}`)
+        setNotificacao({ tipo: 'erro', mensagem: `Erro: ${data.error}` })
+        setTimeout(() => setNotificacao(null), 5000)
       }
     } catch (error) {
       console.error('Erro ao rejeitar candidatura:', error)
-      alert('Erro ao rejeitar candidatura')
+      setNotificacao({ tipo: 'erro', mensagem: 'Erro ao rejeitar candidatura' })
+      setTimeout(() => setNotificacao(null), 5000)
     }
   }
 
@@ -248,6 +259,39 @@ export default function AdminCandidaturas() {
         </header>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Notificação */}
+          {notificacao && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={`mb-6 p-4 rounded-lg border ${
+                notificacao.tipo === 'sucesso' 
+                  ? 'bg-green-900/20 border-green-500 text-green-300' 
+                  : notificacao.tipo === 'erro'
+                  ? 'bg-red-900/20 border-red-500 text-red-300'
+                  : 'bg-blue-900/20 border-blue-500 text-blue-300'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {notificacao.tipo === 'sucesso' && <CheckCircleIcon className="w-5 h-5 text-green-400" />}
+                  {notificacao.tipo === 'erro' && <XCircleIcon className="w-5 h-5 text-red-400" />}
+                  {notificacao.tipo === 'info' && <ExclamationTriangleIcon className="w-5 h-5 text-blue-400" />}
+                  <span className="font-medium">{notificacao.mensagem}</span>
+                </div>
+                <button
+                  onClick={() => setNotificacao(null)}
+                  className="text-gray-400 hover:text-white"
+                  title="Fechar notificação"
+                  aria-label="Fechar notificação"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
