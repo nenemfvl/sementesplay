@@ -177,13 +177,13 @@ export default function CandidaturaCriador() {
         })
       })
 
-      if (response.ok) {
-        setCandidaturaEnviada(true)
-        // Redirecionar após 2 segundos
-        setTimeout(() => {
-          window.location.href = '/criadores'
-        }, 2000)
-      } else {
+             if (response.ok) {
+         setCandidaturaEnviada(true)
+         // Redirecionar após 2 segundos
+         setTimeout(() => {
+           window.location.href = '/status'
+         }, 2000)
+       } else {
         const data = await response.json()
         setErroEnvio(data.error || 'Erro ao enviar candidatura')
       }
