@@ -22,7 +22,8 @@ import {
   PaperAirplaneIcon,
   ShareIcon,
   CreditCardIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  VideoCameraIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
 import Navbar from '../../components/Navbar'
@@ -191,6 +192,87 @@ export default function ParceiroPerfil() {
     }).format(valor)
   }
 
+  // Função para obter informações do YouTube
+  function getYoutubeInfo(url: string) {
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      const id = yt[1];
+      return {
+        thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+        link: `https://www.youtube.com/watch?v=${id}`
+      };
+    }
+    return null;
+  }
+
+  // Função para obter thumbnail do conteúdo
+  function getThumbnail(url: string) {
+    if (!url) return null;
+    
+    // YouTube
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      return {
+        src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
+        platform: 'YouTube',
+        icon: '🎥',
+        color: 'from-red-500 to-red-600'
+      };
+    }
+    
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
+    if (twLive && !url.includes('/videos/')) {
+      return {
+        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${twLive[1]}.jpg`,
+        platform: 'Twitch Live',
+        icon: '📺',
+        color: 'from-purple-600 to-pink-600',
+        fallback: true
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      return {
+        src: `https://static-cdn.jtvnw.net/videos_capture/${twVideo[1]}.jpg`,
+        platform: 'Twitch Video',
+        icon: '📺',
+        color: 'from-purple-500 to-purple-600',
+        fallback: true
+      };
+    }
+    
+    // Instagram
+    if (url.includes('instagram.com')) {
+      return {
+        src: null,
+        platform: 'Instagram',
+        icon: '📷',
+        color: 'from-pink-500 via-purple-500 to-orange-500'
+      };
+    }
+    
+    // TikTok
+    if (url.includes('tiktok.com')) {
+      return {
+        src: null,
+        platform: 'TikTok',
+        icon: '🎵',
+        color: 'from-black via-gray-800 to-gray-600'
+      };
+    }
+    
+    // Links gerais
+    return {
+      src: null,
+      platform: 'Link',
+      icon: '🔗',
+      color: 'from-blue-500 to-blue-600'
+    };
+  }
+
   if (loading) {
     return (
       <>
@@ -341,13 +423,63 @@ export default function ParceiroPerfil() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {conteudos.map((conteudo) => (
-                      <div key={conteudo.id} className="bg-sss-dark rounded-lg p-4 border border-sss-light">
-                        <h4 className="font-semibold text-sss-white mb-2">{conteudo.titulo}</h4>
-                        <p className="text-sm text-gray-400 mb-2">{conteudo.tipo} • {conteudo.categoria}</p>
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
-                          <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
-                          <span>👍 {formatarNumero(conteudo.curtidas)}</span>
-                          <span>💬 {formatarNumero(conteudo.comentarios)}</span>
+                      <div key={conteudo.id} className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light hover:border-gray-500 transition-all duration-300 group cursor-pointer"
+                           onClick={() => window.open(conteudo.url, '_blank', 'noopener,noreferrer')}>
+                        
+                        {/* Prévia visual do conteúdo */}
+                        {(() => {
+                          const thumbnail = getThumbnail(conteudo.url);
+                          if (thumbnail && thumbnail.src) {
+                            // YouTube com thumbnail real
+                            return (
+                              <div className="relative">
+                                <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                  <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                    Assistir no YouTube
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          } else if (thumbnail && thumbnail.fallback) {
+                            // Twitch com fallback
+                            return (
+                              <div className="relative">
+                                <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                                     onError={(e) => {
+                                       e.currentTarget.style.display = 'none';
+                                       e.currentTarget.nextElementSibling!.style.display = 'flex';
+                                     }} />
+                                <div className="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:scale-105 transition-transform duration-300" style={{display: 'none'}}>
+                                  <div className="text-center">
+                                    <span className="text-4xl mb-2 block">{thumbnail.icon}</span>
+                                    <p className="text-white font-semibold">{thumbnail.platform}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          } else {
+                            // Outras plataformas com gradiente
+                            return (
+                              <div className={`w-full h-48 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500 to-blue-600'} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+                                <div className="text-center">
+                                  <span className="text-4xl mb-2 block">{thumbnail?.icon || '🔗'}</span>
+                                  <p className="text-white font-semibold">{thumbnail?.platform || 'Link'}</p>
+                                </div>
+                              </div>
+                            );
+                          }
+                        })()}
+                        
+                        {/* Informações do conteúdo */}
+                        <div className="p-4">
+                          <h4 className="font-semibold text-sss-white mb-2 truncate">{conteudo.titulo}</h4>
+                          <p className="text-sm text-gray-400 mb-2">{conteudo.tipo} • {conteudo.categoria}</p>
+                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                            <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
+                            <span>👍 {formatarNumero(conteudo.curtidas)}</span>
+                            <span>💬 {formatarNumero(conteudo.comentarios)}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
