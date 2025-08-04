@@ -38,6 +38,7 @@ export default function Status() {
   const [loadingRanking, setLoadingRanking] = useState(false)
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
+  const [ciclosInfo, setCiclosInfo] = useState<any>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -73,6 +74,16 @@ export default function Status() {
         if (typeof data.totalSementes === 'number') {
           setTotalSementes(data.totalSementes)
         }
+      })
+
+    // Carregar informações dos ciclos
+    fetch('/api/ranking/ciclos')
+      .then(res => res.json())
+      .then(data => {
+        setCiclosInfo(data)
+      })
+      .catch(error => {
+        console.error('Erro ao carregar informações dos ciclos:', error)
       })
   }, [])
 
@@ -202,12 +213,67 @@ export default function Status() {
           {/* Contador de Sementes - bloco destacado */}
           <section className="w-full max-w-5xl mx-auto flex flex-col items-center bg-[#1a223a]/90 rounded-2xl shadow-lg py-10 mb-10">
             <span className="text-gray-400 text-base mb-2">Sementes em circulação</span>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-6">
               <span className="text-7xl md:text-8xl font-extrabold text-[#e94560] transition-all duration-700">
                 {totalSementes === null ? '...' : totalSementes.toLocaleString('pt-BR')}
               </span>
               <span className="text-5xl md:text-6xl">🌱</span>
             </div>
+            
+            {/* Informações dos Ciclos */}
+            {ciclosInfo && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+                {/* Ciclo Atual */}
+                <div className="bg-sss-dark/50 rounded-xl p-6 border border-sss-light">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-sss-white">🔄 Ciclo Atual</h3>
+                    <span className="text-2xl font-bold text-blue-400">#{ciclosInfo.numeroCiclo}</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Dias restantes:</span>
+                      <span className={`text-xl font-bold ${ciclosInfo.diasRestantesCiclo <= 3 ? 'text-red-400' : 'text-green-400'}`}>
+                        {ciclosInfo.diasRestantesCiclo} dias
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.max(0, Math.min(100, ((15 - ciclosInfo.diasRestantesCiclo) / 15) * 100))}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 text-center">
+                      Reset automático a cada 15 dias
+                    </p>
+                  </div>
+                </div>
+
+                {/* Season Atual */}
+                <div className="bg-sss-dark/50 rounded-xl p-6 border border-sss-light">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-sss-white">🏆 Season Atual</h3>
+                    <span className="text-2xl font-bold text-purple-400">S{ciclosInfo.numeroSeason}</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Dias restantes:</span>
+                      <span className={`text-xl font-bold ${ciclosInfo.diasRestantesSeason <= 7 ? 'text-red-400' : 'text-purple-400'}`}>
+                        {ciclosInfo.diasRestantesSeason} dias
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.max(0, Math.min(100, ((90 - ciclosInfo.diasRestantesSeason) / 90) * 100))}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 text-center">
+                      Reset automático a cada 3 meses
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Notícias alinhadas à esquerda, como no exemplo */}
