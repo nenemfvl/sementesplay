@@ -212,7 +212,7 @@ export default function ConteudosParceiros() {
           </h2>
           
           {/* Banner Slider */}
-          <div className="relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600 h-[300px] shadow-lg">
+          <div className="relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600 aspect-[16/9] shadow-lg">
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -254,7 +254,9 @@ export default function ConteudosParceiros() {
                                 src={thumbnail.src}
                                 alt={conteudo.titulo}
                                 fill
-                                className="object-cover"
+                                className="object-cover object-center"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                priority={index === 0}
                                 onError={(e) => {
                                   const target = e.currentTarget as HTMLImageElement;
                                   target.style.display = 'none';
@@ -398,7 +400,8 @@ export default function ConteudosParceiros() {
                               alt={conteudo.titulo}
                               width={64}
                               height={64}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                              sizes="64px"
                               onError={(e) => {
                                 const target = e.currentTarget as HTMLImageElement;
                                 target.style.display = 'none';
