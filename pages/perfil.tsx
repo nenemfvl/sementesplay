@@ -143,10 +143,19 @@ export default function Perfil() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch(`/api/perfil/stats?usuarioId=${user?.id}`)
+      const currentUser = auth.getUser();
+      if (!currentUser) {
+        console.error('Usuário não encontrado');
+        return;
+      }
+      
+      const response = await fetch(`/api/perfil/stats?usuarioId=${currentUser.id}`)
       const data = await response.json()
       if (response.ok) {
+        console.log('Estatísticas carregadas:', data);
         setStats(data)
+      } else {
+        console.error('Erro na resposta da API de estatísticas:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Erro ao carregar estatísticas:', error)
@@ -163,6 +172,8 @@ export default function Perfil() {
         return;
       }
       
+      console.log('Carregando XP para usuário:', currentUser.id);
+      
       const res = await fetch('/api/usuario/xp', {
         headers: { 'Authorization': `Bearer ${currentUser.id}` }
       });
@@ -173,6 +184,8 @@ export default function Perfil() {
         setXpData(data);
       } else {
         console.error('Erro na resposta da API de XP:', res.status, res.statusText);
+        const errorData = await res.text();
+        console.error('Erro detalhado:', errorData);
       }
     } catch (error) {
       console.error('Erro ao carregar dados de XP:', error);

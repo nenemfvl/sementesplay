@@ -100,6 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const userId = authHeader.replace('Bearer ', '')
+      console.log('API /api/usuario/xp chamada com userId:', userId)
       
       // Buscar dados do usuário
       const usuario = await prisma.usuario.findUnique({

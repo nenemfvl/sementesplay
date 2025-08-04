@@ -12,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { usuarioId } = req.query
     
     console.log('API /api/perfil/stats chamada com usuarioId:', usuarioId)
+    console.log('Tipo do usuarioId:', typeof usuarioId)
 
     if (!usuarioId) {
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
