@@ -197,34 +197,50 @@ export default function ParceiroPerfil() {
   // Função para registrar visualização
   const registrarVisualizacao = async (conteudoId: string) => {
     try {
-      await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
+      const response = await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+          userId: user?.id
+        })
       });
       
-      // Atualizar contador local
-      setConteudos(prev => prev.map(conteudo => 
-        conteudo.id === conteudoId 
-          ? { ...conteudo, visualizacoes: conteudo.visualizacoes + 1 }
-          : conteudo
-      ));
+      if (response.ok) {
+        const data = await response.json();
+        // Atualizar contador local apenas se a visualização foi registrada
+        if (data.success) {
+          setConteudos(prev => prev.map(conteudo => 
+            conteudo.id === conteudoId 
+              ? { ...conteudo, visualizacoes: data.visualizacoes }
+              : conteudo
+          ));
+        }
+      }
     } catch (error) {
       console.error('Erro ao registrar visualização:', error);
     }
   };
 
-  // Função para curtir conteúdo
+    // Função para curtir conteúdo
   const curtirConteudo = async (conteudoId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Evitar que o clique propague para o card
+    
+    if (!user?.id) {
+      alert('Você precisa estar logado para curtir conteúdos');
+      return;
+    }
     
     try {
       const response = await fetch(`/api/conteudos/${conteudoId}/curtir`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+          userId: user.id
+        })
       });
       
       if (response.ok) {
@@ -237,37 +253,45 @@ export default function ParceiroPerfil() {
             : conteudo
         ));
         
-                 // Atualizar likes/dislikes do usuário
-         if (data.liked) {
-           setLikes(prev => new Set(Array.from(prev).concat(conteudoId)));
-           setDislikes(prev => {
-             const newDislikes = new Set(prev);
-             newDislikes.delete(conteudoId);
-             return newDislikes;
-           });
-         } else {
-           setLikes(prev => {
-             const newLikes = new Set(prev);
-             newLikes.delete(conteudoId);
-             return newLikes;
-           });
-         }
+        // Atualizar likes/dislikes do usuário
+        if (data.curtido) {
+          setLikes(prev => new Set(Array.from(prev).concat(conteudoId)));
+          setDislikes(prev => {
+            const newDislikes = new Set(prev);
+            newDislikes.delete(conteudoId);
+            return newDislikes;
+          });
+        } else {
+          setLikes(prev => {
+            const newLikes = new Set(prev);
+            newLikes.delete(conteudoId);
+            return newLikes;
+          });
+        }
       }
     } catch (error) {
       console.error('Erro ao curtir conteúdo:', error);
     }
   };
 
-  // Função para dar dislike no conteúdo
+    // Função para dar dislike no conteúdo
   const dislikeConteudo = async (conteudoId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Evitar que o clique propague para o card
+    
+    if (!user?.id) {
+      alert('Você precisa estar logado para dar dislike em conteúdos');
+      return;
+    }
     
     try {
       const response = await fetch(`/api/conteudos/${conteudoId}/dislike`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+          userId: user.id
+        })
       });
       
       if (response.ok) {
@@ -280,21 +304,21 @@ export default function ParceiroPerfil() {
             : conteudo
         ));
         
-                 // Atualizar dislikes/likes do usuário
-         if (data.disliked) {
-           setDislikes(prev => new Set(Array.from(prev).concat(conteudoId)));
-           setLikes(prev => {
-             const newLikes = new Set(prev);
-             newLikes.delete(conteudoId);
-             return newLikes;
-           });
-         } else {
-           setDislikes(prev => {
-             const newDislikes = new Set(prev);
-             newDislikes.delete(conteudoId);
-             return newDislikes;
-           });
-         }
+        // Atualizar dislikes/likes do usuário
+        if (data.disliked) {
+          setDislikes(prev => new Set(Array.from(prev).concat(conteudoId)));
+          setLikes(prev => {
+            const newLikes = new Set(prev);
+            newLikes.delete(conteudoId);
+            return newLikes;
+          });
+        } else {
+          setDislikes(prev => {
+            const newDislikes = new Set(prev);
+            newDislikes.delete(conteudoId);
+            return newDislikes;
+          });
+        }
       }
     } catch (error) {
       console.error('Erro ao dar dislike no conteúdo:', error);
@@ -592,15 +616,14 @@ export default function ParceiroPerfil() {
                            <h4 className="font-semibold text-sss-white mb-2 truncate">{conteudo.titulo}</h4>
                            <p className="text-sm text-gray-400 mb-2">{conteudo.tipo} • {conteudo.categoria}</p>
                            
-                           {/* Estatísticas e botões de interação */}
-                           <div className="flex items-center justify-between">
-                             <div className="flex items-center gap-4 text-xs text-gray-500">
-                               <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
-                               <span>💬 {formatarNumero(conteudo.comentarios)}</span>
-                             </div>
-                             
-                             {/* Botões de like/dislike */}
-                             <div className="flex items-center gap-2">
+                                                       {/* Estatísticas e botões de interação */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4 text-xs text-gray-500">
+                                <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
+                              </div>
+                              
+                              {/* Botões de like/dislike */}
+                              <div className="flex items-center gap-2">
                                <button
                                  onClick={(e) => curtirConteudo(conteudo.id, e)}
                                  className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
