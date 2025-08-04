@@ -116,26 +116,85 @@ export default function PainelParceiro() {
   // Função para obter preview do conteúdo
   function getPreview(url: string) {
     if (!url) return null;
+    
     // YouTube
     const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
     if (yt) {
       return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" title="YouTube video" />;
     }
+    
     // Twitch
     const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
     if (tw) {
       return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" title="Twitch stream" />;
     }
+    
     // Instagram
     if (url.includes('instagram.com')) {
       return <a href={url} target="_blank" rel="noopener noreferrer" className="text-pink-600 underline my-2 block">Ver no Instagram</a>;
     }
+    
     // TikTok
     if (url.includes('tiktok.com')) {
       return <a href={url} target="_blank" rel="noopener noreferrer" className="text-black underline my-2 block">Ver no TikTok</a>;
     }
+    
     // Outro
     return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
+  }
+
+  // Função para obter thumbnail das plataformas
+  function getThumbnail(url: string) {
+    if (!url) return null;
+    
+    // YouTube
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      return {
+        src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
+        platform: 'YouTube',
+        icon: '🎥',
+        color: 'from-red-500 to-red-600'
+      };
+    }
+    
+    // Twitch
+    const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
+    if (tw) {
+      return {
+        src: null, // Twitch não permite thumbnails diretos
+        platform: 'Twitch',
+        icon: '📺',
+        color: 'from-purple-500 to-purple-600'
+      };
+    }
+    
+    // Instagram
+    if (url.includes('instagram.com')) {
+      return {
+        src: null, // Instagram não permite thumbnails diretos
+        platform: 'Instagram',
+        icon: '📷',
+        color: 'from-pink-500 to-pink-600'
+      };
+    }
+    
+    // TikTok
+    if (url.includes('tiktok.com')) {
+      return {
+        src: null, // TikTok não permite thumbnails diretos
+        platform: 'TikTok',
+        icon: '🎵',
+        color: 'from-black to-gray-800'
+      };
+    }
+    
+    return {
+      src: null,
+      platform: 'Link',
+      icon: '🔗',
+      color: 'from-blue-500 to-blue-600'
+    };
   }
 
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
@@ -1480,22 +1539,28 @@ export default function PainelParceiro() {
                         >
                           {/* Prévia visual do conteúdo */}
                           {(() => {
-                            const yt = getYoutubeInfo(conteudo.url);
-                            if (yt) {
+                            const thumbnail = getThumbnail(conteudo.url);
+                            if (thumbnail && thumbnail.src) {
+                              // YouTube com thumbnail real
                               return (
                                 <div className="relative">
-                                  <img src={yt.thumbnail} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
                                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                                      Assistir no YouTube
-                                    </a>
+                                    <div className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                      Assistir no {thumbnail.platform}
+                                    </div>
                                   </div>
                                 </div>
                               );
                             } else {
+                              // Outras plataformas com gradiente personalizado
                               return (
-                                <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-gray-400 group-hover:from-gray-500 group-hover:to-gray-600 transition-all">
-                                  <VideoCameraIcon className="w-12 h-12" />
+                                <div className={`w-full h-48 bg-gradient-to-br ${thumbnail?.color || 'from-gray-600 to-gray-700'} flex items-center justify-center text-white group-hover:scale-105 transition-all duration-300 relative overflow-hidden`}>
+                                  <div className="text-center z-10">
+                                    <div className="text-4xl mb-2">{thumbnail?.icon || '🔗'}</div>
+                                    <div className="text-sm font-medium">{thumbnail?.platform || 'Link'}</div>
+                                  </div>
+                                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all duration-300"></div>
                                 </div>
                               );
                             }
