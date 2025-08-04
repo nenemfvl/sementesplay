@@ -13,6 +13,7 @@ interface ConteudoParceiro {
   curtidas: number;
   dislikes: number;
   dataPublicacao: string;
+  data?: string;
   parceiro: {
     id: string;
     nome: string;
@@ -285,18 +286,19 @@ export default function ConteudosParceiros() {
                                 <span>•</span>
                                 <span>{getTipoLabel(conteudo.tipo)}</span>
                                 <span>•</span>
-                                <span>
-                                  {conteudo.dataPublicacao ? 
-                                    (() => {
-                                      try {
-                                        return new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR');
-                                      } catch (error) {
-                                        return 'Data inválida';
-                                      }
-                                    })() 
-                                    : 'Data não disponível'
-                                  }
-                                </span>
+                                                                 <span>
+                                   {(conteudo.data || conteudo.dataPublicacao) ? 
+                                     (() => {
+                                       try {
+                                         const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                         return new Date(dataValue).toLocaleDateString('pt-BR');
+                                       } catch (error) {
+                                         return 'Data inválida';
+                                       }
+                                     })() 
+                                     : 'Data não disponível'
+                                   }
+                                 </span>
                                 {/* Indicador de popularidade no slider */}
                                 <span>•</span>
                                 <span className="text-yellow-300">
@@ -451,18 +453,19 @@ export default function ConteudosParceiros() {
                       </div>
                       
                       <div className="flex-shrink-0">
-                        <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
-                          {conteudo.dataPublicacao ? 
-                            (() => {
-                              try {
-                                return new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR');
-                              } catch (error) {
-                                return 'Data inválida';
-                              }
-                            })() 
-                            : 'Data não disponível'
-                          }
-                        </span>
+                                                 <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
+                           {(conteudo.data || conteudo.dataPublicacao) ? 
+                             (() => {
+                               try {
+                                 const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                 return new Date(dataValue).toLocaleDateString('pt-BR');
+                               } catch (error) {
+                                 return 'Data inválida';
+                               }
+                             })() 
+                             : 'Data não disponível'
+                           }
+                         </span>
                       </div>
                     </div>
                   </div>
