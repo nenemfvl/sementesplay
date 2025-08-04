@@ -423,7 +423,7 @@ export default function ConteudosParceiros() {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 truncate transition-colors">
+                        <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 transition-colors">
                           {conteudo.titulo}
                         </div>
                         <div className="flex items-center space-x-2 mt-1 flex-wrap">

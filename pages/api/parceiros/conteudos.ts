@@ -116,9 +116,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const novo = await prisma.conteudoParceiro.create({
         data: {
           parceiroId,
-          titulo: 'Conteúdo do Parceiro', // Título padrão
+          titulo: titulo || 'Conteúdo do Parceiro', // Usar título fornecido ou padrão
           url,
-          tipo: 'evento', // Tipo padrão
+          tipo: tipo || 'evento', // Usar tipo fornecido ou padrão
           categoria,
           descricao: descricao || '',
           plataforma: plataforma || '',
@@ -145,9 +145,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { id },
         data: {
           parceiroId,
-          titulo: 'Conteúdo do Parceiro', // Título padrão
+          titulo: titulo || 'Conteúdo do Parceiro', // Usar título fornecido ou padrão
           url,
-          tipo: 'evento', // Tipo padrão
+          tipo: tipo || 'evento', // Usar tipo fornecido ou padrão
           categoria,
           descricao,
           plataforma,
