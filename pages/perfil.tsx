@@ -174,18 +174,18 @@ export default function Perfil() {
       
       console.log('Carregando XP para usuário:', currentUser.id);
       
-      const res = await fetch('/api/usuario/xp', {
-        headers: { 'Authorization': `Bearer ${currentUser.id}` }
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        console.log('Dados de XP carregados:', data);
-        setXpData(data);
-      } else {
-        console.error('Erro na resposta da API de XP:', res.status, res.statusText);
-        const errorData = await res.text();
-        console.error('Erro detalhado:', errorData);
+      // Usar os dados da API de estatísticas que já inclui XP
+      if (stats) {
+        const xpData = {
+          usuario: {
+            xp: stats.xp || 0,
+            nivelUsuario: stats.nivelUsuario || 1
+          },
+          xpProximoNivel: Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100,
+          progressoNivel: ((stats.xp || 0) - Math.pow(stats.nivelUsuario || 1, 2) * 100) / (Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100 - Math.pow(stats.nivelUsuario || 1, 2) * 100) * 100
+        };
+        console.log('Dados de XP calculados:', xpData);
+        setXpData(xpData);
       }
     } catch (error) {
       console.error('Erro ao carregar dados de XP:', error);
@@ -210,11 +210,9 @@ export default function Perfil() {
   const atualizarEstatisticas = async () => {
     setLoading(true);
     try {
-      await Promise.all([
-        loadStats(),
-        loadXPData(),
-        loadMissoesUsuario()
-      ]);
+      await loadStats();
+      await loadXPData(); // Chamar após loadStats para ter acesso aos dados
+      await loadMissoesUsuario();
     } catch (error) {
       console.error('Erro ao atualizar estatísticas:', error);
     } finally {
@@ -508,19 +506,19 @@ export default function Perfil() {
 
 
 
-                                 <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
-                   <div className="flex items-center justify-between">
-                     <div>
-                       <p className="text-gray-300 text-sm">Pontuação</p>
-                       <p className="text-2xl font-bold text-sss-white">
-                         {user.pontuacao}
-                       </p>
-                     </div>
-                     <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                       <TrophyIcon className="w-5 h-5 text-yellow-500" />
-                     </div>
-                   </div>
-                 </div>
+                                                   <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-300 text-sm">Pontuação</p>
+                        <p className="text-2xl font-bold text-sss-white">
+                          {stats?.pontuacao || 0}
+                        </p>
+                      </div>
+                      <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                        <TrophyIcon className="w-5 h-5 text-yellow-500" />
+                      </div>
+                    </div>
+                  </div>
 
                 
 

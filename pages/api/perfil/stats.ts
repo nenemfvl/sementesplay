@@ -107,10 +107,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sementesRecebidas = doacoesRecebidas.reduce((sum, doacao) => sum + doacao.quantidade, 0)
     }
 
-    // Calcular totais
+    // Calcular totais usando a mesma lógica da página de status
     const totalDoacoes = doacoes.reduce((sum, d) => sum + d.quantidade, 0)
     const criadoresApoiados = new Set(doacoes.map(d => d.criadorId)).size
     const cashbacksResgatados = cashbacks.length
+    
+    // Buscar dados do usuário para pontuação e XP
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: String(usuarioId) },
+      select: {
+        pontuacao: true,
+        xp: true,
+        nivelUsuario: true
+      }
+    })
 
     // Atividades recentes
     const atividadesRecentes = [
@@ -173,6 +183,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       criadoresApoiados,
       cashbacksResgatados,
       sementesRecebidas, // Adicionando sementes recebidas
+      pontuacao: usuario?.pontuacao || 0,
+      xp: usuario?.xp || 0,
+      nivelUsuario: usuario?.nivelUsuario || 1,
       atividadesRecentes,
       proximasConquistas,
       conquistas,
