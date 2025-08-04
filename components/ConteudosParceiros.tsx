@@ -404,14 +404,11 @@ export default function ConteudosParceiros() {
                               </span>
                             </>
                           )}
-                          {/* Indicador de popularidade */}
-                          <span className="text-gray-500">•</span>
-                          <span className="text-xs text-yellow-400 font-medium">
-                            🔥 {formatarNumero(conteudo.visualizacoes)} view
-                          </span>
-                          <span className="text-xs text-green-400 font-medium">
-                            👍 {formatarNumero(conteudo.curtidas)}
-                          </span>
+                                                     {/* Indicador de popularidade */}
+                           <span className="text-gray-500">•</span>
+                           <span className="text-xs text-yellow-400 font-medium">
+                             🔥 {formatarNumero(conteudo.visualizacoes)} view
+                           </span>
                         </div>
                       </div>
                       
