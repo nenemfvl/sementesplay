@@ -1,0 +1,5 @@
+[33m1881dcbc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Remover abas Transações e Códigos da página de perfil do parceiro - manter apenas Conteúdos
+[33md1121da5[m Forçar novo deploy - corrigir falha no GitHub
+[33mcb3769fe[m Remover campos 'Códigos Gerados' e 'Comissão Mensal' da página de perfil do parceiro
+[33m8e0a7a77[m Corrigir cálculo do total de vendas na página de perfil do parceiro - usar repasses realizados em vez de campo estático
+[33m4b410b90[m Corrigir APIs de visualização, curtir e dislike para funcionar com conteúdos de parceiros

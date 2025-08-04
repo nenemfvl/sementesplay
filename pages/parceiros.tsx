@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, BuildingOfficeIcon, CurrencyDollarIcon, ChartBarIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
-import Noticias from '../components/Noticias';
+import ConteudosParceiros from '../components/ConteudosParceiros';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import { auth, User } from '../lib/auth'
@@ -214,9 +214,9 @@ export default function Parceiros() {
             </div>
           </section>
 
-          {/* Notícias */}
+          {/* Conteúdos dos Parceiros */}
           <section className="w-full max-w-5xl mx-auto mb-10">
-            <Noticias />
+            <ConteudosParceiros />
           </section>
 
           {/* Ranking de Parceiros */}
