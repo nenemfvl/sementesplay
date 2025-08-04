@@ -79,6 +79,7 @@ export default function ParceiroPerfil() {
   const [dislikes, setDislikes] = useState<Set<string>>(new Set())
   // Comentário de teste para alteração
   // Comentário de teste para alteração
+  // Novo comentário de teste
 
   useEffect(() => {
     const currentUser = auth.getUser()
