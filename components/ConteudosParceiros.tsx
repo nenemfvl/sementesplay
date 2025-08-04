@@ -349,7 +349,7 @@ export default function ConteudosParceiros() {
               </div>
             </div>
           ) : (
-                         <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+                         <div className="space-y-3 max-h-[360px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
                {conteudos.map((conteudo) => {
                  const thumbnail = getThumbnail(conteudo.url);
                  return (
@@ -428,8 +428,8 @@ export default function ConteudosParceiros() {
                 );
               })}
               
-              {/* Indicador de mais conteúdos */}
-              {conteudos.length > 3 && (
+                             {/* Indicador de mais conteúdos */}
+               {conteudos.length > 4 && (
                                  <div className="text-center py-2 border-t border-gray-600 mt-2">
                    <div className="text-xs text-gray-400">
                      Role para ver mais conteúdos
