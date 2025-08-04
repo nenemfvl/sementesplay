@@ -98,6 +98,7 @@ export default function PainelParceiro() {
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
+
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
   const [showModalRedesSociais, setShowModalRedesSociais] = useState(false);
   const [redesSociais, setRedesSociais] = useState({
@@ -611,6 +612,8 @@ export default function PainelParceiro() {
       tiktok: parceiro.tiktok || ''
     });
   }
+
+
 
 
 
@@ -1430,60 +1433,69 @@ export default function PainelParceiro() {
                 ) : conteudos && conteudos.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {conteudos.map((conteudo) => (
-                      <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
-                        <div className="p-4">
-                          <div className="flex items-center justify-between mb-4">
+                      <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500 cursor-pointer">
+                        {/* Área clicável para o conteúdo */}
+                        <div 
+                          className="p-4 cursor-pointer"
+                          onClick={() => window.open(conteudo.url, '_blank', 'noopener,noreferrer')}
+                        >
+                          {/* Prévia visual do conteúdo */}
+                          <div className="w-full h-32 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg mb-4 flex items-center justify-center border border-indigo-500/30">
+                            <div className="text-center">
+                              <DocumentTextIcon className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
+                              <p className="text-xs text-gray-400">Clique para ver o conteúdo</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-2">
                               <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
-                              <span className="text-sss-white font-medium">{conteudo.titulo}</span>
+                              <span className="text-sss-white font-medium truncate">{conteudo.titulo}</span>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              {conteudo.fixado && (
-                                <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
-                                  Fixado
-                                </span>
-                              )}
-                              <button
-                                className="text-red-400 hover:text-red-300 transition-colors p-1"
-                                onClick={() => handleRemoverConteudo(conteudo.id)}
-                                title="Remover"
-                              >
-                                <TrashIcon className="w-4 h-4" />
-                              </button>
-                            </div>
+                            {conteudo.fixado && (
+                              <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
+                                Fixado
+                              </span>
+                            )}
                           </div>
                           
                           {/* Informações do conteúdo */}
                           <div className="space-y-2 mb-4">
-                            <div>
-                              <p className="text-sm text-gray-400">Tipo</p>
-                              <p className="text-sss-white capitalize">{conteudo.tipo}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-400">Categoria</p>
-                              <p className="text-sss-white capitalize">{conteudo.categoria}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-400">URL</p>
-                              <a
-                                href={conteudo.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-400 hover:text-blue-300 underline text-sm"
-                              >
-                                Ver conteúdo
-                              </a>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="text-xs text-gray-400">Tipo</p>
+                                <p className="text-sss-white capitalize text-sm">{conteudo.tipo}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-400">Categoria</p>
+                                <p className="text-sss-white capitalize text-sm">{conteudo.categoria}</p>
+                              </div>
                             </div>
                           </div>
-
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleFixarConteudo(conteudo.id, !conteudo.fixado)}
-                              className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
-                            >
-                              {conteudo.fixado ? 'Desfixar' : 'Fixar'}
-                            </button>
-                          </div>
+                        </div>
+                        
+                        {/* Botões de ação (fora da área clicável) */}
+                        <div className="px-4 pb-4 flex justify-between items-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFixarConteudo(conteudo.id, !conteudo.fixado);
+                            }}
+                            className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
+                          >
+                            {conteudo.fixado ? 'Desfixar' : 'Fixar'}
+                          </button>
+                          
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoverConteudo(conteudo.id);
+                            }}
+                            className="text-red-400 hover:text-red-300 transition-colors p-1"
+                            title="Remover"
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -1552,6 +1564,8 @@ export default function PainelParceiro() {
           </section>
         </main>
       </div>
+
+
     </>
   );
 } 
