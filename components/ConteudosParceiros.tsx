@@ -249,14 +249,15 @@ export default function ConteudosParceiros() {
                         <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
                           {/* Background Image */}
                           {thumbnail?.src && (
-                            <div className="absolute inset-0">
+                            <div className="absolute inset-0 overflow-hidden">
                               <Image
                                 src={thumbnail.src}
                                 alt={conteudo.titulo}
                                 fill
-                                className="object-cover object-center"
+                                className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                                 priority={index === 0}
+                                quality={85}
                                 onError={(e) => {
                                   const target = e.currentTarget as HTMLImageElement;
                                   target.style.display = 'none';
@@ -266,6 +267,8 @@ export default function ConteudosParceiros() {
                                   }
                                 }}
                               />
+                              {/* Gradiente sutil sobre a imagem */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                               {/* Fallback para Twitch */}
                               {thumbnail.fallback && (
                                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl" style={{ display: 'none' }}>
@@ -276,34 +279,34 @@ export default function ConteudosParceiros() {
                           )}
                           
                           {/* Content Overlay */}
-                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                            <div className="text-center text-white p-6 max-w-md">
-                              <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
-                              <div className="text-sm opacity-80 mb-4">{conteudo.parceiro.nome}</div>
-                              <div className="flex items-center justify-center space-x-4 text-xs">
-                                <span className="flex items-center space-x-1">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center text-white p-6 max-w-md relative z-10">
+                              <div className="text-2xl font-bold mb-3 drop-shadow-lg">{conteudo.titulo}</div>
+                              <div className="text-sm opacity-90 mb-4 drop-shadow-md">{conteudo.parceiro.nome}</div>
+                              <div className="flex items-center justify-center space-x-4 text-xs drop-shadow-md">
+                                <span className="flex items-center space-x-1 bg-black/30 px-2 py-1 rounded-full">
                                   <span>🏢</span>
                                   <span>{conteudo.parceiro.nome}</span>
                                 </span>
-                                <span>•</span>
-                                <span>{getTipoLabel(conteudo.tipo)}</span>
-                                <span>•</span>
-                                                                 <span>
-                                   {(conteudo.data || conteudo.dataPublicacao) ? 
-                                     (() => {
-                                       try {
-                                         const dataValue = conteudo.data || conteudo.dataPublicacao;
-                                         return new Date(dataValue).toLocaleDateString('pt-BR');
-                                       } catch (error) {
-                                         return 'Data inválida';
-                                       }
-                                     })() 
-                                     : 'Data não disponível'
-                                   }
-                                 </span>
+                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                <span className="bg-black/30 px-2 py-1 rounded-full">{getTipoLabel(conteudo.tipo)}</span>
+                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                <span className="bg-black/30 px-2 py-1 rounded-full">
+                                  {(conteudo.data || conteudo.dataPublicacao) ? 
+                                    (() => {
+                                      try {
+                                        const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                        return new Date(dataValue).toLocaleDateString('pt-BR');
+                                      } catch (error) {
+                                        return 'Data inválida';
+                                      }
+                                    })() 
+                                    : 'Data não disponível'
+                                  }
+                                </span>
                                 {/* Indicador de popularidade no slider */}
-                                <span>•</span>
-                                <span className="text-yellow-300">
+                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                <span className="text-yellow-300 bg-black/30 px-2 py-1 rounded-full">
                                   🔥 {formatarNumero(conteudo.visualizacoes)} view
                                 </span>
                               </div>
