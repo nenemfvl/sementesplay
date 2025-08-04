@@ -1592,7 +1592,19 @@ export default function PainelParceiro() {
                                   )}
                                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                     <div className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                                      Assistir no {thumbnail.platform}
+                                      {(() => {
+                                        if (conteudo.url.includes('youtube.com') || conteudo.url.includes('youtu.be')) {
+                                          return 'Assistir no YouTube';
+                                        } else if (conteudo.url.includes('twitch.tv')) {
+                                          return 'Assistir na Twitch';
+                                        } else if (conteudo.url.includes('instagram.com')) {
+                                          return 'Ver no Instagram';
+                                        } else if (conteudo.url.includes('tiktok.com')) {
+                                          return 'Ver no TikTok';
+                                        } else {
+                                          return 'Abrir Link';
+                                        }
+                                      })()}
                                     </div>
                                   </div>
                                 </div>
