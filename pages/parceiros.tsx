@@ -215,7 +215,7 @@ export default function Parceiros() {
           </section>
 
           {/* Conteúdos dos Parceiros */}
-          <section className="w-full max-w-6xl mx-auto mb-10">
+          <section className="w-full max-w-6xl mx-auto mb-20">
             <ConteudosParceiros />
           </section>
 
