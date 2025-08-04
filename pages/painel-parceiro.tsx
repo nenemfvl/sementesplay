@@ -159,7 +159,7 @@ export default function PainelParceiro() {
     }
     
     // Twitch - Stream ao vivo
-    const twLive = url.match(/twitch\.tv\/([^\/\?]+)/);
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
     if (twLive && !url.includes('/videos/')) {
       return {
         src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${twLive[1]}.jpg`,
