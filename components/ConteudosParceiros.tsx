@@ -185,9 +185,9 @@ export default function ConteudosParceiros() {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Banner Slider - Lado Esquerdo */}
         <div className="w-full lg:w-1/2">
-                     <h2 className="text-2xl font-bold text-sss-white mb-6">
-             🔥 Conteúdos dos Parceiros
-           </h2>
+          <h2 className="text-2xl font-bold text-sss-white mb-6">
+            🔥 Conteúdos dos Parceiros
+          </h2>
           
           {/* Banner Slider */}
           <div className="relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600 h-[300px] shadow-lg">
@@ -287,26 +287,6 @@ export default function ConteudosParceiros() {
             )}
           </div>
           
-          {/* Navigation Arrows */}
-          {conteudos.length > 1 && (
-            <>
-                             <button
-                 onClick={prevSlide}
-                 title="Slide anterior"
-                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
-               >
-                 ‹
-               </button>
-               <button
-                 onClick={nextSlide}
-                 title="Próximo slide"
-                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
-               >
-                 ›
-               </button>
-            </>
-          )}
-
           {/* Dots Indicator */}
           {conteudos.length > 1 && (
             <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
@@ -322,43 +302,63 @@ export default function ConteudosParceiros() {
               ))}
             </div>
           )}
+
+          {/* Navigation Arrows - Abaixo do Banner */}
+          {conteudos.length > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-4">
+              <button
+                onClick={prevSlide}
+                title="Slide anterior"
+                className="bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold"
+              >
+                ‹
+              </button>
+              <button
+                onClick={nextSlide}
+                title="Próximo slide"
+                className="bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold"
+              >
+                ›
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Lista de conteúdos - Lado Direito */}
         <div className="w-full lg:w-1/2">
-                     <h3 className="text-xl font-bold text-sss-white mb-4">
-             📋 Lista de Conteúdos
-           </h3>
+          <h3 className="text-xl font-bold text-sss-white mb-4">
+            📋 Lista de Conteúdos
+          </h3>
           
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                             <div className="text-gray-400">Carregando conteúdos...</div>
+              <div className="text-gray-400">Carregando conteúdos...</div>
             </div>
           ) : error ? (
             <div className="text-center py-8">
               <div className="text-red-500 mb-2">❌</div>
-                             <div className="text-gray-400">{error}</div>
+              <div className="text-gray-400">{error}</div>
             </div>
           ) : conteudos.length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 mb-2">🏢</div>
-                             <div className="text-gray-400">Nenhum conteúdo dos parceiros disponível no momento.</div>
+              <div className="text-gray-400">Nenhum conteúdo dos parceiros disponível no momento.</div>
               <div className="text-sm text-gray-500 mt-2">
                 Os parceiros ainda não publicaram conteúdos.
               </div>
             </div>
           ) : (
-                         <div className="space-y-3 max-h-[360px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-               {conteudos.map((conteudo) => {
-                 const thumbnail = getThumbnail(conteudo.url);
-                 return (
-                   <div key={conteudo.id} className="bg-sss-medium border border-gray-600 rounded-lg p-4 hover:border-purple-400 hover:bg-sss-dark transition-all duration-300 group cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
+            <div className="space-y-3 max-h-[360px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              {conteudos.map((conteudo) => {
+                const thumbnail = getThumbnail(conteudo.url);
+                return (
+                  <div key={conteudo.id} className="bg-sss-medium border border-gray-600 rounded-lg p-4 hover:border-purple-400 hover:bg-sss-dark transition-all duration-300 group cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
                     <div className="flex items-start space-x-3">
                       {/* Preview do conteúdo */}
                       <div className="flex-shrink-0">
                         {thumbnail?.src ? (
-                                                     <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-600 bg-sss-dark relative">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-600 bg-sss-dark relative">
                             <Image
                               src={thumbnail.src}
                               alt={conteudo.titulo}
@@ -382,59 +382,59 @@ export default function ConteudosParceiros() {
                             )}
                           </div>
                         ) : (
-                                                     <div className={`w-16 h-16 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500/20 to-purple-500/20'} border border-gray-600 rounded-lg flex items-center justify-center group-hover:border-purple-400 transition-colors text-xl`}>
+                          <div className={`w-16 h-16 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500/20 to-purple-500/20'} border border-gray-600 rounded-lg flex items-center justify-center group-hover:border-purple-400 transition-colors text-xl`}>
                             {thumbnail?.icon || '🔗'}
                           </div>
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                                                 <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 truncate transition-colors">
-                           {conteudo.titulo}
-                         </div>
+                        <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 truncate transition-colors">
+                          {conteudo.titulo}
+                        </div>
                         <div className="flex items-center space-x-2 mt-1 flex-wrap">
                           <div className="flex items-center space-x-1">
-                                                         <span className="text-xs text-gray-300 font-medium">
-                               {conteudo.parceiro.nome}
-                             </span>
+                            <span className="text-xs text-gray-300 font-medium">
+                              {conteudo.parceiro.nome}
+                            </span>
                           </div>
                           <span className="text-gray-400">•</span>
-                                                     <span className="text-xs text-blue-400 font-medium">
-                             {getTipoLabel(conteudo.tipo)}
-                           </span>
+                          <span className="text-xs text-blue-400 font-medium">
+                            {getTipoLabel(conteudo.tipo)}
+                          </span>
                           {conteudo.categoria && (
                             <>
                               <span className="text-gray-400">•</span>
-                                                             <span className="text-xs text-purple-400 font-medium">
-                                 {conteudo.categoria}
-                               </span>
+                              <span className="text-xs text-purple-400 font-medium">
+                                {conteudo.categoria}
+                              </span>
                             </>
                           )}
                           {/* Indicador de popularidade */}
                           <span className="text-gray-400">•</span>
-                                                     <span className="text-xs text-yellow-400 font-medium">
-                             🔥 {formatarNumero(conteudo.visualizacoes)} view
-                           </span>
+                          <span className="text-xs text-yellow-400 font-medium">
+                            🔥 {formatarNumero(conteudo.visualizacoes)} view
+                          </span>
                         </div>
                       </div>
                       
                       <div className="flex-shrink-0">
-                                                 <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
-                           {new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR')}
-                         </span>
+                        <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
+                          {new Date(conteudo.dataPublicacao).toLocaleDateString('pt-BR')}
+                        </span>
                       </div>
                     </div>
                   </div>
                 );
               })}
               
-                             {/* Indicador de mais conteúdos */}
-               {conteudos.length > 4 && (
-                                 <div className="text-center py-2 border-t border-gray-600 mt-2">
-                   <div className="text-xs text-gray-400">
-                     Role para ver mais conteúdos
-                   </div>
-                 </div>
+              {/* Indicador de mais conteúdos */}
+              {conteudos.length > 4 && (
+                <div className="text-center py-2 border-t border-gray-600 mt-2">
+                  <div className="text-xs text-gray-400">
+                    Role para ver mais conteúdos
+                  </div>
+                </div>
               )}
             </div>
           )}
