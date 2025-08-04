@@ -13,11 +13,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'ID do conteúdo é obrigatório' })
       }
 
+      // Primeiro, verificar se é um conteúdo normal ou de parceiro
+      let conteudo = await prisma.conteudo.findUnique({
+        where: { id: String(id) }
+      })
+
+      let conteudoParceiro = null
+      if (!conteudo) {
+        conteudoParceiro = await prisma.conteudoParceiro.findUnique({
+          where: { id: String(id) }
+        })
+      }
+
+      if (!conteudo && !conteudoParceiro) {
+        return res.status(404).json({ error: 'Conteúdo não encontrado' })
+      }
+
+      const isConteudoParceiro = !!conteudoParceiro
+      const tabelaInteracao = isConteudoParceiro ? 'interacaoConteudoParceiro' : 'interacaoConteudo'
+
       // Verificar se o usuário já visualizou este conteúdo
       let jaVisualizou = false
       if (userId) {
         try {
-          const visualizacaoExistente = await (prisma as any).interacaoConteudo.findFirst({
+          const visualizacaoExistente = await (prisma as any)[tabelaInteracao].findFirst({
             where: {
               conteudoId: String(id),
               usuarioId: userId,
@@ -31,27 +50,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Só incrementar visualizações se o usuário ainda não visualizou
-      let conteudo
       if (!jaVisualizou) {
-        conteudo = await prisma.conteudo.update({
-          where: { id: String(id) },
-          data: {
-            visualizacoes: {
-              increment: 1
+        if (isConteudoParceiro) {
+          conteudoParceiro = await prisma.conteudoParceiro.update({
+            where: { id: String(id) },
+            data: {
+              visualizacoes: {
+                increment: 1
+              }
             }
-          }
-        })
+          })
+        } else {
+          conteudo = await prisma.conteudo.update({
+            where: { id: String(id) },
+            data: {
+              visualizacoes: {
+                increment: 1
+              }
+            }
+          })
+        }
       } else {
         // Buscar o conteúdo sem incrementar
-        conteudo = await prisma.conteudo.findUnique({
-          where: { id: String(id) }
-        })
+        if (isConteudoParceiro) {
+          conteudoParceiro = await prisma.conteudoParceiro.findUnique({
+            where: { id: String(id) }
+          })
+        } else {
+          conteudo = await prisma.conteudo.findUnique({
+            where: { id: String(id) }
+          })
+        }
       }
 
       // Registrar visualização do usuário (se autenticado e ainda não visualizou)
       if (userId && !jaVisualizou) {
         try {
-          await (prisma as any).interacaoConteudo.create({
+          await (prisma as any)[tabelaInteracao].create({
             data: {
               conteudoId: String(id),
               usuarioId: userId,
@@ -64,9 +99,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
 
+      const visualizacoes = isConteudoParceiro ? conteudoParceiro?.visualizacoes : conteudo?.visualizacoes
+
       return res.status(200).json({ 
         success: true, 
-        visualizacoes: conteudo?.visualizacoes || 0
+        visualizacoes: visualizacoes || 0
       })
     } catch (error) {
       console.error('Erro ao registrar visualização:', error)
