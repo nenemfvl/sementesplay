@@ -1708,52 +1708,7 @@ export default function PainelParceiro() {
             </div>
           </section>
 
-          {/* Notificações */}
-          <section className="mb-8">
-            <div className="bg-sss-medium/50 backdrop-blur-sm rounded-2xl border border-sss-light overflow-hidden">
-              <div className="p-6 border-b border-sss-light">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <BellIcon className="w-5 h-5 text-sss-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-sss-white">Notificações Recentes</h2>
-                    <p className="text-sm text-gray-400">Suas últimas notificações</p>
-                  </div>
-                </div>
-              </div>
 
-              <div className="p-6">
-                {loadingNotificacoes ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
-                    <span className="ml-3 text-gray-400">Carregando notificações...</span>
-                  </div>
-                ) : notificacoes && notificacoes.length > 0 ? (
-                  <div className="space-y-4">
-                    {notificacoes.map((notificacao) => (
-                      <div key={notificacao.id} className="p-4 bg-sss-light/30 rounded-lg hover:bg-sss-light/50 transition-all">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="text-sss-white font-medium">{notificacao.titulo}</h3>
-                            <p className="text-gray-400 text-sm mt-1">{notificacao.mensagem}</p>
-                          </div>
-                          <span className="text-xs text-gray-500 ml-4">
-                            {new Date(notificacao.data).toLocaleDateString('pt-BR')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <BellIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">Nenhuma notificação</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
         </main>
       </div>
 
