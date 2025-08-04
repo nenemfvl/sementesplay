@@ -19,7 +19,8 @@ import {
   UsersIcon,
   ClockIcon,
   CheckCircleIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  VideoCameraIcon
 } from '@heroicons/react/24/outline';
 
 
@@ -98,6 +99,44 @@ export default function PainelParceiro() {
   const [editandoConteudo, setEditandoConteudo] = useState<ConteudoParceiro | null>(null);
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
+
+  // Função para obter informações do YouTube
+  function getYoutubeInfo(url: string) {
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      const id = yt[1];
+      return {
+        thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+        link: `https://www.youtube.com/watch?v=${id}`
+      };
+    }
+    return null;
+  }
+
+  // Função para obter preview do conteúdo
+  function getPreview(url: string) {
+    if (!url) return null;
+    // YouTube
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (yt) {
+      return <iframe width="100%" height="180" src={`https://www.youtube.com/embed/${yt[1]}`} frameBorder="0" allowFullScreen className="rounded my-2" title="YouTube video" />;
+    }
+    // Twitch
+    const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
+    if (tw) {
+      return <iframe width="100%" height="180" src={`https://player.twitch.tv/?${tw[1] ? 'video=' + tw[2] : 'channel=' + tw[2]}&parent=localhost`} frameBorder="0" allowFullScreen className="rounded my-2" title="Twitch stream" />;
+    }
+    // Instagram
+    if (url.includes('instagram.com')) {
+      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-pink-600 underline my-2 block">Ver no Instagram</a>;
+    }
+    // TikTok
+    if (url.includes('tiktok.com')) {
+      return <a href={url} target="_blank" rel="noopener noreferrer" className="text-black underline my-2 block">Ver no TikTok</a>;
+    }
+    // Outro
+    return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
+  }
 
   const [repasseSelecionado, setRepasseSelecionado] = useState<Repasse | null>(null);
   const [showModalRedesSociais, setShowModalRedesSociais] = useState(false);
@@ -1436,39 +1475,56 @@ export default function PainelParceiro() {
                       <div key={conteudo.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500 cursor-pointer">
                         {/* Área clicável para o conteúdo */}
                         <div 
-                          className="p-4 cursor-pointer"
+                          className="cursor-pointer"
                           onClick={() => window.open(conteudo.url, '_blank', 'noopener,noreferrer')}
                         >
                           {/* Prévia visual do conteúdo */}
-                          <div className="w-full h-32 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg mb-4 flex items-center justify-center border border-indigo-500/30">
-                            <div className="text-center">
-                              <DocumentTextIcon className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
-                              <p className="text-xs text-gray-400">Clique para ver o conteúdo</p>
-                            </div>
-                          </div>
+                          {(() => {
+                            const yt = getYoutubeInfo(conteudo.url);
+                            if (yt) {
+                              return (
+                                <div className="relative">
+                                  <img src={yt.thumbnail} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                      Assistir no YouTube
+                                    </a>
+                                  </div>
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-gray-400 group-hover:from-gray-500 group-hover:to-gray-600 transition-all">
+                                  <VideoCameraIcon className="w-12 h-12" />
+                                </div>
+                              );
+                            }
+                          })()}
                           
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center space-x-2">
-                              <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
-                              <span className="text-sss-white font-medium truncate">{conteudo.titulo}</span>
-                            </div>
-                            {conteudo.fixado && (
-                              <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
-                                Fixado
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Informações do conteúdo */}
-                          <div className="space-y-2 mb-4">
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="text-xs text-gray-400">Tipo</p>
-                                <p className="text-sss-white capitalize text-sm">{conteudo.tipo}</p>
+                          <div className="p-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-2">
+                                <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
+                                <span className="text-sss-white font-medium truncate">{conteudo.titulo}</span>
                               </div>
-                              <div>
-                                <p className="text-xs text-gray-400">Categoria</p>
-                                <p className="text-sss-white capitalize text-sm">{conteudo.categoria}</p>
+                              {conteudo.fixado && (
+                                <span className="bg-yellow-600 text-sss-white px-2 py-1 rounded text-xs font-semibold">
+                                  Fixado
+                                </span>
+                              )}
+                            </div>
+                            
+                            {/* Informações do conteúdo */}
+                            <div className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <div>
+                                  <p className="text-xs text-gray-400">Tipo</p>
+                                  <p className="text-sss-white capitalize text-sm">{conteudo.tipo}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-400">Categoria</p>
+                                  <p className="text-sss-white capitalize text-sm">{conteudo.categoria}</p>
+                                </div>
                               </div>
                             </div>
                           </div>
