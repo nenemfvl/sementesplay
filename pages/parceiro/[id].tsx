@@ -98,6 +98,8 @@ export default function ParceiroPerfil() {
   const [loading, setLoading] = useState(true)
   const [aba, setAba] = useState<'conteudos' | 'transacoes' | 'codigos'>('conteudos')
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
+  const [likes, setLikes] = useState<Set<string>>(new Set())
+  const [dislikes, setDislikes] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -191,6 +193,113 @@ export default function ParceiroPerfil() {
       currency: 'BRL'
     }).format(valor)
   }
+
+  // Função para registrar visualização
+  const registrarVisualizacao = async (conteudoId: string) => {
+    try {
+      await fetch(`/api/conteudos/${conteudoId}/visualizar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      // Atualizar contador local
+      setConteudos(prev => prev.map(conteudo => 
+        conteudo.id === conteudoId 
+          ? { ...conteudo, visualizacoes: conteudo.visualizacoes + 1 }
+          : conteudo
+      ));
+    } catch (error) {
+      console.error('Erro ao registrar visualização:', error);
+    }
+  };
+
+  // Função para curtir conteúdo
+  const curtirConteudo = async (conteudoId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Evitar que o clique propague para o card
+    
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/curtir`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Atualizar estado local
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, curtidas: data.curtidas }
+            : conteudo
+        ));
+        
+        // Atualizar likes/dislikes do usuário
+        if (data.liked) {
+          setLikes(prev => new Set([...prev, conteudoId]));
+          setDislikes(prev => {
+            const newDislikes = new Set(prev);
+            newDislikes.delete(conteudoId);
+            return newDislikes;
+          });
+        } else {
+          setLikes(prev => {
+            const newLikes = new Set(prev);
+            newLikes.delete(conteudoId);
+            return newLikes;
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao curtir conteúdo:', error);
+    }
+  };
+
+  // Função para dar dislike no conteúdo
+  const dislikeConteudo = async (conteudoId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Evitar que o clique propague para o card
+    
+    try {
+      const response = await fetch(`/api/conteudos/${conteudoId}/dislike`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Atualizar estado local
+        setConteudos(prev => prev.map(conteudo => 
+          conteudo.id === conteudoId 
+            ? { ...conteudo, dislikes: data.dislikes }
+            : conteudo
+        ));
+        
+        // Atualizar dislikes/likes do usuário
+        if (data.disliked) {
+          setDislikes(prev => new Set([...prev, conteudoId]));
+          setLikes(prev => {
+            const newLikes = new Set(prev);
+            newLikes.delete(conteudoId);
+            return newLikes;
+          });
+        } else {
+          setDislikes(prev => {
+            const newDislikes = new Set(prev);
+            newDislikes.delete(conteudoId);
+            return newDislikes;
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao dar dislike no conteúdo:', error);
+    }
+  };
 
   // Função para obter informações do YouTube
   function getYoutubeInfo(url: string) {
@@ -423,8 +532,11 @@ export default function ParceiroPerfil() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {conteudos.map((conteudo) => (
-                      <div key={conteudo.id} className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light hover:border-gray-500 transition-all duration-300 group cursor-pointer"
-                           onClick={() => window.open(conteudo.url, '_blank', 'noopener,noreferrer')}>
+                                             <div key={conteudo.id} className="bg-sss-dark rounded-lg overflow-hidden border border-sss-light hover:border-gray-500 transition-all duration-300 group cursor-pointer"
+                            onClick={() => {
+                              registrarVisualizacao(conteudo.id);
+                              window.open(conteudo.url, '_blank', 'noopener,noreferrer');
+                            }}>
                         
                         {/* Prévia visual do conteúdo */}
                         {(() => {
@@ -475,16 +587,48 @@ export default function ParceiroPerfil() {
                           }
                         })()}
                         
-                        {/* Informações do conteúdo */}
-                        <div className="p-4">
-                          <h4 className="font-semibold text-sss-white mb-2 truncate">{conteudo.titulo}</h4>
-                          <p className="text-sm text-gray-400 mb-2">{conteudo.tipo} • {conteudo.categoria}</p>
-                          <div className="flex items-center gap-4 text-xs text-gray-500">
-                            <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
-                            <span>👍 {formatarNumero(conteudo.curtidas)}</span>
-                            <span>💬 {formatarNumero(conteudo.comentarios)}</span>
-                          </div>
-                        </div>
+                                                 {/* Informações do conteúdo */}
+                         <div className="p-4">
+                           <h4 className="font-semibold text-sss-white mb-2 truncate">{conteudo.titulo}</h4>
+                           <p className="text-sm text-gray-400 mb-2">{conteudo.tipo} • {conteudo.categoria}</p>
+                           
+                           {/* Estatísticas e botões de interação */}
+                           <div className="flex items-center justify-between">
+                             <div className="flex items-center gap-4 text-xs text-gray-500">
+                               <span>👁️ {formatarNumero(conteudo.visualizacoes)}</span>
+                               <span>💬 {formatarNumero(conteudo.comentarios)}</span>
+                             </div>
+                             
+                             {/* Botões de like/dislike */}
+                             <div className="flex items-center gap-2">
+                               <button
+                                 onClick={(e) => curtirConteudo(conteudo.id, e)}
+                                 className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
+                                   likes.has(conteudo.id)
+                                     ? 'text-green-400 bg-green-400/10'
+                                     : 'text-gray-400 hover:text-green-400'
+                                 }`}
+                                 title="Curtir"
+                               >
+                                 <HandThumbUpIcon className="w-3 h-3" />
+                                 <span>{formatarNumero(conteudo.curtidas)}</span>
+                               </button>
+                               
+                               <button
+                                 onClick={(e) => dislikeConteudo(conteudo.id, e)}
+                                 className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
+                                   dislikes.has(conteudo.id)
+                                     ? 'text-red-400 bg-red-400/10'
+                                     : 'text-gray-400 hover:text-red-400'
+                                 }`}
+                                 title="Não curtir"
+                               >
+                                 <HandThumbDownIcon className="w-3 h-3" />
+                                 <span>{formatarNumero(conteudo.dislikes)}</span>
+                               </button>
+                             </div>
+                           </div>
+                         </div>
                       </div>
                     ))}
                   </div>
