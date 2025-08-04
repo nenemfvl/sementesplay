@@ -158,14 +158,27 @@ export default function PainelParceiro() {
       };
     }
     
-    // Twitch
-    const tw = url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
-    if (tw) {
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^\/\?]+)/);
+    if (twLive && !url.includes('/videos/')) {
       return {
-        src: null, // Twitch não permite thumbnails diretos
-        platform: 'Twitch',
+        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${twLive[1]}.jpg`,
+        platform: 'Twitch Live',
         icon: '📺',
-        color: 'from-purple-500 to-purple-600'
+        color: 'from-purple-600 to-pink-600',
+        fallback: true
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      return {
+        src: `https://static-cdn.jtvnw.net/videos_capture/${twVideo[1]}.jpg`,
+        platform: 'Twitch Video',
+        icon: '📺',
+        color: 'from-purple-600 to-pink-600',
+        fallback: true
       };
     }
     
@@ -175,7 +188,7 @@ export default function PainelParceiro() {
         src: null, // Instagram não permite thumbnails diretos
         platform: 'Instagram',
         icon: '📷',
-        color: 'from-pink-500 to-pink-600'
+        color: 'from-pink-500 via-purple-500 to-orange-500'
       };
     }
     
@@ -185,7 +198,7 @@ export default function PainelParceiro() {
         src: null, // TikTok não permite thumbnails diretos
         platform: 'TikTok',
         icon: '🎵',
-        color: 'from-black to-gray-800'
+        color: 'from-gray-900 via-gray-800 to-gray-700'
       };
     }
     
@@ -1541,10 +1554,29 @@ export default function PainelParceiro() {
                           {(() => {
                             const thumbnail = getThumbnail(conteudo.url);
                             if (thumbnail && thumbnail.src) {
-                              // YouTube com thumbnail real
+                              // YouTube e Twitch com thumbnail real
                               return (
                                 <div className="relative">
-                                  <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <img 
+                                    src={thumbnail.src} 
+                                    alt={conteudo.titulo} 
+                                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                    onError={(e) => {
+                                      // Fallback para gradiente se a imagem falhar
+                                      const target = e.target as HTMLImageElement;
+                                      target.style.display = 'none';
+                                      target.nextElementSibling?.classList.remove('hidden');
+                                    }}
+                                  />
+                                  {/* Fallback para Twitch se a imagem falhar */}
+                                  {thumbnail.fallback && (
+                                    <div className={`w-full h-48 bg-gradient-to-br ${thumbnail.color} rounded-t-xl flex items-center justify-center hidden`}>
+                                      <div className="text-center">
+                                        <span className="text-4xl mb-2 block">{thumbnail.icon}</span>
+                                        <p className="text-sss-white font-semibold">{thumbnail.platform}</p>
+                                      </div>
+                                    </div>
+                                  )}
                                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                     <div className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
                                       Assistir no {thumbnail.platform}
