@@ -214,6 +214,19 @@ export default function Parceiros() {
             </div>
           </section>
 
+          {/* Botão Seja Parceiro - Lateral Direita Flutuante */}
+          {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
+            <div className="fixed top-32 right-6 z-50">
+              <button
+                onClick={() => router.push('/candidatura-parceiro')}
+                className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105"
+              >
+                <FaBuilding className="w-5 h-5" />
+                Seja Parceiro
+              </button>
+            </div>
+          )}
+
           {/* Conteúdos dos Parceiros */}
           <section className="w-full max-w-6xl mx-auto mb-20">
             <ConteudosParceiros />
@@ -566,18 +579,7 @@ export default function Parceiros() {
                       </button>
                     </div>
 
-          {/* Botão Seja Parceiro */}
-          {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
-            <div className="fixed bottom-6 right-6">
-                <button
-                onClick={() => router.push('/candidatura-parceiro')}
-                className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-colors flex items-center gap-2"
-              >
-                <FaBuilding className="w-5 h-5" />
-                Seja Parceiro
-                </button>
-          </div>
-        )}
+
         </main>
       </div>
     </>
