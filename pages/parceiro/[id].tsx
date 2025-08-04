@@ -447,8 +447,12 @@ export default function ParceiroPerfil() {
                               <div className="relative">
                                 <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
                                      onError={(e) => {
-                                       e.currentTarget.style.display = 'none';
-                                       e.currentTarget.nextElementSibling!.style.display = 'flex';
+                                       const target = e.currentTarget as HTMLImageElement;
+                                       target.style.display = 'none';
+                                       const nextSibling = target.nextElementSibling as HTMLElement;
+                                       if (nextSibling) {
+                                         nextSibling.style.display = 'flex';
+                                       }
                                      }} />
                                 <div className="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:scale-105 transition-transform duration-300" style={{display: 'none'}}>
                                   <div className="text-center">
