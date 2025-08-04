@@ -1,0 +1,5 @@
+[33m4c69d4b3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Adicionar redes sociais para parceiros - Instagram, Twitch, YouTube e TikTok
+[33m283ada59[m Teste deploy Vercel - limite resetado
+[33m86729751[m Corrige erro 400 no painel de parceiros - adiciona campo cidade obrigatório
+[33m0b1dbac5[m Atualizações no painel de parceiros
+[33m82fb9b31[m Atualizado sistema de conteúdo do painel parceiro para FiveM - novos campos: nomeCidade, linkCidade, IP/Porta, links de plataformas, informações de eventos

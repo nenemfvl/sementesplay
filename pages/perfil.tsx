@@ -379,8 +379,7 @@ export default function Perfil() {
                       </div>
                       <div className="w-full bg-gray-700 rounded-full h-2">
                         <div 
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${Math.min(xpData.progressoNivel, 100)}%` }}
+                          className={`bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300 ${xpData.progressoNivel <= 25 ? 'w-1/4' : xpData.progressoNivel <= 50 ? 'w-1/2' : xpData.progressoNivel <= 75 ? 'w-3/4' : 'w-full'}`}
                         ></div>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
@@ -488,10 +487,7 @@ export default function Perfil() {
                      </div>
                      <div className="w-full bg-gray-700 rounded-full h-2">
                        <div 
-                         className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
-                         style={{ 
-                           width: `${Math.min(xpData?.progressoNivel || 0, 100)}%` 
-                         }}
+                         className={`bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300 ${(xpData?.progressoNivel || 0) <= 25 ? 'w-1/4' : (xpData?.progressoNivel || 0) <= 50 ? 'w-1/2' : (xpData?.progressoNivel || 0) <= 75 ? 'w-3/4' : 'w-full'}`}
                        ></div>
                      </div>
                      <p className="text-xs text-gray-400 mt-1">
