@@ -70,6 +70,9 @@ type ConteudoParceiro = {
   url: string;
   dataPublicacao?: string;
   fixado?: boolean;
+  visualizacoes?: number;
+  curtidas?: number;
+  dislikes?: number;
 };
 
 export default function PainelParceiro() {
@@ -371,6 +374,15 @@ export default function PainelParceiro() {
     if (percentage >= 50) return 'w-1/2';
     if (percentage >= 25) return 'w-1/4';
     return 'w-full';
+  };
+
+  const formatarNumero = (numero: number) => {
+    if (numero >= 1000000) {
+      return (numero / 1000000).toFixed(1) + 'M'
+    } else if (numero >= 1000) {
+      return (numero / 1000).toFixed(1) + 'K'
+    }
+    return numero.toString()
   };
 
 
@@ -1621,6 +1633,24 @@ export default function PainelParceiro() {
                                 <div>
                                   <p className="text-xs text-gray-400">Categoria</p>
                                   <p className="text-sss-white capitalize text-sm">{conteudo.categoria}</p>
+                                </div>
+                              </div>
+                              
+                              {/* Estatísticas do conteúdo */}
+                              <div className="pt-2 border-t border-gray-600">
+                                <div className="flex justify-between items-center text-xs">
+                                  <div className="flex items-center space-x-1">
+                                    <span className="text-yellow-400">👁️</span>
+                                    <span className="text-gray-300">{formatarNumero(conteudo.visualizacoes || 0)}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <span className="text-green-400">👍</span>
+                                    <span className="text-gray-300">{formatarNumero(conteudo.curtidas || 0)}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <span className="text-red-400">👎</span>
+                                    <span className="text-gray-300">{formatarNumero(conteudo.dislikes || 0)}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
