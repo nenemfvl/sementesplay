@@ -1270,10 +1270,6 @@ export default function PainelParceiro() {
                         <p className="text-sm text-gray-400">Nome da Cidade</p>
                         <p className="text-sss-white font-medium">{parceiro?.nomeCidade || 'Não definido'}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-400">Comissão Mensal</p>
-                        <p className="text-sss-white font-medium">{parceiro?.comissaoMensal ? `R$ ${parceiro.comissaoMensal.toFixed(2)}` : 'Não definido'}</p>
-                      </div>
                     </div>
                   </div>
 
