@@ -59,7 +59,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Parceiro não encontrado' })
     }
 
-    res.status(200).json(parceiro)
+    // Buscar códigos do parceiro
+    const codigosParceiro = await prisma.codigoCashback.findMany({
+      where: {
+        parceiroId: parceiro.id
+      },
+      select: {
+        codigo: true,
+        usado: true
+      }
+    })
+
+    const codigos = codigosParceiro.map(c => c.codigo)
+
+    // Buscar repasses realizados pelo parceiro
+    const repassesRealizados = await prisma.repasseParceiro.findMany({
+      where: {
+        parceiroId: parceiro.id,
+        status: 'pago'
+      }
+    })
+
+    // Calcular total de vendas real (baseado nos repasses realizados)
+    const totalVendasReal = repassesRealizados.reduce((sum, r) => sum + r.valor, 0)
+    
+    // Calcular códigos gerados (todos os códigos criados pelo parceiro)
+    const codigosGerados = codigosParceiro.length
+
+    // Retornar dados do parceiro com valores calculados
+    const parceiroComEstatisticas = {
+      ...parceiro,
+      totalVendas: totalVendasReal,
+      codigosGerados: codigosGerados
+    }
+
+    res.status(200).json(parceiroComEstatisticas)
   } catch (error) {
     console.error('Erro ao buscar perfil do parceiro:', error)
     res.status(500).json({ error: 'Erro interno do servidor' })
