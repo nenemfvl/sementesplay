@@ -237,21 +237,21 @@ export default function ParceiroPerfil() {
             : conteudo
         ));
         
-        // Atualizar likes/dislikes do usuário
-        if (data.liked) {
-          setLikes(prev => new Set([...prev, conteudoId]));
-          setDislikes(prev => {
-            const newDislikes = new Set(prev);
-            newDislikes.delete(conteudoId);
-            return newDislikes;
-          });
-        } else {
-          setLikes(prev => {
-            const newLikes = new Set(prev);
-            newLikes.delete(conteudoId);
-            return newLikes;
-          });
-        }
+                 // Atualizar likes/dislikes do usuário
+         if (data.liked) {
+           setLikes(prev => new Set(Array.from(prev).concat(conteudoId)));
+           setDislikes(prev => {
+             const newDislikes = new Set(prev);
+             newDislikes.delete(conteudoId);
+             return newDislikes;
+           });
+         } else {
+           setLikes(prev => {
+             const newLikes = new Set(prev);
+             newLikes.delete(conteudoId);
+             return newLikes;
+           });
+         }
       }
     } catch (error) {
       console.error('Erro ao curtir conteúdo:', error);
@@ -280,21 +280,21 @@ export default function ParceiroPerfil() {
             : conteudo
         ));
         
-        // Atualizar dislikes/likes do usuário
-        if (data.disliked) {
-          setDislikes(prev => new Set([...prev, conteudoId]));
-          setLikes(prev => {
-            const newLikes = new Set(prev);
-            newLikes.delete(conteudoId);
-            return newLikes;
-          });
-        } else {
-          setDislikes(prev => {
-            const newDislikes = new Set(prev);
-            newDislikes.delete(conteudoId);
-            return newDislikes;
-          });
-        }
+                 // Atualizar dislikes/likes do usuário
+         if (data.disliked) {
+           setDislikes(prev => new Set(Array.from(prev).concat(conteudoId)));
+           setLikes(prev => {
+             const newLikes = new Set(prev);
+             newLikes.delete(conteudoId);
+             return newLikes;
+           });
+         } else {
+           setDislikes(prev => {
+             const newDislikes = new Set(prev);
+             newDislikes.delete(conteudoId);
+             return newDislikes;
+           });
+         }
       }
     } catch (error) {
       console.error('Erro ao dar dislike no conteúdo:', error);
