@@ -167,7 +167,7 @@ export default function Doar() {
         setSelectedCreator('')
         // Redirecionar após 2 segundos
         setTimeout(() => {
-          window.location.href = '/criadores'
+          window.location.href = '/perfil'
         }, 2000)
       } else {
         console.error('Erro na resposta da API:', data)

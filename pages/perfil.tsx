@@ -103,7 +103,7 @@ export default function Perfil() {
     return () => clearInterval(interval)
   }, [user])
 
-  // Atualizar perfil quando a página ganhar foco
+  // Atualizar perfil quando a página ganhar foco ou se tornar visível
   useEffect(() => {
     const handleFocus = () => {
       if (user) {
@@ -116,14 +116,29 @@ export default function Perfil() {
             if (data && data.id) {
               setUser(data)
               auth.setUser(data, token || undefined)
+              // Recarregar estatísticas quando o perfil for atualizado
+              loadStats()
+              loadXPData()
             }
           })
           .catch(err => console.error('Erro ao atualizar perfil:', err))
       }
     }
 
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        // Página se tornou visível novamente
+        loadStats()
+        loadXPData()
+      }
+    }
+
     window.addEventListener('focus', handleFocus)
-    return () => window.removeEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [user])
 
   const loadStats = async () => {
@@ -176,6 +191,21 @@ export default function Perfil() {
       }
     } catch (error) {
       console.error('Erro ao carregar missões do usuário:', error);
+    }
+  }
+
+  const atualizarEstatisticas = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        loadStats(),
+        loadXPData(),
+        loadMissoesUsuario()
+      ]);
+    } catch (error) {
+      console.error('Erro ao atualizar estatísticas:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -407,6 +437,22 @@ export default function Perfil() {
             </div>
 
             {/* Stats Cards */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-sss-white">Estatísticas</h3>
+              <button
+                onClick={atualizarEstatisticas}
+                disabled={loading}
+                className="bg-sss-accent hover:bg-red-600 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                ) : (
+                  <CogIcon className="w-4 h-4" />
+                )}
+                {loading ? 'Atualizando...' : 'Atualizar'}
+              </button>
+            </div>
+            
             {loading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sss-accent mx-auto"></div>
