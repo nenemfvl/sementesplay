@@ -487,10 +487,11 @@ export default function PainelParceiro() {
 
   async function handleFixarConteudo(id: string, fixar: boolean) {
     try {
-      const response = await fetch(`/api/parceiros/conteudos/${id}`, {
+      const response = await fetch(`/api/parceiros/conteudos`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: id,
           fixado: fixar
         })
       });

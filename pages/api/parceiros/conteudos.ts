@@ -137,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'PUT') {
     try {
-      const { id, parceiroId, titulo, url, tipo, categoria, descricao, plataforma, cidade, endereco, dataEvento, preco, vagas } = req.body;
+      const { id, parceiroId, titulo, url, tipo, categoria, descricao, plataforma, cidade, endereco, dataEvento, preco, vagas, fixado } = req.body;
       
       if (!id) return res.status(400).json({ error: 'ID obrigatório' });
       
@@ -154,6 +154,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           cidade,
           endereco,
           dataEvento: dataEvento ? new Date(dataEvento) : null,
+          fixado: fixado !== undefined ? fixado : undefined,
         }
       });
       
