@@ -65,6 +65,8 @@ export default function CandidaturaCriador() {
   const [portfolioLinks, setPortfolioLinks] = useState([''])
   const [candidaturaExistente, setCandidaturaExistente] = useState<CandidaturaExistente | null>(null)
   const [verificandoCandidatura, setVerificandoCandidatura] = useState(true)
+  const [candidaturaEnviada, setCandidaturaEnviada] = useState(false)
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -158,6 +160,7 @@ export default function CandidaturaCriador() {
 
   const submitCandidatura = async () => {
     setLoading(true)
+    setErroEnvio(null)
     try {
       const response = await fetch('/api/criadores/candidaturas', {
         method: 'POST',
@@ -175,15 +178,18 @@ export default function CandidaturaCriador() {
       })
 
       if (response.ok) {
-        alert('Candidatura enviada com sucesso! 🎉\nVocê receberá uma notificação em breve.')
-        window.location.href = '/criadores'
+        setCandidaturaEnviada(true)
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+          window.location.href = '/criadores'
+        }, 2000)
       } else {
         const data = await response.json()
-        alert(`Erro: ${data.error}`)
+        setErroEnvio(data.error || 'Erro ao enviar candidatura')
       }
     } catch (error) {
       console.error('Erro ao enviar candidatura:', error)
-      alert('Erro ao enviar candidatura. Tente novamente.')
+      setErroEnvio('Erro ao enviar candidatura. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -661,6 +667,39 @@ export default function CandidaturaCriador() {
                 ></div>
               </div>
             </div>
+
+            {/* Mensagens de Confirmação e Erro */}
+            {candidaturaEnviada && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-green-900/20 border border-green-500 rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <CheckCircleIcon className="w-6 h-6 text-green-400" />
+                  <div>
+                    <h3 className="text-green-400 font-semibold">Candidatura enviada com sucesso! 🎉</h3>
+                    <p className="text-green-300 text-sm">Você receberá uma notificação em breve.</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {erroEnvio && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-900/20 border border-red-500 rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <XCircleIcon className="w-6 h-6 text-red-400" />
+                  <div>
+                    <h3 className="text-red-400 font-semibold">Erro ao enviar candidatura</h3>
+                    <p className="text-red-300 text-sm">{erroEnvio}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Status da Candidatura Existente ou Formulário */}
             {candidaturaExistente ? (
