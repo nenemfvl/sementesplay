@@ -33,8 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // Calcular total de vendas para cada parceiro baseado nos repasses realizados
-    const parceirosComVendas = await Promise.all(
+    // Calcular total de vendas e solicitações de compra para cada parceiro
+    const parceirosComDados = await Promise.all(
       parceiros.map(async (parceiro) => {
         // Buscar repasses realizados pelo parceiro
         const repassesRealizados = await prisma.repasseParceiro.findMany({
@@ -47,15 +47,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Calcular total de vendas baseado nos repasses
         const totalVendasReal = repassesRealizados.reduce((sum, r) => sum + r.valor, 0)
 
+        // Buscar solicitações de compra registradas com este parceiro
+        const solicitacoesCompra = await prisma.solicitacaoCompra.findMany({
+          where: {
+            parceiroId: parceiro.id
+          }
+        })
+
+        // Contar total de solicitações de compra
+        const totalSolicitacoes = solicitacoesCompra.length
+
         return {
           ...parceiro,
-          totalVendasCalculado: totalVendasReal
+          totalVendasCalculado: totalVendasReal,
+          codigosGeradosCalculado: totalSolicitacoes
         }
       })
     )
 
     // Formatar dados dos parceiros
-    const parceirosFormatados = parceirosComVendas.map((parceiro, index) => ({
+    const parceirosFormatados = parceirosComDados.map((parceiro, index) => ({
       id: parceiro.id,
       nome: parceiro.usuario.nome,
       email: parceiro.usuario.email,
@@ -65,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       nomeCidade: parceiro.nomeCidade,
       comissaoMensal: parceiro.comissaoMensal,
       totalVendas: parceiro.totalVendasCalculado, // Usar o valor calculado
-      codigosGerados: parceiro.codigosGerados,
+      codigosGerados: parceiro.codigosGeradosCalculado, // Usar o valor calculado
       posicao: index + 1,
       dataCriacao: parceiro.usuario.dataCriacao,
       // Redes Sociais
