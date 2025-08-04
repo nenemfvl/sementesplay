@@ -180,7 +180,7 @@ export default function ConteudosParceiros() {
   };
 
   return (
-    <section className="w-full max-w-4xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-36 items-stretch">
+    <section className="w-full max-w-6xl mx-auto mt-8 mb-10 flex flex-col md:flex-row gap-36 items-stretch">
       <div className="w-full md:w-auto flex flex-col md:flex-row md:items-stretch gap-36">
         <div className="w-full md:w-80 flex-shrink-0 relative">
           <h2 className="text-2xl font-bold text-sss-white mb-4 md:mb-6 md:text-left text-center">
