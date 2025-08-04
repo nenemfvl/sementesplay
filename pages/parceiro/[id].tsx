@@ -77,6 +77,7 @@ export default function ParceiroPerfil() {
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const [likes, setLikes] = useState<Set<string>>(new Set())
   const [dislikes, setDislikes] = useState<Set<string>>(new Set())
+  // Comentário de teste para alteração
 
   useEffect(() => {
     const currentUser = auth.getUser()
