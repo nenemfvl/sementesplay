@@ -7,6 +7,7 @@ import ConteudosParceiros from '../components/ConteudosParceiros';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import { auth, User } from '../lib/auth'
+import { PageLoader, CardLoader } from '../components/Loader'
 
 const categoriasParceiros = [
   { id: 'geral', nome: 'Geral', icone: '🏢', descricao: 'Todos os Parceiros' },
@@ -18,6 +19,7 @@ export default function Parceiros() {
   const [parceiros, setParceiros] = useState<any[]>([])
   const [categoriaRanking, setCategoriaRanking] = useState('geral')
   const [loadingRanking, setLoadingRanking] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
   const [candidaturaStatus, setCandidaturaStatus] = useState<string | null>(null)
@@ -85,15 +87,17 @@ export default function Parceiros() {
   }
 
   const loadParceiros = async () => {
+    setLoading(true)
     try {
       const response = await fetch('/api/parceiros/ranking')
       const data = await response.json()
       if (response.ok && data.success) {
-
         setParceiros(data.parceiros || [])
       }
     } catch (error) {
       console.error('Erro ao carregar parceiros:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -177,6 +181,10 @@ export default function Parceiros() {
     return null
   }
 
+  if (loading) {
+    return <PageLoader />
+  }
+
     return (
       <>
         <Head>
@@ -258,7 +266,11 @@ export default function Parceiros() {
                     </div>
 
             {loadingRanking ? (
-              <div className="text-center text-gray-400 py-8">Carregando ranking...</div>
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <CardLoader key={i} />
+                ))}
+              </div>
             ) : parceirosFiltrados.length === 0 ? (
               <div className="text-center text-gray-400 py-8">Nenhum parceiro encontrado.</div>
             ) : (

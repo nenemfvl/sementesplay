@@ -7,6 +7,7 @@ import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import { auth } from '../lib/auth'
+import { PageLoader, CardLoader } from '../components/Loader'
 
 const redes = [
   { nome: 'Todos', valor: 'todos', icon: null },
@@ -36,55 +37,56 @@ export default function Status() {
   const [rankingMissoesConquistas, setRankingMissoesConquistas] = useState<any[]>([])
   const [categoriaRanking, setCategoriaRanking] = useState('geral')
   const [loadingRanking, setLoadingRanking] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
   const [ciclosInfo, setCiclosInfo] = useState<any>(null)
   const router = useRouter()
 
   useEffect(() => {
-    // Carregar dados do usuário usando o sistema de autenticação
-    const currentUser = auth.getUser()
-    
-    if (currentUser) {
-      setUser(currentUser)
-    } else {
-      // Tentar buscar da API como fallback
-      fetch('/api/usuario/atual', {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.usuario) {
-            setUser(data.usuario)
+    const loadData = async () => {
+      setLoading(true)
+      try {
+        // Carregar dados do usuário usando o sistema de autenticação
+        const currentUser = auth.getUser()
+        
+        if (currentUser) {
+          setUser(currentUser)
+        } else {
+          // Tentar buscar da API como fallback
+          const userResponse = await fetch('/api/usuario/atual', {
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          const userData = await userResponse.json()
+          if (userData.usuario) {
+            setUser(userData.usuario)
             // Salvar no sistema de autenticação
-            auth.setUser(data.usuario)
+            auth.setUser(userData.usuario)
           }
-        })
-        .catch(error => {
-          console.error('Erro ao buscar usuário da API:', error)
-        })
+        }
+
+        // Carregar estatísticas
+        const statsResponse = await fetch('/api/admin/stats')
+        const statsData = await statsResponse.json()
+        if (typeof statsData.totalSementes === 'number') {
+          setTotalSementes(statsData.totalSementes)
+        }
+
+        // Carregar informações dos ciclos
+        const ciclosResponse = await fetch('/api/ranking/ciclos')
+        const ciclosData = await ciclosResponse.json()
+        setCiclosInfo(ciclosData)
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    fetch('/api/admin/stats')
-      .then(res => res.json())
-      .then(data => {
-        if (typeof data.totalSementes === 'number') {
-          setTotalSementes(data.totalSementes)
-        }
-      })
-
-    // Carregar informações dos ciclos
-    fetch('/api/ranking/ciclos')
-      .then(res => res.json())
-      .then(data => {
-        setCiclosInfo(data)
-      })
-      .catch(error => {
-        console.error('Erro ao carregar informações dos ciclos:', error)
-      })
+    loadData()
   }, [])
 
   useEffect(() => {
@@ -172,6 +174,10 @@ export default function Status() {
       localStorage.setItem('criadoresFavoritos', JSON.stringify(Array.from(novosFavoritos)))
       return novosFavoritos
     })
+  }
+
+  if (loading) {
+    return <PageLoader />
   }
 
   return (

@@ -20,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
 import Navbar from '../components/Navbar'
+import { PageLoader, CardLoader } from '../components/Loader'
 
 interface RankingItem {
   id: string
@@ -55,7 +56,7 @@ export default function Criadores() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [ranking, setRanking] = useState<RankingItem[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
 
@@ -155,6 +156,10 @@ export default function Criadores() {
     return null
   }
 
+  if (loading) {
+    return <PageLoader />
+  }
+
   return (
     <>
       <Head>
@@ -207,9 +212,10 @@ export default function Criadores() {
                 </div>
 
                 {loading ? (
-                  <div className="text-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sss-accent mx-auto"></div>
-                    <p className="text-gray-400 mt-2">Carregando ranking...</p>
+                  <div className="space-y-3">
+                    {[...Array(8)].map((_, i) => (
+                      <CardLoader key={i} />
+                    ))}
                   </div>
                 ) : rankingFiltrado.length === 0 ? (
                   <div className="text-center py-12">
