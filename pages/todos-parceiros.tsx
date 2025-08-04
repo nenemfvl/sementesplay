@@ -262,10 +262,6 @@ export default function TodosParceiros() {
                           <span className="text-gray-400">Códigos:</span>
                           <span className="text-sss-white">{formatarNumero(parceiro.codigosGerados)}</span>
                         </div>
-                        <div className="flex justify-between font-bold">
-                          <span className="text-gray-400">Comissão:</span>
-                          <span className="text-sss-accent">R$ {parceiro.comissaoMensal}</span>
-                        </div>
                         
                         {/* Redes Sociais */}
                         {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
