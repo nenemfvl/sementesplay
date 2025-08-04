@@ -221,7 +221,7 @@ export default function ParceiroPerfil() {
     }
   };
 
-    // Função para curtir conteúdo
+    // Função para curtir conteúdo (atualizada)
   const curtirConteudo = async (conteudoId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Evitar que o clique propague para o card
     
