@@ -14,10 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Buscar conteúdos dos parceiros ordenados por visualizações
     const conteudosPopulares = await prisma.conteudoParceiro.findMany({
       where: {
-        // Apenas conteúdos com visualizações
-        visualizacoes: {
-          gt: 0
-        }
+        // Buscar todos os conteúdos, mesmo sem visualizações
       },
       include: {
         parceiro: {

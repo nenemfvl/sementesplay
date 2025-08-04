@@ -343,7 +343,7 @@ export default function ConteudosParceiros() {
               </div>
             </div>
           ) : (
-            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-sss-light/30 scrollbar-track-transparent">
+            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-sss-light/30 scrollbar-track-transparent" style={{ minHeight: '200px' }}>
               {conteudos.map((conteudo) => {
                 const thumbnail = getThumbnail(conteudo.url);
                 return (
