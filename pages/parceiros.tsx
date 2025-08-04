@@ -215,12 +215,12 @@ export default function Parceiros() {
           </section>
 
           {/* Conteúdos dos Parceiros */}
-          <section className="w-full max-w-5xl mx-auto mb-10">
+          <section className="w-full max-w-4xl mx-auto mb-10">
             <ConteudosParceiros />
           </section>
 
           {/* Ranking de Parceiros */}
-          <section className="w-full max-w-5xl mx-auto mb-10">
+          <section className="w-full max-w-4xl mx-auto mb-10">
             <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">🏆 Ranking de Parceiros</h2>
             
             {/* Filtros de categoria */}
