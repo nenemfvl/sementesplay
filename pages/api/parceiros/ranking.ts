@@ -33,8 +33,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    // Calcular total de vendas para cada parceiro baseado nos repasses realizados
+    const parceirosComVendas = await Promise.all(
+      parceiros.map(async (parceiro) => {
+        // Buscar repasses realizados pelo parceiro
+        const repassesRealizados = await prisma.repasseParceiro.findMany({
+          where: {
+            parceiroId: parceiro.id,
+            status: 'pago'
+          }
+        })
+
+        // Calcular total de vendas baseado nos repasses
+        const totalVendasReal = repassesRealizados.reduce((sum, r) => sum + r.valor, 0)
+
+        return {
+          ...parceiro,
+          totalVendasCalculado: totalVendasReal
+        }
+      })
+    )
+
     // Formatar dados dos parceiros
-    const parceirosFormatados = parceiros.map((parceiro, index) => ({
+    const parceirosFormatados = parceirosComVendas.map((parceiro, index) => ({
       id: parceiro.id,
       nome: parceiro.usuario.nome,
       email: parceiro.usuario.email,
@@ -43,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sementes: parceiro.usuario.sementes,
       nomeCidade: parceiro.nomeCidade,
       comissaoMensal: parceiro.comissaoMensal,
-      totalVendas: parceiro.totalVendas,
+      totalVendas: parceiro.totalVendasCalculado, // Usar o valor calculado
       codigosGerados: parceiro.codigosGerados,
       posicao: index + 1,
       dataCriacao: parceiro.usuario.dataCriacao,

@@ -89,8 +89,7 @@ export default function Parceiros() {
       const response = await fetch('/api/parceiros/ranking')
       const data = await response.json()
       if (response.ok && data.success) {
-        console.log('Parceiros carregados:', data.parceiros)
-        console.log('Total de vendas:', data.parceiros.reduce((total: number, p: any) => total + (p.totalVendas || 0), 0))
+
         setParceiros(data.parceiros || [])
       }
     } catch (error) {
