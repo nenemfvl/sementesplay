@@ -290,20 +290,20 @@ export default function ConteudosParceiros() {
           {/* Navigation Arrows */}
           {conteudos.length > 1 && (
             <>
-              <button
-                onClick={prevSlide}
-                title="Slide anterior"
-                className="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
-              >
-                ‹
-              </button>
-              <button
-                onClick={nextSlide}
-                title="Próximo slide"
-                className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
-              >
-                ›
-              </button>
+                             <button
+                 onClick={prevSlide}
+                 title="Slide anterior"
+                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
+               >
+                 ‹
+               </button>
+               <button
+                 onClick={nextSlide}
+                 title="Próximo slide"
+                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full transition-colors flex items-center justify-center text-lg font-bold z-20"
+               >
+                 ›
+               </button>
             </>
           )}
 
