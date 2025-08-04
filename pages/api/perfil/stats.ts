@@ -32,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       orderBy: {
         data: 'desc'
-      },
-      take: 10
+      }
+      // Removido take: 10 para buscar todas as doações
     })
 
     // Buscar estatísticas de cashback
@@ -112,6 +112,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const criadoresApoiados = new Set(doacoes.map(d => d.criadorId)).size
     const cashbacksResgatados = cashbacks.length
     
+    console.log('Doações encontradas:', doacoes.length)
+    console.log('Total de doações calculado:', totalDoacoes)
+    console.log('Criadores apoiados:', criadoresApoiados)
+    
     // Buscar dados do usuário para pontuação e XP
     const usuario = await prisma.usuario.findUnique({
       where: { id: String(usuarioId) },
@@ -120,6 +124,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         xp: true,
         nivelUsuario: true
       }
+    })
+    
+    console.log('Dados do usuário encontrados:', {
+      pontuacao: usuario?.pontuacao,
+      xp: usuario?.xp,
+      nivelUsuario: usuario?.nivelUsuario
     })
 
     // Atividades recentes
