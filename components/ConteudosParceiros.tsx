@@ -323,7 +323,7 @@ export default function ConteudosParceiros() {
         </div>
 
         {/* Lista de conteúdos à direita */}
-        <div className="flex-1 w-full mt-12 mr-8">
+        <div className="flex-1 w-full mt-12 mr-16">
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sss-accent mx-auto mb-4"></div>
