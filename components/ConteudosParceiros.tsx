@@ -321,22 +321,6 @@ export default function ConteudosParceiros() {
             )}
           </div>
           
-          {/* Dots Indicator */}
-          {conteudos.length > 1 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-              {conteudos.slice(0, 3).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  title={`Ir para slide ${index + 1}`}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentSlide ? 'bg-white' : 'bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-
                      {/* Navigation Arrows - Abaixo do Banner */}
            {getConteudosOrdenados().length > 1 && (
             <div className="flex justify-center items-center gap-4 mt-4">
@@ -354,6 +338,22 @@ export default function ConteudosParceiros() {
               >
                 ›
               </button>
+            </div>
+          )}
+
+          {/* Dots Indicator - Abaixo dos botões */}
+          {conteudos.length > 1 && (
+            <div className="flex justify-center space-x-2 mt-3">
+              {conteudos.slice(0, 3).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  title={`Ir para slide ${index + 1}`}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentSlide ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
             </div>
           )}
         </div>
