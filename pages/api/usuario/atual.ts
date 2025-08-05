@@ -9,36 +9,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Tentar obter o token do header Authorization
+    // Tentar obter o usuário do cookie de sessão
     let userId = null
-    const authHeader = req.headers.authorization
+    const userCookie = req.cookies['sementesplay_user']
     
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      userId = authHeader.replace('Bearer ', '')
-    } else {
-      // Se não há token, tentar obter do cookie de sessão
-      const sessionToken = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token']
-      
-      if (sessionToken) {
-        // Decodificar o token de sessão (simplificado)
-        // Em produção, você deveria verificar o token JWT adequadamente
-        try {
-          // Por enquanto, vamos buscar o usuário pelo email da sessão
-          // Isso é uma solução temporária
-          const usuarios = await prisma.usuario.findMany({
-            take: 1,
-            include: {
-              criador: true,
-              parceiro: true
-            }
-          })
-          
-          if (usuarios.length > 0) {
-            userId = usuarios[0].id
-          }
-        } catch (error) {
-          console.error('Erro ao decodificar sessão:', error)
-        }
+    if (userCookie) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userCookie))
+        userId = userData.id
+      } catch (error) {
+        console.error('Erro ao decodificar cookie do usuário:', error)
       }
     }
 

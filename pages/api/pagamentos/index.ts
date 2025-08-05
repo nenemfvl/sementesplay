@@ -1,14 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
-import { auth } from '../../../lib/auth'
 
 const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      // Verificar autenticação
-      const user = auth.getUser()
+      // Verificar autenticação via cookie
+      let user = null
+      const userCookie = req.cookies['sementesplay_user']
+      
+      if (userCookie) {
+        try {
+          user = JSON.parse(decodeURIComponent(userCookie))
+        } catch (error) {
+          console.error('Erro ao decodificar cookie do usuário:', error)
+        }
+      }
+
       if (!user) {
         return res.status(401).json({ error: 'Usuário não autenticado' })
       }
