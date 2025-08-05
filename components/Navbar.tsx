@@ -211,7 +211,7 @@ export default function Navbar() {
               </button>
               {showSocials && (
                 <div className="origin-top-right absolute right-0 mt-2 w-16 rounded-md shadow-lg bg-black ring-1 ring-black ring-opacity-5 z-50 flex flex-col items-center py-2 gap-2">
-                  <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Discord" aria-label="Discord"><i className="fab fa-discord fa-lg"></i></a>
+                  <a href="https://discord.gg/7vtVZYvR" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Discord" aria-label="Discord"><i className="fab fa-discord fa-lg"></i></a>
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Instagram" aria-label="Instagram"><i className="fab fa-instagram fa-lg"></i></a>
                   <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="TikTok" aria-label="TikTok"><i className="fab fa-tiktok fa-lg"></i></a>
                   <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="YouTube" aria-label="YouTube"><i className="fab fa-youtube fa-lg"></i></a>
