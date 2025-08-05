@@ -231,12 +231,24 @@ export default function Home() {
               enquanto apoia seus criadores favoritos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/registro" className="bg-white text-sss-accent font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
-                Criar Conta Grátis
-              </Link>
-              <Link href="/login" className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-sss-accent transition-colors">
-                Já tenho conta
-              </Link>
+              {user ? (
+                <Link href="/carteira" className="bg-white text-sss-accent font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
+                  Ir para Carteira
+                </Link>
+              ) : (
+                <Link href="/registro" className="bg-white text-sss-accent font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
+                  Criar Conta Grátis
+                </Link>
+              )}
+              {user ? (
+                <Link href="/perfil" className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-sss-accent transition-colors">
+                  Meu Perfil
+                </Link>
+              ) : (
+                <Link href="/login" className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-sss-accent transition-colors">
+                  Já tenho conta
+                </Link>
+              )}
             </div>
             
             <div className="flex flex-wrap justify-center gap-6 mt-8">
