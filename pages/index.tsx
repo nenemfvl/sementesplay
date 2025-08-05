@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   CurrencyDollarIcon, 
@@ -17,7 +17,13 @@ import Navbar from '../components/Navbar';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('como-funciona')
-  const user = typeof window !== 'undefined' ? auth.getUser() : null;
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    // Carregar usuário quando o componente montar
+    const currentUser = auth.getUser()
+    setUser(currentUser)
+  }, [])
 
   const features = [
     {
@@ -119,9 +125,15 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                            <Link href="/registro" className="btn-primary text-lg px-8 py-3">
-              Começar Agora
-            </Link>
+                {user ? (
+                  <Link href="/carteira" className="btn-primary text-lg px-8 py-3">
+                    Ir para Carteira
+                  </Link>
+                ) : (
+                  <Link href="/registro" className="btn-primary text-lg px-8 py-3">
+                    Começar Agora
+                  </Link>
+                )}
                 <a href="#como-funciona" className="btn-outline text-lg px-8 py-3">
                   Saiba Mais
                 </a>
