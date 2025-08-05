@@ -77,8 +77,8 @@ export default function Carteira() {
 
   const handlePagamento = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!valorPagamento || parseFloat(valorPagamento) < 10) {
-      alert('Valor mínimo de R$ 10,00')
+    if (!valorPagamento || parseFloat(valorPagamento) < 1) {
+      alert('Valor mínimo de R$ 1,00')
       return
     }
 
@@ -299,8 +299,8 @@ export default function Carteira() {
                     Solicitar Saque
                   </h3>
                                      <p className="text-gray-400 mb-4">
-                     Converta suas sementes em dinheiro (1 Semente = 1 Real)
-                   </p>
+                    Converta suas sementes em dinheiro (1 Semente = 1 Real)
+                  </p>
                   <button
                     onClick={() => setShowSaque(true)}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
@@ -443,11 +443,11 @@ export default function Carteira() {
                     id="valor-pagamento"
                     type="number"
                     step="0.01"
-                    min="10"
+                    min="1"
                     value={valorPagamento}
                     onChange={(e) => setValorPagamento(e.target.value)}
                     className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                    placeholder="10,00"
+                    placeholder="1,00"
                     aria-label="Valor do pagamento em reais"
                   />
                 </div>

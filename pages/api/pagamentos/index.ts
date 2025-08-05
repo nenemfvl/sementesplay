@@ -23,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(403).json({ error: 'Acesso negado' })
       }
 
-      if (valor < 10) {
-        return res.status(400).json({ error: 'Valor mínimo de R$ 10,00' })
+      if (valor < 1) {
+        return res.status(400).json({ error: 'Valor mínimo de R$ 1,00' })
       }
 
       // Calcular sementes (1 real = 1 semente)
