@@ -275,7 +275,7 @@ export default function Carteira() {
                   Comprar Sementes
                 </h3>
                                  <p className="text-gray-400 mb-4">
-                   Compre sementes com PIX ou cartão de crédito (1 Real = 1 Semente)
+                   Compre sementes com PIX (1 Real = 1 Semente)
                  </p>
                 <button
                   onClick={() => setShowPagamento(true)}
@@ -456,17 +456,9 @@ export default function Carteira() {
                   <label htmlFor="tipo-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
                     Forma de Pagamento
                   </label>
-                  <select
-                    id="tipo-pagamento"
-                    value={tipoPagamento}
-                    onChange={(e) => setTipoPagamento(e.target.value)}
-                    className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                    aria-label="Selecionar forma de pagamento"
-                  >
-                    <option value="pix">PIX</option>
-                    <option value="cartao_credito">Cartão de Crédito</option>
-                    <option value="cartao_debito">Cartão de Débito</option>
-                  </select>
+                  <div className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white">
+                    PIX
+                  </div>
                 </div>
 
                 <div className="flex space-x-3">
