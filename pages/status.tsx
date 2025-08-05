@@ -44,6 +44,8 @@ export default function Status() {
   const [ciclosInfo, setCiclosInfo] = useState<any>(null)
   const router = useRouter()
   const { navigateTo, isNavigating } = useNavigation()
+  const [progressWidthCiclo, setProgressWidthCiclo] = useState(0)
+  const [progressWidthSeason, setProgressWidthSeason] = useState(0)
 
   useEffect(() => {
     const loadData = async () => {
@@ -115,6 +117,15 @@ export default function Status() {
   useEffect(() => {
     loadRankingMissoesConquistas()
   }, [loadRankingMissoesConquistas])
+
+  useEffect(() => {
+    if (ciclosInfo) {
+      const cicloWidth = Math.max(0, Math.min(100, ((15 - ciclosInfo.diasRestantesCiclo) / 15) * 100))
+      const seasonWidth = Math.max(0, Math.min(100, ((90 - ciclosInfo.diasRestantesSeason) / 90) * 100))
+      setProgressWidthCiclo(cicloWidth)
+      setProgressWidthSeason(seasonWidth)
+    }
+  }, [ciclosInfo])
 
   // Carregar favoritos do localStorage
   useEffect(() => {
@@ -247,7 +258,7 @@ export default function Status() {
                     <div className="w-full bg-gray-700 rounded-full h-2">
                       <div 
                         className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.max(0, Math.min(100, ((15 - ciclosInfo.diasRestantesCiclo) / 15) * 100))}%` }}
+                        style={{ '--progress-width-ciclo': `${progressWidthCiclo}%` } as React.CSSProperties}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 text-center">
@@ -272,7 +283,7 @@ export default function Status() {
                     <div className="w-full bg-gray-700 rounded-full h-2">
                       <div 
                         className="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.max(0, Math.min(100, ((90 - ciclosInfo.diasRestantesSeason) / 90) * 100))}%` }}
+                        style={{ '--progress-width-season': `${progressWidthSeason}%` } as React.CSSProperties}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 text-center">

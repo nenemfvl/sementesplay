@@ -29,7 +29,6 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     <LoadingProvider>
       <SessionProvider session={session}>
         <Head>
-          <link rel="apple-touch-icon" href="/icons/icon-144x144.png" />
           <meta name="application-name" content="SementesPLAY" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />

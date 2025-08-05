@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { auth } from '../lib/auth'
@@ -15,6 +15,7 @@ export default function Missoes() {
   const router = useRouter()
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [loading, setLoading] = useState(true)
+  const [progressWidthNivel, setProgressWidthNivel] = useState(0)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -33,6 +34,13 @@ export default function Missoes() {
     })
     setLoading(false)
   }, [router])
+
+  useEffect(() => {
+    if (usuario) {
+      const progresso = calcularProgressoNivel()
+      setProgressWidthNivel(progresso)
+    }
+  }, [usuario])
 
   const calcularProgressoNivel = () => {
     if (!usuario) return 0
@@ -117,7 +125,7 @@ export default function Missoes() {
               <div className="w-full bg-sss-dark rounded-full h-3">
                 <div
                   className="bg-gradient-to-r from-sss-accent to-red-600 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${calcularProgressoNivel()}%` }}
+                  style={{ '--progress-width-nivel': `${progressWidthNivel}%` } as React.CSSProperties}
                 ></div>
               </div>
             </div>

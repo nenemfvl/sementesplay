@@ -271,7 +271,7 @@ export default function ConteudosParceiros() {
                               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                               {/* Fallback para Twitch */}
                               {thumbnail.fallback && (
-                                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl" style={{ display: 'none' }}>
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
                                   {thumbnail.icon}
                                 </div>
                               )}
@@ -416,7 +416,7 @@ export default function ConteudosParceiros() {
                             />
                             {/* Fallback para Twitch */}
                             {thumbnail.fallback && (
-                              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-xl" style={{ display: 'none' }}>
+                              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-xl hidden-fallback">
                                 {thumbnail.icon}
                               </div>
                             )}

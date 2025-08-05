@@ -93,4 +93,29 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: #15152a !important;
   }
+
+  /* Classes para substituir estilos inline */
+  .progress-bar-width {
+    width: var(--progress-width, 0%);
+  }
+
+  .progress-bar-width-ciclo {
+    width: var(--progress-width-ciclo, 0%);
+  }
+
+  .progress-bar-width-season {
+    width: var(--progress-width-season, 0%);
+  }
+
+  .progress-bar-width-nivel {
+    width: var(--progress-width-nivel, 0%);
+  }
+
+  .hidden-fallback {
+    display: none;
+  }
+
+  .flex-fallback {
+    display: flex;
+  }
 } 
