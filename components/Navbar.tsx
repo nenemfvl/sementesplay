@@ -215,7 +215,7 @@ export default function Navbar() {
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Instagram" aria-label="Instagram"><i className="fab fa-instagram fa-lg"></i></a>
                   <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="TikTok" aria-label="TikTok"><i className="fab fa-tiktok fa-lg"></i></a>
                   <a href="https://www.youtube.com/@SementesPLAY" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="YouTube" aria-label="YouTube"><i className="fab fa-youtube fa-lg"></i></a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Twitter" aria-label="Twitter"><i className="fab fa-twitter fa-lg"></i></a>
+                  <a href="https://x.com/SementesPLAY" target="_blank" rel="noopener noreferrer" className="hover:text-sss-accent" title="Twitter" aria-label="Twitter"><i className="fab fa-twitter fa-lg"></i></a>
                 </div>
               )}
             </div>
