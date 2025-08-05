@@ -36,63 +36,120 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Valor mínimo de R$ 1,00' })
       }
 
-      // Calcular sementes (1 real = 1 semente)
-      const sementesGeradas = Math.floor(valor)
-
-      // Processar pagamento em transação
-      const resultado = await prisma.$transaction(async (tx) => {
-        // Criar registro de pagamento
-        const pagamento = await tx.pagamento.create({
-          data: {
-            usuarioId: String(usuarioId),
-            tipo: String(tipo),
-            valor: parseFloat(valor),
-            sementesGeradas,
-            gateway: 'simulado', // Em produção seria o gateway real
-            status: 'aprovado',
-            dadosPagamento: JSON.stringify({ tipo, valor }),
-            dataProcessamento: new Date()
-          }
+      // Configurar access token do Mercado Pago
+      const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
+      
+      if (!accessToken) {
+        console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
+        return res.status(500).json({ 
+          error: 'Configuração de pagamento não disponível',
+          message: 'Configure a variável MERCADOPAGO_ACCESS_TOKEN no Vercel'
         })
+      }
 
-        // Adicionar sementes ao usuário
-        await tx.usuario.update({
-          where: { id: String(usuarioId) },
-          data: {
-            sementes: {
-              increment: sementesGeradas
-            }
-          }
-        })
-
-        // Registrar sementes geradas
-        await tx.semente.create({
-          data: {
-            usuarioId: String(usuarioId),
-            quantidade: sementesGeradas,
-            tipo: 'gerada',
-            descricao: `Compra de ${sementesGeradas} sementes via ${tipo}`
-          }
-        })
-
-        // Criar notificação
-        await tx.notificacao.create({
-          data: {
-            usuarioId: String(usuarioId),
-            tipo: 'pagamento',
-            titulo: 'Pagamento Aprovado',
-            mensagem: `Seu pagamento de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} foi processado com sucesso! ${sementesGeradas} sementes foram adicionadas à sua conta.`
-          }
-        })
-
-        return { pagamento, sementesGeradas }
+      // Criar registro de pagamento pendente
+      const pagamento = await prisma.pagamento.create({
+        data: {
+          usuarioId: String(usuarioId),
+          tipo: String(tipo),
+          valor: parseFloat(valor),
+          sementesGeradas: 0, // Será atualizado após confirmação
+          gateway: 'mercadopago',
+          status: 'pendente',
+          dadosPagamento: JSON.stringify({ tipo, valor }),
+          dataPagamento: new Date()
+        }
       })
 
-      res.status(200).json({
-        success: true,
-        message: 'Pagamento processado com sucesso',
-        sementesGeradas: resultado.sementesGeradas
+      // Criar pagamento PIX no Mercado Pago
+      const payment_data = {
+        transaction_amount: parseFloat(valor),
+        description: `Compra de Sementes - R$ ${valor}`,
+        payment_method_id: 'pix',
+        payer: {
+          email: user.email || 'usuario@sementesplay.com',
+          first_name: user.nome?.split(' ')[0] || 'Usuário',
+          last_name: user.nome?.split(' ').slice(1).join(' ') || 'SementesPLAY'
+        },
+        external_reference: pagamento.id,
+        notification_url: 'https://sementesplay.vercel.app/api/mercadopago/webhook'
+      }
+
+      // Fazer requisição para a API do Mercado Pago
+      const response = await fetch('https://api.mercadopago.com/v1/payments', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'X-Idempotency-Key': `${pagamento.id}-${Date.now()}`
+        },
+        body: JSON.stringify(payment_data)
       })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Erro na API do Mercado Pago:', errorData)
+        
+        // Atualizar status do pagamento para erro
+        await prisma.pagamento.update({
+          where: { id: pagamento.id },
+          data: { status: 'erro' }
+        })
+        
+        return res.status(400).json({ 
+          error: 'Erro ao gerar PIX',
+          details: errorData.message || 'Erro na integração com Mercado Pago'
+        })
+      }
+
+      const payment = await response.json()
+
+      // Atualizar pagamento com o ID do Mercado Pago
+      await prisma.pagamento.update({
+        where: { id: pagamento.id },
+        data: { 
+          gatewayId: payment.id.toString(),
+          status: 'pendente'
+        }
+      })
+
+      if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
+        const pixData = payment.point_of_interaction?.transaction_data
+
+        if (!pixData) {
+          return res.status(400).json({ error: 'Dados PIX não disponíveis' })
+        }
+
+        return res.status(200).json({
+          success: true,
+          paymentId: payment.id,
+          pagamentoId: pagamento.id,
+          pixData: {
+            chavePix: pixData.qr_code,
+            beneficiario: {
+              nome: 'SementesPLAY',
+              cpf: '093.827.074-50'
+            },
+            valor: valor,
+            descricao: `Compra de Sementes - R$ ${valor}`,
+            expiracao: 3600
+          },
+          pixCode: `data:image/png;base64,${pixData.qr_code_base64}`,
+          qrCode: pixData.qr_code,
+          instrucoes: [
+            '1. Abra seu app bancário',
+            '2. Escaneie o QR Code ou cole o código PIX',
+            `3. Confirme o valor: R$ ${valor}`,
+            '4. Confirme o beneficiário: SementesPLAY',
+            '5. Faça o pagamento',
+            '6. Aguarde a confirmação automática'
+          ],
+          status: 'pendente',
+          mercadopago_payment_id: payment.id
+        })
+      } else {
+        return res.status(400).json({ error: 'Erro ao gerar PIX - status inválido' })
+      }
 
     } catch (error) {
       console.error('Erro ao processar pagamento:', error)

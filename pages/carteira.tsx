@@ -43,6 +43,8 @@ export default function Carteira() {
   const [valorPagamento, setValorPagamento] = useState('')
   const [valorSaque, setValorSaque] = useState('')
   const [tipoPagamento, setTipoPagamento] = useState('pix')
+  const [pixData, setPixData] = useState<any>(null)
+  const [loadingPagamento, setLoadingPagamento] = useState(false)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -82,6 +84,8 @@ export default function Carteira() {
       return
     }
 
+    setLoadingPagamento(true)
+
     try {
       const response = await fetch('/api/pagamentos', {
         method: 'POST',
@@ -98,16 +102,16 @@ export default function Carteira() {
       const data = await response.json()
 
       if (response.ok) {
-        alert('Pagamento processado com sucesso!')
-        setShowPagamento(false)
-        setValorPagamento('')
-        loadCarteira()
+        setPixData(data)
+        // Não fechar o modal, mostrar o QR Code
       } else {
         alert(`Erro: ${data.error}`)
       }
     } catch (error) {
       console.error('Erro ao processar pagamento:', error)
       alert('Erro ao processar pagamento')
+    } finally {
+      setLoadingPagamento(false)
     }
   }
 
@@ -421,12 +425,18 @@ export default function Carteira() {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-sss-medium rounded-lg p-6 max-w-md w-full mx-4"
+              className="bg-sss-medium rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-sss-white">Fazer Pagamento</h3>
+                <h3 className="text-lg font-semibold text-sss-white">
+                  {pixData ? 'Pagamento PIX' : 'Fazer Pagamento'}
+                </h3>
                 <button
-                  onClick={() => setShowPagamento(false)}
+                  onClick={() => {
+                    setShowPagamento(false)
+                    setPixData(null)
+                    setValorPagamento('')
+                  }}
                   className="text-gray-400 hover:text-white"
                   aria-label="Fechar modal de pagamento"
                 >
@@ -434,49 +444,139 @@ export default function Carteira() {
                 </button>
               </div>
 
-              <form onSubmit={handlePagamento} className="space-y-4">
-                <div>
-                  <label htmlFor="valor-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
-                    Valor (R$)
-                  </label>
-                  <input
-                    id="valor-pagamento"
-                    type="number"
-                    step="0.01"
-                    min="1"
-                    value={valorPagamento}
-                    onChange={(e) => setValorPagamento(e.target.value)}
-                    className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                    placeholder="1,00"
-                    aria-label="Valor do pagamento em reais"
-                  />
-                </div>
+              {!pixData ? (
+                <form onSubmit={handlePagamento} className="space-y-4">
+                  <div>
+                    <label htmlFor="valor-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
+                      Valor (R$)
+                    </label>
+                    <input
+                      id="valor-pagamento"
+                      type="number"
+                      step="0.01"
+                      min="1"
+                      value={valorPagamento}
+                      onChange={(e) => setValorPagamento(e.target.value)}
+                      className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                      placeholder="1,00"
+                      aria-label="Valor do pagamento em reais"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="tipo-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
-                    Forma de Pagamento
-                  </label>
-                  <div className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white">
-                    PIX
+                  <div>
+                    <label htmlFor="tipo-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
+                      Forma de Pagamento
+                    </label>
+                    <div className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white">
+                      PIX
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowPagamento(false)}
+                      className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loadingPagamento}
+                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {loadingPagamento ? 'Gerando PIX...' : 'Gerar PIX'}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-4">
+                  {/* QR Code */}
+                  <div className="text-center">
+                    <div className="bg-white p-4 rounded-lg inline-block">
+                      <img 
+                        src={pixData.pixCode} 
+                        alt="QR Code PIX" 
+                        className="w-48 h-48"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Informações do PIX */}
+                  <div className="bg-sss-dark rounded-lg p-4 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Valor:</span>
+                      <span className="text-white font-semibold">R$ {pixData.valor}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Beneficiário:</span>
+                      <span className="text-white">{pixData.pixData.beneficiario.nome}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">CPF:</span>
+                      <span className="text-white">{pixData.pixData.beneficiario.cpf}</span>
+                    </div>
+                  </div>
+
+                  {/* Código PIX */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Código PIX
+                    </label>
+                    <div className="flex">
+                      <input
+                        type="text"
+                        value={pixData.qrCode}
+                        readOnly
+                        aria-label="Código PIX para copiar"
+                        className="flex-1 px-3 py-2 bg-sss-dark border border-sss-light rounded-l-lg text-sss-white text-sm"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText(pixData.qrCode)}
+                        className="px-3 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-r-lg transition-colors"
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Instruções */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Instruções:</h4>
+                    <ul className="space-y-1 text-sm text-gray-400">
+                      {pixData.instrucoes.map((instrucao: string, index: number) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-sss-accent mr-2">•</span>
+                          {instrucao}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Botões */}
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => {
+                        setShowPagamento(false)
+                        setPixData(null)
+                        setValorPagamento('')
+                      }}
+                      className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                    >
+                      Fechar
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPixData(null)
+                        setValorPagamento('')
+                      }}
+                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    >
+                      Novo Pagamento
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex space-x-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowPagamento(false)}
-                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                  >
-                    Pagar
-                  </button>
-                </div>
-              </form>
+              )}
             </motion.div>
           </div>
         )}
