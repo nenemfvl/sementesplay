@@ -175,6 +175,11 @@ export default function Status() {
   // Remover animação de contagem crescente
   // useEffect do contador removida
 
+  const getProgressWidthClass = (percentage: number) => {
+    const width = Math.round(percentage);
+    return `w-[${width}%]`;
+  };
+
   const toggleFavorito = (criadorId: string) => {
     setFavoritos(prev => {
       const novosFavoritos = new Set(prev)
@@ -257,8 +262,7 @@ export default function Status() {
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-2">
                       <div 
-                        className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                        style={{ '--progress-width-ciclo': `${progressWidthCiclo}%` } as React.CSSProperties}
+                        className={`bg-blue-500 h-2 rounded-full transition-all duration-300 ${getProgressWidthClass(progressWidthCiclo)}`}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 text-center">
@@ -282,8 +286,7 @@ export default function Status() {
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-2">
                       <div 
-                        className="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                        style={{ '--progress-width-season': `${progressWidthSeason}%` } as React.CSSProperties}
+                        className={`bg-purple-500 h-2 rounded-full transition-all duration-300 ${getProgressWidthClass(progressWidthSeason)}`}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 text-center">

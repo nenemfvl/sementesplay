@@ -525,16 +525,20 @@ export default function ParceiroPerfil() {
                        // Twitch com fallback
                        return (
                          <div className="relative">
-                           <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
-                                onError={(e) => {
-                                  const target = e.currentTarget as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  const nextSibling = target.nextElementSibling as HTMLElement;
-                                  if (nextSibling) {
-                                    nextSibling.style.display = 'flex';
-                                  }
-                                }} />
-                           <div className="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:scale-105 transition-transform duration-300" style={{display: 'none'}}>
+                           <img 
+                             src={thumbnail.src} 
+                             alt={conteudo.titulo} 
+                             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                             onError={(e) => {
+                               const target = e.currentTarget as HTMLImageElement;
+                               target.classList.add('hidden');
+                               const nextSibling = target.nextElementSibling as HTMLElement;
+                               if (nextSibling) {
+                                 nextSibling.classList.remove('hidden');
+                               }
+                             }}
+                           />
+                           <div className="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 hidden">
                              <div className="text-center">
                                <span className="text-4xl mb-2 block">{thumbnail.icon}</span>
                                <p className="text-white font-semibold">{thumbnail.platform}</p>

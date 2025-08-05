@@ -41,6 +41,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <meta name="msapplication-tap-highlight" content="no" />
           <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png" />
+          <link rel="apple-touch-icon" href="/icons/icon-144x144.png" />
           <link rel="manifest" href="/manifest.json" />
           <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#dc2626" />
           <link rel="shortcut icon" href="/favicon.ico" />
