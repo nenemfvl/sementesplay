@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
+import { useNavigation } from '../hooks/useNavigation'
 import { 
   HomeIcon,
   HeartIcon,
@@ -68,6 +69,7 @@ const navigationItems = [
 
 export default function MobileNavigation() {
   const router = useRouter()
+  const { navigateTo, isNavigating } = useNavigation()
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-sss-medium border-t border-sss-light">
@@ -77,10 +79,11 @@ export default function MobileNavigation() {
           const Icon = isActive ? item.iconSolid : item.icon
           
           return (
-            <Link
+            <button
               key={item.name}
-              href={item.href}
-              className="flex flex-col items-center justify-center p-2 min-w-0 flex-1"
+              onClick={() => navigateTo(item.href)}
+              disabled={isNavigating}
+              className="flex flex-col items-center justify-center p-2 min-w-0 flex-1 disabled:opacity-50"
             >
               <motion.div
                 whileTap={{ scale: 0.9 }}
@@ -111,7 +114,7 @@ export default function MobileNavigation() {
               >
                 {item.name}
               </span>
-            </Link>
+            </button>
           )
         })}
       </div>

@@ -8,6 +8,7 @@ import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 
 import { useRouter } from 'next/router'
 import { auth } from '../lib/auth'
 import { PageLoader, CardLoader } from '../components/Loader'
+import { useNavigation } from '../hooks/useNavigation'
 
 const redes = [
   { nome: 'Todos', valor: 'todos', icon: null },
@@ -42,6 +43,7 @@ export default function Status() {
   const [user, setUser] = useState<any>(null)
   const [ciclosInfo, setCiclosInfo] = useState<any>(null)
   const router = useRouter()
+  const { navigateTo, isNavigating } = useNavigation()
 
   useEffect(() => {
     const loadData = async () => {
@@ -459,10 +461,11 @@ export default function Status() {
                         <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
                         <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
                         <button 
-                          onClick={() => router.push('/doar')}
-                          className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                          onClick={() => navigateTo('/doar')}
+                          disabled={isNavigating}
+                          className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          Doar
+                          {isNavigating ? 'Carregando...' : 'Doar'}
                         </button>
                       </div>
                     </div>

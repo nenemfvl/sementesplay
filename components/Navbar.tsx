@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { auth, User } from '../lib/auth';
+import { useNavigation } from '../hooks/useNavigation';
 
 
 interface UserWithCriador extends User {
@@ -24,6 +25,7 @@ interface UserWithCriador extends User {
 
 export default function Navbar() {
   const router = useRouter();
+  const { navigateTo, isNavigating } = useNavigation();
   const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
@@ -62,7 +64,7 @@ export default function Navbar() {
 
   const handleMenuItemClick = (path: string) => {
     setShowProfileMenu(false);
-    router.push(path);
+    navigateTo(path);
   };
 
   return (

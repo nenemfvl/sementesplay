@@ -8,6 +8,7 @@ import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuil
 import { useRouter } from 'next/router'
 import { auth, User } from '../lib/auth'
 import { PageLoader, CardLoader } from '../components/Loader'
+import { useNavigation } from '../hooks/useNavigation'
 
 const categoriasParceiros = [
   { id: 'geral', nome: 'Geral', icone: '🏢', descricao: 'Todos os Parceiros' },
@@ -24,6 +25,7 @@ export default function Parceiros() {
   const [user, setUser] = useState<any>(null)
   const [candidaturaStatus, setCandidaturaStatus] = useState<string | null>(null)
   const router = useRouter()
+  const { navigateTo, isNavigating } = useNavigation()
 
   useEffect(() => {
     // Carregar dados do usuário usando o sistema de autenticação
@@ -227,11 +229,12 @@ export default function Parceiros() {
           {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
             <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-50">
               <button
-                onClick={() => router.push('/candidatura-parceiro')}
-                className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105"
+                onClick={() => navigateTo('/candidatura-parceiro')}
+                disabled={isNavigating}
+                className="bg-sss-accent hover:bg-red-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FaBuilding className="w-5 h-5" />
-                Seja Parceiro
+                {isNavigating ? 'Carregando...' : 'Seja Parceiro'}
               </button>
             </div>
           )}

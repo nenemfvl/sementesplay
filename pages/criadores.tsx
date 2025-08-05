@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigation } from '../hooks/useNavigation'
 import { 
   ArrowLeftIcon,
   TrophyIcon,
@@ -54,6 +55,7 @@ interface RankingItem {
 
 export default function Criadores() {
   const router = useRouter()
+  const { navigateTo, isNavigating } = useNavigation()
   const [user, setUser] = useState<User | null>(null)
   const [ranking, setRanking] = useState<RankingItem[]>([])
   const [loading, setLoading] = useState(true)
