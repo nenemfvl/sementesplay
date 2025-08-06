@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-const conquistasPadrao = [
+// const conquistasPadrao = [
   // Conquistas de Login
   {
     titulo: 'Primeiro Login',
@@ -142,34 +143,34 @@ const conquistasPadrao = [
   }
 ]
 
-async function criarConquistas() {
-  try {
-    console.log('🔄 Criando conquistas padrão...')
+// async function criarConquistas() {
+//   try {
+//     console.log('🔄 Criando conquistas padrão...')
 
-    for (const conquista of conquistasPadrao) {
-      // Verificar se a conquista já existe
-      const existe = await prisma.conquista.findFirst({
-        where: {
-          titulo: conquista.titulo
-        }
-      })
+//     for (const conquista of conquistasPadrao) {
+//       // Verificar se a conquista já existe
+//       const existe = await prisma.conquista.findFirst({
+//         where: {
+//           titulo: conquista.titulo
+//         }
+//       })
 
-      if (!existe) {
-        await prisma.conquista.create({
-          data: conquista
-        })
-        console.log(`✅ Criada conquista: ${conquista.titulo}`)
-      } else {
-        console.log(`⏭️  Conquista já existe: ${conquista.titulo}`)
-      }
-    }
+//       if (!existe) {
+//         await prisma.conquista.create({
+//           data: conquista
+//         })
+//         console.log(`✅ Criada conquista: ${conquista.titulo}`)
+//       } else {
+//         console.log(`⏭️  Conquista já existe: ${conquista.titulo}`)
+//         }
+//       }
 
-    console.log('🎉 Conquistas padrão criadas com sucesso!')
-  } catch (error) {
-    console.error('❌ Erro ao criar conquistas:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//       console.log('🎉 Conquistas padrão criadas com sucesso!')
+//     } catch (error) {
+//       console.error('❌ Erro ao criar conquistas:', error)
+//     } finally {
+//       await prisma.$disconnect()
+//     }
+//   }
 
-criarConquistas() 
+// criarConquistas() 

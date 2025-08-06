@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarNivelUsuario() {
+// async function verificarNivelUsuario() {
   try {
     // Buscar usuário por email
     const email = 'vanislanleopoldinodasilva@gmail.com'
@@ -44,11 +45,11 @@ async function verificarNivelUsuario() {
       console.log('ℹ️  Usuário não é parceiro')
     }
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarNivelUsuario() 
+// verificarNivelUsuario() 

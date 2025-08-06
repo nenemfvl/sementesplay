@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarPosicaoCriador() {
+// async function verificarPosicaoCriador() {
   try {
     console.log('🔍 Verificando posição do criador "van"...')
 
@@ -113,24 +114,24 @@ async function verificarPosicaoCriador() {
     console.log(`\n🎯 POSIÇÃO DO VAN: ${posicao}º lugar`)
     console.log(`   - Pontuação: ${pontuacaoTotal} pontos`)
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar se chamado diretamente
-if (require.main === module) {
-  verificarPosicaoCriador()
-    .then(() => {
-      console.log('\n✅ Verificação concluída!')
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error('❌ Erro ao executar script:', error)
-      process.exit(1)
-    })
-}
+// // Executar se chamado diretamente
+// if (require.main === module) {
+//   verificarPosicaoCriador()
+//     .then(() => {
+//       console.log('\n✅ Verificação concluída!')
+//       process.exit(0)
+//     })
+//     .catch((error) => {
+//       console.error('❌ Erro ao executar script:', error)
+//       process.exit(1)
+//     })
+// }
 
-module.exports = { verificarPosicaoCriador } 
+// module.exports = { verificarPosicaoCriador } 

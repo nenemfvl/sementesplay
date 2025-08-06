@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarAprovacaoCandidatura() {
+// async function testarAprovacaoCandidatura() {
   try {
     console.log('=== Teste de Aprovação de Candidatura ===\n')
     
@@ -101,11 +102,11 @@ async function testarAprovacaoCandidatura() {
     
     console.log('\n✅ Teste concluído com sucesso!')
     
-  } catch (error) {
-    console.error('❌ Erro no teste:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro no teste:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-testarAprovacaoCandidatura() 
+// testarAprovacaoCandidatura() 

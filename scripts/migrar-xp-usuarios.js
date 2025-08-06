@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function migrarXPUsuarios() {
+// async function migrarXPUsuarios() {
   try {
     console.log('🔄 Migrando XP para usuários existentes...')
 
@@ -96,11 +97,11 @@ async function migrarXPUsuarios() {
     }
 
     console.log('🎉 Migração de XP concluída com sucesso!')
-  } catch (error) {
-    console.error('❌ Erro na migração:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro na migração:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-migrarXPUsuarios() 
+// migrarXPUsuarios() 

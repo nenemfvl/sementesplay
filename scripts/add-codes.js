@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function addCodes() {
+// async function addCodes() {
   try {
     // Buscar o primeiro parceiro
     const parceiro = await prisma.parceiro.findFirst()
@@ -43,11 +44,11 @@ async function addCodes() {
 
     console.log('🎉 Códigos de cashback adicionados com sucesso!')
     console.log('💳 Códigos disponíveis: WELCOME50, BONUS100, EXTRA200, GIFT500')
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-addCodes() 
+// addCodes() 

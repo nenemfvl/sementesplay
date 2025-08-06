@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function listarUsuarios() {
+// async function listarUsuarios() {
   try {
     console.log('Listando todos os usuários...');
     
@@ -21,11 +22,11 @@ async function listarUsuarios() {
       console.log(`- ${usuario.nome} (${usuario.email}): nivel=${usuario.nivel}, tipo=${usuario.tipo}`);
     });
     
-  } catch (error) {
-    console.error('Erro ao listar usuários:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao listar usuários:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-listarUsuarios(); 
+// listarUsuarios(); 

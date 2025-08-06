@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function simularWebhookInterno() {
+// async function simularWebhookInterno() {
   try {
     console.log('🔄 Simulando processamento interno do webhook...\n');
 
@@ -191,11 +192,11 @@ async function simularWebhookInterno() {
     console.log(`   Notificações criadas: ${notificacoes.length}`);
     console.log(`   Logs de auditoria criados: ${logs.length}`);
 
-  } catch (error) {
-    console.error('❌ Erro:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-simularWebhookInterno(); 
+// simularWebhookInterno(); 

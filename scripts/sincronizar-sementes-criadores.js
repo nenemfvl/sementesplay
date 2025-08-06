@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function sincronizarSementesCriadores() {
+// async function sincronizarSementesCriadores() {
   console.log('🔄 Iniciando sincronização de sementes dos criadores...')
 
   try {
@@ -59,24 +60,24 @@ async function sincronizarSementesCriadores() {
     console.log(`   - Criadores sincronizados: ${totalSincronizados}`)
     console.log(`   - Total de sementes transferidas: ${totalSementesTransferidas}`)
 
-  } catch (error) {
-    console.error('❌ Erro durante a sincronização:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro durante a sincronização:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar se chamado diretamente
-if (require.main === module) {
-  sincronizarSementesCriadores()
-    .then(() => {
-      console.log('✅ Script executado com sucesso!')
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error('❌ Erro ao executar script:', error)
-      process.exit(1)
-    })
-}
+// // Executar se chamado diretamente
+// if (require.main === module) {
+//   sincronizarSementesCriadores()
+//     .then(() => {
+//       console.log('✅ Script executado com sucesso!')
+//       process.exit(0)
+//     })
+//     .catch((error) => {
+//       console.error('❌ Erro ao executar script:', error)
+//       process.exit(1)
+//     })
+// }
 
-module.exports = { sincronizarSementesCriadores } 
+// module.exports = { sincronizarSementesCriadores } 

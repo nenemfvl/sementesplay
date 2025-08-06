@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function atualizarNiveisCriador() {
+// async function atualizarNiveisCriador() {
   try {
     console.log('Atualizando níveis de criadores...');
     
@@ -25,11 +26,11 @@ async function atualizarNiveisCriador() {
     }
     
     console.log('Atualização concluída!');
-  } catch (error) {
-    console.error('Erro ao atualizar níveis:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao atualizar níveis:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-atualizarNiveisCriador(); 
+// atualizarNiveisCriador(); 

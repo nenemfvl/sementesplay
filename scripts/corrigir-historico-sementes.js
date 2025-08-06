@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function corrigirHistoricoSementes() {
+// async function corrigirHistoricoSementes() {
   console.log('🔧 Corrigindo histórico de sementes...')
 
   try {
@@ -55,24 +56,24 @@ async function corrigirHistoricoSementes() {
     console.log('\n🎉 Correção concluída!')
     console.log('📋 Agora execute o script de verificação novamente para confirmar.')
 
-  } catch (error) {
-    console.error('❌ Erro ao corrigir histórico:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao corrigir histórico:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar se chamado diretamente
-if (require.main === module) {
-  corrigirHistoricoSementes()
-    .then(() => {
-      console.log('\n✅ Script executado com sucesso!')
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error('❌ Erro ao executar script:', error)
-      process.exit(1)
-    })
-}
+// // Executar se chamado diretamente
+// if (require.main === module) {
+//   corrigirHistoricoSementes()
+//     .then(() => {
+//       console.log('\n✅ Script executado com sucesso!')
+//       process.exit(0)
+//     })
+//     .catch((error) => {
+//       console.error('❌ Erro ao executar script:', error)
+//       process.exit(1)
+//     })
+// }
 
-module.exports = { corrigirHistoricoSementes } 
+// module.exports = { corrigirHistoricoSementes } 

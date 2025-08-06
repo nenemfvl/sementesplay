@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function criarAdmin() {
+// async function criarAdmin() {
   console.log('🔧 CRIANDO USUÁRIO ADMIN')
   console.log('========================\n')
 
@@ -50,12 +51,12 @@ async function criarAdmin() {
     console.log('   • Gerenciar Saques: http://localhost:3000/admin/saques')
     console.log('   • Aprovar Repasses: http://localhost:3000/admin/painel')
 
-  } catch (error) {
-    console.error('❌ Erro ao criar admin:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao criar admin:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar
-criarAdmin() 
+// // Executar
+// criarAdmin() 

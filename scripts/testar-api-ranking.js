@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarAPIRanking() {
+// async function testarAPIRanking() {
   try {
     console.log('🔍 Testando API de ranking de parceiros...')
     
@@ -61,11 +62,11 @@ async function testarAPIRanking() {
 
     console.log('✅ API funcionando corretamente!')
     
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-testarAPIRanking() 
+// testarAPIRanking() 

@@ -1,9 +1,10 @@
-const { PrismaClient } = require('@prisma/client')
-const bcrypt = require('bcryptjs')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const bcrypt = require('bcryptjs')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarLogin() {
+// async function verificarLogin() {
   console.log('🔍 VERIFICANDO CREDENCIAIS DE LOGIN')
   console.log('==================================\n')
 
@@ -54,12 +55,12 @@ async function verificarLogin() {
     console.log('4. Clique em "Entrar"')
     console.log('5. Depois acesse: https://sementesplay.vercel.app/admin/saques')
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar
-verificarLogin() 
+// // Executar
+// verificarLogin() 

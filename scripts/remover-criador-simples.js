@@ -1,10 +1,11 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const prisma = new PrismaClient()
 
-// ID do criador que você quer remover - MODIFIQUE AQUI
-const CRIADOR_ID = 'COLOQUE_O_ID_AQUI'
+// // ID do criador que você quer remover - MODIFIQUE AQUI
+// const CRIADOR_ID = 'COLOQUE_O_ID_AQUI'
 
-async function removerCriadorSimples() {
+// async function removerCriadorSimples() {
   try {
     console.log('🗑️ Removendo criador por ID...')
     
@@ -118,11 +119,11 @@ async function removerCriadorSimples() {
     
     console.log('\n🎉 Criador removido com sucesso!')
     
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-removerCriadorSimples() 
+// removerCriadorSimples() 

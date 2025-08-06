@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client'
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function main() {
+// async function main() {
   try {
     // Criar usuário parceiro
     const usuario = await prisma.usuario.create({
@@ -81,11 +82,11 @@ async function main() {
     console.log('\nCódigos de exemplo:')
     codigos.forEach(c => console.log(`- ${c.codigo}: R$ ${c.valor.toFixed(2)}`))
 
-  } catch (error) {
-    console.error('Erro ao criar parceiro de teste:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao criar parceiro de teste:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-main() 
+// main() 

@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarNovoFluxo() {
+// async function testarNovoFluxo() {
   console.log('🧪 TESTANDO NOVO FLUXO SEMENTESPLAY10')
   console.log('=====================================\n')
 
@@ -213,12 +214,12 @@ async function testarNovoFluxo() {
     console.log('✅ Fundo de sementes atualizado')
     console.log('✅ Histórico registrado')
 
-  } catch (error) {
-    console.error('❌ Erro no teste:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro no teste:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar teste
-testarNovoFluxo() 
+// // Executar teste
+// testarNovoFluxo() 

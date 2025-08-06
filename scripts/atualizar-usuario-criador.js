@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function atualizarUsuarioCriador() {
+// async function atualizarUsuarioCriador() {
   try {
     console.log('=== Atualizando Usuário Criador ===\n')
     
@@ -67,11 +68,11 @@ async function atualizarUsuarioCriador() {
       console.log('❌ Usuário ainda não tem acesso ao painel criador')
     }
     
-  } catch (error) {
-    console.error('Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-atualizarUsuarioCriador() 
+// atualizarUsuarioCriador() 

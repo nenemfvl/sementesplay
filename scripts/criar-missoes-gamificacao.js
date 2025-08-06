@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-const missoesGamificacao = [
+// const missoesGamificacao = [
   // 🎯 MISSÕES DIÁRIAS
   {
     titulo: 'Login Diário',
@@ -260,56 +261,56 @@ const missoesGamificacao = [
   }
 ]
 
-async function criarMissoesGamificacao() {
-  try {
-    console.log('🔄 Criando missões de gamificação...')
+// async function criarMissoesGamificacao() {
+//   try {
+//     console.log('🔄 Criando missões de gamificação...')
 
-    for (const missao of missoesGamificacao) {
-      // Verificar se a missão já existe
-      const existe = await prisma.missao.findFirst({
-        where: {
-          titulo: missao.titulo
-        }
-      })
+//     for (const missao of missoesGamificacao) {
+//       // Verificar se a missão já existe
+//       const existe = await prisma.missao.findFirst({
+//         where: {
+//           titulo: missao.titulo
+//         }
+//       })
 
-      if (!existe) {
-        await prisma.missao.create({
-          data: {
-            titulo: missao.titulo,
-            descricao: missao.descricao,
-            tipo: missao.tipo,
-            objetivo: missao.objetivo,
-            recompensa: missao.recompensa,
-            emblema: missao.emblema,
-            ativa: true,
-            criadorOnly: false
-          }
-        })
-        console.log(`✅ Criada missão: ${missao.titulo} (${missao.tipo})`)
-      } else {
-        console.log(`⏭️  Missão já existe: ${missao.titulo}`)
-      }
-    }
+//       if (!existe) {
+//         await prisma.missao.create({
+//           data: {
+//             titulo: missao.titulo,
+//             descricao: missao.descricao,
+//             tipo: missao.tipo,
+//             objetivo: missao.objetivo,
+//             recompensa: missao.recompensa,
+//             emblema: missao.emblema,
+//             ativa: true,
+//             criadorOnly: false
+//             }
+//           })
+//           console.log(`✅ Criada missão: ${missao.titulo} (${missao.tipo})`)
+//         } else {
+//           console.log(`⏭️  Missão já existe: ${missao.titulo}`)
+//         }
+//       }
 
-    console.log('🎉 Missões de gamificação criadas com sucesso!')
-    console.log(`📊 Total de missões: ${missoesGamificacao.length}`)
-    
-    // Estatísticas por tipo
-    const stats = missoesGamificacao.reduce((acc, missao) => {
-      acc[missao.tipo] = (acc[missao.tipo] || 0) + 1
-      return acc
-    }, {})
-    
-    console.log('📈 Distribuição por tipo:')
-    Object.entries(stats).forEach(([tipo, quantidade]) => {
-      console.log(`   ${tipo}: ${quantidade} missões`)
-    })
+//       console.log('🎉 Missões de gamificação criadas com sucesso!')
+//       console.log(`📊 Total de missões: ${missoesGamificacao.length}`)
+      
+//       // Estatísticas por tipo
+//       const stats = missoesGamificacao.reduce((acc, missao) => {
+//         acc[missao.tipo] = (acc[missao.tipo] || 0) + 1
+//         return acc
+//       }, {})
+      
+//       console.log('📈 Distribuição por tipo:')
+//       Object.entries(stats).forEach(([tipo, quantidade]) => {
+//         console.log(`   ${tipo}: ${quantidade} missões`)
+//       })
 
-  } catch (error) {
-    console.error('❌ Erro ao criar missões:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//     } catch (error) {
+//       console.error('❌ Erro ao criar missões:', error)
+//     } finally {
+//       await prisma.$disconnect()
+//     }
+//   }
 
-criarMissoesGamificacao() 
+// criarMissoesGamificacao() 

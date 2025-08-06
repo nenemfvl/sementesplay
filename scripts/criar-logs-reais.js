@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function criarLogsReais() {
+// async function criarLogsReais() {
   try {
     console.log('=== CRIANDO LOGS REAIS DE AUDITORIA ===\n')
 
@@ -99,11 +100,11 @@ async function criarLogsReais() {
     console.log(`\n🎉 ${logsExemplo.length} logs reais criados com sucesso!`)
     console.log('Agora os logs de auditoria em /admin/logs mostrarão dados reais do banco.')
 
-  } catch (error) {
-    console.error('Erro ao criar logs:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao criar logs:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-criarLogsReais()
+// criarLogsReais()

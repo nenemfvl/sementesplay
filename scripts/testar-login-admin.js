@@ -1,9 +1,10 @@
-const { PrismaClient } = require('@prisma/client')
-const bcrypt = require('bcryptjs')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const bcrypt = require('bcryptjs')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarLoginAdmin() {
+// async function testarLoginAdmin() {
   console.log('🔐 TESTANDO LOGIN ADMIN')
   console.log('=======================\n')
 
@@ -74,12 +75,12 @@ async function testarLoginAdmin() {
       senhasTeste.forEach(s => console.log(`   • ${s}`))
     }
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar
-testarLoginAdmin() 
+// // Executar
+// testarLoginAdmin() 

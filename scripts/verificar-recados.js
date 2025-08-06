@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarRecados() {
+// async function verificarRecados() {
   try {
     console.log('🔍 Verificando recados no banco de dados...\n');
     
@@ -68,11 +69,11 @@ async function verificarRecados() {
       console.log(`   - ${criador.nome} (${criador.email}) - ID: ${criador.id}`);
     });
 
-  } catch (error) {
-    console.error('❌ Erro ao verificar recados:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar recados:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarRecados(); 
+// verificarRecados(); 

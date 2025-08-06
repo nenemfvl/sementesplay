@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarDoacaoMissao() {
+// async function testarDoacaoMissao() {
   try {
     console.log('=== TESTE DE DOAÇÃO E MISSÕES ===')
     
@@ -250,4 +251,4 @@ async function criarConquistaSeNecessario(usuarioId, tituloMissao) {
   }
 }
 
-testarDoacaoMissao() 
+// testarDoacaoMissao() 

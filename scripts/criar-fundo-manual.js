@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function criarFundoManual() {
+// async function criarFundoManual() {
   console.log('🔧 Criando fundo de sementes manualmente...')
 
   try {
@@ -48,11 +49,11 @@ async function criarFundoManual() {
 
     console.log(`\n🌱 Agora o painel admin mostrará: R$ ${totalSementes?.valorTotal.toFixed(2) || '0.00'} em sementes em circulação`)
 
-  } catch (error) {
-    console.error('❌ Erro ao criar fundo:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao criar fundo:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-criarFundoManual() 
+// criarFundoManual() 

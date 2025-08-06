@@ -1,6 +1,7 @@
-const fetch = require('node-fetch')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const fetch = require('node-fetch')
 
-async function testarAPICandidaturas() {
+// async function testarAPICandidaturas() {
   try {
     console.log('Testando API de candidaturas...')
     
@@ -37,9 +38,9 @@ async function testarAPICandidaturas() {
     const data = await response.json()
     console.log('Dados da resposta:', JSON.stringify(data, null, 2))
     
-  } catch (error) {
-    console.error('Erro ao testar API:', error)
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao testar API:', error)
+//   }
+// }
 
-testarAPICandidaturas() 
+// testarAPICandidaturas() 

@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function criarMissoesPadrao() {
+// async function criarMissoesPadrao() {
   try {
     console.log('Criando missões padrão...')
 
@@ -104,12 +105,12 @@ async function criarMissoesPadrao() {
       }
     }
 
-    console.log('Missões e conquistas padrão criadas com sucesso!')
-  } catch (error) {
-    console.error('Erro ao criar missões padrão:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//     console.log('Missões e conquistas padrão criadas com sucesso!')
+//   } catch (error) {
+//     console.error('Erro ao criar missões padrão:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-criarMissoesPadrao() 
+// criarMissoesPadrao() 

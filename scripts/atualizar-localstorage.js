@@ -1,7 +1,8 @@
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
 // Script para atualizar o localStorage do usuário
 // Execute este script no console do navegador
 
-function atualizarLocalStorage() {
+// function atualizarLocalStorage() {
   // Buscar dados do usuário atual no localStorage
   const userData = localStorage.getItem('user');
   
@@ -22,5 +23,5 @@ function atualizarLocalStorage() {
   }
 }
 
-// Executar a função
-atualizarLocalStorage(); 
+// // Executar a função
+// atualizarLocalStorage(); 

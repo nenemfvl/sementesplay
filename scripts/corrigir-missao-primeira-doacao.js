@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function corrigirMissaoPrimeiraDoacao() {
+// async function corrigirMissaoPrimeiraDoacao() {
   try {
     console.log('=== CORRIGINDO MISSÃO PRIMEIRA DOAÇÃO ===')
     
@@ -38,11 +39,11 @@ async function corrigirMissaoPrimeiraDoacao() {
     
     console.log('Missão após correção:', missaoVerificada)
     
-  } catch (error) {
-    console.error('Erro ao corrigir missão:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao corrigir missão:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-corrigirMissaoPrimeiraDoacao() 
+// corrigirMissaoPrimeiraDoacao() 

@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function forcarLoginAdmin() {
+// async function forcarLoginAdmin() {
   try {
     console.log('🔧 FORÇANDO LOGIN DO ADMIN')
     console.log('==========================\n')
@@ -48,11 +49,11 @@ async function forcarLoginAdmin() {
     console.log('4. A página será recarregada automaticamente')
     console.log('5. Agora você deve conseguir acessar "Gerenciar Saques"')
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-forcarLoginAdmin() 
+// forcarLoginAdmin() 

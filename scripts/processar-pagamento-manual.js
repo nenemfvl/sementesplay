@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function processarPagamentoManual() {
+// async function processarPagamentoManual() {
   try {
     console.log('🔍 Processando pagamento manualmente...\n');
 
@@ -126,11 +127,11 @@ async function processarPagamentoManual() {
       console.log('⚠️ Erro nas operações secundárias:', error.message);
     }
 
-  } catch (error) {
-    console.error('❌ Erro ao processar pagamento:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao processar pagamento:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-processarPagamentoManual(); 
+// processarPagamentoManual(); 

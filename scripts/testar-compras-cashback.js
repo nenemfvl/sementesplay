@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarComprasCashback() {
+// async function testarComprasCashback() {
   try {
     console.log('🔍 Verificando dados de compras e cashback...')
 
@@ -144,11 +145,11 @@ async function testarComprasCashback() {
 
     console.log('\n🎯 Teste concluído! Agora você pode testar a página de cashback.')
 
-  } catch (error) {
-    console.error('❌ Erro durante o teste:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro durante o teste:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-testarComprasCashback() 
+// testarComprasCashback() 

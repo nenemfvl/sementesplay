@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarCandidaturas() {
+// async function verificarCandidaturas() {
   try {
     console.log('Verificando candidaturas de criadores...')
     
@@ -34,11 +35,11 @@ async function verificarCandidaturas() {
     const candidaturasParceiro = await prisma.candidaturaParceiro.findMany()
     console.log(`Total de candidaturas de parceiros: ${candidaturasParceiro.length}`)
     
-  } catch (error) {
-    console.error('Erro ao verificar candidaturas:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao verificar candidaturas:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarCandidaturas() 
+// verificarCandidaturas() 

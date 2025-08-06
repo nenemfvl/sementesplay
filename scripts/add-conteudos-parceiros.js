@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function addConteudosParceiros() {
+// async function addConteudosParceiros() {
   try {
     console.log('🏢 Adicionando conteúdos para parceiros...')
 
@@ -146,16 +147,16 @@ async function addConteudosParceiros() {
     console.log(`- Total de conteúdos: ${totalConteudos}`)
     console.log(`- Total de visualizações: ${totalVisualizacoes._sum.visualizacoes || 0}`)
 
-  } catch (error) {
-    console.error('❌ Erro ao adicionar conteúdos dos parceiros:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao adicionar conteúdos dos parceiros:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar se chamado diretamente
-if (require.main === module) {
-  addConteudosParceiros()
-}
+// // Executar se chamado diretamente
+// if (require.main === module) {
+//   addConteudosParceiros()
+// }
 
-module.exports = { addConteudosParceiros } 
+// module.exports = { addConteudosParceiros } 

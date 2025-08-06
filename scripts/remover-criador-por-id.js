@@ -1,7 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const prisma = new PrismaClient()
 
-async function removerCriadorPorId() {
+// async function removerCriadorPorId() {
   try {
     console.log('🗑️ Remoção de Criador por ID')
     console.log('=============================')
