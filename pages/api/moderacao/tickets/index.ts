@@ -14,6 +14,8 @@ interface TicketSuporte {
   mensagens: any[]
 }
 
+// COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de tickets
+/*
 const ticketsMock: TicketSuporte[] = [
   {
     id: '1',
@@ -137,6 +139,8 @@ const ticketsMock: TicketSuporte[] = [
     ]
   }
 ]
+*/
+const ticketsMock: TicketSuporte[] = [] // COMENTADO: Array vazio até implementar sistema real
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -157,8 +161,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         ticketsFiltrados = ticketsFiltrados.filter(t => t.prioridade === prioridade)
       }
 
-      // Simular delay de rede
-      setTimeout(() => {
+      // COMENTADO: Simular delay de rede - remover quando implementar sistema real
+      // setTimeout(() => {
         res.status(200).json({
           success: true,
           tickets: ticketsFiltrados,
@@ -170,7 +174,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             fechados: ticketsMock.filter(t => t.status === 'fechado').length
           }
         })
-      }, 300)
+      // }, 300)
     } catch (error) {
       res.status(500).json({
         success: false,

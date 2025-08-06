@@ -62,7 +62,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       LIMIT 5
     `
 
-    // Buscar top cashbacks (mockado por enquanto)
+    // COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de relatórios
+    /*
     const topCashbacks = [
       { codigo: 'BONUS100', usos: 45, valor: 4500 },
       { codigo: 'WELCOME50', usos: 32, valor: 1600 },
@@ -70,6 +71,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { codigo: 'FESTIVAL75', usos: 15, valor: 1125 },
       { codigo: 'SPECIAL30', usos: 12, valor: 360 }
     ]
+    */
+    const topCashbacks: any[] = [] // COMENTADO: Array vazio até implementar sistema real
 
     const topDados = {
       topDoadores: topDoadores as any[],

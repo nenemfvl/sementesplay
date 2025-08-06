@@ -109,7 +109,8 @@ export default function Chat() {
   }, [])
 
   const setupWebSocket = () => {
-    // Simular WebSocket para demonstração
+    // COMENTADO: WebSocket mockado - substituir por WebSocket real quando implementar sistema de chat em tempo real
+    /*
     const mockWebSocket = {
       onmessage: (event: any) => {
         // Simular mensagens em tempo real
@@ -133,6 +134,9 @@ export default function Chat() {
 
     wsRef.current = mockWebSocket as any
     setWsConnected(true)
+    */
+    // COMENTADO: WebSocket desabilitado até implementar sistema real
+    setWsConnected(false)
   }
 
   const loadConversas = async () => {

@@ -9,8 +9,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Por enquanto, retornar mensagens mockadas
+    // COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de chat
     // Em uma implementação real, você criaria uma tabela mensagens_chat
+    /*
     const mensagens = [
       {
         id: '1',
@@ -29,6 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         tipo: 'sistema'
       }
     ]
+    */
+    const mensagens: any[] = [] // COMENTADO: Array vazio até implementar sistema real
 
     return res.status(200).json({ mensagens })
   } catch (error) {

@@ -17,6 +17,8 @@ interface Denuncia {
   observacoes?: string
 }
 
+// COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de denúncias
+/*
 const denunciasMock: Denuncia[] = [
   {
     id: '1',
@@ -86,6 +88,8 @@ const denunciasMock: Denuncia[] = [
     observacoes: 'Usuário suspenso por 7 dias'
   }
 ]
+*/
+const denunciasMock: Denuncia[] = [] // COMENTADO: Array vazio até implementar sistema real
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -106,8 +110,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         denunciasFiltradas = denunciasFiltradas.filter(d => d.prioridade === prioridade)
       }
 
-      // Simular delay de rede
-      setTimeout(() => {
+      // COMENTADO: Simular delay de rede - remover quando implementar sistema real
+      // setTimeout(() => {
         res.status(200).json({
           success: true,
           denuncias: denunciasFiltradas,
@@ -119,7 +123,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             rejeitadas: denunciasMock.filter(d => d.status === 'rejeitada').length
           }
         })
-      }, 300)
+      // }, 300)
     } catch (error) {
       res.status(500).json({
         success: false,

@@ -1,5 +1,5 @@
-[33m2b79593a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Implementar navegação controlada com loader global
-[33m63c3fb4c[m Implementar sistema de loaders nas páginas principais
-[33macee1156[m Melhorar apresentação visual das imagens no banner dos parceiros
-[33md1d542eb[m Remover popups de alert e adicionar notificações elegantes no painel admin
-[33m694af68d[m Corrigir redirecionamento após candidatura de criador para página de status
+[33mdd21d17b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix: corrigir campos do schema MissaoUsuario - usar concluida e dataConclusao em vez de completada e dataCompletacao
+[33m59884ca2[m feat: implementar logs de auditoria em APIs críticas - adicionar logs para doações, cashback, conteúdo, missões e curtidas
+[33mbbc7f640[m feat: remover dados mockados da API de logs do admin - implementar consulta real à tabela LogAuditoria
+[33m8bc7e039[m revert: voltando para commit anterior sem logs de auditoria
+[33m4542eda7[m revert: voltando para commit 7c99bcd1

@@ -12,6 +12,8 @@ interface AcaoModerativa {
   observacoes?: string
 }
 
+// COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de ações moderativas
+/*
 const acoesMock: AcaoModerativa[] = [
   {
     id: '1',
@@ -66,6 +68,8 @@ const acoesMock: AcaoModerativa[] = [
     observacoes: 'Suspensão de 30 dias expirada'
   }
 ]
+*/
+const acoesMock: AcaoModerativa[] = [] // COMENTADO: Array vazio até implementar sistema real
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -82,8 +86,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         acoesFiltradas = acoesFiltradas.filter(a => a.status === status)
       }
 
-      // Simular delay de rede
-      setTimeout(() => {
+      // COMENTADO: Simular delay de rede - remover quando implementar sistema real
+      // setTimeout(() => {
         res.status(200).json({
           success: true,
           acoes: acoesFiltradas,
@@ -94,7 +98,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             revogadas: acoesMock.filter(a => a.status === 'revogada').length
           }
         })
-      }, 300)
+      // }, 300)
     } catch (error) {
       res.status(500).json({
         success: false,

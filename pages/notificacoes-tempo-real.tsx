@@ -65,8 +65,9 @@ export default function NotificacoesTempoReal() {
   }
 
   const setupWebSocket = () => {
-    // Simular WebSocket para demonstração
+    // COMENTADO: WebSocket mockado - substituir por WebSocket real quando implementar sistema de notificações em tempo real
     // Em produção, você usaria um WebSocket real
+    /*
     const mockWebSocket = {
       onmessage: (event: any) => {
         // Simular mensagens em tempo real
@@ -103,6 +104,9 @@ export default function NotificacoesTempoReal() {
 
     wsRef.current = mockWebSocket as any
     setWsConnected(true)
+    */
+    // COMENTADO: WebSocket desabilitado até implementar sistema real
+    setWsConnected(false)
   }
 
   const loadNotificacoes = async () => {
