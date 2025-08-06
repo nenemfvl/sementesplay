@@ -23,10 +23,12 @@ import {
   ShareIcon,
   CreditCardIcon,
   DocumentTextIcon,
-  VideoCameraIcon
+  VideoCameraIcon,
+  FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
 import Navbar from '../../components/Navbar'
+import DenunciaModal from '../../components/DenunciaModal'
 
 interface ParceiroDetalhes {
   id: string
@@ -77,9 +79,8 @@ export default function ParceiroPerfil() {
   const [favoritos, setFavoritos] = useState<Set<string>>(new Set())
   const [likes, setLikes] = useState<Set<string>>(new Set())
   const [dislikes, setDislikes] = useState<Set<string>>(new Set())
-  // Comentário de teste para alteração
-  // Comentário de teste para alteração
-  // Novo comentário de teste
+  const [showDenunciaModal, setShowDenunciaModal] = useState(false)
+  const [conteudoParaDenunciar, setConteudoParaDenunciar] = useState<ConteudoParceiro | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -372,6 +373,12 @@ export default function ParceiroPerfil() {
     };
   }
 
+  const handleDenunciarConteudo = (conteudo: ConteudoParceiro, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setConteudoParaDenunciar(conteudo)
+    setShowDenunciaModal(true)
+  }
+
   if (loading) {
     return (
       <>
@@ -597,6 +604,15 @@ export default function ParceiroPerfil() {
                             <HandThumbDownIcon className="w-3 h-3" />
                             <span>{formatarNumero(conteudo.dislikes)}</span>
                           </button>
+
+                          {/* Botão de Denúncia */}
+                          <button
+                            onClick={(e) => handleDenunciarConteudo(conteudo, e)}
+                            className="flex items-center gap-1 px-2 py-1 rounded text-xs text-gray-400 hover:text-orange-400 transition-colors"
+                            title="Denunciar conteúdo"
+                          >
+                            <FlagIcon className="w-3 h-3" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -606,6 +622,20 @@ export default function ParceiroPerfil() {
                )}
              </div>
            </div>
+
+          {/* Modal de Denúncia */}
+          {showDenunciaModal && conteudoParaDenunciar && (
+            <DenunciaModal
+              isOpen={showDenunciaModal}
+              onClose={() => {
+                setShowDenunciaModal(false)
+                setConteudoParaDenunciar(null)
+              }}
+              conteudoParceiroId={conteudoParaDenunciar.id}
+              tituloConteudo={conteudoParaDenunciar.titulo}
+              tipoConteudo="parceiro"
+            />
+          )}
         </main>
       </div>
     </>
