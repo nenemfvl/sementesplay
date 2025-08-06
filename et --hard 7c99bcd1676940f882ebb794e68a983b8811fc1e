@@ -1,0 +1,525 @@
+[33m7c99bcd1[m feat: implementa funcionalidades completas no chat flutuante de amigos - solicitações, sugestões, busca e indicadores online
+[1mdiff --git a/components/FriendsChat.tsx b/components/FriendsChat.tsx[m
+[1mindex dd80f325..289c6603 100644[m
+[1m--- a/components/FriendsChat.tsx[m
+[1m+++ b/components/FriendsChat.tsx[m
+[36m@@ -8,7 +8,10 @@[m [mimport {[m
+   UserPlusIcon,[m
+   MagnifyingGlassIcon,[m
+   EllipsisVerticalIcon,[m
+[31m-  ArrowLeftIcon[m
+[32m+[m[32m  ArrowLeftIcon,[m
+[32m+[m[32m  CheckIcon,[m
+[32m+[m[32m  ClockIcon,[m
+[32m+[m[32m  UserIcon[m
+ } from '@heroicons/react/24/outline'[m
+ import { auth, User } from '../lib/auth'[m
+ [m
+[36m@@ -23,6 +26,23 @@[m [minterface Amigo {[m
+   mutual: boolean[m
+ }[m
+ [m
+[32m+[m[32minterface SolicitacaoAmizade {[m
+[32m+[m[32m  id: string[m
+[32m+[m[32m  remetenteId: string[m
+[32m+[m[32m  remetenteNome: string[m
+[32m+[m[32m  remetenteEmail: string[m
+[32m+[m[32m  dataEnvio: Date[m
+[32m+[m[32m  mensagem?: string[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32minterface UsuarioSugerido {[m
+[32m+[m[32m  id: string[m
+[32m+[m[32m  nome: string[m
+[32m+[m[32m  email: string[m
+[32m+[m[32m  nivel: string[m
+[32m+[m[32m  sementes: number[m
+[32m+[m[32m}[m
+[32m+[m
+ interface Mensagem {[m
+   id: string[m
+   remetenteId: string[m
+[36m@@ -53,7 +73,11 @@[m [mexport default function FriendsChat() {[m
+   const [searchTerm, setSearchTerm] = useState('')[m
+   const [onlineIds, setOnlineIds] = useState<string[]>([])[m
+   const mensagensRef = useRef<HTMLDivElement>(null)[m
+[31m-  const [activeTab, setActiveTab] = useState<'amigos' | 'chat'>('amigos')[m
+[32m+[m[32m  const [activeTab, setActiveTab] = useState<'amigos' | 'chat' | 'solicitacoes' | 'sugeridos' | 'buscar'>('amigos')[m
+[32m+[m[32m  const [solicitacoes, setSolicitacoes] = useState<SolicitacaoAmizade[]>([])[m
+[32m+[m[32m  const [usuariosSugeridos, setUsuariosSugeridos] = useState<UsuarioSugerido[]>([])[m
+[32m+[m[32m  const [searchResults, setSearchResults] = useState<UsuarioSugerido[]>([])[m
+[32m+[m[32m  const [searching, setSearching] = useState(false)[m
+ [m
+   useEffect(() => {[m
+     const currentUser = auth.getUser()[m
+[36m@@ -110,12 +134,18 @@[m [mexport default function FriendsChat() {[m
+     setLoading(true)[m
+     try {[m
+       const token = localStorage.getItem('sementesplay_token')[m
+[31m-      const [amigosResponse, conversasResponse] = await Promise.all([[m
+[32m+[m[32m      const [amigosResponse, conversasResponse, solicitacoesResponse, sugeridosResponse] = await Promise.all([[m
+         fetch(`/api/amigos?usuarioId=${user.id}`, {[m
+           headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+         }),[m
+         fetch(`/api/chat/conversas?usuarioId=${user.id}`, {[m
+           headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+[32m+[m[32m        }),[m
+[32m+[m[32m        fetch(`/api/amigos/solicitacoes?usuarioId=${user.id}`, {[m
+[32m+[m[32m          headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+[32m+[m[32m        }),[m
+[32m+[m[32m        fetch(`/api/amigos/sugeridos?usuarioId=${user.id}`, {[m
+[32m+[m[32m          headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+         })[m
+       ])[m
+ [m
+[36m@@ -128,6 +158,16 @@[m [mexport default function FriendsChat() {[m
+         const data = await conversasResponse.json()[m
+         setConversas(data.conversas || [])[m
+       }[m
+[32m+[m
+[32m+[m[32m      if (solicitacoesResponse.ok) {[m
+[32m+[m[32m        const data = await solicitacoesResponse.json()[m
+[32m+[m[32m        setSolicitacoes(data.solicitacoes || [])[m
+[32m+[m[32m      }[m
+[32m+[m
+[32m+[m[32m      if (sugeridosResponse.ok) {[m
+[32m+[m[32m        const data = await sugeridosResponse.json()[m
+[32m+[m[32m        setUsuariosSugeridos(data.usuarios || [])[m
+[32m+[m[32m      }[m
+     } catch (error) {[m
+       console.error('Erro ao carregar dados:', error)[m
+     } finally {[m
+[36m@@ -135,6 +175,95 @@[m [mexport default function FriendsChat() {[m
+     }[m
+   }[m
+ [m
+[32m+[m[32m  const buscarUsuarios = async (q: string) => {[m
+[32m+[m[32m    if (!q || q.length < 2) {[m
+[32m+[m[32m      setSearchResults([])[m
+[32m+[m[32m      return[m
+[32m+[m[32m    }[m
+[32m+[m[32m    setSearching(true)[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const token = localStorage.getItem('sementesplay_token')[m
+[32m+[m[32m      const res = await fetch(`/api/usuarios?query=${encodeURIComponent(q)}`, {[m
+[32m+[m[32m        headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+[32m+[m[32m      })[m
+[32m+[m[32m      const data = await res.json()[m
+[32m+[m[32m      setSearchResults(data.usuarios || [])[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('Erro ao buscar usuários:', error)[m
+[32m+[m[32m    } finally {[m
+[32m+[m[32m      setSearching(false)[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const enviarSolicitacao = async (amigoId: string) => {[m
+[32m+[m[32m    if (!user) return[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const token = localStorage.getItem('sementesplay_token')[m
+[32m+[m[32m      const response = await fetch('/api/amigos', {[m
+[32m+[m[32m        method: 'POST',[m
+[32m+[m[32m        headers: {[m
+[32m+[m[32m          'Content-Type': 'application/json',[m
+[32m+[m[32m          ...(token ? { Authorization: `Bearer ${token}` } : {})[m
+[32m+[m[32m        },[m
+[32m+[m[32m        body: JSON.stringify({[m
+[32m+[m[32m          usuarioId: user.id,[m
+[32m+[m[32m          amigoId[m
+[32m+[m[32m        })[m
+[32m+[m[32m      })[m
+[32m+[m
+[32m+[m[32m      if (response.ok) {[m
+[32m+[m[32m        alert('Solicitação de amizade enviada!')[m
+[32m+[m[32m        loadDados()[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        const erro = await response.json()[m
+[32m+[m[32m        alert(erro.error || 'Erro ao enviar solicitação')[m
+[32m+[m[32m      }[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('Erro ao enviar solicitação:', error)[m
+[32m+[m[32m      alert('Erro ao enviar solicitação')[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const aceitarSolicitacao = async (solicitacaoId: string) => {[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const token = localStorage.getItem('sementesplay_token')[m
+[32m+[m[32m      const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/aceitar`, {[m
+[32m+[m[32m        method: 'POST',[m
+[32m+[m[32m        headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+[32m+[m[32m      })[m
+[32m+[m
+[32m+[m[32m      if (response.ok) {[m
+[32m+[m[32m        alert('Solicitação aceita!')[m
+[32m+[m[32m        loadDados()[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        alert('Erro ao aceitar solicitação')[m
+[32m+[m[32m      }[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('Erro ao aceitar solicitação:', error)[m
+[32m+[m[32m      alert('Erro ao aceitar solicitação')[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const rejeitarSolicitacao = async (solicitacaoId: string) => {[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const token = localStorage.getItem('sementesplay_token')[m
+[32m+[m[32m      const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/rejeitar`, {[m
+[32m+[m[32m        method: 'POST',[m
+[32m+[m[32m        headers: token ? { Authorization: `Bearer ${token}` } : {}[m
+[32m+[m[32m      })[m
+[32m+[m
+[32m+[m[32m      if (response.ok) {[m
+[32m+[m[32m        alert('Solicitação rejeitada')[m
+[32m+[m[32m        loadDados()[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        alert('Erro ao rejeitar solicitação')[m
+[32m+[m[32m      }[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('Erro ao rejeitar solicitação:', error)[m
+[32m+[m[32m      alert('Erro ao rejeitar solicitação')[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+   const abrirConversa = async (conversa: Conversa) => {[m
+     setConversaAtiva(conversa)[m
+     setActiveTab('chat')[m
+[36m@@ -217,6 +346,12 @@[m [mexport default function FriendsChat() {[m
+         whileTap={{ scale: 0.9 }}[m
+       >[m
+         <UserGroupIcon className="w-6 h-6" />[m
+[32m+[m[32m        {/* Badge para solicitações pendentes */}[m
+[32m+[m[32m        {solicitacoes.length > 0 && ([m
+[32m+[m[32m          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">[m
+[32m+[m[32m            {solicitacoes.length}[m
+[32m+[m[32m          </span>[m
+[32m+[m[32m        )}[m
+       </motion.button>[m
+ [m
+       {/* Chat flutuante */}[m
+[36m@@ -233,6 +368,11 @@[m [mexport default function FriendsChat() {[m
+               <div className="flex items-center space-x-2">[m
+                 <UserGroupIcon className="w-5 h-5 text-sss-accent" />[m
+                 <h3 className="text-sss-white font-semibold">Amigos</h3>[m
+[32m+[m[32m                {solicitacoes.length > 0 && ([m
+[32m+[m[32m                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">[m
+[32m+[m[32m                    {solicitacoes.length}[m
+[32m+[m[32m                  </span>[m
+[32m+[m[32m                )}[m
+               </div>[m
+               <div className="flex items-center space-x-2">[m
+                 <button[m
+[36m@@ -252,9 +392,45 @@[m [mexport default function FriendsChat() {[m
+               </div>[m
+             </div>[m
+ [m
+[32m+[m[32m            {/* Tabs */}[m
+[32m+[m[32m            <div className="flex border-b border-sss-light bg-sss-dark">[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                onClick={() => setActiveTab('amigos')}[m
+[32m+[m[32m                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${[m
+[32m+[m[32m                  activeTab === 'amigos' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'[m
+[32m+[m[32m                }`}[m
+[32m+[m[32m              >[m
+[32m+[m[32m                Amigos ({amigos.length})[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                onClick={() => setActiveTab('solicitacoes')}[m
+[32m+[m[32m                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${[m
+[32m+[m[32m                  activeTab === 'solicitacoes' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'[m
+[32m+[m[32m                }`}[m
+[32m+[m[32m              >[m
+[32m+[m[32m                Solicitações ({solicitacoes.length})[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                onClick={() => setActiveTab('sugeridos')}[m
+[32m+[m[32m                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${[m
+[32m+[m[32m                  activeTab === 'sugeridos' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'[m
+[32m+[m[32m                }`}[m
+[32m+[m[32m              >[m
+[32m+[m[32m                Sugeridos[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                onClick={() => setActiveTab('buscar')}[m
+[32m+[m[32m                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${[m
+[32m+[m[32m                  activeTab === 'buscar' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'[m
+[32m+[m[32m                }`}[m
+[32m+[m[32m              >[m
+[32m+[m[32m                Buscar[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m            </div>[m
+[32m+[m
+             {/* Content */}[m
+             <div className="flex-1 overflow-hidden">[m
+[31m-              {activeTab === 'amigos' ? ([m
+[32m+[m[32m              {activeTab === 'amigos' && ([m
+                 /* Lista de Amigos */[m
+                 <div className="h-full flex flex-col">[m
+                   {/* Search */}[m
+[36m@@ -289,7 +465,6 @@[m [mexport default function FriendsChat() {[m
+                               if (conversa) {[m
+                                 abrirConversa(conversa)[m
+                               } else {[m
+[31m-                                // Criar nova conversa[m
+                                 const novaConversa: Conversa = {[m
+                                   id: '',[m
+                                   usuarioId: amigo.id,[m
+[36m@@ -315,6 +490,9 @@[m [mexport default function FriendsChat() {[m
+                               <div>[m
+                                 <h4 className="text-sss-white font-medium text-sm">{amigo.nome}</h4>[m
+                                 <p className="text-gray-400 text-xs">{amigo.email}</p>[m
+[32m+[m[32m                                <p className="text-gray-500 text-xs">[m
+[32m+[m[32m                                  {onlineIds.includes(amigo.id) ? '🟢 Online' : '⚫ Offline'}[m
+[32m+[m[32m                                </p>[m
+                               </div>[m
+                             </div>[m
+                             <ChatBubbleLeftIcon className="w-4 h-4 text-gray-400" />[m
+[36m@@ -324,7 +502,173 @@[m [mexport default function FriendsChat() {[m
+                     )}[m
+                   </div>[m
+                 </div>[m
+[31m-              ) : ([m
+[32m+[m[32m              )}[m
+[32m+[m
+[32m+[m[32m              {activeTab === 'solicitacoes' && ([m
+[32m+[m[32m                /* Solicitações de Amizade */[m
+[32m+[m[32m                <div className="h-full flex flex-col">[m
+[32m+[m[32m                  <div className="flex-1 overflow-y-auto">[m
+[32m+[m[32m                    {loading ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">Carregando...</div>[m
+[32m+[m[32m                    ) : solicitacoes.length === 0 ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">[m
+[32m+[m[32m                        <UserPlusIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />[m
+[32m+[m[32m                        <p>Nenhuma solicitação pendente</p>[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    ) : ([m
+[32m+[m[32m                      <div className="space-y-2 p-3">[m
+[32m+[m[32m                        {solicitacoes.map((solicitacao) => ([m
+[32m+[m[32m                          <motion.div[m
+[32m+[m[32m                            key={solicitacao.id}[m
+[32m+[m[32m                            initial={{ opacity: 0, y: 10 }}[m
+[32m+[m[32m                            animate={{ opacity: 1, y: 0 }}[m
+[32m+[m[32m                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"[m
+[32m+[m[32m                          >[m
+[32m+[m[32m                            <div className="flex items-center justify-between">[m
+[32m+[m[32m                              <div className="flex items-center space-x-3">[m
+[32m+[m[32m                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">[m
+[32m+[m[32m                                  <span className="text-sm">👤</span>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                                <div>[m
+[32m+[m[32m                                  <h4 className="text-sss-white font-medium text-sm">{solicitacao.remetenteNome}</h4>[m
+[32m+[m[32m                                  <p className="text-gray-400 text-xs">{solicitacao.remetenteEmail}</p>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                              </div>[m
+[32m+[m[32m                              <div className="flex space-x-1">[m
+[32m+[m[32m                                <button[m
+[32m+[m[32m                                  onClick={() => aceitarSolicitacao(solicitacao.id)}[m
+[32m+[m[32m                                  className="p-1 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded"[m
+[32m+[m[32m                                  title="Aceitar"[m
+[32m+[m[32m                                >[m
+[32m+[m[32m                                  <CheckIcon className="w-4 h-4" />[m
+[32m+[m[32m                                </button>[m
+[32m+[m[32m                                <button[m
+[32m+[m[32m                                  onClick={() => rejeitarSolicitacao(solicitacao.id)}[m
+[32m+[m[32m                                  className="p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded"[m
+[32m+[m[32m                                  title="Rejeitar"[m
+[32m+[m[32m                                >[m
+[32m+[m[32m                                  <XMarkIcon className="w-4 h-4" />[m
+[32m+[m[32m                                </button>[m
+[32m+[m[32m                              </div>[m
+[32m+[m[32m                            </div>[m
+[32m+[m[32m                          </motion.div>[m
+[32m+[m[32m                        ))}[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    )}[m
+[32m+[m[32m                  </div>[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m              )}[m
+[32m+[m
+[32m+[m[32m              {activeTab === 'sugeridos' && ([m
+[32m+[m[32m                /* Usuários Sugeridos */[m
+[32m+[m[32m                <div className="h-full flex flex-col">[m
+[32m+[m[32m                  <div className="flex-1 overflow-y-auto">[m
+[32m+[m[32m                    {loading ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">Carregando...</div>[m
+[32m+[m[32m                    ) : usuariosSugeridos.length === 0 ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">[m
+[32m+[m[32m                        <UserIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />[m
+[32m+[m[32m                        <p>Nenhuma sugestão disponível</p>[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    ) : ([m
+[32m+[m[32m                      <div className="space-y-2 p-3">[m
+[32m+[m[32m                        {usuariosSugeridos.map((usuario) => ([m
+[32m+[m[32m                          <motion.div[m
+[32m+[m[32m                            key={usuario.id}[m
+[32m+[m[32m                            initial={{ opacity: 0, y: 10 }}[m
+[32m+[m[32m                            animate={{ opacity: 1, y: 0 }}[m
+[32m+[m[32m                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"[m
+[32m+[m[32m                          >[m
+[32m+[m[32m                            <div className="flex items-center justify-between">[m
+[32m+[m[32m                              <div className="flex items-center space-x-3">[m
+[32m+[m[32m                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">[m
+[32m+[m[32m                                  <span className="text-sm">👤</span>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                                <div>[m
+[32m+[m[32m                                  <h4 className="text-sss-white font-medium text-sm">{usuario.nome}</h4>[m
+[32m+[m[32m                                  <p className="text-gray-400 text-xs">{usuario.email}</p>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                              </div>[m
+[32m+[m[32m                              <button[m
+[32m+[m[32m                                onClick={() => enviarSolicitacao(usuario.id)}[m
+[32m+[m[32m                                className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"[m
+[32m+[m[32m                              >[m
+[32m+[m[32m                                Adicionar[m
+[32m+[m[32m                              </button>[m
+[32m+[m[32m                            </div>[m
+[32m+[m[32m                          </motion.div>[m
+[32m+[m[32m                        ))}[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    )}[m
+[32m+[m[32m                  </div>[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m              )}[m
+[32m+[m
+[32m+[m[32m              {activeTab === 'buscar' && ([m
+[32m+[m[32m                /* Buscar Usuários */[m
+[32m+[m[32m                <div className="h-full flex flex-col">[m
+[32m+[m[32m                  <div className="p-3 border-b border-sss-light">[m
+[32m+[m[32m                    <div className="relative">[m
+[32m+[m[32m                      <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />[m
+[32m+[m[32m                      <input[m
+[32m+[m[32m                        type="text"[m
+[32m+[m[32m                        placeholder="Buscar usuários..."[m
+[32m+[m[32m                        value={searchTerm}[m
+[32m+[m[32m                        onChange={(e) => {[m
+[32m+[m[32m                          setSearchTerm(e.target.value)[m
+[32m+[m[32m                          buscarUsuarios(e.target.value)[m
+[32m+[m[32m                        }}[m
+[32m+[m[32m                        className="w-full pl-10 pr-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white text-sm focus:outline-none focus:ring-2 focus:ring-sss-accent"[m
+[32m+[m[32m                      />[m
+[32m+[m[32m                    </div>[m
+[32m+[m[32m                  </div>[m
+[32m+[m
+[32m+[m[32m                  <div className="flex-1 overflow-y-auto">[m
+[32m+[m[32m                    {searching ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">Buscando...</div>[m
+[32m+[m[32m                    ) : searchResults.length === 0 ? ([m
+[32m+[m[32m                      <div className="p-4 text-center text-gray-400">[m
+[32m+[m[32m                        {searchTerm.length > 0 ? 'Nenhum usuário encontrado' : 'Digite para buscar usuários'}[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    ) : ([m
+[32m+[m[32m                      <div className="space-y-2 p-3">[m
+[32m+[m[32m                        {searchResults.map((usuario) => ([m
+[32m+[m[32m                          <motion.div[m
+[32m+[m[32m                            key={usuario.id}[m
+[32m+[m[32m                            initial={{ opacity: 0, y: 10 }}[m
+[32m+[m[32m                            animate={{ opacity: 1, y: 0 }}[m
+[32m+[m[32m                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"[m
+[32m+[m[32m                          >[m
+[32m+[m[32m                            <div className="flex items-center justify-between">[m
+[32m+[m[32m                              <div className="flex items-center space-x-3">[m
+[32m+[m[32m                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">[m
+[32m+[m[32m                                  <span className="text-sm">👤</span>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                                <div>[m
+[32m+[m[32m                                  <h4 className="text-sss-white font-medium text-sm">{usuario.nome}</h4>[m
+[32m+[m[32m                                  <p className="text-gray-400 text-xs">{usuario.email}</p>[m
+[32m+[m[32m                                </div>[m
+[32m+[m[32m                              </div>[m
+[32m+[m[32m                              {!amigos.some(a => a.id === usuario.id) ? ([m
+[32m+[m[32m                                <button[m
+[32m+[m[32m                                  onClick={() => enviarSolicitacao(usuario.id)}[m
+[32m+[m[32m                                  className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"[m
+[32m+[m[32m                                >[m
+[32m+[m[32m                                  Adicionar[m
+[32m+[m[32m                                </button>[m
+[32m+[m[32m                              ) : ([m
+[32m+[m[32m                                <span className="text-xs text-green-400">Já é amigo</span>[m
+[32m+[m[32m                              )}[m
+[32m+[m[32m                            </div>[m
+[32m+[m[32m                          </motion.div>[m
+[32m+[m[32m                        ))}[m
+[32m+[m[32m                      </div>[m
+[32m+[m[32m                    )}[m
+[32m+[m[32m                  </div>[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m              )}[m
+[32m+[m
+[32m+[m[32m              {activeTab === 'chat' && ([m
+                 /* Chat */[m
+                 <div className="h-full flex flex-col">[m
+                   {conversaAtiva ? ([m
+[36m@@ -338,7 +682,7 @@[m [mexport default function FriendsChat() {[m
+                           <div>[m
+                             <h4 className="text-sss-white font-medium text-sm">{conversaAtiva.usuarioNome}</h4>[m
+                             <p className="text-gray-400 text-xs">[m
+[31m-                              {onlineIds.includes(conversaAtiva.usuarioId) ? 'Online' : 'Offline'}[m
+[32m+[m[32m                              {onlineIds.includes(conversaAtiva.usuarioId) ? '🟢 Online' : '⚫ Offline'}[m
+                             </p>[m
+                           </div>[m
+                         </div>[m
+[1mdiff --git a/pages/api/amigos/solicitacoes/[id]/rejeitar.ts b/pages/api/amigos/solicitacoes/[id]/rejeitar.ts[m
+[1mnew file mode 100644[m
+[1mindex 00000000..9d841c9f[m
+[1m--- /dev/null[m
+[1m+++ b/pages/api/amigos/solicitacoes/[id]/rejeitar.ts[m
+[36m@@ -0,0 +1,57 @@[m
+[32m+[m[32mimport { NextApiRequest, NextApiResponse } from 'next'[m
+[32m+[m[32mimport { PrismaClient } from '@prisma/client'[m
+[32m+[m[32mimport jwt from 'jsonwebtoken'[m
+[32m+[m
+[32m+[m[32mconst prisma = new PrismaClient()[m
+[32m+[m
+[32m+[m[32mconst getUserFromToken = (req: NextApiRequest) => {[m
+[32m+[m[32m  const authHeader = req.headers.authorization[m
+[32m+[m[32m  if (!authHeader) return null[m
+[32m+[m[32m  const token = authHeader.split(' ')[1][m
+[32m+[m[32m  try {[m
+[32m+[m[32m    return jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as { id: string }[m
+[32m+[m[32m  } catch {[m
+[32m+[m[32m    return null[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mexport default async function handler(req: NextApiRequest, res: NextApiResponse) {[m
+[32m+[m[32m  if (req.method !== 'POST') {[m
+[32m+[m[32m    return res.status(405).json({ error: 'Método não permitido' })[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const user = getUserFromToken(req)[m
+[32m+[m[32m  if (!user) {[m
+[32m+[m[32m    return res.status(401).json({ error: 'Usuário não autenticado' })[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const { id } = req.query[m
+[32m+[m[32m  if (!id) {[m
+[32m+[m[32m    return res.status(400).json({ error: 'ID da solicitação é obrigatório' })[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Buscar a solicitação de amizade[m
+[32m+[m[32m  const solicitacao = await prisma.amizade.findUnique({[m
+[32m+[m[32m    where: { id: String(id) }[m
+[32m+[m[32m  })[m
+[32m+[m
+[32m+[m[32m  if (!solicitacao) {[m
+[32m+[m[32m    return res.status(404).json({ error: 'Solicitação não encontrada' })[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Só o destinatário pode rejeitar[m
+[32m+[m[32m  if (solicitacao.amigoId !== user.id) {[m
+[32m+[m[32m    return res.status(403).json({ error: 'Acesso negado' })[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Atualizar status para 'rejeitada'[m
+[32m+[m[32m  await prisma.amizade.update({[m
+[32m+[m[32m    where: { id: String(id) },[m
+[32m+[m[32m    data: {[m[41m [m
+[32m+[m[32m      status: 'rejeitada',[m
+[32m+[m[32m      dataResposta: new Date()[m
+[32m+[m[32m    }[m
+[32m+[m[32m  })[m
+[32m+[m
+[32m+[m[32m  return res.status(200).json({ message: 'Solicitação rejeitada com sucesso' })[m
+[32m+[m[32m}[m[41m [m
+\ No newline at end of file[m
