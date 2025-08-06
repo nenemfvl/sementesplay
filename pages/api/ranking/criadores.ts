@@ -184,7 +184,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Erro ao buscar ranking de criadores:', error)
     res.status(500).json({ 
       error: 'Erro interno do servidor',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Erro ao carregar ranking'
+      message: process.env.NODE_ENV === 'development' ? 
+        (error instanceof Error ? error.message : 'Erro desconhecido') : 
+        'Erro ao carregar ranking'
     })
   }
 } 
