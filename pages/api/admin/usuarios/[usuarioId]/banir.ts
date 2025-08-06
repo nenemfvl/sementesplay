@@ -1,11 +1,8 @@
 import { prisma } from '../../../../../lib/prisma'
 
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserFromToken } from '@/pages/api/utils/auth-backend';
 import { PermissionsManager } from '../../../../../lib/permissions-manager';
-
-const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {

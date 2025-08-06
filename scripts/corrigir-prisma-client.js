@@ -19,29 +19,35 @@ function corrigirArquivo(filePath) {
 
       // Remover const prisma = new PrismaClient()
       content = content.replace(
-        /const\s+prisma\s*=\s*new\s+PrismaClient\(\)\s*\n/g,
+        /const\s+prisma\s*=\s*new\s+PrismaClient\(\);?\s*\n/g,
         ''
       );
 
-      // Adicionar import da instância compartilhada
-      const relativePath = path.relative(path.dirname(filePath), 'lib/prisma').replace(/\\/g, '/');
-      const importStatement = `import { prisma } from '${relativePath.startsWith('.') ? relativePath : `./${relativePath}`}'\n\n`;
-      
-      // Encontrar a posição correta para inserir o import
-      const lines = content.split('\n');
-      let insertIndex = 0;
-      
-      // Procurar por imports existentes
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith('import ') || lines[i].startsWith('const ') || lines[i].startsWith('function ') || lines[i].startsWith('export ')) {
-          insertIndex = i;
-          break;
+      // Verificar se já tem import da instância compartilhada
+      if (!content.includes("import { prisma } from")) {
+        // Adicionar import da instância compartilhada
+        const relativePath = path.relative(path.dirname(filePath), 'lib/prisma').replace(/\\/g, '/');
+        const importStatement = `import { prisma } from '${relativePath.startsWith('.') ? relativePath : `./${relativePath}`}'\n\n`;
+        
+        // Encontrar a posição correta para inserir o import
+        const lines = content.split('\n');
+        let insertIndex = 0;
+        
+        // Procurar por imports existentes
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].startsWith('import ') || lines[i].startsWith('const ') || lines[i].startsWith('function ') || lines[i].startsWith('export ')) {
+            insertIndex = i;
+            break;
+          }
         }
+
+        // Inserir o import
+        lines.splice(insertIndex, 0, importStatement);
+        content = lines.join('\n');
       }
 
-      // Inserir o import
-      lines.splice(insertIndex, 0, importStatement);
-      content = lines.join('\n');
+      // Remover linhas vazias duplicadas
+      content = content.replace(/\n\s*\n\s*\n/g, '\n\n');
 
       modificado = true;
     }
