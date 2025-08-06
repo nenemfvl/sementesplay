@@ -11,7 +11,8 @@ import {
   ChatBubbleLeftIcon,
   DocumentTextIcon,
   UserGroupIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  FlagIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
@@ -338,6 +339,14 @@ export default function AdminDashboard() {
                           <div>
                             <p className="text-sss-white font-medium">Logs de Auditoria</p>
                             <p className="text-gray-400 text-sm">Registro de atividades</p>
+                          </div>
+                        </Link>
+                        
+                        <Link href="/admin/painel" className="flex items-center space-x-3 p-4 bg-sss-dark rounded-lg hover:bg-sss-light transition-colors">
+                          <FlagIcon className="w-6 h-6 text-red-500" />
+                          <div>
+                            <p className="text-sss-white font-medium">Verificar Denúncias</p>
+                            <p className="text-gray-400 text-sm">Aprovar ou rejeitar denúncias</p>
                           </div>
                         </Link>
                       </div>

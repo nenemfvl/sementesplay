@@ -75,6 +75,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    console.log('Denúncias pendentes encontradas:', denunciasPendentes.length)
+    console.log('Detalhes das denúncias:', denunciasPendentes)
+
+    // Verificar todas as denúncias (para debug)
+    const todasDenuncias = await prisma.denuncia.findMany({
+      include: {
+        denunciante: {
+          select: {
+            id: true,
+            nome: true,
+            email: true
+          }
+        }
+      }
+    })
+    console.log('Total de denúncias no banco:', todasDenuncias.length)
+    console.log('Todas as denúncias:', todasDenuncias)
+
     return res.status(200).json({
       comprasAguardando,
       repassesPendentes,
