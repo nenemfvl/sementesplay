@@ -10,10 +10,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { limit = 5 } = req.query
 
-    // Buscar conteúdos dos parceiros ordenados por visualizações
+    // Buscar conteúdos dos parceiros ordenados por visualizações (excluindo os removidos)
     const conteudosPopulares = await prisma.conteudoParceiro.findMany({
       where: {
-        // Buscar todos os conteúdos, mesmo sem visualizações
+        removido: false
       },
       include: {
         parceiro: {

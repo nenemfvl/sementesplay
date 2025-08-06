@@ -9,8 +9,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { limit = 10 } = req.query
 
-    // Buscar conteúdos dos criadores
+    // Buscar conteúdos dos criadores (excluindo os removidos)
     const conteudos = await prisma.conteudo.findMany({
+      where: {
+        removido: false
+      },
       include: {
         criador: {
           include: {
