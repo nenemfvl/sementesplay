@@ -572,12 +572,6 @@ export default function Parceiros() {
                             )}
                           </div>
                         )}
-                        <button
-                          onClick={() => router.push(`/parceiro/${top1.id}`)}
-                          className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors w-full"
-                        >
-                          Ver Detalhes
-                        </button>
                       </div>
                     </div>
           </div>
