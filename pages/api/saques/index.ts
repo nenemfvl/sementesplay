@@ -1,14 +1,21 @@
 import { prisma } from '../../../lib/prisma'
-
-
 import { NextApiRequest, NextApiResponse } from 'next'
-import { auth } from '../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      // Verificar autenticação
-      const user = auth.getUser()
+      // Verificar autenticação via cookie
+      let user = null
+      const userCookie = req.cookies['sementesplay_user']
+      
+      if (userCookie) {
+        try {
+          user = JSON.parse(decodeURIComponent(userCookie))
+        } catch (error) {
+          console.error('Erro ao decodificar cookie do usuário:', error)
+        }
+      }
+
       if (!user) {
         return res.status(401).json({ error: 'Usuário não autenticado' })
       }
@@ -36,13 +43,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Valor mínimo para saque: R$ 50,00' })
       }
 
-      // Verificar se usuário tem dados bancários
-      const dadosBancarios = await prisma.dadosBancarios.findUnique({
+      // Verificar se usuário tem dados PIX cadastrados
+      const dadosPix = await prisma.dadosPix.findUnique({
         where: { usuarioId: String(usuarioId) }
       })
 
-      if (!dadosBancarios) {
-        return res.status(400).json({ error: 'Dados bancários não cadastrados' })
+      if (!dadosPix) {
+        return res.status(400).json({ error: 'Dados PIX não cadastrados' })
       }
 
       // Buscar usuário para verificar sementes
@@ -75,12 +82,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             taxa,
             valorLiquido,
             dadosBancarios: JSON.stringify({
-              banco: dadosBancarios.banco,
-              agencia: dadosBancarios.agencia,
-              conta: dadosBancarios.conta,
-              tipoConta: dadosBancarios.tipoConta,
-              cpfCnpj: dadosBancarios.cpfCnpj,
-              nomeTitular: dadosBancarios.nomeTitular
+              chavePix: dadosPix.chavePix,
+              tipoChave: dadosPix.tipoChave,
+              nomeTitular: dadosPix.nomeTitular,
+              cpfCnpj: dadosPix.cpfCnpj
             }),
             status: 'pendente',
             dataSolicitacao: new Date()
@@ -99,41 +104,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await tx.semente.create({
           data: {
             usuarioId: String(usuarioId),
-            quantidade: sementesNecessarias,
+            quantidade: -sementesNecessarias,
             tipo: 'saque',
-            descricao: `Solicitação de saque de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
+            descricao: `Saque solicitado - R$ ${valor}`
           }
         })
 
-        // Criar notificação
-        await tx.notificacao.create({
-          data: {
-            usuarioId: String(usuarioId),
-            tipo: 'saque',
-            titulo: 'Solicitação de Saque',
-            mensagem: `Sua solicitação de saque de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} foi recebida e está sendo processada.`
-          }
-        })
-
-        return { saque, valorLiquido }
+        return saque
       })
 
-      // Log de auditoria
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId: String(usuarioId),
-          acao: 'SOLICITAR_SAQUE',
-          detalhes: `Solicitação de saque criada. ID: ${resultado.saque.id}, Valor: R$ ${valor.toFixed(2)}, Taxa: R$ ${taxa.toFixed(2)}, Valor líquido: R$ ${valorLiquido.toFixed(2)}, Sementes utilizadas: ${sementesNecessarias}`,
-          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
-          userAgent: req.headers['user-agent'] || '',
-          nivel: 'info'
-        }
-      })
-
-      res.status(200).json({
+      res.status(201).json({
         success: true,
-        message: 'Solicitação de saque enviada com sucesso',
-        valorLiquido: resultado.valorLiquido
+        saque: resultado,
+        message: 'Saque solicitado com sucesso'
       })
 
     } catch (error) {

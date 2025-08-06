@@ -2,11 +2,32 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Verificar autenticação via cookie
+  let user = null
+  const userCookie = req.cookies['sementesplay_user']
+  
+  if (userCookie) {
+    try {
+      user = JSON.parse(decodeURIComponent(userCookie))
+    } catch (error) {
+      console.error('Erro ao decodificar cookie do usuário:', error)
+    }
+  }
+
+  if (!user) {
+    return res.status(401).json({ error: 'Usuário não autenticado' })
+  }
+
   if (req.method === 'GET') {
     const { usuarioId } = req.query
 
     if (!usuarioId || typeof usuarioId !== 'string') {
       return res.status(400).json({ error: 'ID do usuário é obrigatório' })
+    }
+
+    // Verificar se o usuário está acessando seus próprios dados
+    if (usuarioId !== user.id) {
+      return res.status(403).json({ error: 'Acesso negado' })
     }
 
     try {
@@ -26,6 +47,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!usuarioId || !chavePix || !tipoChave || !nomeTitular || !cpfCnpj) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
+    }
+
+    // Verificar se o usuário está criando dados para si mesmo
+    if (usuarioId !== user.id) {
+      return res.status(403).json({ error: 'Acesso negado' })
     }
 
     try {
@@ -61,6 +87,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!usuarioId || !chavePix || !tipoChave || !nomeTitular || !cpfCnpj) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
+    }
+
+    // Verificar se o usuário está atualizando seus próprios dados
+    if (usuarioId !== user.id) {
+      return res.status(403).json({ error: 'Acesso negado' })
     }
 
     try {
