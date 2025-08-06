@@ -166,12 +166,6 @@ export default function Navbar() {
                       🏦 Carteira
                     </button>
                     <button
-                      onClick={() => handleMenuItemClick('/missoes')}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-sss-accent"
-                    >
-                      🎯 Missões
-                    </button>
-                    <button
                       onClick={() => handleMenuItemClick('/amigos')}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-sss-accent"
                     >

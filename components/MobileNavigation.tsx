@@ -54,12 +54,6 @@ const navigationItems = [
     iconSolid: ChatBubbleLeftIconSolid
   },
   {
-    name: 'Missões',
-    href: '/missoes',
-    icon: GiftIcon,
-    iconSolid: GiftIconSolid
-  },
-  {
     name: 'Config',
     href: '/configuracoes',
     icon: CogIcon,
