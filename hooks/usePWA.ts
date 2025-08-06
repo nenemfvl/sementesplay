@@ -67,7 +67,7 @@ export function usePWA() {
 
     // Capturar prompt de instalação
     const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault()
+      // Não usar preventDefault aqui para permitir que o banner apareça
       setPwaState(prev => ({ 
         ...prev, 
         deferredPrompt: e,

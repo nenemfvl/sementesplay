@@ -13,6 +13,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   useEffect(() => {
     const user = auth.getUser()
     if (!user) return
+    
     const ping = () => {
       fetch('/api/chat/usuarios-online', {
         method: 'POST',
@@ -22,7 +23,11 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     }
     ping()
     const interval = setInterval(ping, 10000)
-    return () => clearInterval(interval)
+    
+    // Limpar intervalo ao desmontar
+    return () => {
+      clearInterval(interval)
+    }
   }, [])
 
   return (
