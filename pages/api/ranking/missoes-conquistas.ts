@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -164,6 +162,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ ranking: rankingComDados })
   } catch (error) {
     console.error('Erro ao buscar ranking de doações/pontos:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      message: error instanceof Error ? error.message : 'Erro desconhecido'
+    })
   }
 } 
