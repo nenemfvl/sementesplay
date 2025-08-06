@@ -24,12 +24,21 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/favicon.ico',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ]
   },
 
   // Configurações de imagens
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'sementesplay.vercel.app', 'img.youtube.com'],
+    domains: ['localhost', 'res.cloudinary.com', 'sementesplay.vercel.app', 'sementesplay.com.br', 'img.youtube.com'],
     formats: ['image/webp', 'image/avif'],
   },
 
