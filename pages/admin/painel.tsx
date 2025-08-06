@@ -14,7 +14,7 @@ export default function PainelAdmin() {
     // Simulação: buscar usuário admin logado
     const currentUser = auth.getUser && auth.getUser()
     setUser(currentUser)
-    if (!currentUser || currentUser.tipo !== 'admin') {
+    if (!currentUser || Number(currentUser.nivel) < 5) {
       window.location.href = '/login'
       return
     }
