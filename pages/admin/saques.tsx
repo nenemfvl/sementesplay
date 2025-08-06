@@ -94,12 +94,26 @@ export default function AdminSaques() {
     }
   }
 
-  const getDadosBancarios = (dadosBancariosString: string) => {
+  const getDadosPix = (dadosPixString: string) => {
     try {
-      return JSON.parse(dadosBancariosString)
+      if (!dadosPixString) return null
+      const dadosPix = JSON.parse(dadosPixString)
+      return dadosPix
     } catch (error) {
+      console.error('Erro ao parsear dados PIX:', error)
       return null
     }
+  }
+
+  const getTipoChaveLabel = (tipo: string) => {
+    const labels = {
+      cpf: 'CPF',
+      cnpj: 'CNPJ', 
+      email: 'E-mail',
+      telefone: 'Telefone',
+      aleatoria: 'Chave Aleatória'
+    }
+    return labels[tipo as keyof typeof labels] || tipo
   }
 
   const getStatusIcon = (status: string) => {
@@ -422,35 +436,27 @@ export default function AdminSaques() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Dados Bancários</label>
                   <div className="bg-sss-dark rounded-lg p-4">
                     {(() => {
-                      const dados = getDadosBancarios(selectedSaque.dadosBancarios)
+                      const dados = getDadosPix(selectedSaque.dadosBancarios)
                       if (!dados) {
-                        return <p className="text-red-400">Erro ao carregar dados bancários</p>
+                        return <p className="text-red-400">Erro ao carregar dados PIX</p>
                       }
                       return (
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <span className="text-gray-400 text-sm">Banco:</span>
-                            <p className="text-sss-white">{dados.banco}</p>
+                            <span className="text-gray-400 text-sm">Tipo de Chave:</span>
+                            <p className="text-sss-white capitalize">{getTipoChaveLabel(dados.tipoChave)}</p>
                           </div>
                           <div>
-                            <span className="text-gray-400 text-sm">Agência:</span>
-                            <p className="text-sss-white">{dados.agencia}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-400 text-sm">Conta:</span>
-                            <p className="text-sss-white">{dados.conta}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-400 text-sm">Tipo de Conta:</span>
-                            <p className="text-sss-white capitalize">{dados.tipoConta}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-400 text-sm">CPF/CNPJ:</span>
-                            <p className="text-sss-white">{dados.cpfCnpj}</p>
+                            <span className="text-gray-400 text-sm">Chave PIX:</span>
+                            <p className="text-sss-white">{dados.chavePix}</p>
                           </div>
                           <div>
                             <span className="text-gray-400 text-sm">Nome do Titular:</span>
                             <p className="text-sss-white">{dados.nomeTitular}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">CPF/CNPJ:</span>
+                            <p className="text-sss-white">{dados.cpfCnpj}</p>
                           </div>
                         </div>
                       )

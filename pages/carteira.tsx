@@ -48,6 +48,7 @@ export default function Carteira() {
   const [verificandoPagamento, setVerificandoPagamento] = useState(false)
   const [pagamentoAprovado, setPagamentoAprovado] = useState(false)
   const [mensagemPagamento, setMensagemPagamento] = useState('')
+  const [savingSaque, setSavingSaque] = useState(false)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -204,58 +205,50 @@ export default function Carteira() {
       return
     }
 
-    // Verificar se tem dados bancários cadastrados
+    // Verificar se tem dados PIX cadastrados
     try {
-      const dadosBancariosResponse = await fetch(`/api/dados-bancarios?usuarioId=${user?.id}`)
-      if (!dadosBancariosResponse.ok) {
-        alert('Você precisa cadastrar seus dados bancários antes de solicitar um saque. Redirecionando...')
+      const dadosPixResponse = await fetch(`/api/dados-pix?usuarioId=${user?.id}`)
+      if (!dadosPixResponse.ok) {
+        alert('Você precisa cadastrar seus dados PIX antes de solicitar um saque. Redirecionando...')
         window.location.href = '/dados-bancarios'
         return
       }
 
-      const dadosBancarios = await dadosBancariosResponse.json()
-      if (!dadosBancarios || !dadosBancarios.banco) {
-        alert('Você precisa cadastrar seus dados bancários antes de solicitar um saque. Redirecionando...')
+      const dadosPix = await dadosPixResponse.json()
+      if (!dadosPix || !dadosPix.chavePix) {
+        alert('Você precisa cadastrar seus dados PIX antes de solicitar um saque. Redirecionando...')
         window.location.href = '/dados-bancarios'
         return
       }
 
-      // Verificar se os dados estão validados
-      if (!dadosBancarios.validado) {
-        alert('Seus dados bancários ainda não foram validados. O processo pode levar até 24 horas.')
-      }
-
-    } catch (error) {
-      console.error('Erro ao verificar dados bancários:', error)
-      alert('Erro ao verificar dados bancários. Tente novamente.')
-      return
-    }
-
-    try {
+      setSavingSaque(true)
       const response = await fetch('/api/saques', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          usuarioId: user?.id,
-          valor: parseFloat(valorSaque)
+          valor: parseFloat(valorSaque),
+          usuarioId: user?.id
         })
       })
 
-      const data = await response.json()
-
       if (response.ok) {
-        alert('Solicitação de saque enviada com sucesso!')
-        setShowSaque(false)
+        const data = await response.json()
+        setCarteira(prev => prev ? { ...prev, sementes: prev.sementes - parseFloat(valorSaque) } : null)
         setValorSaque('')
+        setShowSaque(false)
+        alert('Saque solicitado com sucesso! Você receberá o pagamento via PIX em até 24 horas.')
         loadCarteira()
       } else {
-        alert(`Erro: ${data.error}`)
+        const error = await response.json()
+        alert(`Erro: ${error.error}`)
       }
     } catch (error) {
       console.error('Erro ao solicitar saque:', error)
       alert('Erro ao solicitar saque')
+    } finally {
+      setSavingSaque(false)
     }
   }
 
@@ -412,16 +405,16 @@ export default function Carteira() {
                   <div className="space-y-3">
                     <button
                       onClick={() => setShowSaque(true)}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-                      aria-label="Abrir modal para solicitar saque"
+                      className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-semibold"
                     >
                       Solicitar Saque
                     </button>
+                    
                     <Link
                       href="/dados-bancarios"
-                      className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-center block"
+                      className="block w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors text-center text-sm"
                     >
-                      Gerenciar Dados Bancários
+                      Configurar Dados PIX
                     </Link>
                   </div>
                 </motion.div>
@@ -750,33 +743,43 @@ export default function Carteira() {
               </div>
 
               <form onSubmit={handleSaque} className="space-y-4">
+                <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <QrCodeIcon className="w-5 h-5 text-blue-400 mr-3 mt-0.5" />
+                    <div>
+                      <h4 className="text-blue-400 font-semibold mb-2">Pagamento via PIX</h4>
+                      <p className="text-gray-300 text-sm">
+                        O pagamento será enviado para sua chave PIX cadastrada em até 24 horas após a aprovação.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
-                  <label htmlFor="valor-saque" className="block text-sm font-medium text-gray-300 mb-2">
-                    Valor (R$)
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Valor do Saque (R$)
                   </label>
                   <input
-                    id="valor-saque"
                     type="number"
-                    step="0.01"
-                    min="50"
-                    max={carteira?.sementes || 0}
                     value={valorSaque}
                     onChange={(e) => setValorSaque(e.target.value)}
-                    className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                    placeholder="50,00"
-                    aria-label="Valor do saque em reais"
+                    min="50"
+                    step="0.01"
+                    className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="50.00"
+                    required
                   />
-                  <p className="text-xs text-gray-400 mt-1">
-                    Sementes disponíveis: {carteira ? carteira.sementes.toLocaleString() : '0'} (Valor máximo: {carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'})
+                  <p className="text-gray-400 text-sm mt-1">
+                    Valor mínimo: R$ 50,00 | Taxa: 2% | Disponível: {carteira?.sementes || 0} sementes
                   </p>
                 </div>
 
                 <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
                   <p className="text-blue-200 text-sm">
-                    💳 <strong>Dados Bancários:</strong> Seus dados bancários serão utilizados para processar o saque.
+                    💳 <strong>Dados PIX:</strong> Seus dados PIX serão utilizados para processar o saque.
                     <br />
                     <Link href="/dados-bancarios" className="text-blue-400 hover:text-blue-300 underline">
-                      Verificar/Atualizar dados bancários
+                      Verificar/Atualizar dados PIX
                     </Link>
                   </p>
                 </div>
@@ -789,9 +792,9 @@ export default function Carteira() {
                     <br />
                     • Taxa de 2% será aplicada
                     <br />
-                    • Processamento em até 2 dias úteis
+                    • Processamento em até 24 horas
                     <br />
-                    • Certifique-se de que seus dados bancários estão cadastrados
+                    • Certifique-se de que seus dados PIX estão cadastrados
                   </p>
                 </div>
 
@@ -805,9 +808,10 @@ export default function Carteira() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    disabled={savingSaque}
+                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
                   >
-                    Solicitar Saque
+                    {savingSaque ? 'Solicitando Saque...' : 'Solicitar Saque'}
                   </button>
                 </div>
               </form>
