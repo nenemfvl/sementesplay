@@ -511,70 +511,74 @@ export default function Parceiros() {
                         🏢
                       </div>
                     )}
-                    <div className="flex-1 flex flex-col items-start">
-                      <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
-                      <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
-                      <p className="text-gray-400 mb-2">{top1.nomeCidade}</p>
-                      <div className="flex gap-4 text-sm text-gray-300">
-                        <span>Vendas: {formatarNumero(top1.totalVendas)}</span>
-                        <span>Códigos: {formatarNumero(top1.codigosGerados)}</span>
+                    <div className="flex-1 flex flex-col items-start h-full justify-between">
+                      <div>
+                        <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
+                        <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
+                        <p className="text-gray-400 mb-2">{top1.nomeCidade}</p>
+                        <div className="flex gap-4 text-sm text-gray-300">
+                          <span>Vendas: {formatarNumero(top1.totalVendas)}</span>
+                          <span>Códigos: {formatarNumero(top1.codigosGerados)}</span>
+                        </div>
                       </div>
                       
-                      {/* Redes Sociais */}
-                      {(top1.instagram || top1.twitch || top1.youtube || top1.tiktok) && (
-                        <div className="flex gap-3 mt-3 w-full justify-center">
-                          {top1.instagram && (
-                            <a 
-                              href={top1.instagram} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-pink-400 hover:text-pink-300 transition-colors"
-                              title="Instagram"
-                            >
-                              <FaInstagram className="w-5 h-5" />
-                            </a>
-                          )}
-                          {top1.twitch && (
-                            <a 
-                              href={top1.twitch} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-purple-400 hover:text-purple-300 transition-colors"
-                              title="Twitch"
-                            >
-                              <FaTwitch className="w-5 h-5" />
-                            </a>
-                          )}
-                          {top1.youtube && (
-                            <a 
-                              href={top1.youtube} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-red-400 hover:text-red-300 transition-colors"
-                              title="YouTube"
-                            >
-                              <FaYoutube className="w-5 h-5" />
-                            </a>
-                          )}
-                          {top1.tiktok && (
-                            <a 
-                              href={top1.tiktok} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-cyan-400 hover:text-cyan-300 transition-colors"
-                              title="TikTok"
-                            >
-                              <FaTiktok className="w-5 h-5" />
-                            </a>
-                          )}
-                        </div>
-                      )}
-                      <button
-                        onClick={() => router.push(`/parceiro/${top1.id}`)}
-                        className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors mt-3"
-                      >
-                        Ver Detalhes
-                      </button>
+                      <div className="w-full">
+                        {/* Redes Sociais */}
+                        {(top1.instagram || top1.twitch || top1.youtube || top1.tiktok) && (
+                          <div className="flex gap-4 w-full justify-center mb-4">
+                            {top1.instagram && (
+                              <a 
+                                href={top1.instagram} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-pink-400 hover:text-pink-300 transition-colors"
+                                title="Instagram"
+                              >
+                                <FaInstagram className="w-7 h-7" />
+                              </a>
+                            )}
+                            {top1.twitch && (
+                              <a 
+                                href={top1.twitch} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-purple-400 hover:text-purple-300 transition-colors"
+                                title="Twitch"
+                              >
+                                <FaTwitch className="w-7 h-7" />
+                              </a>
+                            )}
+                            {top1.youtube && (
+                              <a 
+                                href={top1.youtube} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-red-400 hover:text-red-300 transition-colors"
+                                title="YouTube"
+                              >
+                                <FaYoutube className="w-7 h-7" />
+                              </a>
+                            )}
+                            {top1.tiktok && (
+                              <a 
+                                href={top1.tiktok} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                                title="TikTok"
+                              >
+                                <FaTiktok className="w-7 h-7" />
+                              </a>
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => router.push(`/parceiro/${top1.id}`)}
+                          className="bg-sss-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors w-full"
+                        >
+                          Ver Detalhes
+                        </button>
+                      </div>
                     </div>
           </div>
                   {/* Botão Favoritar - Canto Superior Direito */}
