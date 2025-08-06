@@ -83,6 +83,20 @@ export default function DenunciaModal({
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
       
+      if (!user.id) {
+        alert('Você precisa estar logado para denunciar conteúdo')
+        return
+      }
+      
+      console.log('Dados da denúncia:', {
+        denuncianteId: user.id,
+        conteudoId: tipoConteudo === 'criador' ? conteudoId : null,
+        conteudoParceiroId: tipoConteudo === 'parceiro' ? conteudoParceiroId : null,
+        tipo,
+        motivo,
+        descricao
+      })
+      
       const response = await fetch('/api/denuncias', {
         method: 'POST',
         headers: {

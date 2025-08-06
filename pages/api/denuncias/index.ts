@@ -4,10 +4,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
+      console.log('Dados recebidos na API:', req.body)
+      
       const { denuncianteId, conteudoId, conteudoParceiroId, tipo, motivo, descricao } = req.body
 
       // Validações básicas
       if (!denuncianteId || !tipo || !motivo) {
+        console.log('Erro de validação:', { denuncianteId, tipo, motivo })
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' })
       }
 
