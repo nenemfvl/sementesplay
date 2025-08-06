@@ -79,6 +79,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Pontuação total composta
         const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
 
+        // Processar redes sociais
+        let redesSociais = {}
+        try {
+          if (criador.redesSociais) {
+            redesSociais = JSON.parse(criador.redesSociais)
+          }
+        } catch (error) {
+          console.error(`Erro ao processar redes sociais do criador ${criador.id}:`, error)
+          redesSociais = {}
+        }
+
         return {
           id: criador.id,
           nome: criador.usuario.nome,
@@ -96,10 +107,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           totalVisualizacoes: conteudos._sum.visualizacoes || 0,
           totalEnquetes: enquetes,
           totalRecadosPublicos: recadosPublicos,
-          redesSociais: {}
+          redesSociais
         }
       } catch (error) {
         console.error(`Erro ao processar criador ${criador.id}:`, error)
+        
+        // Processar redes sociais mesmo em caso de erro
+        let redesSociais = {}
+        try {
+          if (criador.redesSociais) {
+            redesSociais = JSON.parse(criador.redesSociais)
+          }
+        } catch (parseError) {
+          console.error(`Erro ao processar redes sociais do criador ${criador.id}:`, parseError)
+          redesSociais = {}
+        }
+        
         // Retornar dados básicos em caso de erro
         return {
           id: criador.id,
@@ -118,7 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           totalVisualizacoes: 0,
           totalEnquetes: 0,
           totalRecadosPublicos: 0,
-          redesSociais: {}
+          redesSociais
         }
       }
     }))
