@@ -28,6 +28,7 @@ interface CandidaturaData {
     instagram?: string
     tiktok?: string
     twitter?: string
+    discord?: string
   }
   portfolio: {
     links: string[]
@@ -319,6 +320,20 @@ export default function CandidaturaCriador() {
               className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
               placeholder="https://tiktok.com/@seuperfil"
               aria-label="Link do perfil do TikTok"
+            />
+          </div>
+          <div>
+            <label htmlFor="discord-candidatura" className="block text-sm font-medium text-sss-white mb-2">
+              Discord
+            </label>
+            <input
+              id="discord-candidatura"
+              type="url"
+              value={formData.redesSociais.discord || ''}
+              onChange={(e) => handleSocialChange('discord', e.target.value)}
+              className="w-full px-3 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+              placeholder="https://discord.gg/seuserver"
+              aria-label="Link do servidor do Discord"
             />
           </div>
         </div>

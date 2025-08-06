@@ -112,7 +112,8 @@ export default function PainelCriador() {
     youtube: '',
     twitch: '',
     instagram: '',
-    tiktok: ''
+    tiktok: '',
+    discord: ''
   })
   const [salvandoRedes, setSalvandoRedes] = useState(false)
   const [redesStatus, setRedesStatus] = useState<'idle'|'salvando'|'salvo'>('idle')
@@ -1209,6 +1210,16 @@ export default function PainelCriador() {
                     placeholder="https://tiktok.com/@seuperfil"
                     value={redesSociais.tiktok}
                     onChange={(e) => setRedesSociais(prev => ({ ...prev, tiktok: e.target.value }))}
+                        className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Discord</label>
+                  <input
+                    type="url"
+                    placeholder="https://discord.gg/seuserver"
+                    value={redesSociais.discord}
+                    onChange={(e) => setRedesSociais(prev => ({ ...prev, discord: e.target.value }))}
                         className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all"
                   />
                 </div>
