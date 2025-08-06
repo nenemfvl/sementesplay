@@ -82,11 +82,17 @@ export default function Ranking() {
   const [showModal, setShowModal] = useState(false)
 
   const loadRanking = useCallback(async () => {
+    setLoading(true)
     try {
       let response
       if (selectedCategoria === 'criador') {
         // Usar a nova API de ranking de criadores com pontuação composta
-        response = await fetch('/api/ranking/criadores')
+        response = await fetch('/api/ranking/criadores', {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         const data = await response.json()
         if (response.ok && data.success) {
           // Converter dados da API de criadores para o formato do ranking
@@ -116,21 +122,42 @@ export default function Ranking() {
             cor: 'text-purple-500'
           }))
           setRanking(rankingCriadores)
+        } else {
+          console.error('Erro na resposta da API:', data)
+          // Manter dados anteriores se disponível
+          if (ranking.length === 0) {
+            setRanking([])
+          }
         }
       } else {
         // Usar API original para outras categorias
-        response = await fetch(`/api/ranking?categoria=${selectedCategoria}&periodo=${selectedPeriodo}`)
+        response = await fetch(`/api/ranking?categoria=${selectedCategoria}&periodo=${selectedPeriodo}`, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         const data = await response.json()
         if (response.ok) {
           setRanking(data.ranking)
+        } else {
+          console.error('Erro na resposta da API:', data)
+          // Manter dados anteriores se disponível
+          if (ranking.length === 0) {
+            setRanking([])
+          }
         }
       }
     } catch (error) {
       console.error('Erro ao carregar ranking:', error)
+      // Manter dados anteriores se disponível
+      if (ranking.length === 0) {
+        setRanking([])
+      }
     } finally {
       setLoading(false)
     }
-  }, [selectedCategoria, selectedPeriodo])
+  }, [selectedCategoria, selectedPeriodo, ranking.length])
 
   useEffect(() => {
     const currentUser = auth.getUser()

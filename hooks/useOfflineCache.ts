@@ -98,43 +98,57 @@ export function useOfflineCache() {
     }
   }
 
-  // Executar requisição com fallback offline
-  const fetchWithOfflineFallback = async (
+  // Executar requisição com fallback offline e retry
+  const fetchWithRetry = async (
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    maxRetries: number = 3
   ): Promise<Response> => {
-    if (isOnline) {
+    let lastError: Error | null = null
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const response = await fetch(url, options)
-        return response
-      } catch (error) {
-        // Se falhar online, salva para sincronizar depois
-        addToOfflineCache({
-          url,
-          method: options.method || 'GET',
-          headers: options.headers as Record<string, string> || {},
-          body: options.body as string
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            ...options.headers
+          }
         })
-        throw error
+        
+        if (response.ok) {
+          return response
+        }
+        
+        // Se não for 200, mas também não for erro de rede, retornar
+        if (response.status >= 400 && response.status < 500) {
+          return response
+        }
+        
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      } catch (error) {
+        lastError = error as Error
+        console.warn(`Tentativa ${attempt} falhou para ${url}:`, error)
+        
+        // Aguardar antes da próxima tentativa (backoff exponencial)
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000))
+        }
       }
-    } else {
-      // Offline - salva para sincronizar depois
+    }
+    
+    // Se todas as tentativas falharam e estamos offline, salvar para sincronização
+    if (!isOnline) {
       addToOfflineCache({
         url,
         method: options.method || 'GET',
         headers: options.headers as Record<string, string> || {},
         body: options.body as string
       })
-
-      // Retorna resposta mock para continuar funcionando offline
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'Operação salva para sincronização offline' 
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      })
     }
+    
+    throw lastError || new Error('Falha na requisição após todas as tentativas')
   }
 
   // Sincronizar automaticamente quando voltar online
@@ -145,12 +159,12 @@ export function useOfflineCache() {
   }, [isOnline])
 
   return {
-    offlineData,
     isOnline,
+    offlineData,
+    fetchWithRetry,
     addToOfflineCache,
     removeFromOfflineCache,
     clearOfflineCache,
-    syncOfflineData,
-    fetchWithOfflineFallback
+    syncOfflineData
   }
 } 

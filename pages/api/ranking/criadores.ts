@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -9,90 +7,119 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-         // Buscar apenas criadores com níveis específicos (excluindo admin nível 5)
-     const criadores = await prisma.criador.findMany({
-       where: {
-         usuario: {
-           nivel: {
-             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
-           }
-         }
-       },
+    // Buscar apenas criadores com níveis específicos (excluindo admin nível 5)
+    const criadores = await prisma.criador.findMany({
+      where: {
+        usuario: {
+          nivel: {
+            in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
+          }
+        }
+      },
       include: {
         usuario: {
-          include: {
-            missaoUsuarios: {
-              where: {
-                concluida: true
-              }
-            },
-            conquistas: true
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            avatarUrl: true,
+            nivel: true,
+            pontuacao: true,
+            sementes: true
           }
         },
-        doacoesRecebidas: true
+        doacoesRecebidas: {
+          select: {
+            quantidade: true
+          }
+        }
       }
     })
 
     // Calcular pontuação composta para cada criador
     const criadoresComPontuacao = await Promise.all(criadores.map(async criador => {
-      // Pontuação base: sementes recebidas (1 semente = 1 ponto)
-      const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
-      
-      // Pontos do campo pontuacao do usuário (se ele também doar)
-      const pontosUsuario = criador.usuario.pontuacao || 0
-      
-      // Buscar dados adicionais do criador
-      const [conteudos, enquetes, recadosPublicos] = await Promise.all([
-        // Total de visualizações dos conteúdos
-        prisma.conteudo.aggregate({
-          where: { criadorId: criador.id },
-          _sum: { visualizacoes: true }
-        }),
+      try {
+        // Pontuação base: sementes recebidas (1 semente = 1 ponto)
+        const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
         
-        // Quantidade de enquetes criadas
-        prisma.enquete.count({
-          where: { criadorId: criador.usuarioId }
-        }),
+        // Pontos do campo pontuacao do usuário (se ele também doar)
+        const pontosUsuario = criador.usuario.pontuacao || 0
         
-        // Quantidade de recados públicos (caixa de perguntas)
-        prisma.recado.count({
-          where: { 
-            destinatarioId: criador.usuarioId,
-            publico: true 
-          }
-        })
-      ])
-      
-      // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
-      const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
-      
-      // Pontos por enquetes (5 pontos por enquete)
-      const pontosEnquetes = enquetes * 5
-      
-      // Pontos por recados públicos (2 pontos por recado público)
-      const pontosRecadosPublicos = recadosPublicos * 2
-      
-      // Pontuação total composta
-      const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
+        // Buscar dados adicionais do criador com timeout
+        const [conteudos, enquetes, recadosPublicos] = await Promise.all([
+          // Total de visualizações dos conteúdos
+          prisma.conteudo.aggregate({
+            where: { criadorId: criador.id },
+            _sum: { visualizacoes: true }
+          }).catch(() => ({ _sum: { visualizacoes: 0 } })),
+          
+          // Quantidade de enquetes criadas
+          prisma.enquete.count({
+            where: { criadorId: criador.usuarioId }
+          }).catch(() => 0),
+          
+          // Quantidade de recados públicos (caixa de perguntas)
+          prisma.recado.count({
+            where: { 
+              destinatarioId: criador.usuarioId,
+              publico: true 
+            }
+          }).catch(() => 0)
+        ])
+        
+        // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
+        const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
+        
+        // Pontos por enquetes (5 pontos por enquete)
+        const pontosEnquetes = enquetes * 5
+        
+        // Pontos por recados públicos (2 pontos por recado público)
+        const pontosRecadosPublicos = recadosPublicos * 2
+        
+        // Pontuação total composta
+        const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
 
-      return {
-        id: criador.id,
-        nome: criador.usuario.nome,
-        email: criador.usuario.email,
-        avatar: criador.usuario.avatarUrl || '👤',
-        nivel: criador.usuario.nivel,
-        sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
-        sementesRecebidas,
-        pontosUsuario,
-        pontosVisualizacoes,
-        pontosEnquetes,
-        pontosRecadosPublicos,
-        pontuacaoTotal,
-        totalDoacoes: criador.doacoesRecebidas.length,
-        totalVisualizacoes: conteudos._sum.visualizacoes || 0,
-        totalEnquetes: enquetes,
-        totalRecadosPublicos: recadosPublicos,
-        redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
+        return {
+          id: criador.id,
+          nome: criador.usuario.nome,
+          email: criador.usuario.email,
+          avatar: criador.usuario.avatarUrl || '👤',
+          nivel: criador.usuario.nivel,
+          sementes: criador.usuario.sementes, // Sementes que o usuário tem no perfil
+          sementesRecebidas,
+          pontosUsuario,
+          pontosVisualizacoes,
+          pontosEnquetes,
+          pontosRecadosPublicos,
+          pontuacaoTotal,
+          totalDoacoes: criador.doacoesRecebidas.length,
+          totalVisualizacoes: conteudos._sum.visualizacoes || 0,
+          totalEnquetes: enquetes,
+          totalRecadosPublicos: recadosPublicos,
+          redesSociais: {}
+        }
+      } catch (error) {
+        console.error(`Erro ao processar criador ${criador.id}:`, error)
+        // Retornar dados básicos em caso de erro
+        return {
+          id: criador.id,
+          nome: criador.usuario.nome,
+          email: criador.usuario.email,
+          avatar: criador.usuario.avatarUrl || '👤',
+          nivel: criador.usuario.nivel,
+          sementes: criador.usuario.sementes || 0,
+          sementesRecebidas: 0,
+          pontosUsuario: criador.usuario.pontuacao || 0,
+          pontosVisualizacoes: 0,
+          pontosEnquetes: 0,
+          pontosRecadosPublicos: 0,
+          pontuacaoTotal: criador.usuario.pontuacao || 0,
+          totalDoacoes: 0,
+          totalVisualizacoes: 0,
+          totalEnquetes: 0,
+          totalRecadosPublicos: 0,
+          redesSociais: {}
+        }
       }
     }))
 
@@ -155,6 +182,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   } catch (error) {
     console.error('Erro ao buscar ranking de criadores:', error)
-    res.status(500).json({ error: 'Erro interno do servidor' })
+    res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Erro ao carregar ranking'
+    })
   }
 } 

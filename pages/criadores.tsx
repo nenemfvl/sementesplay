@@ -75,7 +75,12 @@ export default function Criadores() {
   const loadRanking = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/ranking/criadores')
+      const response = await fetch('/api/ranking/criadores', {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      })
       const data = await response.json()
       if (response.ok && data.success) {
         const rankingCriadores = data.criadores.map((criador: any) => ({
@@ -103,9 +108,19 @@ export default function Criadores() {
           redesSociais: criador.redesSociais || {}
         }))
         setRanking(rankingCriadores)
+      } else {
+        console.error('Erro na resposta da API:', data)
+        // Manter dados anteriores se disponível
+        if (ranking.length === 0) {
+          setRanking([])
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar ranking:', error)
+      // Manter dados anteriores se disponível
+      if (ranking.length === 0) {
+        setRanking([])
+      }
     } finally {
       setLoading(false)
     }

@@ -19,6 +19,20 @@ const STATIC_FILES = [
   '/notification-sound.mp3'
 ]
 
+// APIs que NÃO devem ser cacheadas (sempre buscar dados frescos)
+const NO_CACHE_APIS = [
+  '/api/ranking/criadores',
+  '/api/ranking/doadores',
+  '/api/ranking/missoes-conquistas',
+  '/api/ranking/ciclos',
+  '/api/admin/stats',
+  '/api/conteudos/recentes',
+  '/api/conteudos/populares',
+  '/api/parceiros/ranking',
+  '/api/notificacoes',
+  '/api/usuario/atual'
+]
+
 // Estratégia de cache: Cache First para arquivos estáticos
 const cacheFirst = async (request) => {
   const cachedResponse = await caches.match(request)
@@ -42,13 +56,19 @@ const cacheFirst = async (request) => {
   }
 }
 
-// Estratégia de cache: Network First para APIs
+// Estratégia de cache: Network First para APIs (com fallback para cache)
 const networkFirst = async (request) => {
   try {
     const networkResponse = await fetch(request)
     if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE)
-      cache.put(request, networkResponse.clone())
+      // Só cachear se não for uma API que precisa de dados frescos
+      const url = new URL(request.url)
+      const shouldCache = !NO_CACHE_APIS.some(api => url.pathname.startsWith(api))
+      
+      if (shouldCache) {
+        const cache = await caches.open(DYNAMIC_CACHE)
+        cache.put(request, networkResponse.clone())
+      }
     }
     return networkResponse
   } catch (error) {
@@ -56,6 +76,15 @@ const networkFirst = async (request) => {
     if (cachedResponse) {
       return cachedResponse
     }
+    throw error
+  }
+}
+
+// Estratégia de cache: Network Only para APIs críticas
+const networkOnly = async (request) => {
+  try {
+    return await fetch(request)
+  } catch (error) {
     throw error
   }
 }
@@ -105,6 +134,12 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
   
+  // Network Only para APIs críticas que precisam de dados frescos
+  if (NO_CACHE_APIS.some(api => url.pathname.startsWith(api))) {
+    event.respondWith(networkOnly(request))
+    return
+  }
+  
   // Cache First para arquivos estáticos
   if (request.destination === 'document' || 
       request.destination === 'script' || 
@@ -114,7 +149,7 @@ self.addEventListener('fetch', (event) => {
     return
   }
   
-  // Network First para APIs
+  // Network First para outras APIs
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirst(request))
     return
