@@ -41,6 +41,7 @@ model Usuario {
   logsAuditoria        LogAuditoria[]
   carteira             CarteiraDigital?
   dadosBancarios       DadosBancarios?
+  dadosPix             DadosPix?
   saques               Saque[]
   pagamentos           Pagamento[]
   tokensRecuperacao    TokenRecuperacao[]
@@ -124,6 +125,24 @@ model DadosBancarios {
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("dados_bancarios")
+}
+
+model DadosPix {
+  id              String    @id @default(cuid())
+  usuarioId       String    @unique
+  chavePix        String
+  tipoChave       String // cpf, cnpj, email, telefone, aleatoria
+  nomeTitular     String
+  cpfCnpj         String
+  validado        Boolean   @default(false)
+  dataValidacao   DateTime?
+  dataCriacao     DateTime  @default(now())
+  dataAtualizacao DateTime  @updatedAt
+
+  // Relacionamentos
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("dados_pix")
 }
 
 model Saque {
