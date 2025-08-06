@@ -53,8 +53,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: {
           usuarioId: user.id,
           missaoId: String(id),
-          completada: true,
-          dataCompletacao: new Date()
+          concluida: true,
+          dataConclusao: new Date()
         }
       })
 
