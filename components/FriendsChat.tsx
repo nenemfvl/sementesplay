@@ -8,7 +8,10 @@ import {
   UserPlusIcon,
   MagnifyingGlassIcon,
   EllipsisVerticalIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  CheckIcon,
+  ClockIcon,
+  UserIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
 
@@ -21,6 +24,23 @@ interface Amigo {
   status: 'online' | 'offline' | 'away'
   ultimaAtividade: Date
   mutual: boolean
+}
+
+interface SolicitacaoAmizade {
+  id: string
+  remetenteId: string
+  remetenteNome: string
+  remetenteEmail: string
+  dataEnvio: Date
+  mensagem?: string
+}
+
+interface UsuarioSugerido {
+  id: string
+  nome: string
+  email: string
+  nivel: string
+  sementes: number
 }
 
 interface Mensagem {
@@ -53,7 +73,11 @@ export default function FriendsChat() {
   const [searchTerm, setSearchTerm] = useState('')
   const [onlineIds, setOnlineIds] = useState<string[]>([])
   const mensagensRef = useRef<HTMLDivElement>(null)
-  const [activeTab, setActiveTab] = useState<'amigos' | 'chat'>('amigos')
+  const [activeTab, setActiveTab] = useState<'amigos' | 'chat' | 'solicitacoes' | 'sugeridos' | 'buscar'>('amigos')
+  const [solicitacoes, setSolicitacoes] = useState<SolicitacaoAmizade[]>([])
+  const [usuariosSugeridos, setUsuariosSugeridos] = useState<UsuarioSugerido[]>([])
+  const [searchResults, setSearchResults] = useState<UsuarioSugerido[]>([])
+  const [searching, setSearching] = useState(false)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -110,11 +134,17 @@ export default function FriendsChat() {
     setLoading(true)
     try {
       const token = localStorage.getItem('sementesplay_token')
-      const [amigosResponse, conversasResponse] = await Promise.all([
+      const [amigosResponse, conversasResponse, solicitacoesResponse, sugeridosResponse] = await Promise.all([
         fetch(`/api/amigos?usuarioId=${user.id}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         }),
         fetch(`/api/chat/conversas?usuarioId=${user.id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }),
+        fetch(`/api/amigos/solicitacoes?usuarioId=${user.id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }),
+        fetch(`/api/amigos/sugeridos?usuarioId=${user.id}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
       ])
@@ -128,10 +158,109 @@ export default function FriendsChat() {
         const data = await conversasResponse.json()
         setConversas(data.conversas || [])
       }
+
+      if (solicitacoesResponse.ok) {
+        const data = await solicitacoesResponse.json()
+        setSolicitacoes(data.solicitacoes || [])
+      }
+
+      if (sugeridosResponse.ok) {
+        const data = await sugeridosResponse.json()
+        setUsuariosSugeridos(data.usuarios || [])
+      }
     } catch (error) {
       console.error('Erro ao carregar dados:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const buscarUsuarios = async (q: string) => {
+    if (!q || q.length < 2) {
+      setSearchResults([])
+      return
+    }
+    setSearching(true)
+    try {
+      const token = localStorage.getItem('sementesplay_token')
+      const res = await fetch(`/api/usuarios?query=${encodeURIComponent(q)}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      })
+      const data = await res.json()
+      setSearchResults(data.usuarios || [])
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error)
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  const enviarSolicitacao = async (amigoId: string) => {
+    if (!user) return
+    try {
+      const token = localStorage.getItem('sementesplay_token')
+      const response = await fetch('/api/amigos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          usuarioId: user.id,
+          amigoId
+        })
+      })
+
+      if (response.ok) {
+        alert('Solicitação de amizade enviada!')
+        loadDados()
+      } else {
+        const erro = await response.json()
+        alert(erro.error || 'Erro ao enviar solicitação')
+      }
+    } catch (error) {
+      console.error('Erro ao enviar solicitação:', error)
+      alert('Erro ao enviar solicitação')
+    }
+  }
+
+  const aceitarSolicitacao = async (solicitacaoId: string) => {
+    try {
+      const token = localStorage.getItem('sementesplay_token')
+      const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/aceitar`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      })
+
+      if (response.ok) {
+        alert('Solicitação aceita!')
+        loadDados()
+      } else {
+        alert('Erro ao aceitar solicitação')
+      }
+    } catch (error) {
+      console.error('Erro ao aceitar solicitação:', error)
+      alert('Erro ao aceitar solicitação')
+    }
+  }
+
+  const rejeitarSolicitacao = async (solicitacaoId: string) => {
+    try {
+      const token = localStorage.getItem('sementesplay_token')
+      const response = await fetch(`/api/amigos/solicitacoes/${solicitacaoId}/rejeitar`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      })
+
+      if (response.ok) {
+        alert('Solicitação rejeitada')
+        loadDados()
+      } else {
+        alert('Erro ao rejeitar solicitação')
+      }
+    } catch (error) {
+      console.error('Erro ao rejeitar solicitação:', error)
+      alert('Erro ao rejeitar solicitação')
     }
   }
 
@@ -217,6 +346,12 @@ export default function FriendsChat() {
         whileTap={{ scale: 0.9 }}
       >
         <UserGroupIcon className="w-6 h-6" />
+        {/* Badge para solicitações pendentes */}
+        {solicitacoes.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {solicitacoes.length}
+          </span>
+        )}
       </motion.button>
 
       {/* Chat flutuante */}
@@ -233,6 +368,11 @@ export default function FriendsChat() {
               <div className="flex items-center space-x-2">
                 <UserGroupIcon className="w-5 h-5 text-sss-accent" />
                 <h3 className="text-sss-white font-semibold">Amigos</h3>
+                {solicitacoes.length > 0 && (
+                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                    {solicitacoes.length}
+                  </span>
+                )}
               </div>
               <div className="flex items-center space-x-2">
                 <button
@@ -252,9 +392,45 @@ export default function FriendsChat() {
               </div>
             </div>
 
+            {/* Tabs */}
+            <div className="flex border-b border-sss-light bg-sss-dark">
+              <button
+                onClick={() => setActiveTab('amigos')}
+                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+                  activeTab === 'amigos' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'
+                }`}
+              >
+                Amigos ({amigos.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('solicitacoes')}
+                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+                  activeTab === 'solicitacoes' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'
+                }`}
+              >
+                Solicitações ({solicitacoes.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('sugeridos')}
+                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+                  activeTab === 'sugeridos' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'
+                }`}
+              >
+                Sugeridos
+              </button>
+              <button
+                onClick={() => setActiveTab('buscar')}
+                className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+                  activeTab === 'buscar' ? 'text-sss-accent border-b-2 border-sss-accent' : 'text-gray-400 hover:text-sss-accent'
+                }`}
+              >
+                Buscar
+              </button>
+            </div>
+
             {/* Content */}
             <div className="flex-1 overflow-hidden">
-              {activeTab === 'amigos' ? (
+              {activeTab === 'amigos' && (
                 /* Lista de Amigos */
                 <div className="h-full flex flex-col">
                   {/* Search */}
@@ -289,7 +465,6 @@ export default function FriendsChat() {
                               if (conversa) {
                                 abrirConversa(conversa)
                               } else {
-                                // Criar nova conversa
                                 const novaConversa: Conversa = {
                                   id: '',
                                   usuarioId: amigo.id,
@@ -315,6 +490,9 @@ export default function FriendsChat() {
                               <div>
                                 <h4 className="text-sss-white font-medium text-sm">{amigo.nome}</h4>
                                 <p className="text-gray-400 text-xs">{amigo.email}</p>
+                                <p className="text-gray-500 text-xs">
+                                  {onlineIds.includes(amigo.id) ? '🟢 Online' : '⚫ Offline'}
+                                </p>
                               </div>
                             </div>
                             <ChatBubbleLeftIcon className="w-4 h-4 text-gray-400" />
@@ -324,7 +502,173 @@ export default function FriendsChat() {
                     )}
                   </div>
                 </div>
-              ) : (
+              )}
+
+              {activeTab === 'solicitacoes' && (
+                /* Solicitações de Amizade */
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 overflow-y-auto">
+                    {loading ? (
+                      <div className="p-4 text-center text-gray-400">Carregando...</div>
+                    ) : solicitacoes.length === 0 ? (
+                      <div className="p-4 text-center text-gray-400">
+                        <UserPlusIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p>Nenhuma solicitação pendente</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 p-3">
+                        {solicitacoes.map((solicitacao) => (
+                          <motion.div
+                            key={solicitacao.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                  <span className="text-sm">👤</span>
+                                </div>
+                                <div>
+                                  <h4 className="text-sss-white font-medium text-sm">{solicitacao.remetenteNome}</h4>
+                                  <p className="text-gray-400 text-xs">{solicitacao.remetenteEmail}</p>
+                                </div>
+                              </div>
+                              <div className="flex space-x-1">
+                                <button
+                                  onClick={() => aceitarSolicitacao(solicitacao.id)}
+                                  className="p-1 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded"
+                                  title="Aceitar"
+                                >
+                                  <CheckIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => rejeitarSolicitacao(solicitacao.id)}
+                                  className="p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded"
+                                  title="Rejeitar"
+                                >
+                                  <XMarkIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'sugeridos' && (
+                /* Usuários Sugeridos */
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 overflow-y-auto">
+                    {loading ? (
+                      <div className="p-4 text-center text-gray-400">Carregando...</div>
+                    ) : usuariosSugeridos.length === 0 ? (
+                      <div className="p-4 text-center text-gray-400">
+                        <UserIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p>Nenhuma sugestão disponível</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 p-3">
+                        {usuariosSugeridos.map((usuario) => (
+                          <motion.div
+                            key={usuario.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                  <span className="text-sm">👤</span>
+                                </div>
+                                <div>
+                                  <h4 className="text-sss-white font-medium text-sm">{usuario.nome}</h4>
+                                  <p className="text-gray-400 text-xs">{usuario.email}</p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => enviarSolicitacao(usuario.id)}
+                                className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"
+                              >
+                                Adicionar
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'buscar' && (
+                /* Buscar Usuários */
+                <div className="h-full flex flex-col">
+                  <div className="p-3 border-b border-sss-light">
+                    <div className="relative">
+                      <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Buscar usuários..."
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value)
+                          buscarUsuarios(e.target.value)
+                        }}
+                        className="w-full pl-10 pr-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white text-sm focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto">
+                    {searching ? (
+                      <div className="p-4 text-center text-gray-400">Buscando...</div>
+                    ) : searchResults.length === 0 ? (
+                      <div className="p-4 text-center text-gray-400">
+                        {searchTerm.length > 0 ? 'Nenhum usuário encontrado' : 'Digite para buscar usuários'}
+                      </div>
+                    ) : (
+                      <div className="space-y-2 p-3">
+                        {searchResults.map((usuario) => (
+                          <motion.div
+                            key={usuario.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-sss-dark rounded-lg p-3 border border-sss-light"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-sss-accent/20 rounded-full flex items-center justify-center">
+                                  <span className="text-sm">👤</span>
+                                </div>
+                                <div>
+                                  <h4 className="text-sss-white font-medium text-sm">{usuario.nome}</h4>
+                                  <p className="text-gray-400 text-xs">{usuario.email}</p>
+                                </div>
+                              </div>
+                              {!amigos.some(a => a.id === usuario.id) ? (
+                                <button
+                                  onClick={() => enviarSolicitacao(usuario.id)}
+                                  className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"
+                                >
+                                  Adicionar
+                                </button>
+                              ) : (
+                                <span className="text-xs text-green-400">Já é amigo</span>
+                              )}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'chat' && (
                 /* Chat */
                 <div className="h-full flex flex-col">
                   {conversaAtiva ? (
@@ -338,7 +682,7 @@ export default function FriendsChat() {
                           <div>
                             <h4 className="text-sss-white font-medium text-sm">{conversaAtiva.usuarioNome}</h4>
                             <p className="text-gray-400 text-xs">
-                              {onlineIds.includes(conversaAtiva.usuarioId) ? 'Online' : 'Offline'}
+                              {onlineIds.includes(conversaAtiva.usuarioId) ? '🟢 Online' : '⚫ Offline'}
                             </p>
                           </div>
                         </div>
