@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { PlusIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { PlusIcon, BuildingOfficeIcon, EyeIcon } from '@heroicons/react/24/outline'
 import Navbar from '../components/Navbar'
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'
@@ -410,6 +411,17 @@ export default function TodosParceiros() {
                                 )}
                               </div>
                             )}
+                            
+                            {/* Botão Ver Detalhes */}
+                            <div className="mt-3 pt-3 border-t border-gray-600">
+                              <Link
+                                href={`/parceiro/${parceiro.id}`}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                              >
+                                <EyeIcon className="w-4 h-4" />
+                                Ver Detalhes
+                              </Link>
+                            </div>
                           </div>
                         </div>
                         {/* Botão Favoritar - Borda Direita */}
