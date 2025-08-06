@@ -44,57 +44,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Se aprovada, tomar ações automáticas
     if (acao === 'aprovar') {
       try {
-        // Se é denúncia de conteúdo de criador
-        if (denuncia.conteudoId) {
-          // Remover o conteúdo denunciado
-          await prisma.conteudo.update({
-            where: { id: denuncia.conteudoId },
-            data: { 
-              removido: true,
-              dataRemocao: new Date(),
-              motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
-            }
-          })
-          
-          // Adicionar advertência ao criador
-          await prisma.advertencia.create({
-            data: {
-              usuarioId: denuncia.conteudo.criadorId,
-              tipo: 'conteudo_removido',
-              motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
-              dataCriacao: new Date(),
-              denunciaId: denuncia.id
-            }
-          })
-          
-          console.log(`Conteúdo de criador removido: ${denuncia.conteudoId}`)
-        }
+                 // Se é denúncia de conteúdo de criador
+         if (denuncia.conteudoId && denuncia.conteudo) {
+           // Remover o conteúdo denunciado
+           await prisma.conteudo.update({
+             where: { id: denuncia.conteudoId },
+             data: { 
+               removido: true,
+               dataRemocao: new Date(),
+               motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
+             }
+           })
+           
+           // Adicionar advertência ao criador
+           await prisma.advertencia.create({
+             data: {
+               usuarioId: denuncia.conteudo.criadorId,
+               tipo: 'conteudo_removido',
+               motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
+               dataCriacao: new Date(),
+               denunciaId: denuncia.id
+             }
+           })
+           
+           console.log(`Conteúdo de criador removido: ${denuncia.conteudoId}`)
+         }
         
-        // Se é denúncia de conteúdo de parceiro
-        if (denuncia.conteudoParceiroId) {
-          // Remover o conteúdo denunciado
-          await prisma.conteudoParceiro.update({
-            where: { id: denuncia.conteudoParceiroId },
-            data: { 
-              removido: true,
-              dataRemocao: new Date(),
-              motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
-            }
-          })
-          
-          // Adicionar advertência ao parceiro
-          await prisma.advertencia.create({
-            data: {
-              usuarioId: denuncia.conteudoParceiro.parceiroId,
-              tipo: 'conteudo_removido',
-              motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
-              dataCriacao: new Date(),
-              denunciaId: denuncia.id
-            }
-          })
-          
-          console.log(`Conteúdo de parceiro removido: ${denuncia.conteudoParceiroId}`)
-        }
+                 // Se é denúncia de conteúdo de parceiro
+         if (denuncia.conteudoParceiroId && denuncia.conteudoParceiro) {
+           // Remover o conteúdo denunciado
+           await prisma.conteudoParceiro.update({
+             where: { id: denuncia.conteudoParceiroId },
+             data: { 
+               removido: true,
+               dataRemocao: new Date(),
+               motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
+             }
+           })
+           
+           // Adicionar advertência ao parceiro
+           await prisma.advertencia.create({
+             data: {
+               usuarioId: denuncia.conteudoParceiro.parceiroId,
+               tipo: 'conteudo_removido',
+               motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
+               dataCriacao: new Date(),
+               denunciaId: denuncia.id
+             }
+           })
+           
+           console.log(`Conteúdo de parceiro removido: ${denuncia.conteudoParceiroId}`)
+         }
         
         // Verificar se o usuário tem muitas advertências
         const usuarioId = denuncia.conteudo?.criadorId || denuncia.conteudoParceiro?.parceiroId
