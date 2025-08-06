@@ -199,10 +199,37 @@ export default function Carteira() {
       return
     }
 
-         if (!carteira || parseFloat(valorSaque) > carteira.sementes) {
-       alert('Sementes insuficientes para o saque')
-       return
-     }
+    if (!carteira || parseFloat(valorSaque) > carteira.sementes) {
+      alert('Sementes insuficientes para o saque')
+      return
+    }
+
+    // Verificar se tem dados bancários cadastrados
+    try {
+      const dadosBancariosResponse = await fetch(`/api/dados-bancarios?usuarioId=${user?.id}`)
+      if (!dadosBancariosResponse.ok) {
+        alert('Você precisa cadastrar seus dados bancários antes de solicitar um saque. Redirecionando...')
+        window.location.href = '/dados-bancarios'
+        return
+      }
+
+      const dadosBancarios = await dadosBancariosResponse.json()
+      if (!dadosBancarios || !dadosBancarios.banco) {
+        alert('Você precisa cadastrar seus dados bancários antes de solicitar um saque. Redirecionando...')
+        window.location.href = '/dados-bancarios'
+        return
+      }
+
+      // Verificar se os dados estão validados
+      if (!dadosBancarios.validado) {
+        alert('Seus dados bancários ainda não foram validados. O processo pode levar até 24 horas.')
+      }
+
+    } catch (error) {
+      console.error('Erro ao verificar dados bancários:', error)
+      alert('Erro ao verificar dados bancários. Tente novamente.')
+      return
+    }
 
     try {
       const response = await fetch('/api/saques', {
@@ -367,7 +394,7 @@ export default function Carteira() {
                 </button>
               </motion.div>
 
-              {/* Card de Saque - Apenas para Criadores */}
+              {/* Card de Saque para Criadores */}
               {user?.criador && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -379,16 +406,24 @@ export default function Carteira() {
                     <BanknotesIcon className="w-5 h-5 mr-2 text-blue-500" />
                     Solicitar Saque
                   </h3>
-                                     <p className="text-gray-400 mb-4">
+                  <p className="text-gray-400 mb-4">
                     Converta suas sementes em dinheiro (1 Semente = 1 Real)
                   </p>
-                  <button
-                    onClick={() => setShowSaque(true)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-                    aria-label="Abrir modal para solicitar saque"
-                  >
-                    Solicitar Saque
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setShowSaque(true)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                      aria-label="Abrir modal para solicitar saque"
+                    >
+                      Solicitar Saque
+                    </button>
+                    <Link
+                      href="/dados-bancarios"
+                      className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-center block"
+                    >
+                      Gerenciar Dados Bancários
+                    </Link>
+                  </div>
                 </motion.div>
               )}
 
@@ -701,7 +736,7 @@ export default function Carteira() {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-sss-medium rounded-lg p-6 max-w-md w-full mx-4"
+              className="bg-sss-medium rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-sss-white">Solicitar Saque</h3>
@@ -731,14 +766,32 @@ export default function Carteira() {
                     placeholder="50,00"
                     aria-label="Valor do saque em reais"
                   />
-                                     <p className="text-xs text-gray-400 mt-1">
-                     Sementes disponíveis: {carteira ? carteira.sementes.toLocaleString() : '0'} (Valor máximo: {carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'})
-                   </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Sementes disponíveis: {carteira ? carteira.sementes.toLocaleString() : '0'} (Valor máximo: {carteira ? formatarMoeda(carteira.sementes) : 'R$ 0,00'})
+                  </p>
+                </div>
+
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                  <p className="text-blue-200 text-sm">
+                    💳 <strong>Dados Bancários:</strong> Seus dados bancários serão utilizados para processar o saque.
+                    <br />
+                    <Link href="/dados-bancarios" className="text-blue-400 hover:text-blue-300 underline">
+                      Verificar/Atualizar dados bancários
+                    </Link>
+                  </p>
                 </div>
 
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
                   <p className="text-yellow-200 text-sm">
-                    ⚠️ Certifique-se de que seus dados bancários estão cadastrados antes de solicitar o saque.
+                    ⚠️ <strong>Importante:</strong>
+                    <br />
+                    • Valor mínimo: R$ 50,00
+                    <br />
+                    • Taxa de 2% será aplicada
+                    <br />
+                    • Processamento em até 2 dias úteis
+                    <br />
+                    • Certifique-se de que seus dados bancários estão cadastrados
                   </p>
                 </div>
 
@@ -754,7 +807,7 @@ export default function Carteira() {
                     type="submit"
                     className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                   >
-                    Solicitar
+                    Solicitar Saque
                   </button>
                 </div>
               </form>

@@ -83,6 +83,7 @@ export default function AdminSaques() {
         alert('Status atualizado com sucesso!')
         loadSaques()
         setShowModal(false)
+        setSelectedSaque(null)
       } else {
         const data = await response.json()
         alert(`Erro: ${data.error}`)
@@ -90,6 +91,14 @@ export default function AdminSaques() {
     } catch (error) {
       console.error('Erro ao atualizar status:', error)
       alert('Erro ao atualizar status')
+    }
+  }
+
+  const getDadosBancarios = (dadosBancariosString: string) => {
+    try {
+      return JSON.parse(dadosBancariosString)
+    } catch (error) {
+      return null
     }
   }
 
@@ -393,47 +402,81 @@ export default function AdminSaques() {
                     <label className="block text-sm font-medium text-gray-300">Valor Líquido</label>
                     <p className="text-green-400 font-medium">{formatarMoeda(selectedSaque.valorLiquido)}</p>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Dados Bancários</label>
-                  <div className="bg-sss-dark rounded-lg p-4 mt-1">
-                    <pre className="text-sm text-gray-300 whitespace-pre-wrap">
-                      {JSON.stringify(JSON.parse(selectedSaque.dadosBancarios), null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300">Status</label>
-                    <div className="flex items-center mt-1">
+                    <div className="flex items-center">
                       {getStatusIcon(selectedSaque.status)}
-                      <span className={`ml-2 capitalize ${getStatusColor(selectedSaque.status)}`}>
+                      <span className={`ml-2 text-sm font-medium capitalize ${getStatusColor(selectedSaque.status)}`}>
                         {selectedSaque.status}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300">Data da Solicitação</label>
+                    <label className="block text-sm font-medium text-gray-300">Data de Solicitação</label>
                     <p className="text-gray-400">{formatarData(selectedSaque.dataSolicitacao)}</p>
                   </div>
                 </div>
 
+                {/* Dados Bancários */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Dados Bancários</label>
+                  <div className="bg-sss-dark rounded-lg p-4">
+                    {(() => {
+                      const dados = getDadosBancarios(selectedSaque.dadosBancarios)
+                      if (!dados) {
+                        return <p className="text-red-400">Erro ao carregar dados bancários</p>
+                      }
+                      return (
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="text-gray-400 text-sm">Banco:</span>
+                            <p className="text-sss-white">{dados.banco}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">Agência:</span>
+                            <p className="text-sss-white">{dados.agencia}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">Conta:</span>
+                            <p className="text-sss-white">{dados.conta}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">Tipo de Conta:</span>
+                            <p className="text-sss-white capitalize">{dados.tipoConta}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">CPF/CNPJ:</span>
+                            <p className="text-sss-white">{dados.cpfCnpj}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 text-sm">Nome do Titular:</span>
+                            <p className="text-sss-white">{dados.nomeTitular}</p>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                </div>
+
+                {/* Motivo de Rejeição */}
                 {selectedSaque.motivoRejeicao && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-300">Motivo da Rejeição</label>
-                    <p className="text-red-400">{selectedSaque.motivoRejeicao}</p>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Motivo da Rejeição</label>
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                      <p className="text-red-200">{selectedSaque.motivoRejeicao}</p>
+                    </div>
                   </div>
                 )}
 
+                {/* Ações */}
                 {selectedSaque.status === 'pendente' && (
                   <div className="flex space-x-3 pt-4 border-t border-sss-light">
                     <button
                       onClick={() => handleStatusChange(selectedSaque.id, 'aprovado')}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors"
+                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center"
                     >
-                      Aprovar
+                      <CheckCircleIcon className="w-4 h-4 mr-2" />
+                      Aprovar Saque
                     </button>
                     <button
                       onClick={() => {
@@ -442,9 +485,10 @@ export default function AdminSaques() {
                           handleStatusChange(selectedSaque.id, 'rejeitado', motivo)
                         }
                       }}
-                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors"
+                      className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center justify-center"
                     >
-                      Rejeitar
+                      <XCircleIcon className="w-4 h-4 mr-2" />
+                      Rejeitar Saque
                     </button>
                   </div>
                 )}
