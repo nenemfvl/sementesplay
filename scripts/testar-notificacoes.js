@@ -1,7 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const prisma = new PrismaClient()
 
-async function testarNotificacoes() {
+// async function testarNotificacoes() {
   try {
     console.log('🔍 Verificando notificações no banco de dados...')
     
@@ -46,11 +47,11 @@ async function testarNotificacoes() {
       })
     }
     
-  } catch (error) {
-    console.error('❌ Erro ao testar notificações:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao testar notificações:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-testarNotificacoes() 
+// testarNotificacoes() 

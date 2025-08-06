@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarParceiroUsuario() {
+// async function verificarParceiroUsuario() {
   try {
     console.log('🔍 Verificando associação entre usuários e parceiros...\n')
 
@@ -76,11 +77,11 @@ async function verificarParceiroUsuario() {
       }
     }
 
-  } catch (error) {
-    console.error('❌ Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarParceiroUsuario() 
+// verificarParceiroUsuario() 

@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarSolicitacoesPendentes() {
+// async function verificarSolicitacoesPendentes() {
   try {
     console.log('🔍 Verificando detalhes das solicitações pendentes...\n');
 
@@ -57,11 +58,11 @@ async function verificarSolicitacoesPendentes() {
       }
     }
 
-  } catch (error) {
-    console.error('❌ Erro:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarSolicitacoesPendentes(); 
+// verificarSolicitacoesPendentes(); 

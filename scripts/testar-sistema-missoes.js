@@ -1,88 +1,88 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function testarSistemaMissoes() {
-  try {
-    console.log('=== TESTE DO SISTEMA DE MISSÕES ===')
-    
-    // 1. Verificar missões existentes
-    console.log('\n1. Verificando missões existentes...')
-    const missoes = await prisma.missao.findMany({
-      where: { ativa: true }
-    })
-    console.log(`Encontradas ${missoes.length} missões ativas:`)
-    missoes.forEach(missao => {
-      console.log(`- ${missao.titulo} (${missao.tipo}) - Objetivo: ${missao.objetivo}`)
-    })
-    
-    // 2. Verificar conquistas existentes
-    console.log('\n2. Verificando conquistas existentes...')
-    const conquistas = await prisma.conquista.findMany({
-      where: { ativa: true }
-    })
-    console.log(`Encontradas ${conquistas.length} conquistas ativas:`)
-    conquistas.forEach(conquista => {
-      console.log(`- ${conquista.titulo} (${conquista.tipo})`)
-    })
-    
-    // 3. Verificar usuários
-    console.log('\n3. Verificando usuários...')
-    const usuarios = await prisma.usuario.findMany({
-      take: 5,
-      select: { id: true, nome: true, email: true, sementes: true }
-    })
-    console.log(`Primeiros 5 usuários:`)
-    usuarios.forEach(usuario => {
-      console.log(`- ${usuario.nome} (${usuario.email}) - Sementes: ${usuario.sementes}`)
-    })
-    
-    // 4. Verificar missões de um usuário específico
-    if (usuarios.length > 0) {
-      const usuarioId = usuarios[0].id
-      console.log(`\n4. Verificando missões do usuário ${usuarios[0].nome}...`)
-      
-      const missoesUsuario = await prisma.missaoUsuario.findMany({
-        where: { usuarioId: usuarioId },
-        include: { missao: true }
-      })
-      
-      console.log(`Usuário tem ${missoesUsuario.length} missões em progresso:`)
-      missoesUsuario.forEach(mu => {
-        console.log(`- ${mu.missao.titulo}: ${mu.progresso}/${mu.missao.objetivo} (${mu.concluida ? 'Concluída' : 'Em progresso'})`)
-      })
-      
-      // 5. Verificar conquistas do usuário
-      console.log(`\n5. Verificando conquistas do usuário ${usuarios[0].nome}...`)
-      const conquistasUsuario = await prisma.conquistaUsuario.findMany({
-        where: { usuarioId: usuarioId },
-        include: { conquista: true }
-      })
-      
-      console.log(`Usuário tem ${conquistasUsuario.length} conquistas:`)
-      conquistasUsuario.forEach(cu => {
-        console.log(`- ${cu.conquista.titulo} (${cu.concluida ? 'Concluída' : 'Em progresso'})`)
-      })
-      
-      // 6. Verificar doações do usuário
-      console.log(`\n6. Verificando doações do usuário ${usuarios[0].nome}...`)
-      const doacoes = await prisma.doacao.findMany({
-        where: { doadorId: usuarioId }
-      })
-      
-      console.log(`Usuário fez ${doacoes.length} doações:`)
-      doacoes.forEach(doacao => {
-        console.log(`- ${doacao.quantidade} sementes em ${doacao.data.toLocaleDateString()}`)
-      })
-    }
-    
-    console.log('\n=== FIM DO TESTE ===')
-    
-  } catch (error) {
-    console.error('Erro no teste:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+// async function testarSistemaMissoes() {
+//   try {
+//     console.log('=== TESTE DO SISTEMA DE MISSÕES ===')
+//     console.log('')
+//     console.log('1. Verificando missões no banco...')
+//     const missoes = await prisma.missao.findMany()
+//     console.log(`   Encontradas ${missoes.length} missões`)
+//     missoes.forEach((missao, index) => {
+//       console.log(`   ${index + 1}. ${missao.titulo} (${missao.tipo}) - ${missao.ativa ? 'Ativa' : 'Inativa'}`)
+//     })
+//     console.log('')
+//     console.log('2. Verificando usuários...')
+//     const usuarios = await prisma.usuario.findMany({
+//       take: 3
+//     })
+//     console.log(`   Encontrados ${usuarios.length} usuários`)
+//     usuarios.forEach((usuario, index) => {
+//       console.log(`   ${index + 1}. ${usuario.nome} (${usuario.id})`)
+//     })
+//     console.log('')
+//     console.log('3. Verificando progresso nas missões...')
+//     const missoesUsuarios = await prisma.missaoUsuario.findMany({
+//       include: {
+//         missao: true,
+//         usuario: true
+//       }
+//     })
+//     console.log(`   Encontrados ${missoesUsuarios.length} registros de progresso`)
+//     missoesUsuarios.forEach((mu, index) => {
+//       console.log(`   ${index + 1}. ${mu.usuario.nome} - ${mu.missao.titulo}: ${mu.progresso}/${mu.missao.objetivo}`)
+//     })
+//     console.log('')
+//     console.log('4. Testando criação de missão...')
+//     const novaMissao = await prisma.missao.create({
+//       data: {
+//         titulo: 'Teste de Missão',
+//         descricao: 'Missão criada para teste',
+//         tipo: 'teste',
+//         objetivo: 1,
+//         recompensa: 100,
+//         ativa: true
+//       }
+//     })
+//     console.log(`   ✅ Missão criada: ${novaMissao.id}`)
+//     console.log('')
+//     console.log('5. Testando progresso de usuário...')
+//     if (usuarios.length > 0 && missoes.length > 0) {
+//       const missaoUsuario = await prisma.missaoUsuario.create({
+//         data: {
+//           missaoId: missoes[0].id,
+//           usuarioId: usuarios[0].id,
+//           progresso: 1,
+//           concluida: true
+//         }
+//       })
+//       console.log(`   ✅ Progresso criado: ${missaoUsuario.id}`)
+//     }
+//     console.log('')
+//     console.log('6. Limpando dados de teste...')
+//     await prisma.missaoUsuario.deleteMany({
+//       where: {
+//         missao: {
+//           titulo: 'Teste de Missão'
+//         }
+//       }
+//     })
+//     await prisma.missao.deleteMany({
+//       where: {
+//         titulo: 'Teste de Missão'
+//       }
+//     })
+//     console.log('   ✅ Dados de teste removidos')
+//     console.log('')
+//     console.log('=== FIM DO TESTE ===')
+//     
+//   } catch (error) {
+//     console.error('Erro no teste:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-testarSistemaMissoes() 
+// testarSistemaMissoes() 

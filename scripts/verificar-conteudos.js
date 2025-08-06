@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarConteudos() {
+// async function verificarConteudos() {
   try {
     console.log('🔍 Verificando conteúdos no banco de dados...\n');
 
@@ -34,11 +35,11 @@ async function verificarConteudos() {
       console.log('Nenhum conteúdo encontrado no banco de dados.');
     }
 
-  } catch (error) {
-    console.error('Erro ao verificar conteúdos:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('Erro ao verificar conteúdos:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarConteudos(); 
+// verificarConteudos(); 

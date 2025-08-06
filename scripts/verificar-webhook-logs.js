@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarWebhookLogs() {
+// async function verificarWebhookLogs() {
   try {
     console.log('🔍 Verificando logs de webhook...\n');
 
@@ -51,11 +52,11 @@ async function verificarWebhookLogs() {
       });
     }
 
-  } catch (error) {
-    console.error('❌ Erro ao verificar logs:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar logs:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarWebhookLogs(); 
+// verificarWebhookLogs(); 

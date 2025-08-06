@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarSementes() {
+// async function verificarSementes() {
   console.log('🔍 Verificando contabilização de sementes...')
 
   try {
@@ -90,24 +91,24 @@ async function verificarSementes() {
       console.log('\n✅ Contabilização está correta!')
     }
 
-  } catch (error) {
-    console.error('❌ Erro ao verificar sementes:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar sementes:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-// Executar se chamado diretamente
-if (require.main === module) {
-  verificarSementes()
-    .then(() => {
-      console.log('\n✅ Verificação concluída!')
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error('❌ Erro ao executar verificação:', error)
-      process.exit(1)
-    })
-}
+// // Executar se chamado diretamente
+// if (require.main === module) {
+//   verificarSementes()
+//     .then(() => {
+//       console.log('\n✅ Verificação concluída!')
+//       process.exit(0)
+//     })
+//     .catch((error) => {
+//       console.error('❌ Erro ao executar verificação:', error)
+//       process.exit(1)
+//     })
+// }
 
-module.exports = { verificarSementes } 
+// module.exports = { verificarSementes } 

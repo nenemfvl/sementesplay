@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarTodosPendentes() {
+// async function verificarTodosPendentes() {
   try {
     console.log('🔍 Verificando TODOS os tipos de dados pendentes...\n');
 
@@ -69,11 +70,11 @@ async function verificarTodosPendentes() {
     const totalPendentes = solicitacoesPendentes.length + comprasAguardandoRepasse.length + repassesPendentes.length;
     console.log(`\n📊 TOTAL DE ITENS PENDENTES NA INTERFACE: ${totalPendentes}`);
 
-  } catch (error) {
-    console.error('❌ Erro:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarTodosPendentes(); 
+// verificarTodosPendentes(); 

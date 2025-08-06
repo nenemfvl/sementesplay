@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function testarRepasse50Centavos() {
+// async function testarRepasse50Centavos() {
   try {
     console.log('🧪 Testando repasse de R$ 0,50...\n');
 
@@ -63,11 +64,11 @@ async function testarRepasse50Centavos() {
     console.log(`   50% = R$ ${(valor * 0.50).toFixed(2)}`);
     console.log(`   Sem arredondamento = ${pctUsuario} sementes`);
 
-  } catch (error) {
-    console.error('❌ Erro:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-testarRepasse50Centavos(); 
+// testarRepasse50Centavos(); 

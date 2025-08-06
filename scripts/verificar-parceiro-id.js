@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarParceiroId() {
+// async function verificarParceiroId() {
   try {
     const parceiro = await prisma.parceiro.findFirst({
       include: {
@@ -34,11 +35,11 @@ async function verificarParceiroId() {
       console.log(parceiroFormatado)
     }
 
-  } catch (error) {
-    console.error('Erro:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('Erro:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarParceiroId() 
+// verificarParceiroId() 

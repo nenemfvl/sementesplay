@@ -1,7 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
+// const prisma = new PrismaClient()
 
-async function limparDadosCriador() {
+// async function limparDadosCriador() {
   try {
     console.log('🧹 Iniciando limpeza de dados de criadores...')
     
@@ -125,11 +126,11 @@ async function limparDadosCriador() {
     
     console.log('\n✅ Limpeza concluída com sucesso!')
     
-  } catch (error) {
-    console.error('❌ Erro durante a limpeza:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro durante a limpeza:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-limparDadosCriador() 
+// limparDadosCriador() 

@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarSementesUsuario() {
+// async function verificarSementesUsuario() {
   console.log('🔍 Verificando sementes do usuário...\n');
 
   try {
@@ -131,11 +132,11 @@ async function verificarSementesUsuario() {
       console.log('   ✅ Sementes estão corretas');
     }
 
-  } catch (error) {
-    console.error('❌ Erro ao verificar sementes:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar sementes:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarSementesUsuario(); 
+// verificarSementesUsuario(); 

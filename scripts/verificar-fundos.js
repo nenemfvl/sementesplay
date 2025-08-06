@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarFundos() {
+// async function verificarFundos() {
   console.log('🔍 Verificando todos os fundos de sementes...')
 
   try {
@@ -57,11 +58,11 @@ async function verificarFundos() {
       console.log(`   ${item.tipo}: ${item._sum.quantidade || 0}`)
     })
 
-  } catch (error) {
-    console.error('❌ Erro durante verificação:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro durante verificação:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarFundos() 
+// verificarFundos() 

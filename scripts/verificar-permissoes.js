@@ -1,208 +1,215 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-// Simular o PermissionsManager para o script
-const PermissionsManager = {
-  async removeCriadorPermissions(usuarioId) {
-    try {
-      await prisma.usuario.update({
-        where: { id: usuarioId },
-        data: { nivel: 'comum' }
-      })
+// // Simular o PermissionsManager para o script
+// const PermissionsManager = {
+//   async removeCriadorPermissions(usuarioId) {
+//     try {
+//       await prisma.usuario.update({
+//         where: { id: usuarioId },
+//         data: { nivel: 'comum' }
+//       })
 
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId,
-          acao: 'PERMISSAO_REMOVIDA',
-          detalhes: 'Permissões de criador removidas - usuário voltou para nível comum',
-          nivel: 'warning'
-        }
-      })
+//       await prisma.logAuditoria.create({
+//         data: {
+//           usuarioId,
+//           acao: 'PERMISSAO_REMOVIDA',
+//           detalhes: 'Permissões de criador removidas - usuário voltou para nível comum',
+//           nivel: 'warning'
+//         }
+//       })
 
-      console.log(`✅ Permissões de criador removidas para usuário ${usuarioId}`)
-      return true
-    } catch (error) {
-      console.error('❌ Erro ao remover permissões de criador:', error)
-      return false
-    }
-  },
+//       console.log(`✅ Permissões de criador removidas para usuário ${usuarioId}`)
+//       return true
+//     } catch (error) {
+//       console.error('❌ Erro ao remover permissões de criador:', error)
+//       return false
+//     }
+//   },
 
-  async removeParceiroPermissions(usuarioId) {
-    try {
-      await prisma.usuario.update({
-        where: { id: usuarioId },
-        data: { nivel: 'comum' }
-      })
+//   async removeParceiroPermissions(usuarioId) {
+//     try {
+//       await prisma.usuario.update({
+//         where: { id: usuarioId },
+//         data: { nivel: 'comum' }
+//       })
 
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId,
-          acao: 'PERMISSAO_REMOVIDA',
-          detalhes: 'Permissões de parceiro removidas - usuário voltou para nível comum',
-          nivel: 'warning'
-        }
-      })
+//       await prisma.logAuditoria.create({
+//         data: {
+//           usuarioId,
+//           acao: 'PERMISSAO_REMOVIDA',
+//           detalhes: 'Permissões de parceiro removidas - usuário voltou para nível comum',
+//           nivel: 'warning'
+//         }
+//       })
 
-      console.log(`✅ Permissões de parceiro removidas para usuário ${usuarioId}`)
-      return true
-    } catch (error) {
-      console.error('❌ Erro ao remover permissões de parceiro:', error)
-      return false
-    }
-  },
+//       console.log(`✅ Permissões de parceiro removidas para usuário ${usuarioId}`)
+//       return true
+//     } catch (error) {
+//       console.error('❌ Erro ao remover permissões de parceiro:', error)
+//       return false
+//     }
+//   },
 
-  async removeAdminPermissions(usuarioId) {
-    try {
-      await prisma.usuario.update({
-        where: { id: usuarioId },
-        data: { nivel: 'comum' }
-      })
+//   async removeAdminPermissions(usuarioId) {
+//     try {
+//       await prisma.usuario.update({
+//         where: { id: usuarioId },
+//         data: { nivel: 'comum' }
+//       })
 
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId,
-          acao: 'PERMISSAO_REMOVIDA',
-          detalhes: 'Permissões de admin removidas - usuário voltou para nível comum',
-          nivel: 'warning'
-        }
-      })
+//       await prisma.logAuditoria.create({
+//         data: {
+//           usuarioId,
+//           acao: 'PERMISSAO_REMOVIDA',
+//           detalhes: 'Permissões de admin removidas - usuário voltou para nível comum',
+//           nivel: 'warning'
+//         }
+//       })
 
-      console.log(`✅ Permissões de admin removidas para usuário ${usuarioId}`)
-      return true
-    } catch (error) {
-      console.error('❌ Erro ao remover permissões de admin:', error)
-      return false
-    }
-  }
-}
+//       console.log(`✅ Permissões de admin removidas para usuário ${usuarioId}`)
+//       return true
+//     } catch (error) {
+//       console.error('❌ Erro ao remover permissões de admin:', error)
+//       return false
+//     }
+//   }
+// }
 
-async function verificarPermissoes() {
-  try {
-    console.log('🔍 === VERIFICAÇÃO DE PERMISSÕES ===\n')
+// async function verificarPermissoes() {
+//   try {
+//     console.log('🔍 === VERIFICAÇÃO DE PERMISSÕES ===\n')
 
-    // 1. Verificar criadores inconsistentes
-    console.log('📋 Verificando criadores inconsistentes...')
-    const criadoresInconsistentes = await prisma.usuario.findMany({
-      where: {
-        OR: [
-          { nivel: 'criador-iniciante' },
-          { nivel: 'criador-comum' },
-          { nivel: 'criador-parceiro' },
-          { nivel: 'criador-supremo' }
-        ],
-        criador: null
-      },
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        nivel: true
-      }
-    })
+//     // 1. Verificar criadores inconsistentes
+//     console.log('📋 Verificando criadores inconsistentes...')
+//     const criadoresInconsistentes = await prisma.usuario.findMany({
+//       where: {
+//         OR: [
+//           { nivel: 'criador-iniciante' },
+//           { nivel: 'criador-comum' },
+//           { nivel: 'criador-parceiro' },
+//           { nivel: 'criador-supremo' }
+//         ],
+//         criador: null
+//       },
+//       select: {
+//         id: true,
+//         nome: true,
+//         email: true,
+//         nivel: true
+//       }
+//     })
 
-    console.log(`   Encontrados ${criadoresInconsistentes.length} criadores inconsistentes`)
-    criadoresInconsistentes.forEach(user => {
-      console.log(`   - ${user.nome} (${user.email}): ${user.nivel}`)
-    })
+//     console.log(`Encontrados ${criadoresInconsistentes.length} criadores inconsistentes`)
+//     criadoresInconsistentes.forEach(usuario => {
+//       console.log(`- ${usuario.nome} (${usuario.email}): ${usuario.nivel}`)
+//     })
 
-    // 2. Verificar parceiros inconsistentes
-    console.log('\n📋 Verificando parceiros inconsistentes...')
-    const parceirosInconsistentes = await prisma.usuario.findMany({
-      where: {
-        nivel: 'parceiro',
-        parceiro: null
-      },
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        nivel: true
-      }
-    })
+//     // 2. Verificar parceiros inconsistentes
+//     console.log('\n📋 Verificando parceiros inconsistentes...')
+//     const parceirosInconsistentes = await prisma.usuario.findMany({
+//       where: {
+//         nivel: 'parceiro',
+//         parceiro: null
+//       },
+//       select: {
+//         id: true,
+//         nome: true,
+//         email: true,
+//         nivel: true
+//       }
+//     })
 
-    console.log(`   Encontrados ${parceirosInconsistentes.length} parceiros inconsistentes`)
-    parceirosInconsistentes.forEach(user => {
-      console.log(`   - ${user.nome} (${user.email}): ${user.nivel}`)
-    })
+//     console.log(`Encontrados ${parceirosInconsistentes.length} parceiros inconsistentes`)
+//     parceirosInconsistentes.forEach(usuario => {
+//       console.log(`- ${usuario.nome} (${usuario.email}): ${usuario.nivel}`)
+//     })
 
-    // 3. Verificar admins inconsistentes
-    console.log('\n📋 Verificando admins inconsistentes...')
-    const adminsInconsistentes = await prisma.usuario.findMany({
-      where: {
-        nivel: '5',
-        AND: [
-          { criador: null },
-          { parceiro: null }
-        ]
-      },
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        nivel: true
-      }
-    })
+//     // 3. Verificar admins inconsistentes
+//     console.log('\n📋 Verificando admins inconsistentes...')
+//     const adminsInconsistentes = await prisma.usuario.findMany({
+//       where: {
+//         nivel: 'admin',
+//         admin: null
+//       },
+//       select: {
+//         id: true,
+//         nome: true,
+//         email: true,
+//         nivel: true
+//       }
+//     })
 
-    console.log(`   Encontrados ${adminsInconsistentes.length} admins inconsistentes`)
-    adminsInconsistentes.forEach(user => {
-      console.log(`   - ${user.nome} (${user.email}): ${user.nivel}`)
-    })
+//     console.log(`Encontrados ${adminsInconsistentes.length} admins inconsistentes`)
+//     adminsInconsistentes.forEach(usuario => {
+//       console.log(`- ${usuario.nome} (${usuario.email}): ${usuario.nivel}`)
+//     })
 
-    const totalInconsistentes = criadoresInconsistentes.length + parceirosInconsistentes.length + adminsInconsistentes.length
+//     // 4. Verificar usuários com múltiplas permissões
+//     console.log('\n📋 Verificando usuários com múltiplas permissões...')
+//     const usuariosMultiplos = await prisma.usuario.findMany({
+//       where: {
+//         OR: [
+//           {
+//             AND: [
+//               { criador: { not: null } },
+//               { parceiro: { not: null } }
+//             ]
+//           },
+//           {
+//             AND: [
+//               { criador: { not: null } },
+//               { admin: { not: null } }
+//             ]
+//           },
+//           {
+//             AND: [
+//               { parceiro: { not: null } },
+//               { admin: { not: null } }
+//             ]
+//           }
+//         ]
+//       },
+//       include: {
+//         criador: true,
+//         parceiro: true,
+//         admin: true
+//       }
+//     })
 
-    if (totalInconsistentes === 0) {
-      console.log('\n🎉 Nenhuma inconsistência encontrada! Todas as permissões estão corretas.')
-      return
-    }
+//     console.log(`Encontrados ${usuariosMultiplos.length} usuários com múltiplas permissões`)
+//     usuariosMultiplos.forEach(usuario => {
+//       console.log(`- ${usuario.nome} (${usuario.email}):`)
+//       if (usuario.criador) console.log(`  * Criador: ${usuario.criador.nome}`)
+//       if (usuario.parceiro) console.log(`  * Parceiro: ${usuario.parceiro.nomeCidade}`)
+//       if (usuario.admin) console.log(`  * Admin: ${usuario.admin.nivel}`)
+//     })
 
-    console.log(`\n⚠️  Total de inconsistências encontradas: ${totalInconsistentes}`)
-    
-    // Perguntar se deve corrigir
-    console.log('\n🔧 Deseja corrigir essas inconsistências? (s/n)')
-    
-    // Simular resposta 's' para correção automática
-    const corrigir = true // Em um script real, você poderia usar readline para perguntar
+//     // 5. Resumo e recomendações
+//     console.log('\n📊 RESUMO:')
+//     console.log(`- Criadores inconsistentes: ${criadoresInconsistentes.length}`)
+//     console.log(`- Parceiros inconsistentes: ${parceirosInconsistentes.length}`)
+//     console.log(`- Admins inconsistentes: ${adminsInconsistentes.length}`)
+//     console.log(`- Usuários com múltiplas permissões: ${usuariosMultiplos.length}`)
 
-    if (corrigir) {
-      console.log('\n🛠️  Corrigindo inconsistências...\n')
+//     const totalInconsistentes = criadoresInconsistentes.length + parceirosInconsistentes.length + adminsInconsistentes.length
 
-      // Corrigir criadores
-      for (const usuario of criadoresInconsistentes) {
-        await PermissionsManager.removeCriadorPermissions(usuario.id)
-      }
+//     if (totalInconsistentes > 0) {
+//       console.log('\n⚠️  RECOMENDAÇÕES:')
+//       console.log('1. Corrigir permissões inconsistentes')
+//       console.log('2. Verificar se há dados órfãos')
+//       console.log('3. Revisar lógica de atribuição de permissões')
+//     } else {
+//       console.log('\n✅ Todas as permissões estão consistentes!')
+//     }
 
-      // Corrigir parceiros
-      for (const usuario of parceirosInconsistentes) {
-        await PermissionsManager.removeParceiroPermissions(usuario.id)
-      }
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar permissões:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-      // Corrigir admins
-      for (const usuario of adminsInconsistentes) {
-        await PermissionsManager.removeAdminPermissions(usuario.id)
-      }
-
-      console.log('\n✅ Todas as inconsistências foram corrigidas!')
-      
-      // Log geral
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId: 'system',
-          acao: 'VERIFICACAO_PERMISSOES',
-          detalhes: `Verificação automática corrigiu ${totalInconsistentes} inconsistências de permissões`,
-          nivel: 'info'
-        }
-      })
-
-    } else {
-      console.log('\n❌ Correção cancelada pelo usuário.')
-    }
-
-  } catch (error) {
-    console.error('❌ Erro durante a verificação:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
-
-verificarPermissoes() 
+// verificarPermissoes() 

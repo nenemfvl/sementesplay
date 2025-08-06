@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarCarteiraSistema() {
+// async function verificarCarteiraSistema() {
   try {
     console.log('🔍 Verificando carteira digital do sistema...\n');
 
@@ -39,11 +40,11 @@ async function verificarCarteiraSistema() {
       console.log(`${index + 1}. ID: ${fundo.id} | Ciclo: ${fundo.ciclo} | Valor: R$ ${fundo.valorTotal.toFixed(2)} | Distribuído: ${fundo.distribuido ? 'Sim' : 'Não'}`);
     });
 
-  } catch (error) {
-    console.error('❌ Erro:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarCarteiraSistema(); 
+// verificarCarteiraSistema(); 

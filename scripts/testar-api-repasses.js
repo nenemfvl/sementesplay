@@ -1,6 +1,7 @@
-const fetch = require('node-fetch')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const fetch = require('node-fetch')
 
-async function testarApiRepasses() {
+// async function testarApiRepasses() {
   try {
     console.log('🧪 Testando API de repasses pendentes...')
     
@@ -31,9 +32,9 @@ async function testarApiRepasses() {
       console.log('❌ Erro na API:', error)
     }
     
-  } catch (error) {
-    console.error('❌ Erro ao testar API:', error)
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao testar API:', error)
+//   }
+// }
 
-testarApiRepasses() 
+// testarApiRepasses() 

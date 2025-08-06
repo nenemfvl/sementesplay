@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
-async function verificarComprasStatus() {
+// async function verificarComprasStatus() {
   try {
     console.log('🔍 Verificando status das compras...')
     
@@ -51,11 +52,11 @@ async function verificarComprasStatus() {
       console.log('')
     })
     
-  } catch (error) {
-    console.error('❌ Erro ao verificar compras:', error)
-  } finally {
-    await prisma.$disconnect()
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar compras:', error)
+//   } finally {
+//     await prisma.$disconnect()
+//   }
+// }
 
-verificarComprasStatus() 
+// verificarComprasStatus() 

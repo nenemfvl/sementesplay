@@ -1,7 +1,8 @@
-const fs = require('fs')
-const path = require('path')
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const fs = require('fs')
+// const path = require('path')
 
-async function testarUpload() {
+// async function testarUpload() {
   try {
     console.log('🧪 Testando upload para Cloudinary...')
     
@@ -30,9 +31,9 @@ async function testarUpload() {
       console.log('❌ Erro no upload:', error)
     }
     
-  } catch (error) {
-    console.error('❌ Erro ao testar upload:', error)
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao testar upload:', error)
+//   }
+// }
 
-testarUpload() 
+// testarUpload() 

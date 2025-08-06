@@ -1,6 +1,7 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
 
-async function testarApiNotificacoes() {
+// async function testarApiNotificacoes() {
   try {
     console.log('🔍 Testando API de notificações...')
     
@@ -29,9 +30,9 @@ async function testarApiNotificacoes() {
       console.log('❌ Erro na API:', data.error || 'Resposta inválida')
     }
     
-  } catch (error) {
-    console.error('❌ Erro ao testar API:', error.message)
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao testar API:', error.message)
+//   }
+// }
 
-testarApiNotificacoes() 
+// testarApiNotificacoes() 

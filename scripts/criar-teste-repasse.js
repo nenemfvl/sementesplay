@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function criarTesteRepasse() {
+// async function criarTesteRepasse() {
   try {
     console.log('🔧 Criando teste de repasse...\n');
 
@@ -150,11 +151,11 @@ async function criarTesteRepasse() {
     
     console.log('\n🚀 Agora você pode testar o pagamento PIX no painel parceiro!');
 
-  } catch (error) {
-    console.error('❌ Erro durante a criação do teste:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro durante a criação do teste:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-criarTesteRepasse(); 
+// criarTesteRepasse(); 

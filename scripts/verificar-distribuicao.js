@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+// COMENTADO: Script de desenvolvimento - desabilitado para otimização
+// const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-async function verificarDistribuicao() {
+// async function verificarDistribuicao() {
   console.log('📊 Verificando distribuição dos repasses...\n');
 
   try {
@@ -113,11 +114,11 @@ async function verificarDistribuicao() {
       console.log(`   ${index + 1}. ${semente.quantidade} sementes - ${semente.descricao}`);
     });
 
-  } catch (error) {
-    console.error('❌ Erro ao verificar distribuição:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//   } catch (error) {
+//     console.error('❌ Erro ao verificar distribuição:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-verificarDistribuicao(); 
+// verificarDistribuicao(); 
