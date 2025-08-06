@@ -24,10 +24,12 @@ import {
   HandThumbDownIcon,
   ChatBubbleLeftIcon,
   PaperAirplaneIcon,
-  ShareIcon
+  ShareIcon,
+  FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
 import Navbar from '../../components/Navbar'
+import DenunciaModal from '../../components/DenunciaModal'
 
 interface CriadorDetalhes {
   id: string
@@ -105,6 +107,10 @@ export default function CriadorPerfil() {
   const [enviandoPergunta, setEnviandoPergunta] = useState(false)
   const [perguntaStatus, setPerguntaStatus] = useState<'idle' | 'enviando' | 'enviado' | 'erro'>('idle')
   const [conteudosInteracao, setConteudosInteracao] = useState<Record<string, { curtido: boolean, visualizado: boolean, disliked: boolean }>>({})
+  
+  // Estados para denúncia
+  const [showDenunciaModal, setShowDenunciaModal] = useState(false)
+  const [conteudoParaDenunciar, setConteudoParaDenunciar] = useState<{ id: string, titulo: string } | null>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -435,6 +441,12 @@ export default function CriadorPerfil() {
     }
   }
 
+  const handleDenunciarConteudo = (conteudo: { id: string, titulo: string }, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setConteudoParaDenunciar(conteudo)
+    setShowDenunciaModal(true)
+  }
+
   if (loading) {
     return (
       <>
@@ -752,6 +764,13 @@ export default function CriadorPerfil() {
                                  <ShareIcon className="w-4 h-4 mr-1" />
                                  {formatarNumero(conteudo.compartilhamentos || 0)}
                     </button>
+                    <button
+                      onClick={(e) => handleDenunciarConteudo(conteudo, e)}
+                      className="flex items-center text-gray-400 hover:text-red-500 transition-colors"
+                      title="Denunciar conteúdo"
+                    >
+                      <FlagIcon className="w-4 h-4 mr-1" />
+                    </button>
                             </div>
                             <span>{formatarData(conteudo.data)}</span>
                           </div>
@@ -904,6 +923,20 @@ export default function CriadorPerfil() {
               </form>
             </motion.div>
           </div>
+        )}
+
+        {/* Modal de Denúncia */}
+        {showDenunciaModal && conteudoParaDenunciar && (
+          <DenunciaModal
+            isOpen={showDenunciaModal}
+            onClose={() => {
+              setShowDenunciaModal(false)
+              setConteudoParaDenunciar(null)
+            }}
+            conteudoId={conteudoParaDenunciar.id}
+            tituloConteudo={conteudoParaDenunciar.titulo}
+            tipoConteudo="criador"
+          />
         )}
       </div>
     </>

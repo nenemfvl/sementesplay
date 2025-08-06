@@ -68,6 +68,7 @@ model Usuario {
   historicoXP          HistoricoXP[]
   rankingsCiclo        RankingCiclo[]
   rankingsSeason       RankingSeason[]
+  denuncias            Denuncia[]                   @relation("UsuarioDenuncia")
 
   @@map("usuarios")
 }
@@ -408,6 +409,7 @@ model Conteudo {
   criador     Criador             @relation(fields: [criadorId], references: [id], onDelete: Cascade)
   comentarios Comentario[]
   interacoes  InteracaoConteudo[]
+  denuncias   Denuncia[]
 
   @@map("conteudos")
 }
@@ -437,6 +439,7 @@ model ConteudoParceiro {
   parceiro    Parceiro                    @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
   comentarios ComentarioParceiro[]
   interacoes  InteracaoConteudoParceiro[]
+  denuncias   Denuncia[]
 
   @@map("conteudos_parceiros")
 }
@@ -811,4 +814,26 @@ model RankingSeason {
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("ranking_season")
+}
+
+model Denuncia {
+  id              String    @id @default(cuid())
+  denuncianteId   String
+  conteudoId      String?
+  conteudoParceiroId String?
+  tipo            String    // conteudo_inadequado, spam, violencia, assedio, direitos_autorais, outros
+  motivo          String
+  descricao       String?
+  status          String    @default("pendente") // pendente, em_analise, resolvida, rejeitada
+  prioridade      String    @default("baixa") // baixa, media, alta, critica
+  observacoes     String?
+  dataDenuncia    DateTime  @default(now())
+  dataResolucao   DateTime?
+
+  // Relacionamentos
+  denunciante     Usuario           @relation("UsuarioDenuncia", fields: [denuncianteId], references: [id], onDelete: Cascade)
+  conteudo        Conteudo?         @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
+  conteudoParceiro ConteudoParceiro? @relation(fields: [conteudoParceiroId], references: [id], onDelete: Cascade)
+
+  @@map("denuncias")
 }
