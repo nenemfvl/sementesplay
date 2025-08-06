@@ -1,11 +1,17 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeftOnRectangleIcon, UserGroupIcon, UserIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { auth, User } from '../lib/auth';
-import { useNavigation } from '../hooks/useNavigation';
-
+import React from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { 
+  UserGroupIcon, 
+  ChevronDownIcon, 
+  ArrowLeftOnRectangleIcon,
+  UserIcon
+} from '@heroicons/react/24/outline'
+import { auth, User } from '../lib/auth'
+import { useNavigation } from '../hooks/useNavigation'
+import FriendsChat from './FriendsChat'
 
 interface UserWithCriador extends User {
   criador?: {
@@ -29,6 +35,7 @@ export default function Navbar() {
   const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
+  const [showFriendsChat, setShowFriendsChat] = React.useState(false);
 
   React.useEffect(() => {
     const loadUserData = async () => {
@@ -63,11 +70,17 @@ export default function Navbar() {
   };
 
   const handleMenuItemClick = (path: string) => {
-    setShowProfileMenu(false);
-    navigateTo(path);
+    if (path === '/amigos') {
+      setShowFriendsChat(true);
+      setShowProfileMenu(false);
+    } else {
+      navigateTo(path);
+      setShowProfileMenu(false);
+    }
   };
 
   return (
+    <>
     <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
       {/* Logo e nome colados à esquerda como botão para o topo */}
       <button
@@ -124,10 +137,13 @@ export default function Navbar() {
                       width={32}
                       height={32}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                         // Fallback para ícone se a imagem falhar
                         e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        const nextElement = e.currentTarget.nextElementSibling;
+                        if (nextElement) {
+                          nextElement.classList.remove('hidden');
+                        }
                       }}
                     />
                   ) : null}
@@ -225,5 +241,9 @@ export default function Navbar() {
         )}
       </div>
     </header>
-  );
+    
+    {/* Chat flutuante de amigos */}
+    {showFriendsChat && <FriendsChat />}
+  </>
+  )
 } 
