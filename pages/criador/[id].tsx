@@ -1,3 +1,4 @@
+// Página de perfil do criador - exibe informações, conteúdos, enquetes e recados públicos
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
