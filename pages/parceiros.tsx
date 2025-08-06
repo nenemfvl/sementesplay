@@ -287,7 +287,27 @@ export default function Parceiros() {
                       'from-orange-900/60 to-sss-dark border border-orange-400'
                     }`}>
                         <div className="flex items-center justify-between mb-4">
-                        <span className="text-2xl">🏢</span>
+                        {/* Foto do perfil do parceiro */}
+                        {parceiro.avatar ? (
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/20">
+                            <img 
+                              src={parceiro.avatar} 
+                              alt={`Foto de ${parceiro.nome}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.currentTarget as HTMLImageElement;
+                                target.style.display = 'none';
+                                const fallback = target.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'flex';
+                              }}
+                            />
+                            <div className="w-full h-full bg-sss-accent/20 flex items-center justify-center text-2xl" style={{ display: 'none' }}>
+                              🏢
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-2xl">🏢</span>
+                        )}
                         <span className="text-sm bg-sss-accent text-white px-3 py-1 rounded-full font-bold">
                           {index + 1}º Lugar
                         </span>
@@ -364,7 +384,27 @@ export default function Parceiros() {
                   {parceirosFiltrados.slice(3).map((parceiro) => (
                     <div key={parceiro.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xl">🏢</span>
+                        {/* Foto do perfil do parceiro */}
+                        {parceiro.avatar ? (
+                          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 flex-shrink-0">
+                            <img 
+                              src={parceiro.avatar} 
+                              alt={`Foto de ${parceiro.nome}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.currentTarget as HTMLImageElement;
+                                target.style.display = 'none';
+                                const fallback = target.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'flex';
+                              }}
+                            />
+                            <div className="w-full h-full bg-sss-accent/20 flex items-center justify-center text-lg" style={{ display: 'none' }}>
+                              🏢
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-xl">🏢</span>
+                        )}
                         <div className="flex-1">
                           <h4 className="font-bold text-sss-white">{parceiro.posicao}º {parceiro.nome}</h4>
                           <p className="text-sm text-gray-400">{parceiro.nomeCidade}</p>
@@ -398,9 +438,29 @@ export default function Parceiros() {
                 <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
                   {/* Conteúdo Principal */}
                   <div className="flex items-center flex-1">
-                    <div className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6 bg-sss-medium flex items-center justify-center text-4xl">
-                      🏢
-                  </div>
+                    {/* Foto do perfil do parceiro */}
+                    {top1.avatar ? (
+                      <div className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6 overflow-hidden">
+                        <img 
+                          src={top1.avatar} 
+                          alt={`Foto de ${top1.nome}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div className="w-full h-full bg-sss-medium flex items-center justify-center text-4xl" style={{ display: 'none' }}>
+                          🏢
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-full border-4 border-blue-400 shadow-md mr-6 bg-sss-medium flex items-center justify-center text-4xl">
+                        🏢
+                      </div>
+                    )}
                     <div className="flex-1 flex flex-col items-start">
                       <span className="text-xs bg-blue-400 text-white px-3 py-1 rounded-full mb-2 font-bold">1º Lugar</span>
                       <h2 className="text-2xl font-bold text-sss-white mb-2">{top1.nome}</h2>
