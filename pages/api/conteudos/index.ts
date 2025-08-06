@@ -91,6 +91,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!criadorId || !titulo || !url || !tipo || !categoria) {
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
+      
+      // Buscar informações do criador para o log
+      const criador = await prisma.criador.findUnique({
+        where: { id: criadorId },
+        include: { usuario: true }
+      });
+
       const novo = await prisma.conteudo.create({
         data: {
           criadorId,
@@ -102,6 +109,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           plataforma: plataforma || '',
         }
       });
+
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: criador?.usuarioId || 'system',
+          acao: 'CRIAR_CONTEUDO',
+          detalhes: `Conteúdo criado. ID: ${novo.id}, Título: ${titulo}, Tipo: ${tipo}, Categoria: ${categoria}, Criador: ${criador?.usuario?.nome || criadorId}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: 'info'
+        }
+      });
+
       return res.status(201).json(novo);
     } catch (error) {
       console.error('Erro ao criar conteúdo:', error);
@@ -113,6 +133,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { id, criadorId, titulo, url, tipo, categoria, descricao, plataforma } = req.body;
       if (!id) return res.status(400).json({ error: 'ID obrigatório' });
+      
+      // Buscar conteúdo atual para comparar
+      const conteudoAtual = await prisma.conteudo.findUnique({
+        where: { id },
+        include: { criador: { include: { usuario: true } } }
+      });
+
       const atualizado = await prisma.conteudo.update({
         where: { id },
         data: {
@@ -125,6 +152,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           plataforma,
         }
       });
+
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: conteudoAtual?.criador?.usuarioId || 'system',
+          acao: 'EDITAR_CONTEUDO',
+          detalhes: `Conteúdo editado. ID: ${id}, Título: ${titulo}, Tipo: ${tipo}, Categoria: ${categoria}, Criador: ${conteudoAtual?.criador?.usuario?.nome || criadorId}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: 'info'
+        }
+      });
+
       return res.status(200).json(atualizado);
     } catch (error) {
       console.error('Erro ao atualizar conteúdo:', error);
@@ -136,7 +176,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { id } = req.body;
       if (!id) return res.status(400).json({ error: 'ID obrigatório' });
+      
+      // Buscar conteúdo antes de deletar para o log
+      const conteudo = await prisma.conteudo.findUnique({
+        where: { id },
+        include: { criador: { include: { usuario: true } } }
+      });
+
       await prisma.conteudo.delete({ where: { id } });
+
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: conteudo?.criador?.usuarioId || 'system',
+          acao: 'DELETAR_CONTEUDO',
+          detalhes: `Conteúdo deletado. ID: ${id}, Título: ${conteudo?.titulo || 'N/A'}, Criador: ${conteudo?.criador?.usuario?.nome || 'N/A'}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: 'warning'
+        }
+      });
+
       return res.status(204).end();
     } catch (error) {
       console.error('Erro ao remover conteúdo:', error);

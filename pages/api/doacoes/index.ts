@@ -299,6 +299,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
 
       console.log('Resultado da transação:', resultado)
+
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: String(doadorId),
+          acao: 'REALIZAR_DOACAO',
+          detalhes: `Doação realizada. ID: ${resultado.id}, Doador: ${doador?.nome || doadorId}, Criador: ${criadorId}, Quantidade: ${quantidade} sementes, Mensagem: ${mensagem || 'N/A'}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: 'info'
+        }
+      })
+
       return res.status(201).json(resultado)
     } catch (error) {
       console.error('Erro ao criar doação:', error)

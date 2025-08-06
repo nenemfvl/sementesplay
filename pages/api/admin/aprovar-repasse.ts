@@ -19,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { 
         compra: {
           include: {
-            parceiro: true
+            parceiro: true,
+            usuario: true
           }
         }
       }
@@ -102,6 +103,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ]
       })
     })
+
+    // Log de auditoria
+    await prisma.logAuditoria.create({
+      data: {
+        usuarioId: 'system', // Sistema
+        acao: 'APROVAR_REPASSE',
+        detalhes: `Repasse ${repasseId} aprovado. Parceiro: ${parceiro.nomeCidade}, Compra: ${compra.id}, Valor: R$ ${valor.toFixed(2)}, Cashback usuário: ${pctUsuario} sementes, Fundo: R$ ${pctFundo.toFixed(2)}`,
+        ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+        userAgent: req.headers['user-agent'] || '',
+        nivel: 'info'
+      }
+    })
+
     // Notificações fora da transação
     await enviarNotificacao(compra.usuarioId, 'cashback', 'Cashback liberado!', `Seu cashback da compra foi liberado e você recebeu ${pctUsuario} sementes.`)
 

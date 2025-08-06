@@ -54,8 +54,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: 'Usuário não encontrado' })
       }
 
-             // Converter valor para sementes (1 real = 1 semente)
-       const sementesNecessarias = Math.floor(valor)
+      // Converter valor para sementes (1 real = 1 semente)
+      const sementesNecessarias = Math.floor(valor)
 
       if (usuario.sementes < sementesNecessarias) {
         return res.status(400).json({ error: 'Sementes insuficientes para o saque' })
@@ -116,6 +116,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
 
         return { saque, valorLiquido }
+      })
+
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: String(usuarioId),
+          acao: 'SOLICITAR_SAQUE',
+          detalhes: `Solicitação de saque criada. ID: ${resultado.saque.id}, Valor: R$ ${valor.toFixed(2)}, Taxa: R$ ${taxa.toFixed(2)}, Valor líquido: R$ ${valorLiquido.toFixed(2)}, Sementes utilizadas: ${sementesNecessarias}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: 'info'
+        }
       })
 
       res.status(200).json({

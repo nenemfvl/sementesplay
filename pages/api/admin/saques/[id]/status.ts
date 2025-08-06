@@ -47,6 +47,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
+      // Log de auditoria
+      await prisma.logAuditoria.create({
+        data: {
+          usuarioId: user.id,
+          acao: 'ATUALIZAR_STATUS_SAQUE',
+          detalhes: `Status do saque ${id} alterado para ${status}. Usuário: ${saque.usuario.nome} (${saque.usuario.email}). Valor: R$ ${saque.valor.toFixed(2)}${motivoRejeicao ? `. Motivo: ${motivoRejeicao}` : ''}`,
+          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+          userAgent: req.headers['user-agent'] || '',
+          nivel: status === 'rejeitado' ? 'warning' : 'info'
+        }
+      })
+
       // Se rejeitado, devolver sementes ao usuário
       if (status === 'rejeitado') {
         const sementesDevolver = Math.floor(saque.valor) // 1 real = 1 semente

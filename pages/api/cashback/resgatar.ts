@@ -88,6 +88,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
+    // Log de auditoria
+    await prisma.logAuditoria.create({
+      data: {
+        usuarioId: usuarioId,
+        acao: 'RESGATAR_CASHBACK',
+        detalhes: `Cashback resgatado. Código: ${codigo}, Valor: ${codigoCashback.valor} sementes, Parceiro: ${codigoCashback.parceiro.usuario.nome}, Usuário: ${usuario.nome}`,
+        ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+        userAgent: req.headers['user-agent'] || '',
+        nivel: 'info'
+      }
+    })
+
     res.status(200).json({
       message: 'Cashback resgatado com sucesso',
       resultado

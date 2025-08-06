@@ -64,6 +64,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ? await prisma.conteudoParceiro.findUnique({ where: { id: String(id) } })
           : await prisma.conteudo.findUnique({ where: { id: String(id) } })
 
+        // Log de auditoria - remoção de curtida
+        await prisma.logAuditoria.create({
+          data: {
+            usuarioId: userId,
+            acao: 'REMOVER_CURTIDA',
+            detalhes: `Curtida removida do conteúdo ${id} (${isConteudoParceiro ? 'Conteúdo Parceiro' : 'Conteúdo Normal'})`,
+            ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+            userAgent: req.headers['user-agent'] || '',
+            nivel: 'info'
+          }
+        })
+
         return res.status(200).json({ 
           success: true, 
           curtidas: conteudoAtualizado?.curtidas || 0,
@@ -93,6 +105,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const conteudoAtualizado = isConteudoParceiro 
           ? await prisma.conteudoParceiro.findUnique({ where: { id: String(id) } })
           : await prisma.conteudo.findUnique({ where: { id: String(id) } })
+
+        // Log de auditoria - adição de curtida
+        await prisma.logAuditoria.create({
+          data: {
+            usuarioId: userId,
+            acao: 'CURTIR_CONTEUDO',
+            detalhes: `Conteúdo curtido. ID: ${id} (${isConteudoParceiro ? 'Conteúdo Parceiro' : 'Conteúdo Normal'})`,
+            ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
+            userAgent: req.headers['user-agent'] || '',
+            nivel: 'info'
+          }
+        })
 
         return res.status(200).json({ 
           success: true, 
