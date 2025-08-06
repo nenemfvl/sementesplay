@@ -26,6 +26,13 @@ interface CandidaturaData {
   investimento: string
   publico: string
   estrategia: string
+  redesSociais: {
+    instagram?: string
+    twitch?: string
+    youtube?: string
+    tiktok?: string
+    discord?: string
+  }
 }
 
 interface CandidaturaExistente {
@@ -48,7 +55,14 @@ export default function CandidaturaParceiro() {
     expectativa: '',
     investimento: '',
     publico: '',
-    estrategia: ''
+    estrategia: '',
+    redesSociais: {
+      instagram: '',
+      twitch: '',
+      youtube: '',
+      tiktok: '',
+      discord: ''
+    }
   })
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -239,6 +253,77 @@ export default function CandidaturaParceiro() {
             placeholder="Conte-nos sobre sua cidade, público-alvo, características especiais..."
             required
           />
+        </div>
+
+        {/* Redes Sociais */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold text-sss-white mb-4">Redes Sociais (Opcional)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Instagram
+              </label>
+              <input
+                type="url"
+                value={formData.redesSociais.instagram || ''}
+                onChange={(e) => handleInputChange('redesSociais', { ...formData.redesSociais, instagram: e.target.value })}
+                className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+                placeholder="https://instagram.com/seu-usuario"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Twitch
+              </label>
+              <input
+                type="url"
+                value={formData.redesSociais.twitch || ''}
+                onChange={(e) => handleInputChange('redesSociais', { ...formData.redesSociais, twitch: e.target.value })}
+                className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+                placeholder="https://twitch.tv/seu-canal"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                YouTube
+              </label>
+              <input
+                type="url"
+                value={formData.redesSociais.youtube || ''}
+                onChange={(e) => handleInputChange('redesSociais', { ...formData.redesSociais, youtube: e.target.value })}
+                className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+                placeholder="https://youtube.com/@seu-canal"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                TikTok
+              </label>
+              <input
+                type="url"
+                value={formData.redesSociais.tiktok || ''}
+                onChange={(e) => handleInputChange('redesSociais', { ...formData.redesSociais, tiktok: e.target.value })}
+                className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+                placeholder="https://tiktok.com/@seu-usuario"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Discord
+              </label>
+              <input
+                type="url"
+                value={formData.redesSociais.discord || ''}
+                onChange={(e) => handleInputChange('redesSociais', { ...formData.redesSociais, discord: e.target.value })}
+                className="w-full bg-sss-dark border border-sss-light rounded-lg px-4 py-3 text-sss-white focus:border-blue-500 focus:outline-none"
+                placeholder="https://discord.gg/seuserver"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

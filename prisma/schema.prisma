@@ -283,6 +283,7 @@ model Parceiro {
   twitch         String? // URL da Twitch
   youtube        String? // URL do YouTube
   tiktok         String? // URL do TikTok
+  discord        String? // URL do Discord
 
   // Relacionamentos
   usuario         Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)

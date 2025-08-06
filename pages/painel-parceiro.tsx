@@ -219,7 +219,8 @@ export default function PainelParceiro() {
     instagram: '',
     twitch: '',
     youtube: '',
-    tiktok: ''
+    tiktok: '',
+    discord: ''
   });
   const [savingRedesSociais, setSavingRedesSociais] = useState(false);
   const [aprovarLoading, setAprovarLoading] = useState<string | null>(null);
@@ -760,7 +761,8 @@ export default function PainelParceiro() {
       instagram: parceiro.instagram || '',
       twitch: parceiro.twitch || '',
       youtube: parceiro.youtube || '',
-      tiktok: parceiro.tiktok || ''
+      tiktok: parceiro.tiktok || '',
+      discord: parceiro.discord || ''
     });
   }
 
@@ -997,6 +999,17 @@ export default function PainelParceiro() {
                   placeholder="https://tiktok.com/@seu-usuario" 
                   value={redesSociais.tiktok} 
                   onChange={e => setRedesSociais(f => ({ ...f, tiktok: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Discord</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://discord.gg/seuserver" 
+                  value={redesSociais.discord} 
+                  onChange={e => setRedesSociais(f => ({ ...f, discord: e.target.value }))} 
                 />
               </div>
               
