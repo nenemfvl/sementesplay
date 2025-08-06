@@ -327,7 +327,7 @@ export default function Parceiros() {
                         
                         {/* Redes Sociais */}
                         {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
-                          <div className="flex gap-2 mt-3 pt-3 border-t border-gray-600">
+                          <div className="flex gap-2 mt-3 pt-3 border-t border-gray-600 justify-center">
                             {parceiro.instagram && (
                               <a 
                                 href={parceiro.instagram} 
@@ -420,6 +420,56 @@ export default function Parceiros() {
                           <span className="text-gray-400">Códigos:</span>
                           <span className="text-sss-white">{formatarNumero(parceiro.codigosGerados)}</span>
                         </div>
+                        
+                        {/* Redes Sociais */}
+                        {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
+                          <div className="flex gap-2 mt-3 pt-3 border-t border-gray-600 justify-center">
+                            {parceiro.instagram && (
+                              <a 
+                                href={parceiro.instagram} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-pink-400 hover:text-pink-300 transition-colors"
+                                title="Instagram"
+                              >
+                                <FaInstagram className="w-3 h-3" />
+                              </a>
+                            )}
+                            {parceiro.twitch && (
+                              <a 
+                                href={parceiro.twitch} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-purple-400 hover:text-purple-300 transition-colors"
+                                title="Twitch"
+                              >
+                                <FaTwitch className="w-3 h-3" />
+                              </a>
+                            )}
+                            {parceiro.youtube && (
+                              <a 
+                                href={parceiro.youtube} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-red-400 hover:text-red-300 transition-colors"
+                                title="YouTube"
+                              >
+                                <FaYoutube className="w-3 h-3" />
+                              </a>
+                            )}
+                            {parceiro.tiktok && (
+                              <a 
+                                href={parceiro.tiktok} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                                title="TikTok"
+                              >
+                                <FaTiktok className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -472,7 +522,7 @@ export default function Parceiros() {
                       
                       {/* Redes Sociais */}
                       {(top1.instagram || top1.twitch || top1.youtube || top1.tiktok) && (
-                        <div className="flex gap-3 mt-3">
+                        <div className="flex gap-3 mt-3 justify-center">
                           {top1.instagram && (
                             <a 
                               href={top1.instagram} 
@@ -560,7 +610,7 @@ export default function Parceiros() {
                           
                           {/* Redes Sociais */}
                           {(parceiro.instagram || parceiro.twitch || parceiro.youtube || parceiro.tiktok) && (
-                            <div className="flex gap-1 mt-2">
+                            <div className="flex gap-1 mt-2 justify-center">
                               {parceiro.instagram && (
                                 <a 
                                   href={parceiro.instagram} 
