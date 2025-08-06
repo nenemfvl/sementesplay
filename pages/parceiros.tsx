@@ -522,7 +522,8 @@ export default function Parceiros() {
             <div className="w-full max-w-5xl mx-auto">
               {/* Destaque Top 1 */}
               {top1 && (
-                <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg">
+                <Link href={`/parceiro/${top1.id}`} className="block">
+                  <div className="flex bg-gradient-to-br from-blue-900/60 to-sss-dark rounded-2xl p-6 mb-8 shadow-lg cursor-pointer hover:scale-105 transition-transform">
                   {/* Conteúdo Principal */}
                   <div className="flex items-center flex-1">
                     {/* Foto do perfil do parceiro */}
@@ -623,16 +624,7 @@ export default function Parceiros() {
                           </div>
                         )}
                         
-                        {/* Botão Ver Detalhes */}
-                        <div className="mt-4">
-                          <Link
-                            href={`/parceiro/${top1.id}`}
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold"
-                          >
-                            <EyeIcon className="w-5 h-5" />
-                            Ver Detalhes
-                          </Link>
-                        </div>
+
                       </div>
                     </div>
           </div>
@@ -650,12 +642,14 @@ export default function Parceiros() {
                 </button>
               </div>
           </div>
+                  </Link>
         )}
 
               {/* Lista dos demais parceiros */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {outros.map((parceiro, i) => (
-                  <div key={parceiro.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                  <Link key={parceiro.id} href={`/parceiro/${parceiro.id}`} className="block">
+                    <div className="bg-sss-medium rounded-xl p-4 shadow-md cursor-pointer hover:scale-105 transition-transform">
                     <div className="flex">
                       {/* Conteúdo Principal */}
                       <div className="flex items-center flex-1">
@@ -730,16 +724,7 @@ export default function Parceiros() {
                             </div>
                           )}
                           
-                          {/* Botão Ver Detalhes */}
-                          <div className="mt-3 pt-2 border-t border-gray-600">
-                            <Link
-                              href={`/parceiro/${parceiro.id}`}
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1 text-xs"
-                            >
-                              <EyeIcon className="w-3 h-3" />
-                              Ver Detalhes
-                            </Link>
-                          </div>
+
                         </div>
             </div>
                       {/* Botão Favoritar - Borda Direita */}
@@ -757,6 +742,7 @@ export default function Parceiros() {
             </div>
           </div>
         </div>
+                  </Link>
                 ))}
                 </div>
               </div>

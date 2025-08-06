@@ -240,11 +240,12 @@ export default function TodosParceiros() {
                 <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">🏆 Top 3 Parceiros</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   {parceirosFiltrados.slice(0, 3).map((parceiro, index) => (
-                    <div key={parceiro.id} className={`bg-gradient-to-br rounded-2xl p-6 shadow-lg ${
-                      index === 0 ? 'from-yellow-900/60 to-sss-dark border border-yellow-400' :
-                      index === 1 ? 'from-gray-700/60 to-sss-dark border border-gray-400' :
-                      'from-orange-900/60 to-sss-dark border border-orange-400'
-                    }`}>
+                    <Link key={parceiro.id} href={`/parceiro/${parceiro.id}`} className="block">
+                      <div className={`bg-gradient-to-br rounded-2xl p-6 shadow-lg cursor-pointer hover:scale-105 transition-transform ${
+                        index === 0 ? 'from-yellow-900/60 to-sss-dark border border-yellow-400' :
+                        index === 1 ? 'from-gray-700/60 to-sss-dark border border-gray-400' :
+                        'from-orange-900/60 to-sss-dark border border-orange-400'
+                      }`}>
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-2xl">🏢</span>
                         <span className="text-sm bg-sss-accent text-white px-3 py-1 rounded-full font-bold">
@@ -328,6 +329,7 @@ export default function TodosParceiros() {
                         )}
                       </div>
                     </div>
+                      </Link>
                   ))}
                 </div>
               </section>
@@ -412,16 +414,7 @@ export default function TodosParceiros() {
                               </div>
                             )}
                             
-                            {/* Botão Ver Detalhes */}
-                            <div className="mt-3 pt-3 border-t border-gray-600">
-                              <Link
-                                href={`/parceiro/${parceiro.id}`}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                              >
-                                <EyeIcon className="w-4 h-4" />
-                                Ver Detalhes
-                              </Link>
-                            </div>
+
                           </div>
                         </div>
                         {/* Botão Favoritar - Borda Direita */}
