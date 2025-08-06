@@ -459,10 +459,12 @@ export default function PainelParceiro() {
 
     setSavingConteudo(true);
     try {
-      const response = await fetch(`/api/parceiros/conteudos/${editandoConteudo.id}`, {
+      const response = await fetch('/api/parceiros/conteudos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: editandoConteudo.id,
+          parceiroId: parceiro?.id,
           ...formConteudo
         })
       });
@@ -1693,15 +1695,37 @@ export default function PainelParceiro() {
                         
                         {/* Botões de ação (fora da área clicável) */}
                         <div className="px-4 pb-4 flex justify-between items-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleFixarConteudo(conteudo.id, !conteudo.fixado);
-                            }}
-                            className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
-                          >
-                            {conteudo.fixado ? 'Desfixar' : 'Fixar'}
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditandoConteudo(conteudo);
+                                setFormConteudo({
+                                  titulo: conteudo.titulo,
+                                  tipo: conteudo.tipo,
+                                  categoria: conteudo.categoria,
+                                  url: conteudo.url,
+                                  cidade: ''
+                                });
+                                setShowModalConteudo(true);
+                              }}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1"
+                              title="Editar conteúdo"
+                            >
+                              <PencilIcon className="w-4 h-4" />
+                              Editar
+                            </button>
+                            
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleFixarConteudo(conteudo.id, !conteudo.fixado);
+                              }}
+                              className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
+                            >
+                              {conteudo.fixado ? 'Desfixar' : 'Fixar'}
+                            </button>
+                          </div>
                           
                           <button
                             onClick={(e) => {
