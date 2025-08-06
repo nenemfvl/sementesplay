@@ -41,11 +41,92 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    // Se aprovada, pode-se tomar ações adicionais (ex: remover conteúdo, suspender usuário, etc.)
+    // Se aprovada, tomar ações automáticas
     if (acao === 'aprovar') {
-      // Aqui você pode implementar ações adicionais
-      // Por exemplo: remover conteúdo, suspender criador/parceiro, etc.
-      console.log(`Denúncia aprovada: ${denunciaId}`)
+      try {
+        // Se é denúncia de conteúdo de criador
+        if (denuncia.conteudoId) {
+          // Remover o conteúdo denunciado
+          await prisma.conteudo.update({
+            where: { id: denuncia.conteudoId },
+            data: { 
+              removido: true,
+              dataRemocao: new Date(),
+              motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
+            }
+          })
+          
+          // Adicionar advertência ao criador
+          await prisma.advertencia.create({
+            data: {
+              usuarioId: denuncia.conteudo.criadorId,
+              tipo: 'conteudo_removido',
+              motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
+              dataCriacao: new Date(),
+              denunciaId: denuncia.id
+            }
+          })
+          
+          console.log(`Conteúdo de criador removido: ${denuncia.conteudoId}`)
+        }
+        
+        // Se é denúncia de conteúdo de parceiro
+        if (denuncia.conteudoParceiroId) {
+          // Remover o conteúdo denunciado
+          await prisma.conteudoParceiro.update({
+            where: { id: denuncia.conteudoParceiroId },
+            data: { 
+              removido: true,
+              dataRemocao: new Date(),
+              motivoRemocao: `Denúncia aprovada: ${denuncia.tipo}`
+            }
+          })
+          
+          // Adicionar advertência ao parceiro
+          await prisma.advertencia.create({
+            data: {
+              usuarioId: denuncia.conteudoParceiro.parceiroId,
+              tipo: 'conteudo_removido',
+              motivo: `Conteúdo removido por denúncia: ${denuncia.tipo}`,
+              dataCriacao: new Date(),
+              denunciaId: denuncia.id
+            }
+          })
+          
+          console.log(`Conteúdo de parceiro removido: ${denuncia.conteudoParceiroId}`)
+        }
+        
+        // Verificar se o usuário tem muitas advertências
+        const usuarioId = denuncia.conteudo?.criadorId || denuncia.conteudoParceiro?.parceiroId
+        if (usuarioId) {
+          const advertenciasCount = await prisma.advertencia.count({
+            where: { 
+              usuarioId,
+              dataCriacao: {
+                gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Últimos 30 dias
+              }
+            }
+          })
+          
+          // Se tem 3 ou mais advertências em 30 dias, suspender temporariamente
+          if (advertenciasCount >= 3) {
+            await prisma.usuario.update({
+              where: { id: usuarioId },
+              data: { 
+                suspenso: true,
+                dataSuspensao: new Date(),
+                motivoSuspensao: 'Múltiplas denúncias aprovadas'
+              }
+            })
+            
+            console.log(`Usuário suspenso por múltiplas denúncias: ${usuarioId}`)
+          }
+        }
+        
+      } catch (error) {
+        console.error('Erro ao executar ações automáticas:', error)
+        // Não falhar a operação principal se as ações automáticas falharem
+      }
     }
 
     return res.status(200).json({ 

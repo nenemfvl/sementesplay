@@ -28,6 +28,9 @@ model Usuario {
   dataCriacao     DateTime @default(now())
   dataAtualizacao DateTime @updatedAt
   avatarUrl       String? // URL da foto de perfil do usuário
+  suspenso        Boolean  @default(false)
+  dataSuspensao   DateTime?
+  motivoSuspensao String?
 
   // Relacionamentos
   criador              Criador?
@@ -69,6 +72,7 @@ model Usuario {
   rankingsCiclo        RankingCiclo[]
   rankingsSeason       RankingSeason[]
   denuncias            Denuncia[]                   @relation("UsuarioDenuncia")
+  advertencias         Advertencia[]
 
   @@map("usuarios")
 }
@@ -405,6 +409,9 @@ model Conteudo {
   curtidas          Int      @default(0)
   dislikes          Int      @default(0)
   compartilhamentos Int      @default(0)
+  removido          Boolean  @default(false)
+  dataRemocao       DateTime?
+  motivoRemocao     String?
 
   criador     Criador             @relation(fields: [criadorId], references: [id], onDelete: Cascade)
   comentarios Comentario[]
@@ -435,6 +442,9 @@ model ConteudoParceiro {
   dataEvento        DateTime? // data do evento (se aplicável)
   preco             String? // preço do evento/produto
   vagas             Int? // número de vagas disponíveis
+  removido          Boolean   @default(false)
+  dataRemocao       DateTime?
+  motivoRemocao     String?
 
   parceiro    Parceiro                    @relation(fields: [parceiroId], references: [id], onDelete: Cascade)
   comentarios ComentarioParceiro[]
@@ -834,6 +844,22 @@ model Denuncia {
   denunciante     Usuario           @relation("UsuarioDenuncia", fields: [denuncianteId], references: [id], onDelete: Cascade)
   conteudo        Conteudo?         @relation(fields: [conteudoId], references: [id], onDelete: Cascade)
   conteudoParceiro ConteudoParceiro? @relation(fields: [conteudoParceiroId], references: [id], onDelete: Cascade)
+  advertencias    Advertencia[]
 
   @@map("denuncias")
+}
+
+model Advertencia {
+  id          String   @id @default(cuid())
+  usuarioId   String
+  tipo        String   // conteudo_removido, spam, violencia, assedio, etc.
+  motivo      String
+  dataCriacao DateTime @default(now())
+  denunciaId  String?
+
+  // Relacionamentos
+  usuario  Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  denuncia Denuncia? @relation(fields: [denunciaId], references: [id], onDelete: SetNull)
+
+  @@map("advertencias")
 }
