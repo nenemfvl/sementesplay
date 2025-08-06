@@ -355,7 +355,7 @@ export default function Parceiros() {
                                 href={parceiro.youtube} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-red-400 hover:text-red-300 transition-colors"
+                                className="text-red-600 hover:text-red-500 transition-colors"
                                 title="YouTube"
                               >
                                 <FaYoutube className="w-4 h-4" />
@@ -451,7 +451,7 @@ export default function Parceiros() {
                                 href={parceiro.youtube} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-red-400 hover:text-red-300 transition-colors"
+                                className="text-red-600 hover:text-red-500 transition-colors"
                                 title="YouTube"
                               >
                                 <FaYoutube className="w-3 h-3" />
@@ -553,7 +553,7 @@ export default function Parceiros() {
                                 href={top1.youtube} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-red-400 hover:text-red-300 transition-colors"
+                                className="text-red-600 hover:text-red-500 transition-colors"
                                 title="YouTube"
                               >
                                 <FaYoutube className="w-7 h-7" />
@@ -636,7 +636,7 @@ export default function Parceiros() {
                                   href={parceiro.youtube} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
-                                  className="text-red-400 hover:text-red-300 transition-colors"
+                                  className="text-red-600 hover:text-red-500 transition-colors"
                                   title="YouTube"
                                 >
                                   <FaYoutube className="w-3 h-3" />
