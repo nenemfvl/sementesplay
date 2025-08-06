@@ -96,7 +96,7 @@ export default function Navbar() {
             <Link href="/painel-criador" className={`${router.asPath.startsWith('/painel-criador') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Criador</Link>
           )}
           
-          {user?.nivel === 'parceiro' && (
+          {(user?.nivel === 'parceiro' || user?.tipo === 'parceiro') && (
             <Link href="/painel-parceiro" className={`${router.asPath.startsWith('/painel-parceiro') ? 'text-sss-accent font-bold' : 'text-sss-white hover:text-sss-accent'}`}>Painel Parceiro</Link>
           )}
           

@@ -231,36 +231,61 @@ export default function PainelParceiro() {
       try {
         const currentUser = auth.getUser();
         if (!currentUser) {
+          console.log('Usuário não encontrado no localStorage');
           window.location.href = '/login';
           return;
         }
         
-        // Verificar se o usuário é parceiro no banco de dados
-        const response = await fetch(`/api/parceiros/perfil?usuarioId=${currentUser.id}`);
-        if (!response.ok) {
-          if (response.status === 404) {
-            // Parceiro não encontrado - redirecionar para perfil
-            alert('Acesso negado. Apenas parceiros podem acessar esta área.');
-            window.location.href = '/perfil';
-            return;
-          } else {
-            // Outro erro - redirecionar para login
-            console.error('Erro ao verificar parceiro:', response.status);
-            window.location.href = '/login';
-            return;
-          }
-        }
+        console.log('Usuário encontrado:', currentUser.nome, 'Nível:', currentUser.nivel);
         
-        const parceiroData = await response.json();
-        if (!parceiroData || !parceiroData.id) {
-          // Se não retornou dados de parceiro, o usuário não é parceiro
+        // Verificar se o usuário tem nível parceiro
+        if (currentUser.nivel !== 'parceiro') {
+          console.log('Usuário não é parceiro, nível:', currentUser.nivel);
           alert('Acesso negado. Apenas parceiros podem acessar esta área.');
           window.location.href = '/perfil';
           return;
         }
         
-        setUser(currentUser);
-        setAuthorized(true);
+        // Verificar se o usuário é parceiro no banco de dados
+        try {
+          const response = await fetch(`/api/parceiros/perfil?usuarioId=${currentUser.id}`);
+          console.log('Response status:', response.status);
+          
+          if (!response.ok) {
+            if (response.status === 404) {
+              // Parceiro não encontrado - redirecionar para perfil
+              console.log('Parceiro não encontrado no banco');
+              alert('Acesso negado. Apenas parceiros podem acessar esta área.');
+              window.location.href = '/perfil';
+              return;
+            } else {
+              // Outro erro - tentar usar dados do localStorage
+              console.log('Erro na API, usando dados do localStorage');
+              setUser(currentUser);
+              setAuthorized(true);
+              return;
+            }
+          }
+          
+          const parceiroData = await response.json();
+          if (!parceiroData || !parceiroData.id) {
+            // Se não retornou dados de parceiro, tentar usar dados do localStorage
+            console.log('Dados de parceiro inválidos, usando localStorage');
+            setUser(currentUser);
+            setAuthorized(true);
+            return;
+          }
+          
+          console.log('Parceiro encontrado:', parceiroData.nome);
+          setUser(currentUser);
+          setAuthorized(true);
+        } catch (apiError) {
+          console.error('Erro na API de parceiro:', apiError);
+          // Em caso de erro na API, usar dados do localStorage
+          console.log('Usando dados do localStorage devido a erro na API');
+          setUser(currentUser);
+          setAuthorized(true);
+        }
       } catch (error) {
         console.error('Erro na verificação de autorização:', error);
         window.location.href = '/login';
