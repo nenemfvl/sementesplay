@@ -8,7 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { parceiroId, categoria } = req.query
       
       // Construir filtros
-      const where: any = {}
+      const where: any = {
+        removido: false // Filtrar apenas conteúdos não removidos
+      }
       if (parceiroId) {
         where.parceiroId = String(parceiroId)
       }

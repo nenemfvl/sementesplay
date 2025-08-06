@@ -8,7 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { criadorId } = req.query
       
       // Construir filtros
-      const where: any = {}
+      const where: any = {
+        removido: false // Filtrar apenas conteúdos não removidos
+      }
       if (criadorId) {
         where.criadorId = String(criadorId)
       }
