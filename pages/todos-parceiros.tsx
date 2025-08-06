@@ -339,7 +339,8 @@ export default function TodosParceiros() {
                 <h2 className="text-2xl font-bold text-sss-white mb-6 text-center">📋 Todos os Parceiros</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {parceirosFiltrados.map((parceiro, index) => (
-                    <div key={parceiro.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                    <Link key={parceiro.id} href={`/parceiro/${parceiro.id}`} className="block">
+                      <div className="bg-sss-medium rounded-xl p-4 shadow-md cursor-pointer hover:scale-105 transition-transform">
                       <div className="flex">
                         {/* Conteúdo Principal */}
                         <div className="flex items-center flex-1">
@@ -432,6 +433,7 @@ export default function TodosParceiros() {
                         </div>
                       </div>
                     </div>
+                      </Link>
                   ))}
                 </div>
               </section>
