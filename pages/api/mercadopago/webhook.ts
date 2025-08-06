@@ -123,6 +123,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 where: { id: fundoSementes.id },
                 data: { valorTotal: { increment: pctFundo } }
               })
+            } else {
+              // Criar novo fundo se não existir
+              await prisma.fundoSementes.create({
+                data: {
+                  ciclo: 1,
+                  valorTotal: pctFundo,
+                  dataInicio: new Date(),
+                  dataFim: new Date(),
+                  distribuido: false
+                }
+              })
             }
 
             // Criar notificação
