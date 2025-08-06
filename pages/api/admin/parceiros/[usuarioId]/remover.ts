@@ -1,5 +1,7 @@
+import { prisma } from '../../../../../lib/prisma'
+
+
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import { getUserFromToken } from '@/pages/api/utils/auth-backend';
 import { PermissionsManager } from '../../../../../lib/permissions-manager';
 

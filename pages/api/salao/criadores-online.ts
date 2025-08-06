@@ -1,9 +1,9 @@
+import { prisma } from '../../../lib/prisma'
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
 import { API_CONFIG, getTwitchAccessToken } from '../../../lib/api-config'
 import puppeteer from 'puppeteer'
-
-const prisma = new PrismaClient()
 
 // Função para verificar se um canal do YouTube está ao vivo
 async function verificarYouTubeLive(channelId: string): Promise<{ isLive: boolean; title?: string; viewers?: number }> {

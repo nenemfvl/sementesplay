@@ -1,8 +1,7 @@
+import { prisma } from '../../../lib/prisma'
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
 // Versão ultra-simples usando serviços de terceiros
 async function verificarLiveComServicoTerceiro(username: string, plataforma: string) {
   try {

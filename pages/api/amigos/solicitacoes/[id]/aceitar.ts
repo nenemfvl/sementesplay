@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { prisma } from '../../../../../lib/prisma'
 
-const prisma = new PrismaClient()
+
+import { NextApiRequest, NextApiResponse } from 'next'
+import jwt from 'jsonwebtoken'
 
 const getUserFromToken = (req: NextApiRequest) => {
   const authHeader = req.headers.authorization

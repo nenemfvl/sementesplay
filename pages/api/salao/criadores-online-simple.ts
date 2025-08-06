@@ -1,8 +1,7 @@
+import { prisma } from '../../../lib/prisma'
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
 // Verificar YouTube usando API pública real
 async function verificarYouTubeLiveSimples(channelId: string) {
   try {

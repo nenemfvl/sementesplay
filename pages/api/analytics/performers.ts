@@ -1,8 +1,7 @@
+import { prisma } from '../../../lib/prisma'
+
+
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
 interface Performer {
   id: string
   name: string

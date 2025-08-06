@@ -1,8 +1,7 @@
+import { prisma } from '../../../lib/prisma'
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
 function gerarCodigoUnico(): string {
   const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let codigo = ''

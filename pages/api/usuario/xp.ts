@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-import { auth } from '../../../lib/auth'
+import { prisma } from '../../../lib/prisma'
 
-const prisma = new PrismaClient()
+
+import { NextApiRequest, NextApiResponse } from 'next'
+import { auth } from '../../../lib/auth'
 
 // Função para calcular o nível baseado no XP
 function calcularNivel(xp: number): number {
