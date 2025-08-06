@@ -59,7 +59,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             parceiro: {
               select: {
                 id: true,
-                nome: true
+                usuario: {
+                  select: {
+                    id: true,
+                    nome: true
+                  }
+                }
               }
             }
           }
