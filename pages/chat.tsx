@@ -150,7 +150,8 @@ export default function Chat() {
         }
       }
     } catch (error) {
-      console.error('Erro ao carregar conversas:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao carregar conversas:', error)
     } finally {
       setLoading(false)
     }

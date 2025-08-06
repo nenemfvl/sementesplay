@@ -18,7 +18,8 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 // Tratamento de erro para conexões
 prisma.$connect()
   .then(() => {
-    console.log('Prisma conectado com sucesso')
+    // COMENTADO: Log de debug - não afeta funcionalidade
+    // console.log('Prisma conectado com sucesso')
   })
   .catch((error) => {
     console.error('Erro ao conectar com Prisma:', error)

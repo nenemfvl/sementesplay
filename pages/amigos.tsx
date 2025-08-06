@@ -88,7 +88,8 @@ export default function Amigos() {
         const data = await res.json()
         setOnlineIds(data.online || [])
       } catch (error) {
-        console.error('Erro ao buscar usuários online:', error)
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.error('Erro ao buscar usuários online:', error)
       }
     }
     fetchOnline()

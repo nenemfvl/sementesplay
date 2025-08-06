@@ -28,7 +28,9 @@ export default function RealTimeActivity() {
           setActivities(data.atividades || [])
           setIsConnected(true)
         }
-      } catch {
+      } catch (error) {
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.error('Erro ao buscar atividades:', error)
         if (!abort) setIsConnected(false)
       }
       setLoading(false)

@@ -116,7 +116,8 @@ export default function NotificacoesTempoReal() {
         })))
       }
     } catch (error) {
-      console.error('Erro ao carregar notificações:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao carregar notificações:', error)
     } finally {
       setLoading(false)
     }
@@ -197,7 +198,8 @@ export default function NotificacoesTempoReal() {
         )
       }
     } catch (error) {
-      console.error('Erro ao marcar como lida:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao marcar como lida:', error)
     }
   }
 
@@ -211,7 +213,8 @@ export default function NotificacoesTempoReal() {
         setNotificacoes(prev => prev.map(n => ({ ...n, lida: true })))
       }
     } catch (error) {
-      console.error('Erro ao marcar todas como lidas:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao marcar todas como lidas:', error)
     }
   }
 
@@ -225,7 +228,8 @@ export default function NotificacoesTempoReal() {
         setNotificacoes(prev => prev.filter(n => n.id !== id))
       }
     } catch (error) {
-      console.error('Erro ao deletar notificação:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao deletar notificação:', error)
     }
   }
 

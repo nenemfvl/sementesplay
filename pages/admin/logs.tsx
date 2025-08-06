@@ -63,7 +63,8 @@ export default function AdminLogs() {
         setLogs(data.logs)
       }
     } catch (error) {
-      console.error('Erro ao carregar logs:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao carregar logs:', error)
     } finally {
       setLoading(false)
     }

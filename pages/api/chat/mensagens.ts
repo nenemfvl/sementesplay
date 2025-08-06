@@ -32,7 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ mensagens })
   } catch (error) {
-    console.error('Erro ao buscar mensagens:', error)
+    // COMENTADO: Log de debug - não afeta funcionalidade
+    // console.error('Erro ao buscar mensagens:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 

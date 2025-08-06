@@ -57,7 +57,10 @@ export default function Perfil() {
           auth.setUser(data, token || undefined)
         }
       })
-      .catch(err => console.error('Erro ao buscar perfil autenticado:', err))
+              .catch(err => {
+          // COMENTADO: Log de debug - não afeta funcionalidade
+          // console.error('Erro ao buscar perfil autenticado:', err)
+        })
 
     // Buscar sessão autenticada com token
     fetch('/api/auth/session', {
@@ -69,7 +72,10 @@ export default function Perfil() {
           // Sessão válida, pode atualizar estado se quiser
         }
       })
-      .catch(err => console.error('Erro ao buscar sessão autenticada:', err))
+              .catch(err => {
+          // COMENTADO: Log de debug - não afeta funcionalidade
+          // console.error('Erro ao buscar sessão autenticada:', err)
+        })
   }, [])
 
   // Carregar estatísticas quando o usuário estiver definido
@@ -96,7 +102,10 @@ export default function Perfil() {
               auth.setUser(data, token || undefined)
             }
           })
-          .catch(err => console.error('Erro ao atualizar perfil:', err))
+          .catch(err => {
+            // COMENTADO: Log de debug - não afeta funcionalidade
+            // console.error('Erro ao atualizar perfil:', err)
+          })
       }
     }, 30000) // Atualizar a cada 30 segundos
 
@@ -121,7 +130,10 @@ export default function Perfil() {
               loadXPData()
             }
           })
-          .catch(err => console.error('Erro ao atualizar perfil:', err))
+          .catch(err => {
+            // COMENTADO: Log de debug - não afeta funcionalidade
+            // console.error('Erro ao atualizar perfil:', err)
+          })
       }
     }
 
@@ -152,13 +164,16 @@ export default function Perfil() {
       const response = await fetch(`/api/perfil/stats?usuarioId=${currentUser.id}`)
       const data = await response.json()
       if (response.ok) {
-        console.log('Estatísticas carregadas:', data);
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.log('Estatísticas carregadas:', data);
         setStats(data)
       } else {
-        console.error('Erro na resposta da API de estatísticas:', response.status, response.statusText);
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.error('Erro na resposta da API de estatísticas:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('Erro ao carregar estatísticas:', error)
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao carregar estatísticas:', error)
     } finally {
       setLoading(false)
     }
@@ -168,11 +183,13 @@ export default function Perfil() {
     try {
       const currentUser = auth.getUser();
       if (!currentUser) {
-        console.error('Usuário não encontrado');
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.error('Usuário não encontrado');
         return;
       }
       
-      console.log('Carregando XP para usuário:', currentUser.id);
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.log('Carregando XP para usuário:', currentUser.id);
       
       // Usar os dados da API de estatísticas que já inclui XP
       if (stats) {
@@ -184,11 +201,13 @@ export default function Perfil() {
           xpProximoNivel: Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100,
           progressoNivel: ((stats.xp || 0) - Math.pow(stats.nivelUsuario || 1, 2) * 100) / (Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100 - Math.pow(stats.nivelUsuario || 1, 2) * 100) * 100
         };
-        console.log('Dados de XP calculados:', xpData);
+        // COMENTADO: Log de debug - não afeta funcionalidade
+        // console.log('Dados de XP calculados:', xpData);
         setXpData(xpData);
       }
     } catch (error) {
-      console.error('Erro ao carregar dados de XP:', error);
+      // COMENTADO: Log de debug - não afeta funcionalidade
+      // console.error('Erro ao carregar dados de XP:', error);
     }
   }
 

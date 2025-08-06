@@ -41,7 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ logs: logsFormatados })
   } catch (error) {
-    console.error('Erro ao buscar logs:', error)
+    // COMENTADO: Log de debug - não afeta funcionalidade
+    // console.error('Erro ao buscar logs:', error)
     return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 } 
