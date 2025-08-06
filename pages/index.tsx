@@ -251,20 +251,7 @@ export default function Home() {
               )}
             </div>
             
-            <div className="flex flex-wrap justify-center gap-6 mt-8">
-              <Link href="/ranking" className="text-white/80 hover:text-white text-sm">
-                Ranking de Criadores
-              </Link>
-              <Link href="/buscar" className="text-white/80 hover:text-white text-sm">
-                Buscar Criadores
-              </Link>
-              <Link href="/termos" className="text-white/80 hover:text-white text-sm">
-                Termos de Uso
-              </Link>
-              <Link href="/ajuda" className="text-white/80 hover:text-white text-sm">
-                Ajuda
-              </Link>
-            </div>
+
           </div>
         </section>
 
