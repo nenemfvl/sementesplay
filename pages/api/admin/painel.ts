@@ -29,10 +29,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Fundo de sementes atual (não distribuído)
     const fundoAtual = await prisma.fundoSementes.findFirst({ where: { distribuido: false } })
 
+    // Denúncias pendentes
+    const denunciasPendentes = await prisma.denuncia.findMany({
+      where: { status: 'pendente' },
+      include: {
+        denunciante: {
+          select: {
+            id: true,
+            nome: true,
+            email: true
+          }
+        },
+        conteudo: {
+          select: {
+            id: true,
+            titulo: true,
+            criador: {
+              select: {
+                id: true,
+                nome: true
+              }
+            }
+          }
+        },
+        conteudoParceiro: {
+          select: {
+            id: true,
+            titulo: true,
+            parceiro: {
+              select: {
+                id: true,
+                nome: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        dataCriacao: 'desc'
+      }
+    })
+
     return res.status(200).json({
       comprasAguardando,
       repassesPendentes,
-      fundoAtual
+      fundoAtual,
+      denunciasPendentes
     })
   } catch (error) {
     console.error('Erro ao buscar painel admin:', error)

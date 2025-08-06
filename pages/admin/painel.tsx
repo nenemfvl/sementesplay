@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { CheckIcon, XMarkIcon, GiftIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, XMarkIcon, GiftIcon, CurrencyDollarIcon, FlagIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import Notificacoes from '../../components/Notificacoes'
 import { auth } from '../../lib/auth'
 
@@ -51,6 +51,33 @@ export default function PainelAdmin() {
     await fetch('/api/admin/distribuir-fundo', { method: 'POST' })
     setDistribuindo(false)
     carregarDados()
+  }
+
+  const processarDenuncia = async (denunciaId: string, acao: 'aprovar' | 'rejeitar') => {
+    const confirmacao = acao === 'aprovar' 
+      ? 'Aprovar esta denúncia? O conteúdo pode ser removido.'
+      : 'Rejeitar esta denúncia?'
+    
+    if (!window.confirm(confirmacao)) return
+
+    try {
+      const response = await fetch('/api/admin/denuncias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ denunciaId, acao })
+      })
+
+      if (response.ok) {
+        alert(`Denúncia ${acao === 'aprovar' ? 'aprovada' : 'rejeitada'} com sucesso!`)
+        carregarDados()
+      } else {
+        const error = await response.json()
+        alert(`Erro: ${error.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao processar denúncia:', error)
+      alert('Erro ao processar denúncia')
+    }
   }
 
   return (
@@ -153,6 +180,83 @@ export default function PainelAdmin() {
               ) : (
                 <div className="text-gray-400">Nenhum fundo de sementes pendente de distribuição.</div>
               )}
+            </div>
+
+            <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
+              <h2 className="text-xl font-bold text-sss-accent mb-4 flex items-center gap-2">
+                <FlagIcon className="w-6 h-6" />
+                Denúncias Pendentes ({dados.denunciasPendentes?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-sss-light">
+                      <th className="text-left p-2 text-gray-400 font-medium">Denunciante</th>
+                      <th className="text-left p-2 text-gray-400 font-medium">Tipo</th>
+                      <th className="text-left p-2 text-gray-400 font-medium">Conteúdo</th>
+                      <th className="text-left p-2 text-gray-400 font-medium">Motivo</th>
+                      <th className="text-left p-2 text-gray-400 font-medium">Data</th>
+                      <th className="text-left p-2 text-gray-400 font-medium">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {!dados.denunciasPendentes || dados.denunciasPendentes.length === 0 ? (
+                      <tr><td colSpan={6} className="text-gray-400 p-4">Nenhuma denúncia pendente.</td></tr>
+                    ) : dados.denunciasPendentes.map((denuncia: any) => (
+                      <tr key={denuncia.id} className="border-b border-sss-light/50">
+                        <td className="p-2">
+                          <div className="text-sm">
+                            <div className="text-sss-white">{denuncia.denunciante?.nome || 'Anônimo'}</div>
+                            <div className="text-gray-400 text-xs">{denuncia.denunciante?.email || '-'}</div>
+                          </div>
+                        </td>
+                        <td className="p-2">
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            denuncia.conteudo ? 'bg-blue-500/20 text-blue-300' : 'bg-purple-500/20 text-purple-300'
+                          }`}>
+                            {denuncia.conteudo ? 'Criador' : 'Parceiro'}
+                          </span>
+                        </td>
+                        <td className="p-2">
+                          <div className="text-sm">
+                            <div className="text-sss-white">
+                              {denuncia.conteudo?.titulo || denuncia.conteudoParceiro?.titulo || 'Título não disponível'}
+                            </div>
+                            <div className="text-gray-400 text-xs">
+                              {denuncia.conteudo?.criador?.nome || denuncia.conteudoParceiro?.parceiro?.nome || '-'}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-2">
+                          <div className="text-sm">
+                            <div className="text-sss-white">{denuncia.tipo}</div>
+                            <div className="text-gray-400 text-xs">{denuncia.motivo}</div>
+                          </div>
+                        </td>
+                        <td className="p-2 text-sm text-gray-400">
+                          {new Date(denuncia.dataCriacao).toLocaleDateString('pt-BR')}
+                        </td>
+                        <td className="p-2 flex gap-2">
+                          <button 
+                            onClick={() => processarDenuncia(denuncia.id, 'aprovar')} 
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
+                          >
+                            <CheckIcon className="w-3 h-3" />
+                            Aprovar
+                          </button>
+                          <button 
+                            onClick={() => processarDenuncia(denuncia.id, 'rejeitar')} 
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
+                          >
+                            <XMarkIcon className="w-3 h-3" />
+                            Rejeitar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
