@@ -522,7 +522,7 @@ export default function Parceiros() {
                       
                       {/* Redes Sociais */}
                       {(top1.instagram || top1.twitch || top1.youtube || top1.tiktok) && (
-                        <div className="flex gap-3 mt-3 justify-center">
+                        <div className="flex gap-3 mt-3 w-full justify-center">
                           {top1.instagram && (
                             <a 
                               href={top1.instagram} 
