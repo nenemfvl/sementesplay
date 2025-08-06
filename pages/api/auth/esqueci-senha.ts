@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
 
       // Criar link de recuperação
-      const link = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/redefinir-senha?token=${token}`
+      const link = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://sementesplay.com.br'}/redefinir-senha?token=${token}`
 
       // Template do email
       const emailHtml = `
@@ -87,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Enviar email com Resend
       try {
         await resend.emails.send({
-          from: 'SementesPLAY <noreply@sementesplay.com>',
+          from: 'SementesPLAY <noreply@sementesplay.com.br>',
           to: email,
           subject: 'Recuperação de Senha - SementesPLAY',
           html: emailHtml

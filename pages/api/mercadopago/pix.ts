@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description: `Repasse Parceiro - R$ ${valorRepasse.toFixed(2)}`,
       payment_method_id: 'pix',
       payer: {
-        email: 'parceiro@sementesplay.com',
+        email: 'parceiro@sementesplay.com.br',
         first_name: 'Parceiro',
         last_name: 'SementesPLAY'
       },

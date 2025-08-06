@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         description: `Compra de Sementes - R$ ${valor}`,
         payment_method_id: 'pix',
         payer: {
-          email: user.email || 'usuario@sementesplay.com',
+          email: user.email || 'usuario@sementesplay.com.br',
           first_name: user.nome?.split(' ')[0] || 'Usuário',
           last_name: user.nome?.split(' ').slice(1).join(' ') || 'SementesPLAY'
         },

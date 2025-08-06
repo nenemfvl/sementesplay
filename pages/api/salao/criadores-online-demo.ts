@@ -119,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           id: 'demo-1',
           usuarioId: 'demo-user-1',
           nome: 'Criador Demo',
-          email: 'demo@sementesplay.com',
+          email: 'demo@sementesplay.com.br',
           bio: 'Criador de conteúdo da comunidade SementesPLAY',
           avatar: '/avatars/default.jpg',
           categoria: 'Geral',

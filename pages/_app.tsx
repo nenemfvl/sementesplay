@@ -48,7 +48,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
           <meta name="twitter:card" content="summary" />
-          <meta name="twitter:url" content="https://sementesplay.com" />
+          <meta name="twitter:url" content="https://sementesplay.com.br" />
           <meta name="twitter:title" content="SementesPLAY" />
           <meta name="twitter:description" content="Plataforma completa para apoiar criadores de conteúdo" />
           <meta name="twitter:image" content="/icons/icon-192x192.png" />
@@ -57,7 +57,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <meta property="og:title" content="SementesPLAY" />
           <meta property="og:description" content="Plataforma completa para apoiar criadores de conteúdo" />
           <meta property="og:site_name" content="SementesPLAY" />
-          <meta property="og:url" content="https://sementesplay.com" />
+          <meta property="og:url" content="https://sementesplay.com.br" />
           <meta property="og:image" content="/icons/icon-192x192.png" />
         </Head>
         

@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         usuarioSistema = await prisma.usuario.create({
           data: {
             nome: 'Sistema',
-            email: 'sistema@sementesplay.com',
+            email: 'sistema@sementesplay.com.br',
             senha: 'sistema123',
             tipo: 'sistema',
             nivel: 'sistema'

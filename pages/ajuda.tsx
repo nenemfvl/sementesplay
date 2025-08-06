@@ -260,7 +260,7 @@ export default function Ajuda() {
                     Envie suas dúvidas por email
                   </p>
                   <a
-                    href="mailto:suporte@sementesplay.com"
+                    href="mailto:suporte@sementesplay.com.br"
                     className="inline-flex items-center bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
                   >
                     <EnvelopeIcon className="w-4 h-4 mr-2" />

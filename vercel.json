@@ -3,5 +3,9 @@
     "env": {
       "PRISMA_GENERATE_SKIP_AUTOINSTALL": "true"
     }
-  }
+  },
+  "domains": [
+    "sementesplay.com.br",
+    "www.sementesplay.com.br"
+  ]
 } 
