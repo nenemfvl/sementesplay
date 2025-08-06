@@ -1,31 +1,29 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
   try {
-    const { paymentId } = req.query
+    const { paymentId, pagamentoId } = req.body
 
-    if (!paymentId) {
-      return res.status(400).json({ error: 'ID do pagamento não fornecido' })
+    if (!paymentId || !pagamentoId) {
+      return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
     }
-
-    console.log('Verificando pagamento no MercadoPago:', paymentId)
 
     // Configurar access token do Mercado Pago
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
     
     if (!accessToken) {
       console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
-      return res.status(500).json({ 
-        error: 'Configuração de pagamento não disponível',
-        message: 'Configure a variável MERCADOPAGO_ACCESS_TOKEN no Vercel'
-      })
+      return res.status(500).json({ error: 'Configuração não disponível' })
     }
 
-    // Consultar pagamento na API do Mercado Pago
+    // Buscar detalhes do pagamento via API do Mercado Pago
     const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: 'GET',
       headers: {
@@ -35,70 +33,151 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Erro na API do Mercado Pago:', JSON.stringify(errorData, null, 2))
-      return res.status(400).json({ 
-        error: 'Erro ao verificar pagamento',
-        details: errorData.message || 'Erro na integração com Mercado Pago',
-        mercadopago_error: errorData,
-        status: response.status
-      })
+      console.error('Erro ao buscar pagamento no MercadoPago:', response.status)
+      return res.status(400).json({ error: 'Erro ao verificar pagamento' })
     }
 
     const payment = await response.json()
-    console.log('Status do pagamento no MercadoPago:', payment.status)
+    console.log('Status do pagamento:', payment.status)
 
-    // Mapear status do MercadoPago para nosso sistema
-    let status = 'pending'
-    let message = 'Pagamento pendente'
+    if (payment.status === 'approved') {
+      // Pagamento aprovado - processar automaticamente
+      console.log(`Pagamento aprovado: ${payment.id}`)
 
-    switch (payment.status) {
-      case 'approved':
-        status = 'approved' // Mudança importante: usar 'approved' em vez de 'confirmado'
-        message = 'Pagamento aprovado!'
-        break
-      case 'pending':
-        status = 'pending'
-        message = 'Pagamento pendente'
-        break
-      case 'in_process':
-        status = 'pending'
-        message = 'Pagamento em processamento'
-        break
-      case 'rejected':
-        status = 'rejected'
-        message = 'Pagamento rejeitado'
-        break
-      case 'cancelled':
-        status = 'cancelled'
-        message = 'Pagamento cancelado'
-        break
-      case 'refunded':
-        status = 'refunded'
-        message = 'Pagamento reembolsado'
-        break
-      default:
-        status = 'pending'
-        message = 'Status desconhecido'
+      // Buscar o pagamento no banco de dados
+      const pagamento = await prisma.pagamento.findUnique({
+        where: { id: pagamentoId },
+        include: { usuario: true }
+      })
+
+      if (!pagamento) {
+        return res.status(404).json({ error: 'Pagamento não encontrado' })
+      }
+
+      if (pagamento.status === 'aprovado') {
+        return res.status(200).json({ 
+          success: true, 
+          status: 'aprovado',
+          message: 'Pagamento já foi processado',
+          sementesGeradas: pagamento.sementesGeradas
+        })
+      }
+
+      // Calcular sementes (1 Real = 1 Semente)
+      const sementesGeradas = Math.floor(pagamento.valor)
+
+      // Transação: processar tudo de uma vez
+      await prisma.$transaction(async (tx) => {
+        // 1. Atualizar status do pagamento
+        await tx.pagamento.update({
+          where: { id: pagamentoId },
+          data: { 
+            status: 'aprovado',
+            sementesGeradas: sementesGeradas,
+            dataPagamento: new Date()
+          }
+        })
+
+        // 2. Creditar sementes para o usuário
+        await tx.usuario.update({
+          where: { id: pagamento.usuarioId },
+          data: { sementes: { increment: sementesGeradas } }
+        })
+
+        // 3. Criar registro de semente
+        await tx.semente.create({
+          data: {
+            usuarioId: pagamento.usuarioId,
+            quantidade: sementesGeradas,
+            tipo: 'comprada',
+            descricao: `Compra de sementes via PIX - R$ ${pagamento.valor}`
+          }
+        })
+
+        // 4. Verificar se existe carteira digital, se não, criar
+        let carteira = await tx.carteiraDigital.findUnique({
+          where: { usuarioId: pagamento.usuarioId }
+        })
+
+        if (!carteira) {
+          carteira = await tx.carteiraDigital.create({
+            data: {
+              usuarioId: pagamento.usuarioId,
+              saldo: sementesGeradas,
+              dataCriacao: new Date()
+            }
+          })
+        } else {
+          // Atualizar saldo da carteira
+          await tx.carteiraDigital.update({
+            where: { id: carteira.id },
+            data: { saldo: { increment: sementesGeradas } }
+          })
+        }
+
+        // 5. Criar movimentação na carteira
+        await tx.movimentacaoCarteira.create({
+          data: {
+            carteiraId: carteira.id,
+            tipo: 'credito',
+            valor: sementesGeradas,
+            saldoAnterior: carteira.saldo,
+            saldoPosterior: carteira.saldo + sementesGeradas,
+            descricao: `Compra de sementes via PIX - R$ ${pagamento.valor}`,
+            status: 'processado',
+            referencia: pagamentoId
+          }
+        })
+      })
+
+      // Criar notificação
+      try {
+        await prisma.notificacao.create({
+          data: {
+            usuarioId: pagamento.usuarioId,
+            titulo: 'Pagamento Aprovado!',
+            mensagem: `Seu pagamento de R$ ${pagamento.valor} foi aprovado! Você recebeu ${sementesGeradas} sementes.`,
+            tipo: 'pagamento',
+            lida: false
+          }
+        })
+      } catch (notifError) {
+        console.log('Erro ao criar notificação (pode ser ignorado):', notifError)
+      }
+
+      return res.status(200).json({ 
+        success: true, 
+        status: 'aprovado',
+        message: 'Pagamento aprovado e sementes creditadas com sucesso!',
+        sementesGeradas: sementesGeradas,
+        valor: pagamento.valor
+      })
+
+    } else if (payment.status === 'pending') {
+      return res.status(200).json({ 
+        success: true, 
+        status: 'pendente',
+        message: 'Pagamento ainda está pendente'
+      })
+    } else if (payment.status === 'rejected') {
+      // Atualizar status do pagamento para rejeitado
+      await prisma.pagamento.update({
+        where: { id: pagamentoId },
+        data: { status: 'rejeitado' }
+      })
+
+      return res.status(200).json({ 
+        success: true, 
+        status: 'rejeitado',
+        message: 'Pagamento foi rejeitado'
+      })
+    } else {
+      return res.status(200).json({ 
+        success: true, 
+        status: payment.status,
+        message: `Status do pagamento: ${payment.status}`
+      })
     }
-
-    console.log('Resposta final da API:', {
-      paymentId,
-      status,
-      message,
-      mercadopago_status: payment.status
-    })
-
-    return res.status(200).json({
-      paymentId,
-      status,
-      message,
-      mercadopago_status: payment.status,
-      transaction_amount: payment.transaction_amount,
-      external_reference: payment.external_reference,
-      date_created: payment.date_created,
-      date_approved: payment.date_approved
-    })
 
   } catch (error) {
     console.error('Erro ao verificar pagamento:', error)

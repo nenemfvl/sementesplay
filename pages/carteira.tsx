@@ -45,6 +45,9 @@ export default function Carteira() {
   const [tipoPagamento, setTipoPagamento] = useState('pix')
   const [pixData, setPixData] = useState<any>(null)
   const [loadingPagamento, setLoadingPagamento] = useState(false)
+  const [verificandoPagamento, setVerificandoPagamento] = useState(false)
+  const [pagamentoAprovado, setPagamentoAprovado] = useState(false)
+  const [mensagemPagamento, setMensagemPagamento] = useState('')
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -103,7 +106,8 @@ export default function Carteira() {
 
       if (response.ok) {
         setPixData(data)
-        // Não fechar o modal, mostrar o QR Code
+        // Iniciar verificação automática do pagamento
+        iniciarVerificacaoPagamento(data.paymentId, data.pagamentoId)
       } else {
         alert(`Erro: ${data.error}`)
       }
@@ -113,6 +117,79 @@ export default function Carteira() {
     } finally {
       setLoadingPagamento(false)
     }
+  }
+
+  const iniciarVerificacaoPagamento = async (paymentId: string, pagamentoId: string) => {
+    setVerificandoPagamento(true)
+    
+    // Verificar a cada 5 segundos por até 5 minutos
+    let tentativas = 0
+    const maxTentativas = 60 // 5 minutos (60 * 5 segundos)
+    
+    const verificarPagamento = async () => {
+      try {
+        const response = await fetch('/api/mercadopago/verificar-pagamento', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentId,
+            pagamentoId
+          })
+        })
+
+        const data = await response.json()
+
+        if (response.ok && data.success) {
+          if (data.status === 'aprovado') {
+            // Pagamento aprovado!
+            setPagamentoAprovado(true)
+            setMensagemPagamento(`Pagamento aprovado! Você recebeu ${data.sementesGeradas} sementes.`)
+            setVerificandoPagamento(false)
+            
+            // Atualizar carteira
+            await loadCarteira()
+            
+            // Fechar modal após 3 segundos
+            setTimeout(() => {
+              setShowPagamento(false)
+              setPixData(null)
+              setValorPagamento('')
+              setPagamentoAprovado(false)
+              setMensagemPagamento('')
+            }, 3000)
+            
+            return
+          } else if (data.status === 'rejeitado') {
+            setMensagemPagamento('Pagamento foi rejeitado.')
+            setVerificandoPagamento(false)
+            return
+          }
+        }
+        
+        tentativas++
+        if (tentativas < maxTentativas) {
+          // Continuar verificando
+          setTimeout(verificarPagamento, 5000)
+        } else {
+          setMensagemPagamento('Tempo limite excedido. Verifique o status do pagamento manualmente.')
+          setVerificandoPagamento(false)
+        }
+      } catch (error) {
+        console.error('Erro ao verificar pagamento:', error)
+        tentativas++
+        if (tentativas < maxTentativas) {
+          setTimeout(verificarPagamento, 5000)
+        } else {
+          setMensagemPagamento('Erro ao verificar pagamento. Tente novamente.')
+          setVerificandoPagamento(false)
+        }
+      }
+    }
+
+    // Iniciar verificação
+    verificarPagamento()
   }
 
   const handleSaque = async (e: React.FormEvent) => {
@@ -429,13 +506,16 @@ export default function Carteira() {
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-sss-white">
-                  {pixData ? 'Pagamento PIX' : 'Fazer Pagamento'}
+                  {pagamentoAprovado ? 'Pagamento Aprovado!' : pixData ? 'Pagamento PIX' : 'Fazer Pagamento'}
                 </h3>
                 <button
                   onClick={() => {
                     setShowPagamento(false)
                     setPixData(null)
                     setValorPagamento('')
+                    setPagamentoAprovado(false)
+                    setMensagemPagamento('')
+                    setVerificandoPagamento(false)
                   }}
                   className="text-gray-400 hover:text-white"
                   aria-label="Fechar modal de pagamento"
@@ -444,7 +524,19 @@ export default function Carteira() {
                 </button>
               </div>
 
-              {!pixData ? (
+              {pagamentoAprovado ? (
+                // Mensagem de confirmação
+                <div className="text-center space-y-4">
+                  <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
+                    <CheckCircleIcon className="w-12 h-12 text-green-500 mx-auto mb-2" />
+                    <h4 className="text-lg font-semibold text-green-400 mb-2">Pagamento Aprovado!</h4>
+                    <p className="text-green-300">{mensagemPagamento}</p>
+                  </div>
+                  <p className="text-gray-400 text-sm">
+                    O modal será fechado automaticamente em alguns segundos...
+                  </p>
+                </div>
+              ) : !pixData ? (
                 <form onSubmit={handlePagamento} className="space-y-4">
                   <div>
                     <label htmlFor="valor-pagamento" className="block text-sm font-medium text-gray-300 mb-2">
@@ -491,6 +583,22 @@ export default function Carteira() {
                 </form>
               ) : (
                 <div className="space-y-4">
+                  {/* Status do pagamento */}
+                  {verificandoPagamento && (
+                    <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                        <span className="text-blue-300">Verificando pagamento...</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {mensagemPagamento && !pagamentoAprovado && (
+                    <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4">
+                      <p className="text-yellow-300 text-sm">{mensagemPagamento}</p>
+                    </div>
+                  )}
+
                   {/* QR Code */}
                   <div className="text-center">
                     <div className="bg-white p-4 rounded-lg inline-block">
@@ -560,6 +668,9 @@ export default function Carteira() {
                         setShowPagamento(false)
                         setPixData(null)
                         setValorPagamento('')
+                        setPagamentoAprovado(false)
+                        setMensagemPagamento('')
+                        setVerificandoPagamento(false)
                       }}
                       className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
                     >
@@ -569,6 +680,9 @@ export default function Carteira() {
                       onClick={() => {
                         setPixData(null)
                         setValorPagamento('')
+                        setPagamentoAprovado(false)
+                        setMensagemPagamento('')
+                        setVerificandoPagamento(false)
                       }}
                       className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                     >
