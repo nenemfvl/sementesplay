@@ -81,7 +81,7 @@ export default function DenunciaModal({
     setStatus('enviando')
 
     try {
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      const user = JSON.parse(localStorage.getItem('sementesplay_user') || '{}')
       
       if (!user.id) {
         alert('Você precisa estar logado para denunciar conteúdo')
