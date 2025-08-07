@@ -5,7 +5,7 @@ import { auth } from '../../../lib/auth'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      const user = auth.getUser()
+      const user = auth.getUserFromCookies(req.headers.cookie || '')
       if (!user) {
         return res.status(401).json({ error: 'Usuário não autenticado' })
       }

@@ -3,7 +3,7 @@ import { prisma } from '../../../lib/prisma'
 import { auth } from '../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user = auth.getUser()
+  const user = auth.getUserFromCookies(req.headers.cookie || '')
   if (!user || Number(user.nivel) < 5) {
     return res.status(401).json({ error: 'Acesso negado' })
   }
@@ -12,10 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { status, categoria } = req.query
 
+      // Construir filtros
       const where: any = {}
-      if (status) where.status = status
-      if (categoria) where.categoria = categoria
+      if (status && status !== 'todos') {
+        where.status = status
+      }
+      if (categoria && categoria !== 'todos') {
+        where.categoria = categoria
+      }
 
+      // Buscar conversas
       const conversas = await prisma.conversaSuporte.findMany({
         where,
         include: {
@@ -28,9 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           },
           mensagens: {
-            orderBy: {
-              dataEnvio: 'asc'
-            },
             include: {
               remetente: {
                 select: {
@@ -38,6 +41,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   nome: true
                 }
               }
+            },
+            orderBy: {
+              dataEnvio: 'asc'
             }
           }
         },
@@ -55,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { conversaId, mensagem, acao } = req.body
+      const { conversaId, mensagem, acao, status } = req.body
 
       if (acao === 'responder') {
         if (!conversaId || !mensagem) {
@@ -63,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // Verificar se a conversa existe
-        const conversa = await prisma.conversaSuporte.findUnique({
+        const conversa = await prisma.conversaSuporte.findFirst({
           where: { id: conversaId }
         })
 
@@ -71,8 +77,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(404).json({ error: 'Conversa não encontrada' })
         }
 
-        // Criar resposta do admin
-        const resposta = await prisma.mensagemSuporte.create({
+        // Criar mensagem do admin
+        const novaMensagem = await prisma.mensagemSuporte.create({
           data: {
             conversaId,
             remetenteId: user.id,
@@ -81,37 +87,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // Atualizar status da conversa para "em_espera" se estava "aberta"
-        if (conversa.status === 'aberta') {
-          await prisma.conversaSuporte.update({
-            where: { id: conversaId },
-            data: { 
-              status: 'em_espera',
-              dataAtualizacao: new Date()
-            }
-          })
-        }
+        // Atualizar status da conversa para "em espera"
+        await prisma.conversaSuporte.update({
+          where: { id: conversaId },
+          data: { 
+            status: 'em_espera',
+            dataAtualizacao: new Date()
+          }
+        })
 
-        return res.status(201).json({ mensagem: resposta })
+        return res.status(201).json({ mensagem: novaMensagem })
       }
 
       if (acao === 'atualizar_status') {
-        const { conversaId, status } = req.body
-
         if (!conversaId || !status) {
           return res.status(400).json({ error: 'Conversa ID e status são obrigatórios' })
         }
 
-        const dataAtualizacao: any = { status }
-        if (status === 'fechada') {
-          dataAtualizacao.dataFechamento = new Date()
-        }
-
         const conversa = await prisma.conversaSuporte.update({
           where: { id: conversaId },
-          data: {
-            ...dataAtualizacao,
-            dataAtualizacao: new Date()
+          data: { 
+            status,
+            dataAtualizacao: new Date(),
+            ...(status === 'fechada' && { dataFechamento: new Date() })
           }
         })
 

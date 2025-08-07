@@ -26,6 +26,14 @@ export interface User {
 //   dataCriacao: new Date().toISOString()
 // }
 
+// Função para ler cookies no servidor
+const getCookie = (name: string, cookies: string): string | null => {
+  const value = `; ${cookies}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null
+  return null
+}
+
 export const auth = {
   // Salvar usuário na sessão
   setUser: (user: User, token?: string) => {
@@ -39,7 +47,7 @@ export const auth = {
     }
   },
 
-  // Obter usuário da sessão
+  // Obter usuário da sessão (cliente)
   getUser: (): User | null => {
     if (typeof window !== 'undefined') {
       const user = localStorage.getItem('sementesplay_user')
@@ -49,6 +57,20 @@ export const auth = {
       return null
     }
     return null
+  },
+
+  // Obter usuário dos cookies (servidor)
+  getUserFromCookies: (cookies: string): User | null => {
+    try {
+      const userCookie = getCookie('sementesplay_user', cookies)
+      if (userCookie) {
+        return JSON.parse(decodeURIComponent(userCookie))
+      }
+      return null
+    } catch (error) {
+      console.error('Erro ao ler usuário dos cookies:', error)
+      return null
+    }
   },
 
   // Verificar se está logado
