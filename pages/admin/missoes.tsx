@@ -75,7 +75,7 @@ export default function AdminMissoes() {
 
   const toggleMissaoStatus = async (missaoId: string, ativa: boolean) => {
     try {
-      const response = await fetch(`/api/missoes/${missaoId}/toggle`, {
+      const response = await fetch(`/api/admin/missoes/${missaoId}/toggle`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export default function AdminMissoes() {
     if (!confirm('Tem certeza que deseja excluir esta missão?')) return
 
     try {
-      const response = await fetch(`/api/missoes/${missaoId}`, {
+      const response = await fetch(`/api/admin/missoes/${missaoId}`, {
         method: 'DELETE',
       })
 
@@ -151,8 +151,8 @@ export default function AdminMissoes() {
     
     try {
       const url = editingMissao 
-        ? `/api/missoes/${editingMissao.id}` 
-        : '/api/missoes'
+        ? `/api/admin/missoes/${editingMissao.id}` 
+        : '/api/admin/missoes'
       
       const method = editingMissao ? 'PUT' : 'POST'
       

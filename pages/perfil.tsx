@@ -221,12 +221,21 @@ export default function Perfil() {
   const loadMissoesUsuario = async () => {
     try {
       const token = localStorage.getItem('sementesplay_token');
-      const res = await fetch('/api/missoes', {
+      const currentUser = auth.getUser();
+      
+      if (!currentUser || !currentUser.id) {
+        console.error('Usuário não encontrado para carregar missões');
+        return;
+      }
+      
+      const res = await fetch(`/api/missoes?usuarioId=${currentUser.id}`, {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
       if (res.ok) {
         const data = await res.json();
         setMissoesUsuario(data);
+      } else {
+        console.error('Erro ao carregar missões:', res.status, res.statusText);
       }
     } catch (error) {
       console.error('Erro ao carregar missões do usuário:', error);
