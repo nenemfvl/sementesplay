@@ -469,9 +469,6 @@ export default function AdminDashboard() {
                       <Link href="/admin/suporte" className="inline-block bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                         Suporte
                       </Link>
-                      <Link href="/admin/denuncias" className="inline-block bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                        Denúncias
-                      </Link>
                     </div>
                   </motion.div>
                 )}
