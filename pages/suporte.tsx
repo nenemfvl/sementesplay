@@ -135,7 +135,7 @@ export default function Suporte() {
         const data = await response.json()
         const conversaAtualizada = {
           ...conversaAtual,
-          mensagens: [...conversaAtual.mensagens, data.mensagem],
+          mensagens: [...(conversaAtual.mensagens || []), data.mensagem],
           dataAtualizacao: new Date().toISOString()
         }
         setConversaAtual(conversaAtualizada)

@@ -107,7 +107,7 @@ export default function AdminSuporte() {
         const data = await response.json()
         const conversaAtualizada = {
           ...conversaAtual,
-          mensagens: [...conversaAtual.mensagens, data.mensagem],
+          mensagens: [...(conversaAtual.mensagens || []), data.mensagem],
           status: 'em_espera',
           dataAtualizacao: new Date().toISOString()
         }
