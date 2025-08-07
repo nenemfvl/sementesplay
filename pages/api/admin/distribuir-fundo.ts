@@ -17,8 +17,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const valorCriadores = fundo.valorTotal * 0.5
     const valorUsuarios = fundo.valorTotal * 0.5
 
-    // Busca criadores ativos
-    const criadores = await prisma.criador.findMany()
+    // Busca criadores ativos com contagem de conteúdos
+    const criadores = await prisma.criador.findMany({
+      include: {
+        _count: {
+          select: { conteudos: true }
+        }
+      },
+      where: {
+        conteudos: {
+          some: { removido: false }  // Apenas criadores com conteúdo ativo
+        }
+      }
+    })
+    
     // Busca usuários que fizeram compras no ciclo
     const compras = await prisma.compraParceiro.findMany({
       where: {
@@ -30,6 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       select: { usuarioId: true, valorCompra: true }
     })
+    
     // Soma total gasto por usuário
     const gastoPorUsuario: Record<string, number> = {}
     let totalGasto = 0
@@ -39,24 +52,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     const usuariosUnicos = Array.from(new Set(compras.map(c => c.usuarioId)))
 
-    // Divide igualmente entre criadores e usuários
-    const valorPorCriador = criadores.length > 0 ? valorCriadores / criadores.length : 0
+    // Calcula distribuição proporcional para criadores baseada na quantidade de conteúdo
+    const totalConteudos = criadores.reduce((sum, criador) => sum + criador._count.conteudos, 0)
     const valorPorUsuario = usuariosUnicos.length > 0 ? valorUsuarios / usuariosUnicos.length : 0
 
     await prisma.$transaction(async (tx) => {
-      // Distribui para criadores
+      // Distribui para criadores proporcionalmente à quantidade de conteúdo
       for (const criador of criadores) {
+        const proporcao = totalConteudos > 0 ? criador._count.conteudos / totalConteudos : 0
+        const valorCriador = valorCriadores * proporcao
+        
         await tx.distribuicaoFundo.create({
           data: {
             fundoId: fundo.id,
             criadorId: criador.id,
-            valor: valorPorCriador,
+            valor: valorCriador,
             tipo: 'criador'
           }
         })
         await tx.usuario.update({
           where: { id: criador.usuarioId },
-          data: { sementes: { increment: valorPorCriador } }
+          data: { sementes: { increment: valorCriador } }
         })
       }
       // Distribui para usuários proporcional ao valor gasto
@@ -84,7 +100,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     // Notificações fora da transação
     for (const criador of criadores) {
-      await enviarNotificacao(criador.usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorPorCriador.toFixed(2)} sementes do fundo de sementes.`)
+      const proporcao = totalConteudos > 0 ? criador._count.conteudos / totalConteudos : 0
+      const valorCriador = valorCriadores * proporcao
+      await enviarNotificacao(criador.usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorCriador.toFixed(2)} sementes do fundo de sementes.`)
     }
     for (const usuarioId of Object.keys(gastoPorUsuario)) {
       const proporcao = gastoPorUsuario[usuarioId] / totalGasto
