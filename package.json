@@ -15,6 +15,7 @@
     "db:studio:forever": "node scripts/start-studio.js",
     "seed": "ts-node --project tsconfig-seed.json scripts/seed.ts",
     "atualizar-niveis": "node scripts/atualizar-niveis.js",
+    "testar-niveis": "node scripts/testar-atualizacao-niveis.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

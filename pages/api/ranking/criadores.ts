@@ -176,11 +176,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const posicao = index + 1
       let nivelRanking = 'comum'
       
-      if (posicao <= 50) {
+      if (posicao >= 1 && posicao <= 50) {
         nivelRanking = 'Supremo'
-      } else if (posicao <= 100) {
+      } else if (posicao >= 51 && posicao <= 100) {
         nivelRanking = 'Parceiro'
-      } else if (posicao <= 150) {
+      } else if (posicao >= 101 && posicao <= 150) {
         nivelRanking = 'Criador'
       } else {
         nivelRanking = 'Comum'

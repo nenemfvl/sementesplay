@@ -299,6 +299,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       console.log('Resultado da transação:', resultado)
 
+      // Atualizar níveis dos criadores automaticamente após doação
+      try {
+        console.log('🔄 Atualizando níveis dos criadores após doação...')
+        const { atualizarNiveisCriadores } = await import('../../../lib/niveis-criadores')
+        await atualizarNiveisCriadores()
+        console.log('✅ Níveis dos criadores atualizados com sucesso')
+      } catch (nivelError) {
+        console.error('❌ Erro ao atualizar níveis dos criadores:', nivelError)
+        // Continuar mesmo se der erro na atualização de níveis
+      }
+
       // Log de auditoria
       await prisma.logAuditoria.create({
         data: {
