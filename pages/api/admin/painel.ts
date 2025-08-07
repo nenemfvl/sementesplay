@@ -44,6 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: {
             id: true,
             titulo: true,
+            url: true,
             criador: {
               select: {
                 id: true,
@@ -56,6 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: {
             id: true,
             titulo: true,
+            url: true,
             parceiro: {
               select: {
                 id: true,
