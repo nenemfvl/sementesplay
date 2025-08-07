@@ -4,6 +4,12 @@
       "PRISMA_GENERATE_SKIP_AUTOINSTALL": "true"
     }
   },
+  "crons": [
+    {
+      "path": "/api/ranking/atualizar-niveis-automatico",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
