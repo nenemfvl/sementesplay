@@ -50,8 +50,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = jwt.sign(
       { id: usuarioSemSenha.id, email: usuarioSemSenha.email, tipo: usuarioSemSenha.tipo },
       process.env.JWT_SECRET || 'sementesplay_secret',
-      { expiresIn: '24h' }
+      { expiresIn: '7d' }
     )
+
+    // Definir cookie com o token
+    res.setHeader('Set-Cookie', `token=${token}; Path=/; SameSite=Strict; Max-Age=604800`)
 
     console.log('Login realizado com sucesso para:', email)
     res.status(200).json({

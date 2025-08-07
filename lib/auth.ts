@@ -78,12 +78,49 @@ export const auth = {
     return auth.getUser() !== null
   },
 
-  // Fazer logout
-  logout: () => {
+  // Verificar e renovar token se necessário
+  checkAndRefreshToken: async (): Promise<boolean> => {
     if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('sementesplay_token')
+      if (!token) return false
+      
+      try {
+        // Verificar se o token ainda é válido fazendo uma requisição
+        const response = await fetch('/api/auth/session', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        
+        if (response.ok) {
+          return true
+        } else {
+          // Token inválido, fazer logout
+          auth.logout()
+          return false
+        }
+      } catch (error) {
+        console.error('Erro ao verificar token:', error)
+        auth.logout()
+        return false
+      }
+    }
+    return false
+  },
+
+  // Fazer logout
+  logout: async () => {
+    if (typeof window !== 'undefined') {
+      // Chamar API de logout para limpar cookies do servidor
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' })
+      } catch (error) {
+        console.error('Erro ao fazer logout no servidor:', error)
+      }
+      
       localStorage.removeItem('sementesplay_user')
-      // Remover cookie também
+      localStorage.removeItem('sementesplay_token')
+      // Remover cookies também
       document.cookie = 'sementesplay_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
       window.location.href = '/'
     }
   },

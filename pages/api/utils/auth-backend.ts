@@ -11,10 +11,15 @@ export function getUserFromToken(req: NextApiRequest) {
   if (!token && req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }
-  if (!token) return null;
+  
+  if (!token) {
+    return null;
+  }
+  
   try {
-    return jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as any;
-  } catch {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'sementesplay_secret') as any;
+    return decoded;
+  } catch (error) {
     return null;
   }
 } 

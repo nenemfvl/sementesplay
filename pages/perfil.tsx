@@ -44,38 +44,33 @@ export default function Perfil() {
     setUser(currentUser)
     setAvatarUrl((currentUser as any).avatarUrl || null)
     
-    // Buscar perfil autenticado com token
-    const token = localStorage.getItem('sementesplay_token');
-    fetch('/api/perfil', {
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.id) {
-          setUser(data)
-          setAvatarUrl(data.avatarUrl || null)
-          auth.setUser(data, token || undefined)
-        }
+    // Verificar token antes de fazer requisições
+    const checkTokenAndLoadData = async () => {
+      const tokenValid = await auth.checkAndRefreshToken()
+      if (!tokenValid) {
+        window.location.href = '/login'
+        return
+      }
+      
+      const token = localStorage.getItem('sementesplay_token');
+      fetch('/api/perfil', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       })
-              .catch(err => {
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.id) {
+            setUser(data)
+            setAvatarUrl(data.avatarUrl || null)
+            auth.setUser(data, token || undefined)
+          }
+        })
+        .catch(err => {
           // COMENTADO: Log de debug - não afeta funcionalidade
           // console.error('Erro ao buscar perfil autenticado:', err)
         })
-
-    // Buscar sessão autenticada com token
-    fetch('/api/auth/session', {
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.user) {
-          // Sessão válida, pode atualizar estado se quiser
-        }
-      })
-              .catch(err => {
-          // COMENTADO: Log de debug - não afeta funcionalidade
-          // console.error('Erro ao buscar sessão autenticada:', err)
-        })
+    }
+    
+    checkTokenAndLoadData()
   }, [])
 
   // Carregar estatísticas quando o usuário estiver definido
@@ -89,8 +84,14 @@ export default function Perfil() {
 
   // Atualizar perfil periodicamente para manter sementes atualizadas
   useEffect(() => {
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (user) {
+        const tokenValid = await auth.checkAndRefreshToken()
+        if (!tokenValid) {
+          window.location.href = '/login'
+          return
+        }
+        
         const token = localStorage.getItem('sementesplay_token');
         fetch('/api/perfil', {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -114,8 +115,14 @@ export default function Perfil() {
 
   // Atualizar perfil quando a página ganhar foco ou se tornar visível
   useEffect(() => {
-    const handleFocus = () => {
+    const handleFocus = async () => {
       if (user) {
+        const tokenValid = await auth.checkAndRefreshToken()
+        if (!tokenValid) {
+          window.location.href = '/login'
+          return
+        }
+        
         const token = localStorage.getItem('sementesplay_token');
         fetch('/api/perfil', {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
