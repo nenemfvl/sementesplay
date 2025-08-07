@@ -97,11 +97,11 @@ export default function PainelAdmin() {
   const verConteudo = (denuncia: any) => {
     // Redirecionar para o conteúdo denunciado
     if (denuncia.conteudo) {
-      // Conteúdo de criador
-      window.open(`/conteudo/${denuncia.conteudo.id}`, '_blank')
+      // Conteúdo de criador - redirecionar para a página do criador
+      window.open(`/criador/${denuncia.conteudo.criadorId}`, '_blank')
     } else if (denuncia.conteudoParceiro) {
-      // Conteúdo de parceiro
-      window.open(`/parceiro/conteudo/${denuncia.conteudoParceiro.id}`, '_blank')
+      // Conteúdo de parceiro - redirecionar para a página do parceiro
+      window.open(`/parceiro/${denuncia.conteudoParceiro.parceiroId}`, '_blank')
     } else {
       alert('Conteúdo não encontrado ou já foi removido')
     }
