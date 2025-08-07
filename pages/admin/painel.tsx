@@ -23,8 +23,6 @@ export default function PainelAdmin() {
   const [loading, setLoading] = useState(true)
   const [distribuindo, setDistribuindo] = useState(false)
   const [user, setUser] = useState<any>(null)
-  const [conteudoSelecionado, setConteudoSelecionado] = useState<any>(null)
-  const [modalAberto, setModalAberto] = useState(false)
 
   useEffect(() => {
     // Simulação: buscar usuário admin logado
@@ -97,13 +95,16 @@ export default function PainelAdmin() {
   }
 
   const verConteudo = (denuncia: any) => {
-    setConteudoSelecionado(denuncia)
-    setModalAberto(true)
-  }
-
-  const fecharModal = () => {
-    setModalAberto(false)
-    setConteudoSelecionado(null)
+    // Redirecionar para o conteúdo denunciado
+    if (denuncia.conteudo) {
+      // Conteúdo de criador
+      window.open(`/conteudo/${denuncia.conteudo.id}`, '_blank')
+    } else if (denuncia.conteudoParceiro) {
+      // Conteúdo de parceiro
+      window.open(`/parceiro/conteudo/${denuncia.conteudoParceiro.id}`, '_blank')
+    } else {
+      alert('Conteúdo não encontrado ou já foi removido')
+    }
   }
 
   if (loading) {
@@ -479,180 +480,7 @@ export default function PainelAdmin() {
         </div>
       </div>
 
-      {/* Modal para visualizar conteúdo denunciado */}
-      {modalAberto && conteudoSelecionado && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="card max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-sss-white">Detalhes do Conteúdo Denunciado</h2>
-              <button
-                onClick={fecharModal}
-                className="text-gray-400 hover:text-sss-white transition-colors"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
 
-            <div className="space-y-6">
-              {/* Informações da Denúncia */}
-              <div className="bg-sss-light/20 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-sss-white mb-3">Informações da Denúncia</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-gray-400 text-sm">Denunciante</p>
-                    <p className="text-sss-white font-medium">{conteudoSelecionado.denunciante?.nome || 'Anônimo'}</p>
-                    <p className="text-gray-400 text-xs">{conteudoSelecionado.denunciante?.email || '-'}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Tipo de Denúncia</p>
-                    <p className="text-sss-white font-medium">{conteudoSelecionado.tipo}</p>
-                    <p className="text-gray-400 text-xs">{conteudoSelecionado.motivo}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Data da Denúncia</p>
-                    <p className="text-sss-white font-medium">
-                      {new Date(conteudoSelecionado.dataCriacao).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Status</p>
-                    <span className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full text-xs font-medium">
-                      Pendente
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Detalhes do Conteúdo */}
-              <div className="bg-sss-light/20 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-sss-white mb-3">Detalhes do Conteúdo</h3>
-                
-                {conteudoSelecionado.conteudo ? (
-                  // Conteúdo de Criador
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-gray-400 text-sm">Título</p>
-                      <p className="text-sss-white font-medium text-lg">{conteudoSelecionado.conteudo.titulo}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Criador</p>
-                      <p className="text-sss-white font-medium">{conteudoSelecionado.conteudo.criador?.nome}</p>
-                      <p className="text-gray-400 text-xs">{conteudoSelecionado.conteudo.criador?.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Descrição</p>
-                      <p className="text-sss-white">{conteudoSelecionado.conteudo.descricao || 'Sem descrição'}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Categoria</p>
-                      <p className="text-sss-white">{conteudoSelecionado.conteudo.categoria || 'Não categorizado'}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Data de Criação</p>
-                      <p className="text-sss-white">
-                        {new Date(conteudoSelecionado.conteudo.dataCriacao).toLocaleDateString('pt-BR')}
-                      </p>
-                    </div>
-                    {conteudoSelecionado.conteudo.url && (
-                      <div>
-                        <p className="text-gray-400 text-sm">URL do Conteúdo</p>
-                        <a 
-                          href={conteudoSelecionado.conteudo.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 underline break-all"
-                        >
-                          {conteudoSelecionado.conteudo.url}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                ) : conteudoSelecionado.conteudoParceiro ? (
-                  // Conteúdo de Parceiro
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-gray-400 text-sm">Título</p>
-                      <p className="text-sss-white font-medium text-lg">{conteudoSelecionado.conteudoParceiro.titulo}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Parceiro</p>
-                      <p className="text-sss-white font-medium">{conteudoSelecionado.conteudoParceiro.parceiro?.nome}</p>
-                      <p className="text-gray-400 text-xs">{conteudoSelecionado.conteudoParceiro.parceiro?.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Descrição</p>
-                      <p className="text-sss-white">{conteudoSelecionado.conteudoParceiro.descricao || 'Sem descrição'}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Categoria</p>
-                      <p className="text-sss-white">{conteudoSelecionado.conteudoParceiro.categoria || 'Não categorizado'}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Data de Criação</p>
-                      <p className="text-sss-white">
-                        {new Date(conteudoSelecionado.conteudoParceiro.dataCriacao).toLocaleDateString('pt-BR')}
-                      </p>
-                    </div>
-                    {conteudoSelecionado.conteudoParceiro.url && (
-                      <div>
-                        <p className="text-gray-400 text-sm">URL do Conteúdo</p>
-                        <a 
-                          href={conteudoSelecionado.conteudoParceiro.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 underline break-all"
-                        >
-                          {conteudoSelecionado.conteudoParceiro.url}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-400 py-8">
-                    <DocumentTextIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p>Conteúdo não encontrado ou removido</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Ações */}
-              <div className="flex justify-end space-x-3 pt-4 border-t border-sss-light/30">
-                <button
-                  onClick={fecharModal}
-                  className="px-4 py-2 text-gray-400 hover:text-sss-white transition-colors"
-                >
-                  Fechar
-                </button>
-                <button 
-                  onClick={() => {
-                    fecharModal()
-                    processarDenuncia(conteudoSelecionado.id, 'rejeitar')
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-                >
-                  <XMarkIcon className="w-4 h-4" />
-                  <span>Rejeitar Denúncia</span>
-                </button>
-                <button 
-                  onClick={() => {
-                    fecharModal()
-                    processarDenuncia(conteudoSelecionado.id, 'aprovar')
-                  }} 
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-                >
-                  <CheckIcon className="w-4 h-4" />
-                  <span>Aprovar Denúncia</span>
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </>
   )
 } 
