@@ -2,21 +2,14 @@ const CACHE_NAME = 'sementesplay-v1.0.0'
 const STATIC_CACHE = 'sementesplay-static-v1.0.0'
 const DYNAMIC_CACHE = 'sementesplay-dynamic-v1.0.0'
 
-// Arquivos para cache estático
+// Arquivos para cache estático (apenas arquivos que existem)
 const STATIC_FILES = [
   '/',
-  '/dashboard',
-  '/ranking',
-  '/missoes',
-  '/cashback',
-  '/criadores',
-  '/moderacao',
-  '/chat',
-  '/notificacoes-tempo-real',
   '/manifest.json',
+  '/offline.html',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  '/notification-sound.mp3'
+  '/icons/icon-72x72.png'
 ]
 
 // APIs que NÃO devem ser cacheadas (sempre buscar dados frescos)
@@ -97,10 +90,22 @@ self.addEventListener('install', (event) => {
     caches.open(STATIC_CACHE)
       .then((cache) => {
         console.log('Cache estático aberto')
-        return cache.addAll(STATIC_FILES)
+        // Adicionar arquivos um por um para evitar falhas
+        return Promise.allSettled(
+          STATIC_FILES.map(url => 
+            cache.add(url).catch(error => {
+              console.warn(`Falha ao adicionar ${url} ao cache:`, error)
+              return null
+            })
+          )
+        )
       })
       .then(() => {
-        console.log('Arquivos estáticos em cache')
+        console.log('Arquivos estáticos processados')
+        return self.skipWaiting()
+      })
+      .catch(error => {
+        console.error('Erro na instalação do Service Worker:', error)
         return self.skipWaiting()
       })
   )
