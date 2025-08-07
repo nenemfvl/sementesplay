@@ -50,22 +50,32 @@ export default function Home() {
 
   const niveis = [
     {
-      nome: 'Supremo',
-      cor: 'purple',
-      requisitos: 'Top 100 criadores',
-      beneficios: ['Destaque na plataforma', 'Recompensas especiais', 'Missões exclusivas']
+      nome: 'Criador Supremo',
+      cor: 'yellow',
+      requisitos: 'Top 1-50 do ranking',
+      beneficios: ['Destaque máximo na plataforma', 'Maior visibilidade para doações'],
+      icone: '⭐'
     },
     {
-      nome: 'Parceiro',
+      nome: 'Criador Parceiro',
       cor: 'blue',
-      requisitos: 'Top 101-300 criadores',
-      beneficios: ['Destaque na plataforma', 'Recompensas médias', 'Missões especiais']
+      requisitos: 'Top 51-100 do ranking',
+      beneficios: ['Destaque intermediário', 'Boa visibilidade para doações'],
+      icone: '⭐'
     },
     {
-      nome: 'Comum',
+      nome: 'Criador Comum',
       cor: 'gray',
-      requisitos: 'Demais criadores',
-      beneficios: ['Recompensas básicas', 'Missões comuns']
+      requisitos: 'Top 101-150 do ranking',
+      beneficios: ['Participa do ranking', 'Visibilidade padrão'],
+      icone: '⭐'
+    },
+    {
+      nome: 'Criador Iniciante',
+      cor: 'green',
+      requisitos: 'Top 151+ do ranking',
+      beneficios: ['Todos os demais criadores', 'Visibilidade básica'],
+      icone: '🌱'
     }
   ]
 
@@ -203,10 +213,10 @@ export default function Home() {
                  Níveis de Criadores
                </h2>
                <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-                Criadores são ranqueados por engajamento e recebem benefícios especiais baseados em seu nível.
+                Criadores são ranqueados por engajamento e recebem benefícios conforme sua posição no ranking.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {niveis.map((nivel, index) => (
                 <motion.div
                   key={nivel.nome}
@@ -216,7 +226,7 @@ export default function Home() {
                   transition={{ duration: 0.6, delay: index * 0.2 }}
                 >
                   <div className={`w-16 h-16 bg-${nivel.cor}-100 rounded-full flex items-center justify-center mx-auto mb-4`}>
-                    <StarIcon className={`w-8 h-8 text-${nivel.cor}-600`} />
+                    <span className="text-2xl">{nivel.icone}</span>
                   </div>
                   <h3 className={`text-xl font-bold text-${nivel.cor}-600 mb-2`}>
                     {nivel.nome}
