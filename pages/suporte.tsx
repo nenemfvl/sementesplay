@@ -200,12 +200,12 @@ export default function Suporte() {
 
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="min-h-screen bg-sss-dark">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">
-                <ChatBubbleLeftIcon className="w-8 h-8 inline mr-2" />
+              <h1 className="text-4xl font-bold text-sss-white mb-4">
+                <ChatBubbleLeftIcon className="w-8 h-8 inline mr-2 text-sss-accent" />
                 Suporte
               </h1>
               <p className="text-gray-300">
@@ -216,12 +216,12 @@ export default function Suporte() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Lista de Conversas */}
               <div className="lg:col-span-1">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="card">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-white">Conversas</h2>
+                    <h2 className="text-xl font-semibold text-sss-white">Conversas</h2>
                     <button
                       onClick={() => setMostrarNovaConversa(true)}
-                      className="bg-sss-accent hover:bg-sss-accent/80 text-white p-2 rounded-lg transition-colors"
+                      className="btn-primary p-2"
                     >
                       <PlusIcon className="w-5 h-5" />
                     </button>
@@ -235,11 +235,11 @@ export default function Suporte() {
                         className={`p-3 rounded-lg cursor-pointer transition-colors ${
                           conversaAtual?.id === conversa.id
                             ? 'bg-sss-accent/20 border border-sss-accent'
-                            : 'bg-white/5 hover:bg-white/10'
+                            : 'bg-sss-light hover:bg-sss-medium'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-medium text-white truncate">
+                          <h3 className="font-medium text-sss-white truncate">
                             {conversa.titulo}
                           </h3>
                           {getStatusIcon(conversa.status)}
@@ -259,14 +259,14 @@ export default function Suporte() {
 
               {/* Chat */}
               <div className="lg:col-span-2">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg h-96 flex flex-col">
+                <div className="card h-96 flex flex-col">
                   {conversaAtual ? (
                     <>
                       {/* Header do Chat */}
-                      <div className="p-4 border-b border-white/20">
+                      <div className="p-4 border-b border-sss-light">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="text-lg font-semibold text-white">
+                            <h3 className="text-lg font-semibold text-sss-white">
                               {conversaAtual.titulo}
                             </h3>
                             <p className="text-sm text-gray-300">
@@ -290,7 +290,7 @@ export default function Suporte() {
                               className={`max-w-xs lg:max-w-md p-3 rounded-lg ${
                                 mensagem.tipo === 'usuario'
                                   ? 'bg-sss-accent text-white'
-                                  : 'bg-white/20 text-white'
+                                  : 'bg-sss-light text-sss-white'
                               }`}
                             >
                               <p className="text-sm">{mensagem.mensagem}</p>
@@ -304,7 +304,7 @@ export default function Suporte() {
                       </div>
 
                       {/* Input de Mensagem */}
-                      <div className="p-4 border-t border-white/20">
+                      <div className="p-4 border-t border-sss-light">
                         <div className="flex space-x-2">
                           <input
                             type="text"
@@ -312,13 +312,13 @@ export default function Suporte() {
                             onChange={(e) => setNovaMensagem(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && enviarMensagem()}
                             placeholder="Digite sua mensagem..."
-                            className="flex-1 bg-white/10 text-white placeholder-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                            className="input-field bg-sss-light text-sss-white placeholder-gray-300 border-sss-light focus:ring-sss-accent"
                             disabled={enviando || conversaAtual.status === 'fechada'}
                           />
                           <button
                             onClick={enviarMensagem}
                             disabled={enviando || !novaMensagem.trim() || conversaAtual.status === 'fechada'}
-                            className="bg-sss-accent hover:bg-sss-accent/80 disabled:opacity-50 text-white p-2 rounded-lg transition-colors"
+                            className="btn-primary p-2 disabled:opacity-50"
                           >
                             <PaperAirplaneIcon className="w-5 h-5" />
                           </button>
@@ -328,7 +328,7 @@ export default function Suporte() {
                   ) : (
                     <div className="flex-1 flex items-center justify-center">
                       <div className="text-center text-gray-300">
-                        <ChatBubbleLeftIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                        <ChatBubbleLeftIcon className="w-16 h-16 mx-auto mb-4 opacity-50 text-sss-accent" />
                         <p>Selecione uma conversa ou crie uma nova</p>
                       </div>
                     </div>
@@ -343,12 +343,12 @@ export default function Suporte() {
       {/* Modal Nova Conversa */}
       {mostrarNovaConversa && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-sss-medium rounded-lg p-6 w-full max-w-md border border-sss-light">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Nova Conversa</h2>
+              <h2 className="text-xl font-semibold text-sss-white">Nova Conversa</h2>
               <button
                 onClick={() => setMostrarNovaConversa(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-400 hover:text-sss-white"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -356,7 +356,7 @@ export default function Suporte() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Título (opcional)
                 </label>
                 <input
@@ -364,18 +364,18 @@ export default function Suporte() {
                   value={tituloNovaConversa}
                   onChange={(e) => setTituloNovaConversa(e.target.value)}
                   placeholder="Ex: Problema com login"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                  className="input-field bg-sss-light text-sss-white placeholder-gray-300 border-sss-light focus:ring-sss-accent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Categoria
                 </label>
                 <select
                   value={categoriaNovaConversa}
                   onChange={(e) => setCategoriaNovaConversa(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                  className="input-field bg-sss-light text-sss-white border-sss-light focus:ring-sss-accent"
                 >
                   {categorias.map((cat) => (
                     <option key={cat.valor} value={cat.valor}>
@@ -386,7 +386,7 @@ export default function Suporte() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Mensagem
                 </label>
                 <textarea
@@ -394,21 +394,21 @@ export default function Suporte() {
                   onChange={(e) => setMensagemNovaConversa(e.target.value)}
                   placeholder="Descreva sua dúvida, problema ou sugestão..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sss-accent resize-none"
+                  className="input-field bg-sss-light text-sss-white placeholder-gray-300 border-sss-light focus:ring-sss-accent resize-none"
                 />
               </div>
 
               <div className="flex space-x-3">
                 <button
                   onClick={() => setMostrarNovaConversa(false)}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                  className="flex-1 px-4 py-2 text-gray-300 bg-sss-light rounded-lg hover:bg-sss-medium transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={criarNovaConversa}
                   disabled={enviando || !mensagemNovaConversa.trim()}
-                  className="flex-1 px-4 py-2 bg-sss-accent text-white rounded-lg hover:bg-sss-accent/80 disabled:opacity-50 transition-colors"
+                  className="flex-1 btn-primary disabled:opacity-50"
                 >
                   {enviando ? 'Enviando...' : 'Criar Conversa'}
                 </button>

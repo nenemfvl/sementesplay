@@ -225,12 +225,12 @@ export default function AdminSuporte() {
 
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="min-h-screen bg-sss-dark">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">
-                <ChatBubbleLeftIcon className="w-8 h-8 inline mr-2" />
+              <h1 className="text-4xl font-bold text-sss-white mb-4">
+                <ChatBubbleLeftIcon className="w-8 h-8 inline mr-2 text-sss-accent" />
                 Suporte - Painel Admin
               </h1>
               <p className="text-gray-300">
@@ -241,8 +241,8 @@ export default function AdminSuporte() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {/* Filtros */}
               <div className="lg:col-span-1">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                  <h2 className="text-xl font-semibold text-white mb-4">Filtros</h2>
+                <div className="card">
+                  <h2 className="text-xl font-semibold text-sss-white mb-4">Filtros</h2>
                   
                   <div className="space-y-4">
                     <div>
@@ -252,7 +252,7 @@ export default function AdminSuporte() {
                       <select
                         value={filtroStatus}
                         onChange={(e) => setFiltroStatus(e.target.value)}
-                        className="w-full bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                        className="input-field bg-sss-light text-sss-white border-sss-light focus:ring-sss-accent"
                       >
                         <option value="todos">Todos</option>
                         <option value="aberta">Aberta</option>
@@ -268,7 +268,7 @@ export default function AdminSuporte() {
                       <select
                         value={filtroCategoria}
                         onChange={(e) => setFiltroCategoria(e.target.value)}
-                        className="w-full bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                        className="input-field bg-sss-light text-sss-white border-sss-light focus:ring-sss-accent"
                       >
                         <option value="todos">Todas</option>
                         <option value="duvida">Dúvida</option>
@@ -284,8 +284,8 @@ export default function AdminSuporte() {
 
               {/* Lista de Conversas */}
               <div className="lg:col-span-1">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                  <h2 className="text-xl font-semibold text-white mb-4">Conversas ({conversasFiltradas.length})</h2>
+                <div className="card">
+                  <h2 className="text-xl font-semibold text-sss-white mb-4">Conversas ({conversasFiltradas.length})</h2>
 
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {conversasFiltradas.map((conversa) => (
@@ -295,11 +295,11 @@ export default function AdminSuporte() {
                         className={`p-3 rounded-lg cursor-pointer transition-colors ${
                           conversaAtual?.id === conversa.id
                             ? 'bg-sss-accent/20 border border-sss-accent'
-                            : 'bg-white/5 hover:bg-white/10'
+                            : 'bg-sss-light hover:bg-sss-medium'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-medium text-white truncate">
+                          <h3 className="font-medium text-sss-white truncate">
                             {conversa.titulo}
                           </h3>
                           {getStatusIcon(conversa.status)}
@@ -326,14 +326,14 @@ export default function AdminSuporte() {
 
               {/* Chat */}
               <div className="lg:col-span-2">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg h-96 flex flex-col">
+                <div className="card h-96 flex flex-col">
                   {conversaAtual ? (
                     <>
                       {/* Header do Chat */}
-                      <div className="p-4 border-b border-white/20">
+                      <div className="p-4 border-b border-sss-light">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <h3 className="text-lg font-semibold text-white">
+                            <h3 className="text-lg font-semibold text-sss-white">
                               {conversaAtual.titulo}
                             </h3>
                             <p className="text-sm text-gray-300">
@@ -386,7 +386,7 @@ export default function AdminSuporte() {
                               className={`max-w-xs lg:max-w-md p-3 rounded-lg ${
                                 mensagem.tipo === 'admin'
                                   ? 'bg-sss-accent text-white'
-                                  : 'bg-white/20 text-white'
+                                  : 'bg-sss-light text-sss-white'
                               }`}
                             >
                               <div className="flex items-center justify-between mb-1">
@@ -404,7 +404,7 @@ export default function AdminSuporte() {
                       </div>
 
                       {/* Input de Mensagem */}
-                      <div className="p-4 border-t border-white/20">
+                      <div className="p-4 border-t border-sss-light">
                         <div className="flex space-x-2">
                           <input
                             type="text"
@@ -412,13 +412,13 @@ export default function AdminSuporte() {
                             onChange={(e) => setNovaMensagem(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && enviarResposta()}
                             placeholder="Digite sua resposta..."
-                            className="flex-1 bg-white/10 text-white placeholder-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sss-accent"
+                            className="input-field bg-sss-light text-sss-white placeholder-gray-300 border-sss-light focus:ring-sss-accent"
                             disabled={enviando || conversaAtual.status === 'fechada'}
                           />
                           <button
                             onClick={enviarResposta}
                             disabled={enviando || !novaMensagem.trim() || conversaAtual.status === 'fechada'}
-                            className="bg-sss-accent hover:bg-sss-accent/80 disabled:opacity-50 text-white p-2 rounded-lg transition-colors"
+                            className="btn-primary p-2 disabled:opacity-50"
                           >
                             <PaperAirplaneIcon className="w-5 h-5" />
                           </button>
@@ -428,7 +428,7 @@ export default function AdminSuporte() {
                   ) : (
                     <div className="flex-1 flex items-center justify-center">
                       <div className="text-center text-gray-300">
-                        <ChatBubbleLeftIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                        <ChatBubbleLeftIcon className="w-16 h-16 mx-auto mb-4 opacity-50 text-sss-accent" />
                         <p>Selecione uma conversa para responder</p>
                       </div>
                     </div>
