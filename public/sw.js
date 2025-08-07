@@ -28,6 +28,11 @@ const NO_CACHE_APIS = [
 
 // Estratégia de cache: Cache First para arquivos estáticos
 const cacheFirst = async (request) => {
+  // Não fazer cache de requisições POST
+  if (request.method !== 'GET') {
+    return fetch(request)
+  }
+  
   const cachedResponse = await caches.match(request)
   if (cachedResponse) {
     return cachedResponse
@@ -54,9 +59,10 @@ const networkFirst = async (request) => {
   try {
     const networkResponse = await fetch(request)
     if (networkResponse.ok) {
-      // Só cachear se não for uma API que precisa de dados frescos
+      // Só cachear se não for uma API que precisa de dados frescos E se for uma requisição GET
       const url = new URL(request.url)
-      const shouldCache = !NO_CACHE_APIS.some(api => url.pathname.startsWith(api))
+      const shouldCache = !NO_CACHE_APIS.some(api => url.pathname.startsWith(api)) && 
+                         request.method === 'GET'
       
       if (shouldCache) {
         const cache = await caches.open(DYNAMIC_CACHE)
