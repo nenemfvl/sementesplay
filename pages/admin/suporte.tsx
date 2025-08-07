@@ -288,7 +288,7 @@ export default function AdminSuporte() {
                   <h2 className="text-xl font-semibold text-sss-white mb-4">Conversas ({conversasFiltradas.length})</h2>
 
                   <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {conversasFiltradas.map((conversa) => (
+                    {conversasFiltradas && conversasFiltradas.length > 0 ? conversasFiltradas.map((conversa) => (
                       <div
                         key={conversa.id}
                         onClick={() => setConversaAtual(conversa)}
@@ -308,7 +308,7 @@ export default function AdminSuporte() {
                           {conversa.usuario.nome}
                         </p>
                         <p className="text-xs text-gray-400 mb-2">
-                          {conversa.mensagens.length} mensagem{conversa.mensagens.length !== 1 ? 's' : ''}
+                          {conversa.mensagens?.length || 0} mensagem{(conversa.mensagens?.length || 0) !== 1 ? 's' : ''}
                         </p>
                         <div className="flex items-center justify-between text-xs">
                           <span className={getPrioridadeColor(conversa.prioridade)}>
@@ -319,7 +319,11 @@ export default function AdminSuporte() {
                           </span>
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="text-center text-gray-400 py-4">
+                        <p>Nenhuma conversa encontrada</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -377,7 +381,7 @@ export default function AdminSuporte() {
 
                       {/* Mensagens */}
                       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                        {conversaAtual.mensagens.map((mensagem) => (
+                        {conversaAtual.mensagens && conversaAtual.mensagens.length > 0 ? conversaAtual.mensagens.map((mensagem) => (
                           <div
                             key={mensagem.id}
                             className={`flex ${mensagem.tipo === 'admin' ? 'justify-end' : 'justify-start'}`}
@@ -400,7 +404,11 @@ export default function AdminSuporte() {
                               <p className="text-sm">{mensagem.mensagem}</p>
                             </div>
                           </div>
-                        ))}
+                        )) : (
+                          <div className="text-center text-gray-400 py-4">
+                            <p>Nenhuma mensagem ainda</p>
+                          </div>
+                        )}
                       </div>
 
                       {/* Input de Mensagem */}

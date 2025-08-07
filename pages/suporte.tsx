@@ -228,7 +228,7 @@ export default function Suporte() {
                   </div>
 
                   <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {conversas.map((conversa) => (
+                    {conversas && conversas.length > 0 ? conversas.map((conversa) => (
                       <div
                         key={conversa.id}
                         onClick={() => setConversaAtual(conversa)}
@@ -245,14 +245,18 @@ export default function Suporte() {
                           {getStatusIcon(conversa.status)}
                         </div>
                         <p className="text-sm text-gray-300 mb-2">
-                          {conversa.mensagens.length} mensagem{conversa.mensagens.length !== 1 ? 's' : ''}
+                          {conversa.mensagens?.length || 0} mensagem{(conversa.mensagens?.length || 0) !== 1 ? 's' : ''}
                         </p>
                         <div className="flex items-center justify-between text-xs text-gray-400">
                           <span>{getStatusLabel(conversa.status)}</span>
                           <span>{formatarData(conversa.dataAtualizacao)}</span>
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="text-center text-gray-400 py-4">
+                        <p>Nenhuma conversa encontrada</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -281,7 +285,7 @@ export default function Suporte() {
 
                       {/* Mensagens */}
                       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                        {conversaAtual.mensagens.map((mensagem) => (
+                        {conversaAtual.mensagens && conversaAtual.mensagens.length > 0 ? conversaAtual.mensagens.map((mensagem) => (
                           <div
                             key={mensagem.id}
                             className={`flex ${mensagem.tipo === 'usuario' ? 'justify-end' : 'justify-start'}`}
@@ -299,7 +303,11 @@ export default function Suporte() {
                               </p>
                             </div>
                           </div>
-                        ))}
+                        )) : (
+                          <div className="text-center text-gray-400 py-4">
+                            <p>Nenhuma mensagem ainda</p>
+                          </div>
+                        )}
                         <div ref={mensagensEndRef} />
                       </div>
 
@@ -377,11 +385,13 @@ export default function Suporte() {
                   onChange={(e) => setCategoriaNovaConversa(e.target.value)}
                   className="input-field bg-sss-light text-sss-white border-sss-light focus:ring-sss-accent"
                 >
-                  {categorias.map((cat) => (
+                  {categorias && categorias.length > 0 ? categorias.map((cat) => (
                     <option key={cat.valor} value={cat.valor}>
                       {cat.label}
                     </option>
-                  ))}
+                  )) : (
+                    <option value="outros">Outros</option>
+                  )}
                 </select>
               </div>
 
