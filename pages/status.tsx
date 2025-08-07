@@ -299,6 +299,35 @@ export default function Status() {
             )}
           </section>
 
+          {/* Seção do Cupom Especial */}
+          <section className="w-full max-w-5xl mx-auto mb-10">
+            <div className="bg-gradient-to-r from-sss-accent/20 via-purple-600/20 to-sss-accent/20 border border-sss-accent/30 rounded-2xl p-8 shadow-lg">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-3 mb-4">
+                  <span className="text-3xl">🎁</span>
+                  <h2 className="text-2xl font-bold text-sss-white">Cupom Especial</h2>
+                  <span className="text-3xl">💎</span>
+                </div>
+                <div className="bg-sss-dark/50 rounded-xl p-6 mb-4 border border-sss-accent/20">
+                  <p className="text-sss-white text-lg mb-2">
+                    Use o cupom <span className="font-bold text-sss-accent text-2xl">sementesplay10</span>
+                  </p>
+                  <p className="text-gray-300 mb-3">
+                    em nossos parceiros e transforme suas compras em apoio aos criadores
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-400">
+                    <span>🔄 Receba cashback automático</span>
+                    <span>💝 Doe para criadores favoritos</span>
+                    <span>🌟 Apoie a comunidade</span>
+                  </div>
+                </div>
+                <p className="text-sss-accent font-semibold">
+                  ✨ Cada compra é uma oportunidade de fazer a diferença ✨
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Notícias alinhadas à esquerda, como no exemplo */}
           <section className="w-full max-w-5xl mx-auto mb-10">
             <Noticias />

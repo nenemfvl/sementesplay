@@ -225,6 +225,35 @@ export default function Parceiros() {
             </div>
           </section>
 
+          {/* Seção do Cupom Especial */}
+          <section className="w-full max-w-5xl mx-auto mb-10">
+            <div className="bg-gradient-to-r from-sss-accent/20 via-purple-600/20 to-sss-accent/20 border border-sss-accent/30 rounded-2xl p-8 shadow-lg">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-3 mb-4">
+                  <span className="text-3xl">🎁</span>
+                  <h2 className="text-2xl font-bold text-sss-white">Cupom Especial</h2>
+                  <span className="text-3xl">💎</span>
+                </div>
+                <div className="bg-sss-dark/50 rounded-xl p-6 mb-4 border border-sss-accent/20">
+                  <p className="text-sss-white text-lg mb-2">
+                    Use o cupom <span className="font-bold text-sss-accent text-2xl">sementesplay10</span>
+                  </p>
+                  <p className="text-gray-300 mb-3">
+                    em qualquer um de nossos parceiros e receba cashback
+                  </p>
+                  <div className="flex items-center justify-center space-x-4 text-sm text-gray-400">
+                    <span>🔄 Transforme compras em apoio</span>
+                    <span>•</span>
+                    <span>💝 Doe para seus criadores favoritos</span>
+                  </div>
+                </div>
+                <p className="text-sss-accent font-semibold">
+                  ✨ Cada compra é uma oportunidade de apoiar a comunidade ✨
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Botão Seja Parceiro - Lateral Direita Flutuante */}
           {user && user.nivel !== 'parceiro' && candidaturaStatus !== 'pendente' && candidaturaStatus !== 'aprovada' && (
             <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-50">

@@ -118,6 +118,24 @@ export default function Home() {
                   Receba 10% de cashback em todas as suas compras em cidades FiveM parceiras 
                   e doe para seus criadores de conteúdo favoritos.
                 </p>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="bg-gradient-to-r from-sss-accent/20 to-purple-600/20 border border-sss-accent/30 rounded-xl p-6 mb-8 max-w-4xl mx-auto"
+                >
+                  <div className="flex items-center justify-center space-x-3 mb-3">
+                    <span className="text-2xl">🎁</span>
+                    <h3 className="text-lg font-semibold text-sss-white">Cupom Especial</h3>
+                    <span className="text-2xl">💎</span>
+                  </div>
+                  <p className="text-sss-white text-center mb-3">
+                    Use o cupom <span className="font-bold text-sss-accent text-xl">sementesplay10</span> em nossos parceiros
+                  </p>
+                  <p className="text-gray-300 text-center text-sm">
+                    ✨ Transforme suas compras em apoio aos seus criadores favoritos ✨
+                  </p>
+                </motion.div>
               </motion.div>
               <motion.div 
                 className="flex flex-col sm:flex-row gap-4 justify-center"
