@@ -95,15 +95,15 @@ export default function PainelAdmin() {
   }
 
   const verConteudo = (denuncia: any) => {
-    // Redirecionar para o conteúdo denunciado
-    if (denuncia.conteudo) {
-      // Conteúdo de criador - redirecionar para a página do criador
-      window.open(`/criador/${denuncia.conteudo.criadorId}`, '_blank')
-    } else if (denuncia.conteudoParceiro) {
-      // Conteúdo de parceiro - redirecionar para a página do parceiro
-      window.open(`/parceiro/${denuncia.conteudoParceiro.parceiroId}`, '_blank')
+    // Redirecionar diretamente para a plataforma externa do conteúdo
+    if (denuncia.conteudo && denuncia.conteudo.url) {
+      // Conteúdo de criador - abrir URL direta
+      window.open(denuncia.conteudo.url, '_blank')
+    } else if (denuncia.conteudoParceiro && denuncia.conteudoParceiro.url) {
+      // Conteúdo de parceiro - abrir URL direta
+      window.open(denuncia.conteudoParceiro.url, '_blank')
     } else {
-      alert('Conteúdo não encontrado ou já foi removido')
+      alert('URL do conteúdo não encontrada ou já foi removida')
     }
   }
 
