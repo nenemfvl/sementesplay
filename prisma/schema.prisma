@@ -73,6 +73,8 @@ model Usuario {
   rankingsSeason       RankingSeason[]
   denuncias            Denuncia[]                   @relation("UsuarioDenuncia")
   advertencias         Advertencia[]
+  mensagensSuporte     MensagemSuporte[]
+  conversasSuporte     ConversaSuporte[]
 
   @@map("usuarios")
 }
@@ -862,4 +864,39 @@ model Advertencia {
   denuncia Denuncia? @relation(fields: [denunciaId], references: [id], onDelete: SetNull)
 
   @@map("advertencias")
+}
+
+// Chat de Suporte
+model ConversaSuporte {
+  id              String   @id @default(cuid())
+  usuarioId       String
+  titulo          String?  // Título opcional da conversa
+  status          String   @default("aberta") // aberta, fechada, em_espera
+  prioridade      String   @default("normal") // baixa, normal, alta, urgente
+  categoria       String?  // duvida, problema, sugestao, denuncia, outros
+  dataCriacao     DateTime @default(now())
+  dataAtualizacao DateTime @updatedAt
+  dataFechamento  DateTime?
+
+  // Relacionamentos
+  usuario    Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  mensagens  MensagemSuporte[]
+
+  @@map("conversas_suporte")
+}
+
+model MensagemSuporte {
+  id              String   @id @default(cuid())
+  conversaId      String
+  remetenteId     String?
+  mensagem        String
+  tipo            String   @default("usuario") // usuario, admin
+  lida            Boolean  @default(false)
+  dataEnvio       DateTime @default(now())
+
+  // Relacionamentos
+  conversa   ConversaSuporte @relation(fields: [conversaId], references: [id], onDelete: Cascade)
+  remetente  Usuario?        @relation(fields: [remetenteId], references: [id], onDelete: SetNull)
+
+  @@map("mensagens_suporte")
 }

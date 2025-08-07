@@ -463,11 +463,16 @@ export default function AdminDashboard() {
                     className="text-center py-12"
                   >
                     <ChatBubbleLeftIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-sss-white mb-2">Moderação do Chat</h3>
-                    <p className="text-gray-400">Em breve...</p>
-                    <Link href="/admin/usuarios" className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                      Moderar Chat
-                    </Link>
+                    <h3 className="text-lg font-semibold text-sss-white mb-2">Suporte e Chat</h3>
+                    <p className="text-gray-400">Gerencie conversas de suporte e moderação</p>
+                    <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center">
+                      <Link href="/admin/suporte" className="inline-block bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                        Suporte
+                      </Link>
+                      <Link href="/admin/denuncias" className="inline-block bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                        Denúncias
+                      </Link>
+                    </div>
                   </motion.div>
                 )}
 
