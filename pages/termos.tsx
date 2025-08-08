@@ -93,7 +93,7 @@ export default function Termos() {
                   <li>• Doações diretas para criadores de conteúdo</li>
                   <li>• Ranking e níveis de criadores com emblemas</li>
                   <li>• Fundo de sementes distribuído periodicamente</li>
-                  <li>• Geração de códigos de cashback por parceiros</li>
+                                     <li>• Sistema de repasses de cashback por parceiros</li>
                   <li>• Sistema de amizades e chat</li>
                   <li>• Carteira digital e sistema de saques</li>
                   <li>• Conteúdos de parceiros e criadores</li>
@@ -120,8 +120,8 @@ export default function Termos() {
                                      <div>
                      <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
                      <p className="text-gray-300 text-sm">
-                       Donos de cidades que geram códigos de cashback, gerenciam repasses 
-                       e compartilham conteúdos promocionais.
+                       Donos de cidades FiveM que fazem repasses de cashback para compras realizadas 
+                       em suas cidades e compartilham conteúdos promocionais.
                      </p>
                    </div>
                 </div>
@@ -168,7 +168,7 @@ export default function Termos() {
                                      <div>
                      <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
                      <p className="text-gray-300 text-sm">
-                       Acesso gratuito ao painel de parceiros para geração de códigos e gerenciamento de repasses.
+                       Acesso gratuito ao painel de parceiros para gerenciamento de solicitações de cashback e repasses.
                      </p>
                    </div>
                   <div>
