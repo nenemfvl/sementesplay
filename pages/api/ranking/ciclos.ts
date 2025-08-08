@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
          // Se precisar resetar, fazer o reset
      if (precisaResetarCiclo || precisaResetarSeason) {
        if (precisaResetarSeason) {
-         // Reset da season - resetar apenas rankings, manter níveis/XP
+         // Reset da season - resetar rankings, níveis de criadores e conteúdos
          await prisma.configuracaoCiclos.update({
            where: { id: configCiclos.id },
            data: {
@@ -57,13 +57,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
            }
          })
          
-         // Resetar apenas rankings da season (NÃO resetar níveis/XP dos usuários)
+         // Resetar rankings
          await prisma.rankingCiclo.deleteMany()
          await prisma.rankingSeason.deleteMany()
          
+         // Resetar APENAS níveis de criadores para 'criador-iniciante'
+         await prisma.usuario.updateMany({
+           where: {
+             nivel: {
+               in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
+             }
+           },
+           data: {
+             nivel: 'criador-iniciante'
+           }
+         })
+         
+         // Limpar conteúdos para dar oportunidade igual a todos
+         await prisma.conteudo.deleteMany()
+         await prisma.conteudoParceiro.deleteMany()
+         
          configCiclos = await prisma.configuracaoCiclos.findFirst()
        } else if (precisaResetarCiclo) {
-         // Reset apenas do ciclo - resetar apenas ranking do ciclo
+         // Reset apenas do ciclo - resetar ranking, níveis de criadores e conteúdos
          await prisma.configuracaoCiclos.update({
            where: { id: configCiclos.id },
            data: {
@@ -72,8 +88,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
            }
          })
          
-         // Resetar apenas ranking do ciclo (NÃO resetar níveis/XP dos usuários)
+         // Resetar ranking do ciclo
          await prisma.rankingCiclo.deleteMany()
+         
+         // Resetar APENAS níveis de criadores para 'criador-iniciante'
+         await prisma.usuario.updateMany({
+           where: {
+             nivel: {
+               in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
+             }
+           },
+           data: {
+             nivel: 'criador-iniciante'
+           }
+         })
+         
+         // Limpar conteúdos para dar oportunidade igual a todos
+         await prisma.conteudo.deleteMany()
+         await prisma.conteudoParceiro.deleteMany()
          
          configCiclos = await prisma.configuracaoCiclos.findFirst()
        }
