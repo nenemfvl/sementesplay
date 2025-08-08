@@ -61,10 +61,29 @@ export default function PainelAdmin() {
 
   const distribuirFundo = async () => {
     if (!window.confirm('Distribuir fundo de sementes para criadores e usuários?')) return
+    
     setDistribuindo(true)
-    await fetch('/api/admin/distribuir-fundo', { method: 'POST' })
-    setDistribuindo(false)
-    carregarDados()
+    
+    try {
+      const response = await fetch('/api/admin/distribuir-fundo', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (response.ok) {
+        const resultado = await response.json()
+        alert(`✅ ${resultado.message}`)
+        carregarDados()
+      } else {
+        const erro = await response.json()
+        alert(`❌ Erro na distribuição: ${erro.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao distribuir fundo:', error)
+      alert('❌ Erro ao distribuir fundo. Verifique o console para mais detalhes.')
+    } finally {
+      setDistribuindo(false)
+    }
   }
 
   const processarDenuncia = async (denunciaId: string, acao: 'aprovar' | 'rejeitar') => {
