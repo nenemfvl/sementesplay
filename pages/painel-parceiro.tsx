@@ -513,31 +513,31 @@ export default function PainelParceiro() {
     }
   }
 
-  async function handleFixarConteudo(id: string, fixar: boolean) {
-    try {
-      const response = await fetch(`/api/parceiros/conteudos`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: id,
-          fixado: fixar
-        })
-      });
+  // async function handleFixarConteudo(id: string, fixar: boolean) {
+  //   try {
+  //     const response = await fetch(`/api/parceiros/conteudos`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         id: id,
+  //         fixado: fixar
+  //       })
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado: fixar } : c));
-        console.log(`Conteúdo ${fixar ? 'fixado' : 'desfixado'} com sucesso`);
-      } else {
-        const error = await response.json();
-        console.error('Erro ao fixar conteúdo:', error);
-        alert(error.error || 'Erro ao fixar conteúdo');
-      }
-    } catch (error) {
-      console.error('Erro ao fixar conteúdo:', error);
-      alert('Erro ao fixar conteúdo. Tente novamente.');
-    }
-  }
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado: fixar } : c));
+  //       console.log(`Conteúdo ${fixar ? 'fixado' : 'desfixado'} com sucesso`);
+  //     } else {
+  //       const error = await response.json();
+  //       console.error('Erro ao fixar conteúdo:', error);
+  //       alert(error.error || 'Erro ao fixar conteúdo');
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao fixar conteúdo:', error);
+  //     alert('Erro ao fixar conteúdo. Tente novamente.');
+  //   }
+  // }
 
   const [pagamentoPIX, setPagamentoPIX] = useState<any>(null);
   const [verificandoPagamento, setVerificandoPagamento] = useState(false);
@@ -1736,7 +1736,7 @@ export default function PainelParceiro() {
                               Editar
                             </button>
                             
-                            <button
+                            {/* <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleFixarConteudo(conteudo.id, !conteudo.fixado);
@@ -1744,7 +1744,7 @@ export default function PainelParceiro() {
                               className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${conteudo.fixado ? 'bg-yellow-600 hover:bg-yellow-700 text-sss-white' : 'bg-gray-600 hover:bg-gray-700 text-sss-white'}`}
                             >
                               {conteudo.fixado ? 'Desfixar' : 'Fixar'}
-                            </button>
+                            </button> */}
                           </div>
                           
                           <button
