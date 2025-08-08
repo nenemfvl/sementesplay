@@ -36,6 +36,7 @@ interface ParceiroDetalhes {
   nomeCidade: string
   totalVendas: number
   usuarioId: string
+  urlConnect?: string
   usuario: {
     id: string
     nome: string
@@ -445,6 +446,40 @@ export default function ParceiroPerfil() {
                   <h1 className="text-3xl font-bold text-sss-white mb-2">{parceiro.nome}</h1>
                   <p className="text-gray-400 mb-1">🏢 Parceiro</p>
                   <p className="text-gray-400 mb-4">{parceiro.nomeCidade}</p>
+                  
+                  {/* URL do Connect */}
+                  {parceiro.urlConnect && (
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between bg-sss-dark/50 rounded-lg p-3">
+                        <span className="text-sm text-gray-400">Connect:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-blue-400 truncate max-w-48">
+                            {parceiro.urlConnect}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              navigator.clipboard.writeText(parceiro.urlConnect!);
+                              // Mostrar feedback visual
+                              const button = e.currentTarget;
+                              const originalText = button.textContent;
+                              button.textContent = 'Copiado!';
+                              button.className = 'text-xs text-green-400 hover:text-green-300 transition-colors';
+                              setTimeout(() => {
+                                button.textContent = originalText;
+                                button.className = 'text-xs text-sss-accent hover:text-red-400 transition-colors';
+                              }, 2000);
+                            }}
+                            className="text-xs text-sss-accent hover:text-red-400 transition-colors"
+                            title="Copiar URL do Connect"
+                          >
+                            Copiar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Estatísticas */}
                   <div className="flex gap-6">
