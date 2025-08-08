@@ -644,7 +644,7 @@ export default function Status() {
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-400 text-sm">
               <Link href="/termos" className="hover:text-sss-accent">Termos de Uso</Link>
               <span>|</span>
-              <Link href="/termos" className="hover:text-sss-accent">Política de Privacidade</Link>
+              <Link href="/privacidade" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
               <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
               <span>|</span>

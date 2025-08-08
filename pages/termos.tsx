@@ -183,7 +183,10 @@ export default function Termos() {
               <section>
                 <h3 className="text-xl font-semibold text-sss-white mb-4">6. Privacidade</h3>
                 <p className="text-gray-300 leading-relaxed">
-                  Suas informações pessoais são protegidas conforme nossa Política de Privacidade. 
+                  Suas informações pessoais são protegidas conforme nossa{' '}
+                  <Link href="/privacidade" className="text-sss-accent hover:text-red-400">
+                    Política de Privacidade
+                  </Link>. 
                   Não compartilhamos dados com terceiros sem seu consentimento.
                 </p>
               </section>

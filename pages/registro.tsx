@@ -235,13 +235,13 @@ export default function Registro() {
                     />
                     <label htmlFor="terms" className="ml-2 block text-sm text-gray-300">
                       Concordo com os{' '}
-                      <a href="#" className="text-sss-accent hover:text-red-400">
+                      <Link href="/termos" className="text-sss-accent hover:text-red-400">
                         Termos de Uso
-                      </a>{' '}
+                      </Link>{' '}
                       e{' '}
-                      <a href="#" className="text-sss-accent hover:text-red-400">
+                      <Link href="/privacidade" className="text-sss-accent hover:text-red-400">
                         Política de Privacidade
-                      </a>
+                      </Link>
                     </label>
                   </div>
 

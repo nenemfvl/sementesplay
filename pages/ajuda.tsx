@@ -300,7 +300,7 @@ export default function Ajuda() {
                 <Link href="/termos" className="text-sss-accent hover:text-red-400 text-sm">
                   Termos de Uso
                 </Link>
-                <Link href="/termos" className="text-sss-accent hover:text-red-400 text-sm">
+                <Link href="/privacidade" className="text-sss-accent hover:text-red-400 text-sm">
                   Política de Privacidade
                 </Link>
                 <Link href="/ranking" className="text-sss-accent hover:text-red-400 text-sm">
