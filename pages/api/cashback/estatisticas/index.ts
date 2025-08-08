@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Buscar dados reais do usuário
-    const [comprasPendentes, comprasAprovadas, codigosUsados] = await Promise.all([
+    const [comprasPendentes, comprasAprovadas, codigosUsados, repassesParceiros] = await Promise.all([
       // Compras pendentes (todas exceto cashback_liberado)
       prisma.compraParceiro.findMany({
         where: {
@@ -38,6 +38,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           usado: true,
           usuarioId: String(usuarioId)
         }
+      }),
+      // Repasses feitos pelos parceiros para este usuário
+      prisma.repasseParceiro.findMany({
+        where: {
+          compra: {
+            usuarioId: String(usuarioId)
+          },
+          status: 'pago' // Apenas repasses já pagos
+        },
+        include: {
+          compra: true
+        }
       })
     ])
 
@@ -55,8 +67,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return total + codigo.valor
     }, 0)
 
-    const economiaTotal = comprasAprovadas.reduce((total, compra) => {
-      return total + compra.valorCompra
+    // Calcular economia total baseada nos repasses dos parceiros
+    const economiaTotal = repassesParceiros.reduce((total, repasse) => {
+      return total + repasse.valor
     }, 0)
 
     // Resgates do mês atual
