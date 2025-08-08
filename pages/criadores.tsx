@@ -266,11 +266,11 @@ export default function Criadores() {
                                 <span className="text-2xl">{item.avatar}</span>
                               )}
                                                              <div>
-                                 <h4 className="text-sss-white font-semibold">{item.nome}</h4>
-                                 <div className="flex items-center space-x-2 text-sm text-gray-400">
-                                   <span>Nível {item.nivel}</span>
-                                 </div>
-                                 {/* Redes Sociais */}
+                                                                 <h4 className="text-sss-white font-semibold">{item.nome}</h4>
+                                <div className="flex items-center space-x-2 text-sm text-gray-400">
+                                  <span>Nível {item.nivelRanking}</span>
+                                </div>
+                                {/* Redes Sociais */}
                                  {(item.redesSociais?.youtube || item.redesSociais?.twitch || item.redesSociais?.instagram || item.redesSociais?.tiktok || item.redesSociais?.discord) && (
                                    <div className="flex items-center space-x-2 mt-2">
                                      {item.redesSociais.youtube && (
