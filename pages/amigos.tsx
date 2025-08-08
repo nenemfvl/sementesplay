@@ -725,7 +725,6 @@ export default function Amigos() {
                             
                             <div>
                               <h3 className="text-sss-white font-semibold">{usuario.nome}</h3>
-                              <p className="text-gray-400 text-sm">{usuario.email}</p>
                               <div className="flex items-center space-x-4 mt-1">
                                 <span className="text-xs text-gray-500">
                                   Nível {usuario.nivel}
