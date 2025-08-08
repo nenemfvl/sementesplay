@@ -27,8 +27,13 @@ export default function Notificacoes() {
       return
     }
     setUser(currentUser)
-    loadNotificacoes()
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadNotificacoes()
+    }
+  }, [user])
 
   const loadNotificacoes = async () => {
     try {
