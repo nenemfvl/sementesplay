@@ -3,12 +3,23 @@ import { prisma } from '../../../lib/prisma'
 
 import { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
   try {
-    const { paymentId, pagamentoId } = req.body
+    let paymentId, pagamentoId
+    
+    if (req.method === 'POST') {
+      // Para requisições POST, pegar do body
+      const body = req.body
+      paymentId = body.paymentId
+      pagamentoId = body.pagamentoId
+    } else {
+      // Para requisições GET, pegar dos query parameters
+      paymentId = req.query.paymentId as string
+      pagamentoId = req.query.pagamentoId as string
+    }
 
     if (!paymentId || !pagamentoId) {
       return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
