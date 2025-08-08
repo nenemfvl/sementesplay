@@ -21,8 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       pagamentoId = req.query.pagamentoId as string
     }
 
-    if (!paymentId || !pagamentoId) {
-      return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' })
+    if (!paymentId) {
+      return res.status(400).json({ error: 'PaymentId obrigatório não fornecido' })
     }
 
     // Configurar access token do Mercado Pago
@@ -53,6 +53,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (payment.status === 'approved') {
       // Pagamento aprovado - processar automaticamente
       console.log(`Pagamento aprovado: ${payment.id}`)
+
+      // Se não tiver pagamentoId, apenas retornar o status
+      if (!pagamentoId) {
+        return res.status(200).json({ 
+          success: true, 
+          status: 'approved',
+          message: 'Pagamento aprovado no Mercado Pago',
+          paymentId: payment.id
+        })
+      }
 
       // Buscar o pagamento no banco de dados
       const pagamento = await prisma.pagamento.findUnique({
@@ -166,19 +176,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else if (payment.status === 'pending') {
       return res.status(200).json({ 
         success: true, 
-        status: 'pendente',
+        status: 'pending',
         message: 'Pagamento ainda está pendente'
       })
     } else if (payment.status === 'rejected') {
-      // Atualizar status do pagamento para rejeitado
-      await prisma.pagamento.update({
-        where: { id: pagamentoId },
-        data: { status: 'rejeitado' }
-      })
+      // Se tiver pagamentoId, atualizar status do pagamento para rejeitado
+      if (pagamentoId) {
+        await prisma.pagamento.update({
+          where: { id: pagamentoId },
+          data: { status: 'rejeitado' }
+        })
+      }
 
       return res.status(200).json({ 
         success: true, 
-        status: 'rejeitado',
+        status: 'rejected',
         message: 'Pagamento foi rejeitado'
       })
     } else {
