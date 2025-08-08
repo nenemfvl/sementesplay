@@ -64,11 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { doadorId, criadorId, quantidade, mensagem } = req.body
-      
-      console.log('Dados recebidos:', { doadorId, criadorId, quantidade, mensagem })
 
       if (!doadorId || !criadorId || !quantidade) {
-        console.log('Campos obrigatórios não preenchidos')
         return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' })
       }
 
@@ -100,10 +97,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Criador não encontrado' })
       }
 
-      // Processar doação em transação otimizada (apenas operações críticas)
-      console.log('Iniciando transação de doação...')
+      // Transação mínima - apenas operações essenciais
       const resultado = await prisma.$transaction(async (tx) => {
-        // Criar doação
+        // 1. Criar doação
         const doacao = await tx.doacao.create({
           data: {
             doadorId: String(doadorId),
@@ -114,121 +110,67 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // Deduzir sementes do doador e adicionar ao criador em paralelo
+        // 2. Atualizar sementes apenas (operação crítica)
         await Promise.all([
           tx.usuario.update({
             where: { id: String(doadorId) },
-            data: { 
-              sementes: { decrement: quantidade },
-              xp: { increment: 10 },
-              pontuacao: { increment: quantidade }
-            }
+            data: { sementes: { decrement: quantidade } }
           }),
           tx.usuario.update({
             where: { id: criador.usuarioId },
-            data: { 
-              sementes: { increment: quantidade },
-              xp: { increment: 5 },
-              pontuacao: { increment: quantidade }
-            }
-          }),
-          tx.criador.update({
-            where: { id: String(criadorId) },
-            data: { doacoes: { increment: 1 } }
-          })
-        ])
-
-        // Registrar histórico de sementes em paralelo
-        await Promise.all([
-          tx.semente.create({
-            data: {
-              usuarioId: String(doadorId),
-              quantidade: -quantidade,
-              tipo: 'doacao',
-              descricao: `Doação para criador ${criadorId}`
-            }
-          }),
-          tx.semente.create({
-            data: {
-              usuarioId: criador.usuarioId,
-              quantidade: quantidade,
-              tipo: 'recebida',
-              descricao: `Doação recebida de ${doadorId}`
-            }
+            data: { sementes: { increment: quantidade } }
           })
         ])
 
         return doacao
       }, {
-        timeout: 10000 // Aumentar timeout para 10 segundos
+        timeout: 5000 // Timeout reduzido para 5 segundos
       })
 
-      // Operações não críticas fora da transação (em background)
-      Promise.all([
-        // Criar notificações
-        prisma.notificacao.create({
-          data: {
-            usuarioId: String(doadorId),
-            tipo: 'doacao',
-            titulo: 'XP Ganho!',
-            mensagem: `Você ganhou 10 XP por fazer uma doação!`,
-            lida: false
-          }
-        }).catch(console.error),
-        
-        prisma.notificacao.create({
-          data: {
-            usuarioId: criador.usuarioId,
-            tipo: 'doacao_recebida',
-            titulo: 'Doação Recebida!',
-            mensagem: `Você recebeu ${quantidade} sementes e ganhou 5 XP!`,
-            lida: false
-          }
-        }).catch(console.error),
+      // Operações em background (não bloqueantes) - apenas essenciais
+      setImmediate(() => {
+        Promise.all([
+          // Atualizar contadores e XP em background
+          prisma.criador.update({
+            where: { id: String(criadorId) },
+            data: { doacoes: { increment: 1 } }
+          }).catch(console.error),
+          
+          prisma.usuario.update({
+            where: { id: String(doadorId) },
+            data: { 
+              xp: { increment: 10 },
+              pontuacao: { increment: quantidade }
+            }
+          }).catch(console.error),
+          
+          prisma.usuario.update({
+            where: { id: criador.usuarioId },
+            data: { 
+              xp: { increment: 5 },
+              pontuacao: { increment: quantidade }
+            }
+          }).catch(console.error),
 
-        // Criar histórico de XP
-        prisma.historicoXP.create({
-          data: {
-            usuarioId: String(doadorId),
-            xpGanho: 10,
-            xpAnterior: 0,
-            xpPosterior: 10,
-            nivelAnterior: 1,
-            nivelPosterior: 1,
-            fonte: 'doacao',
-            descricao: `XP ganho por doação de ${quantidade} sementes`
-          }
-        }).catch(console.error),
-
-        prisma.historicoXP.create({
-          data: {
-            usuarioId: criador.usuarioId,
-            xpGanho: 5,
-            xpAnterior: 0,
-            xpPosterior: 5,
-            nivelAnterior: 1,
-            nivelPosterior: 1,
-            fonte: 'doacao_recebida',
-            descricao: `XP ganho por receber doação de ${quantidade} sementes`
-          }
-        }).catch(console.error)
-      ]).catch(console.error)
-
-      console.log('Resultado da transação:', resultado)
-
-      // Nota: Atualização de níveis agora é feita automaticamente via cron job
-      console.log('📝 Doação registrada. Níveis serão atualizados automaticamente.')
-
-      // Log de auditoria
-      await prisma.logAuditoria.create({
-        data: {
-          usuarioId: String(doadorId),
-          acao: 'REALIZAR_DOACAO',
-          detalhes: `Doação realizada. ID: ${resultado.id}, Doador: ${doador?.nome || doadorId}, Criador: ${criadorId}, Quantidade: ${quantidade} sementes, Mensagem: ${mensagem || 'N/A'}`,
-          ip: req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '',
-          userAgent: req.headers['user-agent'] || '',
-          nivel: 'info'
-        }
+          // Histórico simplificado
+          prisma.semente.create({
+            data: {
+              usuarioId: String(doadorId),
+              quantidade: -quantidade,
+              tipo: 'doacao',
+              descricao: `Doação para ${criadorId}`
+            }
+          }).catch(console.error),
+          
+          prisma.semente.create({
+            data: {
+              usuarioId: criador.usuarioId,
+              quantidade: quantidade,
+              tipo: 'recebida',
+              descricao: `Doação de ${doadorId}`
+            }
+          }).catch(console.error)
+        ]).catch(console.error)
       })
 
       return res.status(201).json(resultado)
