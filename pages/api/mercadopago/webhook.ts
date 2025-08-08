@@ -153,7 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               success: true, 
               message: 'Pagamento processado com sucesso',
               compraId: compra.id,
-              paymentId: payment.id
+              paymentId: String(payment.id)
             })
 
           } catch (error) {
@@ -162,7 +162,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               success: true, 
               message: 'Pagamento processado com avisos',
               compraId: compra.id,
-              paymentId: payment.id
+              paymentId: String(payment.id)
             })
           }
 
@@ -171,7 +171,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(200).json({ 
             success: true, 
             message: 'Pagamento aprovado - nenhuma compra pendente',
-            paymentId: payment.id
+            paymentId: String(payment.id)
           })
         }
       } else {

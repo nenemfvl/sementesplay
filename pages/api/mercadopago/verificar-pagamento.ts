@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           success: true, 
           status: 'approved',
           message: 'Pagamento aprovado no Mercado Pago',
-          paymentId: payment.id
+          paymentId: String(payment.id)
         })
       }
 

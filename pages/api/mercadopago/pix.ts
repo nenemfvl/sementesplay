@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.repasseParceiro.update({
         where: { id: repasseId },
         data: { 
-          paymentId: payment.id,
+          paymentId: String(payment.id),
           status: 'aguardando_pagamento'
         }
       })
