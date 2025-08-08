@@ -291,6 +291,7 @@ model Parceiro {
   youtube        String? // URL do YouTube
   tiktok         String? // URL do TikTok
   discord        String? // URL do Discord
+  urlConnect     String? // URL do connect da cidade FiveM
 
   // Relacionamentos
   usuario         Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)

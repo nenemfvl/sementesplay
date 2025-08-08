@@ -263,7 +263,8 @@ export default function PainelParceiro() {
     twitch: '',
     youtube: '',
     tiktok: '',
-    discord: ''
+    discord: '',
+    urlConnect: ''
   });
   const [savingRedesSociais, setSavingRedesSociais] = useState(false);
   const [aprovarLoading, setAprovarLoading] = useState<string | null>(null);
@@ -812,7 +813,8 @@ export default function PainelParceiro() {
       twitch: parceiro.twitch || '',
       youtube: parceiro.youtube || '',
       tiktok: parceiro.tiktok || '',
-      discord: parceiro.discord || ''
+      discord: parceiro.discord || '',
+      urlConnect: parceiro.urlConnect || ''
     });
   }
 
@@ -1060,6 +1062,17 @@ export default function PainelParceiro() {
                   placeholder="https://discord.gg/seuserver" 
                   value={redesSociais.discord} 
                   onChange={e => setRedesSociais(f => ({ ...f, discord: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">URL Connect</label>
+                <input 
+                  type="url"
+                  className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
+                  placeholder="https://connect.seu-site.com ou https://seu-site.com/connect" 
+                  value={redesSociais.urlConnect} 
+                  onChange={e => setRedesSociais(f => ({ ...f, urlConnect: e.target.value }))} 
                 />
               </div>
               
@@ -1359,6 +1372,29 @@ export default function PainelParceiro() {
                       <div>
                         <p className="text-sm text-gray-400">Nome da Cidade</p>
                         <p className="text-sss-white font-medium">{parceiro?.nomeCidade || 'Não definido'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">URL do Connect</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sss-white font-medium">
+                            {parceiro?.urlConnect ? (
+                              <span className="text-blue-400">{parceiro.urlConnect}</span>
+                            ) : (
+                              'Não configurado'
+                            )}
+                          </p>
+                          {parceiro?.urlConnect && (
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(parceiro.urlConnect);
+                                mostrarToast('URL copiada para a área de transferência!', 'success');
+                              }}
+                              className="text-sss-accent hover:text-red-400 text-sm font-medium transition-colors ml-2"
+                            >
+                              Copiar
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

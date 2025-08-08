@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Validar URLs (opcional)
-    const { instagram, twitch, youtube, tiktok, discord } = redesSociais;
+    const { instagram, twitch, youtube, tiktok, discord, urlConnect } = redesSociais;
     
     const urlPattern = /^https?:\/\/.+/;
     
@@ -42,6 +42,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'URL do Discord inválida' });
     }
 
+    if (urlConnect && !urlPattern.test(urlConnect)) {
+      return res.status(400).json({ error: 'URL do Connect inválida' });
+    }
+
     // Atualizar o parceiro com as redes sociais
     const parceiroAtualizado = await prisma.parceiro.update({
       where: { id: parceiroId },
@@ -51,6 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         youtube: youtube || null,
         tiktok: tiktok || null,
         discord: discord || null,
+        urlConnect: urlConnect || null,
       },
       include: {
         usuario: {

@@ -84,6 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       youtube: parceiro.youtube,
       tiktok: parceiro.tiktok,
       discord: parceiro.discord,
+      urlConnect: parceiro.urlConnect,
       // Aqui você pode adicionar mais campos específicos dos parceiros
       // como conteúdo, promoções, etc.
     }))
