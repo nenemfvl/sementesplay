@@ -103,6 +103,49 @@ export default function PainelParceiro() {
   const [savingConteudo, setSavingConteudo] = useState(false);
   const [showModalPIX, setShowModalPIX] = useState(false);
 
+  // Função para mostrar toast notifications
+  const mostrarToast = (mensagem: string, tipo: 'success' | 'error' | 'info' = 'success') => {
+    const toast = document.createElement('div')
+    toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`
+    
+    let bgColor = 'bg-green-500'
+    let icon = '✅'
+    
+    if (tipo === 'error') {
+      bgColor = 'bg-red-500'
+      icon = '❌'
+    } else if (tipo === 'info') {
+      bgColor = 'bg-blue-500'
+      icon = 'ℹ️'
+    }
+    
+    toast.className += ` ${bgColor} text-white`
+    
+    toast.innerHTML = `
+      <div class="flex items-center space-x-2">
+        <span class="text-lg">${icon}</span>
+        <span class="font-medium">${mensagem}</span>
+      </div>
+    `
+    
+    document.body.appendChild(toast)
+    
+    // Animar entrada
+    setTimeout(() => {
+      toast.classList.remove('translate-x-full')
+    }, 100)
+    
+    // Remover após 3 segundos
+    setTimeout(() => {
+      toast.classList.add('translate-x-full')
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.parentElement.removeChild(toast)
+        }
+      }, 300)
+    }, 3000)
+  }
+
   // Função para obter informações do YouTube
   function getYoutubeInfo(url: string) {
     const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
@@ -567,10 +610,10 @@ export default function PainelParceiro() {
         verificarPagamento(data.paymentId);
       } else {
         const error = await response.json();
-        alert(error.error || 'Erro ao gerar pagamento PIX');
+        mostrarToast(error.error || 'Erro ao gerar pagamento PIX', 'error');
       }
     } catch (error) {
-      alert('Erro ao gerar pagamento PIX');
+      mostrarToast('Erro ao gerar pagamento PIX', 'error');
     }
   }
 
@@ -594,7 +637,7 @@ export default function PainelParceiro() {
             // Processar repasse automaticamente
             await processarRepasseAutomaticamente(paymentId);
             
-            alert('Pagamento confirmado e repasse processado automaticamente!');
+            mostrarToast('Pagamento confirmado e repasse processado automaticamente!', 'success');
             setShowModalPIX(false);
             setRepasseSelecionado(null);
             setPagamentoPIX(null);
@@ -606,7 +649,7 @@ export default function PainelParceiro() {
           } else if (data.status === 'rejected' || data.status === 'cancelled') {
             clearInterval(interval);
             setVerificandoPagamento(false);
-            alert(`Pagamento ${data.status}. Tente novamente.`);
+            mostrarToast(`Pagamento ${data.status}. Tente novamente.`, 'error');
             setShowModalPIX(false);
             setRepasseSelecionado(null);
             setPagamentoPIX(null);
@@ -670,16 +713,16 @@ export default function PainelParceiro() {
       if (response.ok) {
         const result = await response.json();
         console.log('Solicitação aprovada:', result);
-        alert('Solicitação aprovada com sucesso!');
+        mostrarToast('Solicitação aprovada com sucesso!', 'success');
         fetchRepasses(); // Recarregar repasses
       } else {
         const error = await response.json();
         console.error('Erro ao aprovar solicitação:', error);
-        alert(`Erro ao aprovar solicitação: ${error.error}`);
+        mostrarToast(`Erro ao aprovar solicitação: ${error.error}`, 'error');
       }
     } catch (error) {
       console.error('Erro ao aprovar solicitação:', error);
-      alert('Erro ao aprovar solicitação');
+      mostrarToast('Erro ao aprovar solicitação', 'error');
     } finally {
       setAprovarLoading(null);
     }
@@ -707,16 +750,16 @@ export default function PainelParceiro() {
       if (response.ok) {
         const result = await response.json();
         console.log('Solicitação rejeitada:', result);
-        alert('Solicitação rejeitada com sucesso!');
+        mostrarToast('Solicitação rejeitada com sucesso!', 'success');
         fetchRepasses(); // Recarregar repasses
       } else {
         const error = await response.json();
         console.error('Erro ao rejeitar solicitação:', error);
-        alert(`Erro ao rejeitar solicitação: ${error.error}`);
+        mostrarToast(`Erro ao rejeitar solicitação: ${error.error}`, 'error');
       }
     } catch (error) {
       console.error('Erro ao rejeitar solicitação:', error);
-      alert('Erro ao rejeitar solicitação');
+      mostrarToast('Erro ao rejeitar solicitação', 'error');
     } finally {
       setRejeitarLoading(null);
     }
@@ -1127,7 +1170,7 @@ export default function PainelParceiro() {
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(pagamentoPIX.pixData.chavePix);
-                              alert('Chave PIX copiada!');
+                              mostrarToast('Chave PIX copiada!', 'success');
                             }}
                             className="text-sss-accent hover:text-sss-accent/80 flex-shrink-0"
                           >
