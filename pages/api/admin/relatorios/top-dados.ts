@@ -32,34 +32,83 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         dataInicio = new Date(agora.getTime() - 7 * 24 * 60 * 60 * 1000)
     }
 
-    // Buscar top doadores
-    const topDoadores = await prisma.$queryRaw`
-      SELECT 
-        u.nome,
-        SUM(d.quantidade) as valor,
-        COUNT(d.id) as quantidade
-      FROM doacoes d
-      JOIN usuarios u ON d.doadorId = u.id
-      WHERE d.data >= ${dataInicio}
-      GROUP BY d.doadorId, u.nome
-      ORDER BY valor DESC
-      LIMIT 5
-    `
+    // Buscar top doadores usando Prisma ORM
+    const topDoadores = await prisma.doacao.groupBy({
+      by: ['doadorId'],
+      where: {
+        data: {
+          gte: dataInicio
+        }
+      },
+      _sum: {
+        quantidade: true
+      },
+      _count: {
+        id: true
+      },
+      orderBy: {
+        _sum: {
+          quantidade: 'desc'
+        }
+      },
+      take: 5
+    })
 
-    // Buscar top criadores
-    const topCriadores = await prisma.$queryRaw`
-      SELECT 
-        u.nome,
-        SUM(d.quantidade) as recebido,
-        COUNT(d.id) as doacoes
-      FROM doacoes d
-      JOIN criadores c ON d.criadorId = c.id
-      JOIN usuarios u ON c.usuarioId = u.id
-      WHERE d.data >= ${dataInicio}
-      GROUP BY d.criadorId, u.nome
-      ORDER BY recebido DESC
-      LIMIT 5
-    `
+    // Buscar dados dos doadores
+    const doadoresComNomes = await Promise.all(
+      topDoadores.map(async (doador) => {
+        const usuario = await prisma.usuario.findUnique({
+          where: { id: doador.doadorId },
+          select: { nome: true }
+        })
+        return {
+          nome: usuario?.nome || 'Usuário Desconhecido',
+          valor: doador._sum.quantidade || 0,
+          quantidade: doador._count.id
+        }
+      })
+    )
+
+    // Buscar top criadores usando Prisma ORM
+    const topCriadores = await prisma.doacao.groupBy({
+      by: ['criadorId'],
+      where: {
+        data: {
+          gte: dataInicio
+        }
+      },
+      _sum: {
+        quantidade: true
+      },
+      _count: {
+        id: true
+      },
+      orderBy: {
+        _sum: {
+          quantidade: 'desc'
+        }
+      },
+      take: 5
+    })
+
+    // Buscar dados dos criadores
+    const criadoresComNomes = await Promise.all(
+      topCriadores.map(async (criador) => {
+        const criadorData = await prisma.criador.findUnique({
+          where: { id: criador.criadorId },
+          include: {
+            usuario: {
+              select: { nome: true }
+            }
+          }
+        })
+        return {
+          nome: criadorData?.usuario?.nome || 'Criador Desconhecido',
+          recebido: criador._sum.quantidade || 0,
+          doacoes: criador._count.id
+        }
+      })
+    )
 
     // COMENTADO: Dados mockados - substituir por consulta real ao banco quando implementar sistema de relatórios
     /*
@@ -74,8 +123,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const topCashbacks: any[] = [] // COMENTADO: Array vazio até implementar sistema real
 
     const topDados = {
-      topDoadores: topDoadores as any[],
-      topCriadores: topCriadores as any[],
+      topDoadores: doadoresComNomes,
+      topCriadores: criadoresComNomes,
       topCashbacks
     }
 
