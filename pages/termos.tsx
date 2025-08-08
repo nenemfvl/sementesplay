@@ -63,7 +63,7 @@ export default function Termos() {
                 Termos de Uso
               </h2>
               <p className="text-gray-300">
-                Última atualização: 15 de Janeiro de 2024
+                Última atualização: 8 de Agosto de 2024
               </p>
             </div>
 
@@ -85,38 +85,45 @@ export default function Termos() {
               <section>
                 <h3 className="text-xl font-semibold text-sss-white mb-4">2. Descrição do Serviço</h3>
                 <p className="text-gray-300 leading-relaxed mb-4">
-                  O SementesPLAY é uma plataforma que conecta jogadores, criadores de conteúdo e donos de cidades FiveM 
-                  através de um sistema de cashback e doações.
+                  O SementesPLAY é uma plataforma completa que conecta jogadores, criadores de conteúdo e donos de cidades FiveM 
+                  através de um sistema avançado de cashback, doações e recompensas.
                 </p>
                 <ul className="text-gray-300 space-y-2 ml-6">
-                  <li>• Sistema de cashback de 10% em compras nas cidades FiveM</li>
-                  <li>• Doações para criadores de conteúdo</li>
-                  <li>• Ranking e níveis de criadores</li>
+                  <li>• Sistema de cashback de 10% em compras nas cidades FiveM parceiras</li>
+                  <li>• Doações diretas para criadores de conteúdo</li>
+                  <li>• Ranking e níveis de criadores com emblemas</li>
+                  <li>• Fundo de sementes distribuído periodicamente</li>
                   <li>• Geração de códigos de cashback por parceiros</li>
+                  <li>• Sistema de amizades e chat</li>
+                  <li>• Carteira digital e sistema de saques</li>
+                  <li>• Conteúdos de parceiros e criadores</li>
                 </ul>
               </section>
 
               <section>
                 <h3 className="text-xl font-semibold text-sss-white mb-4">3. Tipos de Conta</h3>
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sss-accent font-medium mb-2">Usuários</h4>
-                    <p className="text-gray-300 text-sm">
-                      Podem receber cashback, doar para criadores e participar do ranking.
-                    </p>
-                  </div>
+                                     <div>
+                     <h4 className="text-sss-accent font-medium mb-2">Usuários</h4>
+                     <p className="text-gray-300 text-sm">
+                       Podem receber cashback, doar para criadores, colecionar emblemas, 
+                       fazer amizades e participar do ranking.
+                     </p>
+                   </div>
                   <div>
                     <h4 className="text-sss-accent font-medium mb-2">Criadores</h4>
                     <p className="text-gray-300 text-sm">
-                      Recebem doações, participam do ranking e podem se tornar parceiros.
+                      Recebem doações, participam do ranking com níveis e emblemas, 
+                      podem se tornar parceiros e compartilhar conteúdos.
                     </p>
                   </div>
-                  <div>
-                    <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
-                    <p className="text-gray-300 text-sm">
-                      Donos de cidades que geram códigos de cashback e pagam taxa mensal.
-                    </p>
-                  </div>
+                                     <div>
+                     <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
+                     <p className="text-gray-300 text-sm">
+                       Donos de cidades que geram códigos de cashback, gerenciam repasses 
+                       e compartilham conteúdos promocionais.
+                     </p>
+                   </div>
                 </div>
               </section>
 
@@ -131,6 +138,8 @@ export default function Termos() {
                   <li>• Criar contas falsas ou múltiplas</li>
                   <li>• Spam ou comportamento tóxico</li>
                   <li>• Violar direitos autorais ou propriedade intelectual</li>
+                  <li>• Usar bots ou automação para ganhar vantagens</li>
+                  <li>• Compartilhar conteúdo inadequado ou ofensivo</li>
                 </ul>
               </section>
 
@@ -149,10 +158,23 @@ export default function Termos() {
                       Criadores recebem 90% das doações, 10% é retido para manutenção.
                     </p>
                   </div>
+                  
                   <div>
-                    <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
+                    <h4 className="text-sss-accent font-medium mb-2">Fundo de Sementes</h4>
                     <p className="text-gray-300 text-sm">
-                      Taxa mensal de R$ 500,00 para acesso ao painel de parceiros.
+                      Fundo distribuído periodicamente: 50% para criadores (proporcional ao conteúdo) e 50% para usuários (proporcional aos gastos).
+                    </p>
+                  </div>
+                                     <div>
+                     <h4 className="text-sss-accent font-medium mb-2">Parceiros</h4>
+                     <p className="text-gray-300 text-sm">
+                       Acesso gratuito ao painel de parceiros para geração de códigos e gerenciamento de repasses.
+                     </p>
+                   </div>
+                  <div>
+                    <h4 className="text-sss-accent font-medium mb-2">Saques</h4>
+                    <p className="text-gray-300 text-sm">
+                      Usuários podem solicitar saques de Sementes para PIX, com valor mínimo de R$ 10,00.
                     </p>
                   </div>
                 </div>
