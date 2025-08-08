@@ -87,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           dataEvento: conteudo.dataEvento ? conteudo.dataEvento.toISOString() : null,
           preco: conteudo.preco || '',
           vagas: conteudo.vagas || null,
+          fixado: conteudo.fixado || false,
           parceiro: {
             id: conteudo.parceiro.id,
             nome: conteudo.parceiro.usuario.nome,
@@ -142,21 +143,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       
       if (!id) return res.status(400).json({ error: 'ID obrigatório' });
       
+      // Preparar dados para atualização
+      const updateData: any = {};
+      
+      if (parceiroId !== undefined) updateData.parceiroId = parceiroId;
+      if (titulo !== undefined) updateData.titulo = titulo || 'Conteúdo do Parceiro';
+      if (url !== undefined) updateData.url = url;
+      if (tipo !== undefined) updateData.tipo = tipo || 'evento';
+      if (categoria !== undefined) updateData.categoria = categoria;
+      if (descricao !== undefined) updateData.descricao = descricao;
+      if (plataforma !== undefined) updateData.plataforma = plataforma;
+      if (cidade !== undefined) updateData.cidade = cidade;
+      if (endereco !== undefined) updateData.endereco = endereco;
+      if (dataEvento !== undefined) updateData.dataEvento = dataEvento ? new Date(dataEvento) : null;
+      if (preco !== undefined) updateData.preco = preco;
+      if (vagas !== undefined) updateData.vagas = vagas;
+      if (fixado !== undefined) updateData.fixado = Boolean(fixado);
+      
       const atualizado = await prisma.conteudoParceiro.update({
         where: { id },
-        data: {
-          parceiroId,
-          titulo: titulo || 'Conteúdo do Parceiro', // Usar título fornecido ou padrão
-          url,
-          tipo: tipo || 'evento', // Usar tipo fornecido ou padrão
-          categoria,
-          descricao,
-          plataforma,
-          cidade,
-          endereco,
-          dataEvento: dataEvento ? new Date(dataEvento) : null,
-          fixado: fixado !== undefined ? fixado : undefined,
-        }
+        data: updateData
       });
       
       return res.status(200).json({ success: true, conteudo: atualizado });

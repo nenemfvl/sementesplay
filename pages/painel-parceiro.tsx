@@ -525,10 +525,17 @@ export default function PainelParceiro() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         setConteudos(prev => prev.map(c => c.id === id ? { ...c, fixado: fixar } : c));
+        console.log(`Conteúdo ${fixar ? 'fixado' : 'desfixado'} com sucesso`);
+      } else {
+        const error = await response.json();
+        console.error('Erro ao fixar conteúdo:', error);
+        alert(error.error || 'Erro ao fixar conteúdo');
       }
     } catch (error) {
       console.error('Erro ao fixar conteúdo:', error);
+      alert('Erro ao fixar conteúdo. Tente novamente.');
     }
   }
 
