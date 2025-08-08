@@ -267,28 +267,28 @@ export default function Noticias() {
               </div>
             </div>
           ) : (
-                         <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-sss-light/30 scrollbar-track-transparent">
+                         <div className="space-y-3 max-h-[360px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-sss-light/30 scrollbar-track-transparent">
               {conteudos.map((conteudo) => (
                 <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
-                  <div className="flex items-start space-x-4">
-                    {/* Preview do conteúdo */}
-                    <div className="flex-shrink-0">
-                      {conteudo.preview ? (
-                        <div className="w-20 h-20 rounded-lg overflow-hidden border border-sss-light/30 bg-sss-dark/30">
-                          <Image
-                            src={conteudo.preview}
-                            alt={conteudo.titulo}
-                            width={80}
-                            height={80}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center group-hover:border-blue-400/50 transition-colors">
-                          {getTipoIcon(conteudo.tipo)}
-                        </div>
-                      )}
-                    </div>
+                                      <div className="flex items-start space-x-3">
+                      {/* Preview do conteúdo */}
+                      <div className="flex-shrink-0">
+                        {conteudo.preview ? (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-sss-light/30 bg-sss-dark/30">
+                            <Image
+                              src={conteudo.preview}
+                              alt={conteudo.titulo}
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center group-hover:border-blue-400/50 transition-colors">
+                            {getTipoIcon(conteudo.tipo)}
+                          </div>
+                        )}
+                      </div>
                     
                     <div className="flex-1 min-w-0">
                       <Link
@@ -298,7 +298,7 @@ export default function Noticias() {
                       >
                         {conteudo.titulo}
                       </Link>
-                                             <div className="flex items-center space-x-3 mt-2 flex-wrap">
+                                             <div className="flex items-center space-x-2 mt-1 flex-wrap">
                         <div className="flex items-center space-x-2">
                           {conteudo.criador.avatarUrl && (
                             <div className="w-5 h-5 rounded-full overflow-hidden border border-sss-light/30">
