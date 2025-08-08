@@ -6,7 +6,6 @@ import {
   ArrowLeftIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  EnvelopeIcon,
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -258,41 +257,20 @@ export default function Ajuda() {
                 Ainda precisa de ajuda?
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-sss-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <EnvelopeIcon className="w-8 h-8 text-sss-accent" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-sss-white mb-2">
-                    Email de Suporte
-                  </h4>
-                  <p className="text-gray-300 text-sm mb-4">
-                    Envie suas dúvidas por email
-                  </p>
-                  <a
-                    href="mailto:suporte@sementesplay.com.br"
-                    className="inline-flex items-center bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-                  >
-                    <EnvelopeIcon className="w-4 h-4 mr-2" />
-                    Enviar Email
-                  </a>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-sss-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ChatBubbleLeftRightIcon className="w-8 h-8 text-sss-accent" />
                 </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-sss-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ChatBubbleLeftRightIcon className="w-8 h-8 text-sss-accent" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-sss-white mb-2">
-                    Chat ao Vivo
-                  </h4>
-                  <p className="text-gray-300 text-sm mb-4">
-                    Fale diretamente com nossa equipe
-                  </p>
-                  <button className="inline-flex items-center bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
-                    <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
-                    Iniciar Chat
-                  </button>
-                </div>
+                <h4 className="text-lg font-semibold text-sss-white mb-2">
+                  Chat ao Vivo
+                </h4>
+                <p className="text-gray-300 text-sm mb-4">
+                  Fale diretamente com nossa equipe
+                </p>
+                <Link href="/suporte" className="inline-flex items-center bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+                  <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
+                  Iniciar Chat
+                </Link>
               </div>
             </motion.div>
 
