@@ -90,10 +90,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Você não pode doar sementes para si mesmo' })
       }
 
-      // Processar doação em transação
+      // Buscar o usuário do criador antes da transação
+      const criador = await prisma.criador.findUnique({
+        where: { id: String(criadorId) },
+        select: { usuarioId: true }
+      })
+
+      if (!criador) {
+        return res.status(400).json({ error: 'Criador não encontrado' })
+      }
+
+      // Processar doação em transação otimizada (apenas operações críticas)
       console.log('Iniciando transação de doação...')
       const resultado = await prisma.$transaction(async (tx) => {
-        console.log('Criando doação...')
         // Criar doação
         const doacao = await tx.doacao.create({
           data: {
@@ -104,59 +113,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             data: new Date()
           }
         })
-        console.log('Doação criada:', doacao)
 
-        // Deduzir sementes do doador
-        console.log('Deduzindo sementes do doador...')
-        await tx.usuario.update({
-          where: { id: String(doadorId) },
-          data: { sementes: { decrement: quantidade } }
-        })
-        console.log('Sementes deduzidas do doador')
-
-        // Buscar o usuário do criador para adicionar sementes
-        console.log('Buscando usuário do criador...')
-        const criador = await tx.criador.findUnique({
-          where: { id: String(criadorId) },
-          select: { usuarioId: true }
-        })
-        console.log('Criador encontrado:', criador)
-
-        if (criador) {
-          // Adicionar sementes ao usuário do criador (sementes disponíveis)
-          console.log('Adicionando sementes ao usuário do criador...')
-          await tx.usuario.update({
+        // Deduzir sementes do doador e adicionar ao criador em paralelo
+        await Promise.all([
+          tx.usuario.update({
+            where: { id: String(doadorId) },
+            data: { 
+              sementes: { decrement: quantidade },
+              xp: { increment: 10 },
+              pontuacao: { increment: quantidade }
+            }
+          }),
+          tx.usuario.update({
             where: { id: criador.usuarioId },
-            data: { sementes: { increment: quantidade } }
-          })
-          console.log('Sementes adicionadas ao usuário do criador')
-
-          // Atualizar contador de doações no criador
-          console.log('Atualizando contador de doações...')
-          await tx.criador.update({
+            data: { 
+              sementes: { increment: quantidade },
+              xp: { increment: 5 },
+              pontuacao: { increment: quantidade }
+            }
+          }),
+          tx.criador.update({
             where: { id: String(criadorId) },
             data: { doacoes: { increment: 1 } }
           })
-          console.log('Contador de doações atualizado')
-        } else {
-          console.log('Criador não encontrado para adicionar sementes')
-        }
+        ])
 
-        // Registrar histórico de sementes
-        console.log('Registrando histórico de sementes do doador...')
-        await tx.semente.create({
-          data: {
-            usuarioId: String(doadorId),
-            quantidade: -quantidade,
-            tipo: 'doacao',
-            descricao: `Doação para criador ${criadorId}`
-          }
-        })
-        console.log('Histórico do doador registrado')
-
-        if (criador) {
-          console.log('Registrando histórico de sementes do criador...')
-          await tx.semente.create({
+        // Registrar histórico de sementes em paralelo
+        await Promise.all([
+          tx.semente.create({
+            data: {
+              usuarioId: String(doadorId),
+              quantidade: -quantidade,
+              tipo: 'doacao',
+              descricao: `Doação para criador ${criadorId}`
+            }
+          }),
+          tx.semente.create({
             data: {
               usuarioId: criador.usuarioId,
               quantidade: quantidade,
@@ -164,138 +156,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               descricao: `Doação recebida de ${doadorId}`
             }
           })
-          console.log('Histórico do criador registrado')
-        } else {
-          console.log('Criador não encontrado para registrar histórico')
-        }
+        ])
 
-        // Dar XP e pontuação por doação (sistema simplificado)
-        console.log('Dando XP e pontuação por doação...')
-        const xpPorDoacao = 10 // 10 XP por doação
-        const pontuacaoPorDoacao = quantidade // 1 ponto por semente doada
-        
-        try {
-          // Atualizar XP e pontuação do DOADOR
-          console.log('Atualizando XP do doador...')
-          await tx.usuario.update({
-            where: { id: String(doadorId) },
-            data: { 
-              xp: { increment: xpPorDoacao },
-              pontuacao: { increment: pontuacaoPorDoacao }
-            }
-          })
-          
-          // Buscar dados atualizados do doador para criar histórico
-          const doadorAtualizado = await tx.usuario.findUnique({
-            where: { id: String(doadorId) },
-            select: { xp: true, nivelUsuario: true }
-          })
-          
-          if (doadorAtualizado) {
-            const novoNivel = Math.floor(doadorAtualizado.xp / 100) + 1
-            
-            // Atualizar nível se necessário
-            if (novoNivel > doadorAtualizado.nivelUsuario) {
-              await tx.usuario.update({
-                where: { id: String(doadorId) },
-                data: { nivelUsuario: novoNivel }
-              })
-            }
-            
-            // Criar histórico de XP do doador
-            await tx.historicoXP.create({
-              data: {
-                usuarioId: String(doadorId),
-                xpGanho: xpPorDoacao,
-                xpAnterior: doadorAtualizado.xp - xpPorDoacao,
-                xpPosterior: doadorAtualizado.xp,
-                nivelAnterior: doadorAtualizado.nivelUsuario,
-                nivelPosterior: novoNivel,
-                fonte: 'doacao',
-                descricao: `XP ganho por doação de ${quantidade} sementes`
-              }
-            })
-            
-            // Criar notificação para o doador
-            await tx.notificacao.create({
-              data: {
-                usuarioId: String(doadorId),
-                tipo: 'doacao',
-                titulo: 'XP Ganho!',
-                mensagem: `Você ganhou ${xpPorDoacao} XP por fazer uma doação!`,
-                lida: false
-              }
-            })
-            
-            console.log(`XP dado ao doador: ${xpPorDoacao} (Total: ${doadorAtualizado.xp}, Nível: ${novoNivel})`)
-          }
-
-          // Atualizar XP e pontuação do CRIADOR que recebeu a doação
-          if (criador) {
-            console.log('Atualizando XP do criador que recebeu a doação...')
-            const xpPorReceber = 5 // 5 XP por doação recebida (menos que o doador)
-            
-            await tx.usuario.update({
-              where: { id: criador.usuarioId },
-              data: { 
-                xp: { increment: xpPorReceber },
-                pontuacao: { increment: pontuacaoPorDoacao } // Mesma pontuação
-              }
-            })
-            
-            // Buscar dados atualizados do criador para criar histórico
-            const criadorAtualizado = await tx.usuario.findUnique({
-              where: { id: criador.usuarioId },
-              select: { xp: true, nivelUsuario: true }
-            })
-            
-            if (criadorAtualizado) {
-              const novoNivelCriador = Math.floor(criadorAtualizado.xp / 100) + 1
-              
-              // Atualizar nível se necessário
-              if (novoNivelCriador > criadorAtualizado.nivelUsuario) {
-                await tx.usuario.update({
-                  where: { id: criador.usuarioId },
-                  data: { nivelUsuario: novoNivelCriador }
-                })
-              }
-              
-              // Criar histórico de XP do criador
-              await tx.historicoXP.create({
-                data: {
-                  usuarioId: criador.usuarioId,
-                  xpGanho: xpPorReceber,
-                  xpAnterior: criadorAtualizado.xp - xpPorReceber,
-                  xpPosterior: criadorAtualizado.xp,
-                  nivelAnterior: criadorAtualizado.nivelUsuario,
-                  nivelPosterior: novoNivelCriador,
-                  fonte: 'doacao_recebida',
-                  descricao: `XP ganho por receber doação de ${quantidade} sementes`
-                }
-              })
-              
-              // Criar notificação para o criador
-              await tx.notificacao.create({
-                data: {
-                  usuarioId: criador.usuarioId,
-                  tipo: 'doacao_recebida',
-                  titulo: 'Doação Recebida!',
-                  mensagem: `Você recebeu ${quantidade} sementes e ganhou ${xpPorReceber} XP!`,
-                  lida: false
-                }
-              })
-              
-              console.log(`XP dado ao criador: ${xpPorReceber} (Total: ${criadorAtualizado.xp}, Nível: ${novoNivelCriador})`)
-            }
-          }
-        } catch (xpError) {
-          console.error('Erro ao dar XP:', xpError)
-          // Continuar mesmo se der erro no XP
-        }
-
-        console.log('Transação concluída com sucesso')
         return doacao
+      }, {
+        timeout: 10000 // Aumentar timeout para 10 segundos
       })
+
+      // Operações não críticas fora da transação (em background)
+      Promise.all([
+        // Criar notificações
+        prisma.notificacao.create({
+          data: {
+            usuarioId: String(doadorId),
+            tipo: 'doacao',
+            titulo: 'XP Ganho!',
+            mensagem: `Você ganhou 10 XP por fazer uma doação!`,
+            lida: false
+          }
+        }).catch(console.error),
+        
+        prisma.notificacao.create({
+          data: {
+            usuarioId: criador.usuarioId,
+            tipo: 'doacao_recebida',
+            titulo: 'Doação Recebida!',
+            mensagem: `Você recebeu ${quantidade} sementes e ganhou 5 XP!`,
+            lida: false
+          }
+        }).catch(console.error),
+
+        // Criar histórico de XP
+        prisma.historicoXP.create({
+          data: {
+            usuarioId: String(doadorId),
+            xpGanho: 10,
+            xpAnterior: 0,
+            xpPosterior: 10,
+            nivelAnterior: 1,
+            nivelPosterior: 1,
+            fonte: 'doacao',
+            descricao: `XP ganho por doação de ${quantidade} sementes`
+          }
+        }).catch(console.error),
+
+        prisma.historicoXP.create({
+          data: {
+            usuarioId: criador.usuarioId,
+            xpGanho: 5,
+            xpAnterior: 0,
+            xpPosterior: 5,
+            nivelAnterior: 1,
+            nivelPosterior: 1,
+            fonte: 'doacao_recebida',
+            descricao: `XP ganho por receber doação de ${quantidade} sementes`
+          }
+        }).catch(console.error)
+      ]).catch(console.error)
 
       console.log('Resultado da transação:', resultado)
 
