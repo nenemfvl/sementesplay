@@ -87,8 +87,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const payment = await response.json()
     console.log('Pagamento criado no Mercado Pago:', payment.id)
 
-    // Salvar o paymentId no repasse
+    // Verificar se o repasse existe e salvar o paymentId
     try {
+      // Primeiro tentar atualizar (se existir)
       await prisma.repasseParceiro.update({
         where: { id: repasseId },
         data: { 
@@ -96,10 +97,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           status: 'aguardando_pagamento'
         }
       })
-      console.log('PaymentId salvo no repasse:', payment.id)
+      console.log('PaymentId salvo no repasse existente:', payment.id)
     } catch (dbError) {
-      console.error('Erro ao salvar paymentId no repasse:', dbError)
-      // Não falhar se não conseguir salvar, apenas logar o erro
+      console.log('Repasse não encontrado, criando novo...')
+      
+      // Se não existir, criar um novo repasse
+      try {
+        await prisma.repasseParceiro.create({
+          data: {
+            id: repasseId,
+            parceiroId: parceiroId,
+            compraId: `temp_${Date.now()}`, // ID temporário
+            valor: valorRepasse,
+            status: 'aguardando_pagamento',
+            dataRepasse: new Date(),
+            paymentId: String(payment.id)
+          }
+        })
+        console.log('Novo repasse criado com paymentId:', payment.id)
+      } catch (createError) {
+        console.error('Erro ao criar novo repasse:', createError)
+        // Não falhar se não conseguir salvar, apenas logar o erro
+      }
     }
 
     if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
