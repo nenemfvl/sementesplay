@@ -43,6 +43,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Verificar se precisa resetar a season
     const precisaResetarSeason = agora >= dataFimSeason
     
+    // Se estiver pausado, não executar resets automáticos
+    if (configCiclos.pausado) {
+      return res.status(200).json({
+        diasRestantesCiclo: Math.max(0, diasRestantesCiclo),
+        diasRestantesSeason: Math.max(0, diasRestantesSeason),
+        numeroCiclo: configCiclos.numeroCiclo,
+        numeroSeason: configCiclos.numeroSeason,
+        dataInicioCiclo: configCiclos.dataInicioCiclo,
+        dataInicioSeason: configCiclos.dataInicioSeason,
+        pausado: true,
+        resetou: false
+      })
+    }
+    
          // Se precisar resetar, fazer o reset
      if (precisaResetarCiclo || precisaResetarSeason) {
        if (precisaResetarSeason) {
@@ -135,6 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       numeroSeason: configCiclos.numeroSeason,
       dataInicioCiclo: configCiclos.dataInicioCiclo,
       dataInicioSeason: configCiclos.dataInicioSeason,
+      pausado: configCiclos.pausado || false,
       resetou: false
     })
   } catch (error) {

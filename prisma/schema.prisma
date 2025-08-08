@@ -724,6 +724,7 @@ model ConfiguracaoCiclos {
   dataInicioSeason DateTime @default(now())
   numeroSeason     Int      @default(1)
   numeroCiclo      Int      @default(1)
+  pausado          Boolean  @default(false)
   dataCriacao      DateTime @default(now())
   dataAtualizacao  DateTime @updatedAt
 

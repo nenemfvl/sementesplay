@@ -2,35 +2,41 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-async function verificarCiclo() {
+async function despausarCiclos() {
   try {
+    console.log('▶️  Despausando sistema de ciclos...')
+    
+    // Despausar o sistema
+    await prisma.configuracaoCiclos.updateMany({
+      data: {
+        pausado: false
+      }
+    })
+    
+    console.log('✅ Sistema de ciclos despausado com sucesso!')
+    console.log('🚀 Os ciclos voltarão a avançar automaticamente conforme o cronograma')
+    console.log('⏱️  Próximo reset: quando atingir 15 dias do ciclo atual')
+    
+    // Verificar status
     const config = await prisma.configuracaoCiclos.findFirst()
-    console.log('📊 Estado atual do sistema de ciclos:')
+    console.log('\n📊 Status atual:')
     console.log('   🔄 Ciclo atual:', config?.numeroCiclo)
     console.log('   🏆 Season atual:', config?.numeroSeason)
     console.log('   ⏸️  Pausado:', config?.pausado ? 'SIM' : 'NÃO')
-    console.log('   📅 Data início ciclo:', config?.dataInicioCiclo)
-    console.log('   📅 Data início season:', config?.dataInicioSeason)
     
-    // Calcular quantos dias restam
+    // Calcular dias restantes
     const agora = new Date()
     const dataFimCiclo = new Date(config.dataInicioCiclo)
     dataFimCiclo.setDate(dataFimCiclo.getDate() + 15)
     
-    const dataFimSeason = new Date(config.dataInicioSeason)
-    dataFimSeason.setMonth(dataFimSeason.getMonth() + 3)
-    
     const diasRestantesCiclo = Math.max(0, Math.ceil((dataFimCiclo.getTime() - agora.getTime()) / (1000 * 60 * 60 * 24)))
-    const diasRestantesSeason = Math.max(0, Math.ceil((dataFimSeason.getTime() - agora.getTime()) / (1000 * 60 * 60 * 24)))
-    
     console.log('   ⏳ Dias restantes ciclo:', diasRestantesCiclo)
-    console.log('   ⏳ Dias restantes season:', diasRestantesSeason)
     
   } catch (error) {
-    console.error('❌ Erro:', error)
+    console.error('❌ Erro ao despausar ciclos:', error)
   } finally {
     await prisma.$disconnect()
   }
 }
 
-verificarCiclo()
+despausarCiclos()
