@@ -171,12 +171,12 @@ export default function Termos() {
                        Acesso gratuito ao painel de parceiros para gerenciamento de solicitações de cashback e repasses.
                      </p>
                    </div>
-                  <div>
-                    <h4 className="text-sss-accent font-medium mb-2">Saques</h4>
-                    <p className="text-gray-300 text-sm">
-                      Usuários podem solicitar saques de Sementes para PIX, com valor mínimo de R$ 10,00.
-                    </p>
-                  </div>
+                                     <div>
+                     <h4 className="text-sss-accent font-medium mb-2">Saques</h4>
+                     <p className="text-gray-300 text-sm">
+                       Apenas criadores podem solicitar saques de Sementes para PIX, com valor mínimo de R$ 1,00.
+                     </p>
+                   </div>
                 </div>
               </section>
 
