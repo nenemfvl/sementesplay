@@ -18,7 +18,7 @@ export default function Ajuda() {
     {
       id: 1,
       pergunta: "Como funciona o sistema de cashback?",
-      resposta: "O sistema de cashback funciona da seguinte forma: quando você faz compras nas cidades FiveM parceiras, recebe automaticamente 10% do valor em Sementes. O dono da cidade gera um código de cashback que você pode resgatar aqui na plataforma."
+      resposta: "O sistema de cashback funciona da seguinte forma: quando você faz compras nas cidades FiveM parceiras, recebe automaticamente 10% do valor em Sementes. O parceiro faz o repasse do cashback através do painel de parceiros, e você pode acompanhar o status na sua página de cashback."
     },
     {
       id: 2,
@@ -28,32 +28,42 @@ export default function Ajuda() {
     {
       id: 3,
       pergunta: "Quais são os níveis dos criadores?",
-      resposta: "Existem 3 níveis: Supremo (top 100), Parceiro (posições 101-300) e Comum (demais criadores). Cada nível oferece benefícios diferentes como destaque no site e recompensas especiais."
+      resposta: "Existem 3 níveis: Supremo (top 100), Parceiro (posições 101-300) e Comum (demais criadores). Cada nível oferece benefícios diferentes como destaque no site, emblemas especiais e recompensas do fundo de sementes."
     },
     {
       id: 4,
       pergunta: "Como me torno um parceiro?",
-      resposta: "Para se tornar parceiro, você precisa ser dono de uma cidade FiveM. Entre em contato conosco para mais informações sobre o processo de cadastro e a taxa mensal de R$ 500,00."
+      resposta: "Para se tornar parceiro, você precisa ser dono de uma cidade FiveM. Entre em contato conosco para mais informações sobre o processo de cadastro. O acesso ao painel de parceiros é gratuito e permite gerenciar solicitações de cashback e repasses."
     },
     {
       id: 5,
-      pergunta: "Os códigos de cashback expiram?",
-      resposta: "Sim, os códigos de cashback expiram após 30 dias da geração. Após esse período, o código não pode mais ser resgatado."
+      pergunta: "Como funcionam os repasses de cashback?",
+      resposta: "Os repasses são feitos pelos parceiros através do painel de parceiros. Quando você faz uma compra em uma cidade parceira, o parceiro recebe a solicitação de cashback e pode aprovar ou rejeitar. Após aprovado, o repasse é processado via PIX."
     },
     {
       id: 6,
-      pergunta: "Posso usar o mesmo código mais de uma vez?",
-      resposta: "Não, cada código de cashback é único e pode ser usado apenas uma vez. Após o resgate, o código fica inválido."
+      pergunta: "Posso solicitar saques de Sementes?",
+      resposta: "Apenas criadores podem solicitar saques de Sementes para PIX. O valor mínimo para saque é R$ 1,00. Usuários comuns podem usar suas Sementes para doações e outras funcionalidades da plataforma."
     },
     {
       id: 7,
       pergunta: "Como funciona o ranking dos criadores?",
-      resposta: "O ranking é baseado na quantidade de Sementes recebidas, número de apoiadores e engajamento. É atualizado periodicamente e determina os níveis dos criadores."
+      resposta: "O ranking é baseado na quantidade de Sementes recebidas, número de apoiadores e engajamento. É atualizado periodicamente e determina os níveis dos criadores. Criadores também recebem parte do fundo de sementes distribuído periodicamente."
     },
     {
       id: 8,
       pergunta: "Posso cancelar uma doação?",
       resposta: "Não, as doações são processadas instantaneamente e não podem ser canceladas. Certifique-se de escolher o criador e valor corretos antes de confirmar."
+    },
+    {
+      id: 9,
+      pergunta: "Como funciona o fundo de sementes?",
+      resposta: "O fundo de sementes é distribuído periodicamente: 50% para criadores (proporcional ao conteúdo) e 50% para usuários (proporcional aos gastos). A distribuição é feita automaticamente pelo sistema."
+    },
+    {
+      id: 10,
+      pergunta: "O que são os emblemas?",
+      resposta: "Emblemas são conquistas visuais que representam marcos importantes na jornada do usuário. São desbloqueados ao atingir certos níveis ou completar atividades específicas na plataforma."
     }
   ]
 
@@ -67,7 +77,7 @@ export default function Ajuda() {
     {
       titulo: "Cashback",
       icon: "💳",
-      descricao: "Tudo sobre o sistema de cashback",
+      descricao: "Tudo sobre o sistema de cashback e repasses",
       link: "#cashback"
     },
     {
