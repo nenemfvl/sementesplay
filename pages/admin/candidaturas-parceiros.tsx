@@ -254,23 +254,26 @@ export default function AdminCandidaturasParceiros() {
                   className="bg-sss-medium rounded-lg p-6 border border-sss-light hover:border-sss-accent transition-all duration-300 hover:shadow-lg"
                 >
                   {/* Header do Card */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center">
+                  <div className="mb-4">
+                    <div className="flex items-center mb-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                         <BuildingOfficeIcon className="w-6 h-6 text-white" />
                       </div>
-                      <div className="ml-3">
+                      <div className="ml-3 flex-1">
                         <h3 className="font-semibold text-sss-white">{candidatura.nome}</h3>
                         <p className="text-sm text-gray-400">{candidatura.email}</p>
                       </div>
                     </div>
+                    
+                    {/* Botões de Ação */}
                     <div className="flex space-x-2">
                       <button
                         onClick={() => abrirDetalhes(candidatura)}
-                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                        className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm flex items-center justify-center"
                         title="Ver detalhes"
                       >
-                        <EyeIcon className="w-4 h-4 text-white" />
+                        <EyeIcon className="w-4 h-4 mr-1" />
+                        Ver
                       </button>
                       {candidatura.status === 'pendente' && (
                         <>
@@ -279,20 +282,22 @@ export default function AdminCandidaturasParceiros() {
                               setSelectedCandidatura(candidatura);
                               setShowModal(true);
                             }}
-                            className="p-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                            className="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm flex items-center justify-center"
                             title="Aprovar candidatura"
                           >
-                            <CheckIcon className="w-4 h-4 text-white" />
+                            <CheckIcon className="w-4 h-4 mr-1" />
+                            Aprovar
                           </button>
                           <button
                             onClick={() => {
                               setSelectedCandidatura(candidatura);
                               setShowModal(true);
                             }}
-                            className="p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+                            className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm flex items-center justify-center"
                             title="Rejeitar candidatura"
                           >
-                            <XMarkIcon className="w-4 h-4 text-white" />
+                            <XMarkIcon className="w-4 h-4 mr-1" />
+                            Rejeitar
                           </button>
                         </>
                       )}
