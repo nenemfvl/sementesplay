@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../lib/auth'
-import PushNotifications from '../components/PushNotifications'
+
 
 export default function Notificacoes() {
   const [user, setUser] = useState<User | null>(null)
@@ -194,20 +194,7 @@ export default function Notificacoes() {
               )}
             </div>
 
-            {/* Configurações de Notificações */}
-            <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-sss-white mb-1">⚙️ Configurações</h3>
-                  <p className="text-gray-400 text-sm">Configure suas preferências de notificação e som</p>
-                </div>
-              </div>
-              
-              {/* Componente de configurações */}
-              <div className="flex justify-center">
-                <PushNotifications inline={true} />
-              </div>
-            </div>
+
 
             {/* Filtros */}
             <div className="bg-sss-medium rounded-lg p-4 border border-sss-light">

@@ -5,7 +5,7 @@ import {
   CogIcon, 
   ArrowLeftIcon, 
   UserIcon,
-  BellIcon,
+
   ShieldCheckIcon,
   EyeIcon,
   EyeSlashIcon,
@@ -27,13 +27,7 @@ export default function Configuracoes() {
     confirmarSenha: ''
   })
 
-  const [notificacoes, setNotificacoes] = useState({
-    doacoes: true,
-    cashback: true,
-    novosCriadores: false,
-    ranking: true,
-    email: true
-  })
+
 
   const [privacidade, setPrivacidade] = useState({
     perfilPublico: true,
@@ -44,7 +38,6 @@ export default function Configuracoes() {
 
   const tabs = [
     { id: 'perfil', label: 'Perfil', icon: UserIcon },
-    { id: 'notificacoes', label: 'Notificações', icon: BellIcon },
     { id: 'privacidade', label: 'Privacidade', icon: ShieldCheckIcon }
   ]
 
@@ -54,12 +47,7 @@ export default function Configuracoes() {
     alert('Configurações salvas com sucesso! ✅')
   }
 
-  const toggleNotificacao = (key: string) => {
-    setNotificacoes(prev => ({
-      ...prev,
-      [key]: !prev[key as keyof typeof prev]
-    }))
-  }
+
 
   const togglePrivacidade = (key: string) => {
     setPrivacidade(prev => ({
@@ -279,46 +267,7 @@ export default function Configuracoes() {
                   </motion.form>
                 )}
 
-                {activeTab === 'notificacoes' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-6"
-                  >
-                    <h3 className="text-lg font-semibold text-sss-white mb-4">Preferências de Notificação</h3>
-                    
-                    <div className="space-y-4">
-                      {Object.entries(notificacoes).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-4 bg-sss-dark rounded-lg">
-                          <div>
-                            <h4 className="text-sss-white font-medium capitalize">
-                              {key.replace(/([A-Z])/g, ' $1').trim()}
-                            </h4>
-                            <p className="text-gray-400 text-sm">
-                              {key === 'doacoes' && 'Receber notificações sobre suas doações'}
-                              {key === 'cashback' && 'Alertas sobre códigos de cashback disponíveis'}
-                              {key === 'novosCriadores' && 'Novos criadores que se juntam à plataforma'}
-                              {key === 'ranking' && 'Mudanças no ranking dos criadores'}
-                              {key === 'email' && 'Notificações por email'}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => toggleNotificacao(key)}
-                            className={`w-12 h-6 rounded-full transition-colors ${
-                              value ? 'bg-sss-accent' : 'bg-sss-light'
-                            }`}
-                            aria-label={`Alternar notificação de ${key.replace(/([A-Z])/g, ' $1').trim()}`}
-                          >
-                            <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
-                              value ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
+
 
                 {activeTab === 'privacidade' && (
                   <motion.div

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNotificationSound } from './useNotificationSound'
 
 interface NotificacaoGlobal {
   id: string
@@ -14,29 +13,6 @@ export function useGlobalNotifications(userId: string | null) {
   const [notificacoes, setNotificacoes] = useState<NotificacaoGlobal[]>([])
   const [loading, setLoading] = useState(true)
   const lastNotificationCountRef = useRef<number>(0)
-  const { playSound } = useNotificationSound()
-
-  // Mapear tipos de notificação para tipos de som
-  const mapearTipoParaSom = (tipo: string): string => {
-    const mapeamento: Record<string, string> = {
-      'doacao': 'donation',
-      'doacao_recebida': 'donation',
-      'missao': 'mission',
-      'missao_completa': 'mission',
-      'chat': 'chat',
-      'mensagem': 'chat',
-      'ranking': 'ranking',
-      'nivel_up': 'success',
-      'fundo': 'success',
-      'cashback': 'success',
-      'erro': 'error',
-      'sistema': 'system',
-      'solicitacao_compra': 'system',
-      'repasse_confirmado': 'system'
-    }
-    
-    return mapeamento[tipo] || 'default'
-  }
 
   // Carregar notificações
   const loadNotificacoes = useCallback(async () => {
@@ -53,7 +29,7 @@ export function useGlobalNotifications(userId: string | null) {
         const notificacaoNaoLidas = novasNotificacoes.filter(n => !n.lida)
         const currentCount = notificacaoNaoLidas.length
         
-        // Se há mais notificações não lidas que antes, tocar som
+        // Se há mais notificações não lidas que antes, registrar no console
         if (lastNotificationCountRef.current > 0 && currentCount > lastNotificationCountRef.current) {
           // Encontrar a notificação mais recente
           const maisRecente = novasNotificacoes
@@ -61,9 +37,7 @@ export function useGlobalNotifications(userId: string | null) {
             .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())[0]
           
           if (maisRecente) {
-            const tipoSom = mapearTipoParaSom(maisRecente.tipo)
-            playSound(tipoSom as any)
-            console.log(`🔊 Nova notificação: ${maisRecente.titulo} (som: ${tipoSom})`)
+            console.log(`📱 Nova notificação: ${maisRecente.titulo}`)
           }
         }
         
@@ -75,7 +49,7 @@ export function useGlobalNotifications(userId: string | null) {
     } finally {
       setLoading(false)
     }
-  }, [userId, playSound])
+  }, [userId])
 
   // Inicializar contagem na primeira carga
   useEffect(() => {
