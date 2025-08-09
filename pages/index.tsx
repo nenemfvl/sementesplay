@@ -225,10 +225,22 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
                 >
-                  <div className={`w-16 h-16 bg-${nivel.cor}-100 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                    nivel.cor === 'yellow' ? 'bg-yellow-100' :
+                    nivel.cor === 'blue' ? 'bg-blue-100' :
+                    nivel.cor === 'gray' ? 'bg-gray-100' :
+                    nivel.cor === 'green' ? 'bg-green-100' :
+                    'bg-gray-100'
+                  }`}>
                     <span className="text-2xl">{nivel.icone}</span>
                   </div>
-                  <h3 className={`text-xl font-bold text-${nivel.cor}-600 mb-2`}>
+                  <h3 className={`text-xl font-bold mb-2 ${
+                    nivel.cor === 'yellow' ? 'text-yellow-600' :
+                    nivel.cor === 'blue' ? 'text-blue-600' :
+                    nivel.cor === 'gray' ? 'text-gray-600' :
+                    nivel.cor === 'green' ? 'text-green-600' :
+                    'text-gray-600'
+                  }`}>
                     {nivel.nome}
                   </h3>
                   <p className="text-gray-600 mb-4">
@@ -237,7 +249,13 @@ export default function Home() {
                   <ul className="text-left space-y-2">
                     {nivel.beneficios.map((beneficio, idx) => (
                       <li key={idx} className="flex items-center text-sm text-gray-600">
-                        <div className={`w-2 h-2 bg-${nivel.cor}-400 rounded-full mr-2`}></div>
+                        <div className={`w-2 h-2 rounded-full mr-2 ${
+                          nivel.cor === 'yellow' ? 'bg-yellow-400' :
+                          nivel.cor === 'blue' ? 'bg-blue-400' :
+                          nivel.cor === 'gray' ? 'bg-gray-400' :
+                          nivel.cor === 'green' ? 'bg-green-400' :
+                          'bg-gray-400'
+                        }`}></div>
                         {beneficio}
                       </li>
                     ))}
