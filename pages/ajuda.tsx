@@ -291,9 +291,7 @@ export default function Ajuda() {
                 <Link href="/privacidade" className="text-sss-accent hover:text-red-400 text-sm">
                   Política de Privacidade
                 </Link>
-                <Link href="/ranking" className="text-sss-accent hover:text-red-400 text-sm">
-                  Ranking de Criadores
-                </Link>
+
               </div>
             </motion.div>
           </motion.div>

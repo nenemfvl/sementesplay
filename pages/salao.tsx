@@ -446,8 +446,6 @@ export default function Salao() {
               <Link href="/privacidade" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
               <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
-              <span>|</span>
-              <Link href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</Link>
             </div>
             <div className="text-gray-500 text-xs text-center">
               &copy; {new Date().getFullYear()} SementesPLAY. Todos os direitos reservados.

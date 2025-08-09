@@ -647,8 +647,6 @@ export default function Status() {
               <Link href="/privacidade" className="hover:text-sss-accent">Política de Privacidade</Link>
               <span>|</span>
               <Link href="/ajuda" className="hover:text-sss-accent">Ajuda</Link>
-              <span>|</span>
-              <Link href="/ranking" className="hover:text-sss-accent">Ranking de Criadores</Link>
             </div>
             {/* Copyright */}
             <div className="text-gray-500 text-xs text-center">
