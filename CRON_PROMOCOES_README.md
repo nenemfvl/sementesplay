@@ -15,10 +15,10 @@ Sistema automático que promove/rebaixa criadores baseado em sua posição no ra
 ### **Critérios de Promoção**
 ```
 1º lugar → criador-supremo (garantido)
-Top 10% → criador-supremo
-Top 30% → criador-parceiro  
-Top 60% → criador-comum
-Restante → criador-iniciante
+Top 1-50 → criador-supremo
+Top 51-100 → criador-parceiro  
+Top 101-150 → criador-comum
+Top 151+ → criador-iniciante
 ```
 
 ## 🔧 **Como Funciona**

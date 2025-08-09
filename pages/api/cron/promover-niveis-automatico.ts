@@ -4,11 +4,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 // Função para determinar novo nível baseado na posição
 function determinarNovoNivel(posicao: number, totalCriadores: number): string {
   if (totalCriadores === 1) return 'criador-supremo'
-  if (posicao === 1) return 'criador-supremo'
-  if (posicao <= Math.ceil(totalCriadores * 0.1)) return 'criador-supremo' // Top 10%
-  if (posicao <= Math.ceil(totalCriadores * 0.3)) return 'criador-parceiro' // Top 30%
-  if (posicao <= Math.ceil(totalCriadores * 0.6)) return 'criador-comum' // Top 60%
-  return 'criador-iniciante'
+  if (posicao <= 50) return 'criador-supremo' // Top 1-50
+  if (posicao <= 100) return 'criador-parceiro' // Top 51-100
+  if (posicao <= 150) return 'criador-comum' // Top 101-150
+  return 'criador-iniciante' // Top 151+
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
