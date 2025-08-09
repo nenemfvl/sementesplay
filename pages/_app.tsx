@@ -8,6 +8,7 @@ import '../styles/globals.css'
 import { auth } from '../lib/auth'
 import { LoadingProvider } from '../contexts/LoadingContext'
 import GlobalNavigation from '../components/GlobalNavigation'
+import GlobalNotificationSystem from '../components/GlobalNotificationSystem'
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
@@ -69,7 +70,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         {/* <PWABanner /> */}
         <OfflineIndicator />
         <GlobalNavigation />
-        <Component {...pageProps} />
+        <GlobalNotificationSystem>
+          <Component {...pageProps} />
+        </GlobalNotificationSystem>
       </SessionProvider>
     </LoadingProvider>
   )

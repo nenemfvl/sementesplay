@@ -24,6 +24,16 @@ export function reproduzirSomNotificacao(tipo: string) {
   }
 }
 
+// Função apenas para o frontend - reproduzir som manualmente
+export function reproduzirSomFrontend(tipo: string) {
+  if (typeof window !== 'undefined') {
+    const event = new CustomEvent('playNotificationSound', { 
+      detail: { type: mapearTipoParaSom(tipo) } 
+    })
+    window.dispatchEvent(event)
+  }
+}
+
 // Mapear tipos de notificação para tipos de som
 function mapearTipoParaSom(tipo: string): string {
   const mapeamento: Record<string, string> = {
@@ -46,13 +56,10 @@ function mapearTipoParaSom(tipo: string): string {
   return mapeamento[tipo] || 'default'
 }
 
-// Função combinada que salva no banco E reproduz som
+// Função que apenas salva no banco (o som será reproduzido automaticamente pelo sistema global)
 export async function enviarNotificacaoComSom(usuarioId: string, tipo: string, titulo: string, mensagem: string) {
-  // Salvar no banco
+  // Salvar no banco (o sistema global de notificações detectará a nova notificação e tocará o som)
   const notificacao = await enviarNotificacao(usuarioId, tipo, titulo, mensagem)
-  
-  // Reproduzir som (apenas no frontend)
-  reproduzirSomNotificacao(tipo)
   
   return notificacao
 } 
