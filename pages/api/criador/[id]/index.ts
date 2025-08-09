@@ -199,7 +199,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [conteudos, enquetes, recadosPublicos] = await Promise.all([
           // Total de visualizações dos conteúdos
           prisma.conteudo.aggregate({
-            where: { criadorId: c.id },
+            where: { criadorId: c.usuarioId },
             _sum: { visualizacoes: true }
           }).catch(() => ({ _sum: { visualizacoes: 0 } })),
           
