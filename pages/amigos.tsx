@@ -713,9 +713,9 @@ export default function Amigos() {
                           key={usuario.id}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="flex items-center justify-between p-4 bg-sss-dark rounded-lg border border-sss-light"
+                          className="p-4 bg-sss-dark rounded-lg border border-sss-light"
                         >
-                          <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-4 mb-3">
                             <div className="relative">
                               <div className="w-12 h-12 bg-sss-accent/20 rounded-full flex items-center justify-center">
                                 <span className="text-lg">👤</span>
@@ -723,7 +723,7 @@ export default function Amigos() {
                               <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-sss-dark ${onlineIds.includes(usuario.id) ? 'bg-green-500' : 'bg-gray-500'}`}></span>
                             </div>
                             
-                            <div>
+                            <div className="flex-1">
                               <h3 className="text-sss-white font-semibold">{usuario.nome}</h3>
                               <div className="flex items-center space-x-4 mt-1">
                                 <span className="text-xs text-gray-500">
@@ -736,23 +736,25 @@ export default function Amigos() {
                             </div>
                           </div>
                           
-                          <div className="flex items-center space-x-2">
+                          <div className="flex space-x-2">
                             <Link
                               href={`/perfil/${usuario.id}`}
-                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors"
+                              className="flex-1 flex items-center justify-center px-3 py-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors text-sm"
                               title="Ver perfil"
                               aria-label={`Ver perfil de ${usuario.nome}`}
                             >
-                              <UserGroupIcon className="w-5 h-5" />
+                              <UserGroupIcon className="w-4 h-4 mr-1" />
+                              Ver Perfil
                             </Link>
                             
                             <button
                               onClick={() => enviarSolicitacao(usuario.id)}
-                              className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-colors"
+                              className="flex-1 flex items-center justify-center px-3 py-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-colors text-sm"
                               title="Adicionar amigo"
                               aria-label={`Adicionar ${usuario.nome} como amigo`}
                             >
-                              <UserPlusIcon className="w-5 h-5" />
+                              <UserPlusIcon className="w-4 h-4 mr-1" />
+                              Adicionar
                             </button>
                           </div>
                         </motion.div>
