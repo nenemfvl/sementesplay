@@ -9,7 +9,6 @@ import {
   TrophyIcon,
   UserGroupIcon,
   ChatBubbleLeftIcon,
-  GiftIcon,
   CogIcon
 } from '@heroicons/react/24/outline'
 import { 
@@ -18,7 +17,6 @@ import {
   TrophyIcon as TrophyIconSolid,
   UserGroupIcon as UserGroupIconSolid,
   ChatBubbleLeftIcon as ChatBubbleLeftIconSolid,
-  GiftIcon as GiftIconSolid,
   CogIcon as CogIconSolid
 } from '@heroicons/react/24/solid'
 

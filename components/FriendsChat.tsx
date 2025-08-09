@@ -7,10 +7,8 @@ import {
   PaperAirplaneIcon,
   UserPlusIcon,
   MagnifyingGlassIcon,
-  EllipsisVerticalIcon,
   ArrowLeftIcon,
   CheckIcon,
-  ClockIcon,
   UserIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'

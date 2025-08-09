@@ -5,7 +5,6 @@ import { SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/outline'
 export default function NotificationSoundSettings() {
   const { 
     getSettings, 
-    updateSettings, 
     toggleSounds, 
     setVolume, 
     playTestSound,

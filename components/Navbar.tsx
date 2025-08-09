@@ -31,7 +31,7 @@ interface UserWithCriador extends User {
 
 export default function Navbar() {
   const router = useRouter();
-  const { navigateTo, isNavigating } = useNavigation();
+  const { navigateTo } = useNavigation();
   const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);

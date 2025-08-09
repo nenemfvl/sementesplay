@@ -40,15 +40,16 @@ export default function PushNotifications() {
     }
 
     // Listener para eventos de som de notificação
-    const handlePlayNotificationSound = (event: CustomEvent) => {
-      const { type } = event.detail
+    const handlePlayNotificationSound = (event: Event) => {
+      const customEvent = event as CustomEvent
+      const { type } = customEvent.detail
       playSound(type)
     }
 
-    window.addEventListener('playNotificationSound', handlePlayNotificationSound as EventListener)
+    window.addEventListener('playNotificationSound', handlePlayNotificationSound)
 
     return () => {
-      window.removeEventListener('playNotificationSound', handlePlayNotificationSound as EventListener)
+      window.removeEventListener('playNotificationSound', handlePlayNotificationSound)
     }
   }, [playSound])
 
