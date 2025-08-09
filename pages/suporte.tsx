@@ -64,6 +64,28 @@ export default function Suporte() {
     carregarConversas()
   }, [router])
 
+  // Polling para atualizar mensagens automaticamente
+  useEffect(() => {
+    if (!conversaAtual || !conversaAtual.id) return
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/suporte/mensagens?conversaId=${conversaAtual.id}`)
+        const data = await response.json()
+        if (response.ok) {
+          setConversaAtual(prev => ({
+            ...prev!,
+            mensagens: data.mensagens
+          }))
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar mensagens:', error)
+      }
+    }, 2000) // Atualiza a cada 2 segundos
+
+    return () => clearInterval(interval)
+  }, [conversaAtual])
+
   const carregarConversas = async () => {
     try {
       const response = await fetch('/api/suporte')
@@ -120,6 +142,22 @@ export default function Suporte() {
   const enviarMensagem = async () => {
     if (!conversaAtual || !novaMensagem.trim()) return
 
+    const conteudoMensagem = novaMensagem
+    const mensagemLocal: Mensagem = {
+      id: `temp-${Date.now()}`, // ID temporário
+      mensagem: conteudoMensagem,
+      tipo: 'usuario',
+      dataEnvio: new Date().toISOString(),
+      lida: false
+    }
+
+    // Adiciona mensagem imediatamente ao estado local
+    setConversaAtual(prev => ({
+      ...prev!,
+      mensagens: [...(prev?.mensagens || []), mensagemLocal]
+    }))
+    setNovaMensagem('')
+
     setEnviando(true)
     try {
       const response = await fetch('/api/suporte/mensagens', {
@@ -127,24 +165,51 @@ export default function Suporte() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversaId: conversaAtual.id,
-          mensagem: novaMensagem
+          mensagem: conteudoMensagem
         })
       })
 
       if (response.ok) {
         const data = await response.json()
-        const conversaAtualizada = {
-          ...conversaAtual,
-          mensagens: [...(conversaAtual.mensagens || []), data.mensagem],
-          dataAtualizacao: new Date().toISOString()
-        }
-        setConversaAtual(conversaAtualizada)
-        setConversas(conversas.map(c => 
-          c.id === conversaAtual.id ? conversaAtualizada : c
+        // Substitui a mensagem temporária pela mensagem real do servidor
+        setConversaAtual(prev => {
+          if (!prev) return prev
+          const semTemporaria = prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+          return {
+            ...prev,
+            mensagens: [...semTemporaria, data.mensagem],
+            dataAtualizacao: new Date().toISOString()
+          }
+        })
+        
+        // Atualiza também na lista de conversas
+        setConversas(prev => prev.map(c => 
+          c.id === conversaAtual.id ? {
+            ...c,
+            mensagens: [...c.mensagens.filter(m => m.id !== mensagemLocal.id), data.mensagem],
+            dataAtualizacao: new Date().toISOString()
+          } : c
         ))
-        setNovaMensagem('')
+      } else {
+        // Remove a mensagem se houve erro
+        setConversaAtual(prev => {
+          if (!prev) return prev
+          return {
+            ...prev,
+            mensagens: prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+          }
+        })
+        console.error('Erro ao enviar mensagem')
       }
     } catch (error) {
+      // Remove a mensagem se houve erro
+      setConversaAtual(prev => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          mensagens: prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+        }
+      })
       console.error('Erro ao enviar mensagem:', error)
     } finally {
       setEnviando(false)

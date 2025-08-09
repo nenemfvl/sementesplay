@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Navbar from '../../components/Navbar'
 import { auth } from '../../lib/auth'
@@ -55,6 +55,7 @@ export default function AdminSuporte() {
   const [filtroStatus, setFiltroStatus] = useState('todos')
   const [filtroCategoria, setFiltroCategoria] = useState('todos')
   const router = useRouter()
+  const mensagensEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -88,8 +89,54 @@ export default function AdminSuporte() {
     carregarConversas()
   }, [filtroStatus, filtroCategoria])
 
+  // Polling para atualizar mensagens automaticamente
+  useEffect(() => {
+    if (!conversaAtual || !conversaAtual.id) return
+
+    const interval = setInterval(async () => {
+      try {
+        // Buscar conversa atualizada com mensagens
+        const response = await fetch(`/api/admin/suporte?status=${filtroStatus}&categoria=${filtroCategoria}`)
+        if (response.ok) {
+          const data = await response.json()
+          const conversaAtualizada = data.conversas.find((c: Conversa) => c.id === conversaAtual.id)
+          if (conversaAtualizada) {
+            setConversaAtual(conversaAtualizada)
+            setConversas(prev => prev.map(c => 
+              c.id === conversaAtual.id ? conversaAtualizada : c
+            ))
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar mensagens:', error)
+      }
+    }, 2000) // Atualiza a cada 2 segundos
+
+    return () => clearInterval(interval)
+  }, [conversaAtual, filtroStatus, filtroCategoria])
+
   const enviarResposta = async () => {
     if (!conversaAtual || !novaMensagem.trim()) return
+
+    const conteudoMensagem = novaMensagem
+    const mensagemLocal: Mensagem = {
+      id: `temp-${Date.now()}`, // ID temporário
+      mensagem: conteudoMensagem,
+      tipo: 'admin',
+      dataEnvio: new Date().toISOString(),
+      lida: false,
+      remetente: {
+        id: 'admin',
+        nome: 'Admin'
+      }
+    }
+
+    // Adiciona mensagem imediatamente ao estado local
+    setConversaAtual(prev => ({
+      ...prev!,
+      mensagens: [...(prev?.mensagens || []), mensagemLocal]
+    }))
+    setNovaMensagem('')
 
     setEnviando(true)
     try {
@@ -98,26 +145,54 @@ export default function AdminSuporte() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversaId: conversaAtual.id,
-          mensagem: novaMensagem,
+          mensagem: conteudoMensagem,
           acao: 'responder'
         })
       })
 
       if (response.ok) {
         const data = await response.json()
-        const conversaAtualizada = {
-          ...conversaAtual,
-          mensagens: [...(conversaAtual.mensagens || []), data.mensagem],
-          status: 'em_espera',
-          dataAtualizacao: new Date().toISOString()
-        }
-        setConversaAtual(conversaAtualizada)
-        setConversas(conversas.map(c => 
-          c.id === conversaAtual.id ? conversaAtualizada : c
+        // Substitui a mensagem temporária pela mensagem real do servidor
+        setConversaAtual(prev => {
+          if (!prev) return prev
+          const semTemporaria = prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+          return {
+            ...prev,
+            mensagens: [...semTemporaria, data.mensagem],
+            status: 'em_espera',
+            dataAtualizacao: new Date().toISOString()
+          }
+        })
+        
+        // Atualiza também na lista de conversas
+        setConversas(prev => prev.map(c => 
+          c.id === conversaAtual.id ? {
+            ...c,
+            mensagens: [...c.mensagens.filter(m => m.id !== mensagemLocal.id), data.mensagem],
+            status: 'em_espera',
+            dataAtualizacao: new Date().toISOString()
+          } : c
         ))
-        setNovaMensagem('')
+      } else {
+        // Remove a mensagem se houve erro
+        setConversaAtual(prev => {
+          if (!prev) return prev
+          return {
+            ...prev,
+            mensagens: prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+          }
+        })
+        console.error('Erro ao enviar resposta')
       }
     } catch (error) {
+      // Remove a mensagem se houve erro
+      setConversaAtual(prev => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          mensagens: prev.mensagens.filter(m => m.id !== mensagemLocal.id)
+        }
+      })
       console.error('Erro ao enviar resposta:', error)
     } finally {
       setEnviando(false)
