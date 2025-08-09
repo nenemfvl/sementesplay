@@ -185,14 +185,26 @@ self.addEventListener('sync', (event) => {
 self.addEventListener('push', (event) => {
   console.log('Notificação push recebida')
   
+  let data = {}
+  try {
+    data = event.data ? event.data.json() : {}
+  } catch (e) {
+    data = { body: event.data ? event.data.text() : 'Nova notificação do SementesPLAY' }
+  }
+  
   const options = {
-    body: event.data ? event.data.text() : 'Nova notificação do SementesPLAY',
+    body: data.body || 'Nova notificação do SementesPLAY',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
-    vibrate: [100, 50, 100],
+    vibrate: [200, 100, 200], // Vibração mais intensa
+    sound: '/sounds/notification-default.mp3', // Som padrão
+    silent: false, // Garantir que não seja silenciosa
+    requireInteraction: true, // Manter visível até interação
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      primaryKey: 1,
+      type: data.type || 'default',
+      url: data.url || '/'
     },
     actions: [
       {
@@ -205,11 +217,12 @@ self.addEventListener('push', (event) => {
         title: 'Fechar',
         icon: '/icons/icon-72x72.png'
       }
-    ]
+    ],
+    tag: data.tag || 'sementesplay-notification'
   }
   
   event.waitUntil(
-    self.registration.showNotification('SementesPLAY', options)
+    self.registration.showNotification(data.title || 'SementesPLAY', options)
   )
 })
 

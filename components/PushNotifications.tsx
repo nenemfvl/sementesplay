@@ -8,6 +8,8 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import { usePWA } from '../hooks/usePWA'
+import { useNotificationSound } from '../hooks/useNotificationSound'
+import NotificationSoundSettings from './NotificationSoundSettings'
 
 interface NotificationSettings {
   donations: boolean
@@ -30,12 +32,25 @@ export default function PushNotifications() {
   const [loading, setLoading] = useState(false)
 
   const { requestNotificationPermission, sendNotification } = usePWA()
+  const { playSound } = useNotificationSound()
 
   useEffect(() => {
     if ('Notification' in window) {
       setPermission(Notification.permission)
     }
-  }, [])
+
+    // Listener para eventos de som de notificação
+    const handlePlayNotificationSound = (event: CustomEvent) => {
+      const { type } = event.detail
+      playSound(type)
+    }
+
+    window.addEventListener('playNotificationSound', handlePlayNotificationSound as EventListener)
+
+    return () => {
+      window.removeEventListener('playNotificationSound', handlePlayNotificationSound as EventListener)
+    }
+  }, [playSound])
 
   const handleRequestPermission = async () => {
     setLoading(true)
@@ -71,6 +86,10 @@ export default function PushNotifications() {
   }
 
   const handleTestNotification = () => {
+    // Reproduzir som
+    playSound('default')
+    
+    // Enviar notificação visual
     sendNotification('Notificação de teste!', {
       body: 'Esta é uma notificação de teste do SementesPLAY.',
       tag: 'test-notification',
@@ -213,6 +232,14 @@ export default function PushNotifications() {
                   >
                     Enviar Notificação de Teste
                   </button>
+
+                  {/* Configurações de Som */}
+                  <div className="mt-4 pt-4 border-t border-sss-light">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-sss-white">Configurações de Som</h4>
+                      <NotificationSoundSettings />
+                    </div>
+                  </div>
                 </div>
               )}
             </motion.div>

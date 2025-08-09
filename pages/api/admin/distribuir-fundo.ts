@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
-import { enviarNotificacao } from '../../../lib/notificacao'
+import { enviarNotificacaoComSom } from '../../../lib/notificacao'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -102,12 +102,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for (const criador of criadores) {
       const proporcao = totalConteudos > 0 ? criador._count.conteudos / totalConteudos : 0
       const valorCriador = valorCriadores * proporcao
-      await enviarNotificacao(criador.usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorCriador.toFixed(2)} sementes do fundo de sementes.`)
+      await enviarNotificacaoComSom(criador.usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorCriador.toFixed(2)} sementes do fundo de sementes.`)
     }
     for (const usuarioId of Object.keys(gastoPorUsuario)) {
       const proporcao = gastoPorUsuario[usuarioId] / totalGasto
       const valorUsuario = valorUsuarios * proporcao
-      await enviarNotificacao(usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorUsuario.toFixed(2)} sementes do fundo de sementes.`)
+      await enviarNotificacaoComSom(usuarioId, 'fundo', 'Fundo de sementes distribuído!', `Você recebeu ${valorUsuario.toFixed(2)} sementes do fundo de sementes.`)
     }
 
     return res.status(200).json({ message: 'Fundo de sementes distribuído com sucesso!' })

@@ -1,0 +1,12 @@
+# Este arquivo representaria um arquivo de áudio MP3 para notificação padrão
+# Como não posso criar arquivos binários reais, este é um placeholder
+# Você deve adicionar arquivos de áudio reais aqui, como:
+# - notification-default.mp3 (som padrão)
+# - notification-donation.mp3 (som para doações)
+# - notification-mission.mp3 (som para missões)
+# - notification-chat.mp3 (som para mensagens)
+# - notification-success.mp3 (som de sucesso)
+# - notification-error.mp3 (som de erro)
+
+# Sugestão: Use sons curtos (1-2 segundos) e agradáveis
+# Formatos suportados: MP3, WAV, OGG
