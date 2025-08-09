@@ -1,6 +1,16 @@
 import { prisma } from '../../../../lib/prisma'
 import { NextApiRequest, NextApiResponse } from 'next'
 
+// Função para determinar novo nível baseado na posição
+function determinarNovoNivel(posicao: number, totalCriadores: number): string {
+  if (totalCriadores === 1) return 'criador-supremo'
+  if (posicao === 1) return 'criador-supremo'
+  if (posicao <= Math.ceil(totalCriadores * 0.1)) return 'criador-supremo' // Top 10%
+  if (posicao <= Math.ceil(totalCriadores * 0.3)) return 'criador-parceiro' // Top 30%
+  if (posicao <= Math.ceil(totalCriadores * 0.6)) return 'criador-comum' // Top 60%
+  return 'criador-iniciante'
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' })
@@ -88,16 +98,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Ordenar por pontuação total (maior para menor)
     criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
-
-    // Função para determinar novo nível baseado na posição
-    function determinarNovoNivel(posicao: number, totalCriadores: number): string {
-      if (totalCriadores === 1) return 'criador-supremo'
-      if (posicao === 1) return 'criador-supremo'
-      if (posicao <= Math.ceil(totalCriadores * 0.1)) return 'criador-supremo' // Top 10%
-      if (posicao <= Math.ceil(totalCriadores * 0.3)) return 'criador-parceiro' // Top 30%
-      if (posicao <= Math.ceil(totalCriadores * 0.6)) return 'criador-comum' // Top 60%
-      return 'criador-iniciante'
-    }
 
     // Aplicar promoções
     const promocoes = []
