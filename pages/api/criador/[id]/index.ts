@@ -205,13 +205,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           // Quantidade de enquetes criadas
           prisma.enquete.count({
-            where: { criadorId: c.id }
+            where: { criadorId: c.usuarioId }
           }).catch(() => 0),
           
           // Quantidade de recados públicos (caixa de perguntas)
           prisma.recado.count({
             where: { 
-              destinatarioId: c.usuario.id,
+              destinatarioId: c.usuarioId,
               publico: true 
             }
           }).catch(() => 0)
