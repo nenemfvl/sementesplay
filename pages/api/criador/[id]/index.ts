@@ -161,7 +161,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('API criador: Estatísticas calculadas - Sementes Recebidas:', totalSementesRecebidas, 'Sementes Disponíveis:', sementesDisponiveis, 'Doações:', numeroDoacoes)
 
-    // Buscar posição no ranking usando EXATAMENTE o mesmo critério da página de status
+    // Buscar posição no ranking usando EXATAMENTE o mesmo critério da API de ranking
     const ranking = await prisma.criador.findMany({
       where: {
         usuario: {
@@ -182,11 +182,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             sementes: true
           }
         },
-        doacoesRecebidas: true
+        doacoesRecebidas: {
+          select: {
+            quantidade: true
+          }
+        }
       }
     })
 
-    // Calcular pontuação composta para cada criador (EXATAMENTE igual à página de status)
+    // Calcular pontuação composta para cada criador (EXATAMENTE igual à API de ranking)
     const criadoresComPontuacao = await Promise.all(ranking.map(async c => {
       try {
         // Pontuação base: sementes recebidas (1 semente = 1 ponto)
@@ -199,7 +203,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [conteudos, enquetes, recadosPublicos] = await Promise.all([
           // Total de visualizações dos conteúdos
           prisma.conteudo.aggregate({
-            where: { criadorId: c.usuarioId },
+            where: { criadorId: c.id },
             _sum: { visualizacoes: true }
           }).catch(() => ({ _sum: { visualizacoes: 0 } })),
           
