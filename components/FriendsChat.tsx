@@ -254,6 +254,31 @@ export default function FriendsChat() {
     setActiveTab('chat')
     
     try {
+      // Se a conversa não tem ID (nova conversa), criar primeiro
+      if (!conversa.id) {
+        const createResponse = await fetch('/api/chat/conversas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('sementesplay_token')}`
+          },
+          body: JSON.stringify({
+            usuario1Id: user?.id,
+            usuario2Id: conversa.usuarioId
+          })
+        })
+
+        if (createResponse.ok) {
+          const createData = await createResponse.json()
+          conversa.id = createData.id
+          setConversaAtiva({...conversa, id: createData.id})
+        } else {
+          console.error('Erro ao criar conversa')
+          return
+        }
+      }
+
+      // Carregar mensagens da conversa
       const response = await fetch(`/api/chat/conversas/${conversa.id}/mensagens`)
       const data = await response.json()
       if (response.ok) {

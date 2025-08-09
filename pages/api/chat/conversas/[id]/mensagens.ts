@@ -58,14 +58,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'ID da conversa e conteúdo são obrigatórios' })
   }
 
-  const mensagem = await prisma.mensagem.create({
-    data: {
-      conversaId: String(id),
-      remetenteId: user.id,
-      texto: conteudo,
-      dataEnvio: new Date()
-    }
-  })
+  try {
+    // Verificar se a conversa existe, se não existir, retornar erro
+    const conversa = await prisma.conversa.findUnique({
+      where: { id: String(id) }
+    })
 
-  return res.status(201).json({ mensagem })
+    if (!conversa) {
+      return res.status(404).json({ error: 'Conversa não encontrada' })
+    }
+
+    // Verificar se o usuário faz parte da conversa
+    if (conversa.usuario1Id !== user.id && conversa.usuario2Id !== user.id) {
+      return res.status(403).json({ error: 'Você não faz parte desta conversa' })
+    }
+
+    const mensagem = await prisma.mensagem.create({
+      data: {
+        conversaId: String(id),
+        remetenteId: user.id,
+        texto: conteudo,
+        dataEnvio: new Date()
+      },
+      include: {
+        remetente: { select: { id: true, nome: true } }
+      }
+    })
+
+    // Atualizar timestamp da conversa
+    await prisma.conversa.update({
+      where: { id: String(id) },
+      data: { ultimaMensagem: new Date() }
+    })
+
+    const mensagemFormatada = {
+      id: mensagem.id,
+      remetenteId: mensagem.remetenteId,
+      remetenteNome: mensagem.remetente.nome,
+      conteudo: mensagem.texto,
+      timestamp: mensagem.dataEnvio,
+      lida: mensagem.lida
+    }
+
+    return res.status(201).json({ mensagem: mensagemFormatada })
+  } catch (error) {
+    console.error('Erro ao enviar mensagem:', error)
+    return res.status(500).json({ error: 'Erro interno do servidor' })
+  }
 } 
