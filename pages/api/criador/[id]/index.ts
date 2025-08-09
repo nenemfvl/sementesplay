@@ -161,7 +161,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('API criador: Estatísticas calculadas - Sementes Recebidas:', totalSementesRecebidas, 'Sementes Disponíveis:', sementesDisponiveis, 'Doações:', numeroDoacoes)
 
-    // Buscar posição no ranking usando o mesmo critério da página de status
+    // Buscar posição no ranking usando EXATAMENTE o mesmo critério da página de status
     const ranking = await prisma.criador.findMany({
       where: {
         usuario: {
@@ -172,32 +172,78 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       include: {
         usuario: {
-          include: {
-            missaoUsuarios: {
-              where: {
-                concluida: true
-              }
-            },
-            conquistas: true
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            avatarUrl: true,
+            nivel: true,
+            pontuacao: true,
+            sementes: true
           }
         },
         doacoesRecebidas: true
       }
     })
 
-    // Calcular pontuação composta para cada criador (mesmo critério da página de status)
-    const criadoresComPontuacao = ranking.map(c => {
-      const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
-      const pontosMissoes = c.usuario.missaoUsuarios.length * 10
-      const pontosConquistas = c.usuario.conquistas.length * 20
-      const pontosUsuario = c.usuario.pontuacao || 0
-      const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
-      
-      return {
-        id: c.id,
-        pontuacaoTotal
+    // Calcular pontuação composta para cada criador (EXATAMENTE igual à página de status)
+    const criadoresComPontuacao = await Promise.all(ranking.map(async c => {
+      try {
+        // Pontuação base: sementes recebidas (1 semente = 1 ponto)
+        const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+        
+        // Pontos do campo pontuacao do usuário (se ele também doar)
+        const pontosUsuario = c.usuario.pontuacao || 0
+        
+        // Buscar dados adicionais do criador (mesmo que a API de ranking)
+        const [conteudos, enquetes, recadosPublicos] = await Promise.all([
+          // Total de visualizações dos conteúdos
+          prisma.conteudo.aggregate({
+            where: { criadorId: c.id },
+            _sum: { visualizacoes: true }
+          }).catch(() => ({ _sum: { visualizacoes: 0 } })),
+          
+          // Quantidade de enquetes criadas
+          prisma.enquete.count({
+            where: { criadorId: c.id }
+          }).catch(() => 0),
+          
+          // Quantidade de recados públicos (caixa de perguntas)
+          prisma.recado.count({
+            where: { 
+              destinatarioId: c.usuario.id,
+              publico: true 
+            }
+          }).catch(() => 0)
+        ])
+        
+        // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
+        const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
+        
+        // Pontos por enquetes (5 pontos por enquete)
+        const pontosEnquetes = enquetes * 5
+        
+        // Pontos por recados públicos (2 pontos por recado público)
+        const pontosRecadosPublicos = recadosPublicos * 2
+        
+        // Pontuação total composta (EXATAMENTE igual à página de status)
+        const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
+        
+        return {
+          id: c.id,
+          pontuacaoTotal
+        }
+      } catch (error) {
+        console.error(`Erro ao calcular pontuação do criador ${c.id}:`, error)
+        // Em caso de erro, usar pontuação básica
+        const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+        const pontosUsuario = c.usuario.pontuacao || 0
+        return {
+          id: c.id,
+          pontuacaoTotal: sementesRecebidas + pontosUsuario
+        }
       }
-    })
+    }))
 
     // Ordenar por pontuação total (maior para menor)
     criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
