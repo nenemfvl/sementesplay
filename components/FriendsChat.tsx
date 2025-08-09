@@ -210,15 +210,10 @@ export default function FriendsChat() {
       })
 
       if (response.ok) {
-        alert('Solicitação de amizade enviada!')
         loadDados()
-      } else {
-        const erro = await response.json()
-        alert(erro.error || 'Erro ao enviar solicitação')
       }
     } catch (error) {
       console.error('Erro ao enviar solicitação:', error)
-      alert('Erro ao enviar solicitação')
     }
   }
 
@@ -231,14 +226,10 @@ export default function FriendsChat() {
       })
 
       if (response.ok) {
-        alert('Solicitação aceita!')
         loadDados()
-      } else {
-        alert('Erro ao aceitar solicitação')
       }
     } catch (error) {
       console.error('Erro ao aceitar solicitação:', error)
-      alert('Erro ao aceitar solicitação')
     }
   }
 
@@ -251,14 +242,10 @@ export default function FriendsChat() {
       })
 
       if (response.ok) {
-        alert('Solicitação rejeitada')
         loadDados()
-      } else {
-        alert('Erro ao rejeitar solicitação')
       }
     } catch (error) {
       console.error('Erro ao rejeitar solicitação:', error)
-      alert('Erro ao rejeitar solicitação')
     }
   }
 

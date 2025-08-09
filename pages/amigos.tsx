@@ -199,7 +199,6 @@ export default function Amigos() {
 
   const enviarSolicitacao = async (amigoId: string) => {
     if (!user || !user.id) {
-      alert('Usuário não autenticado. Faça login novamente.');
       return;
     }
     try {
@@ -217,15 +216,10 @@ export default function Amigos() {
       })
 
       if (response.ok) {
-        alert('Solicitação de amizade enviada!')
         loadDados()
-      } else {
-        const erro = await response.json();
-        alert(erro.error || 'Erro ao enviar solicitação')
       }
     } catch (error) {
       console.error('Erro ao enviar solicitação:', error)
-      alert('Erro ao enviar solicitação')
     }
   }
 
@@ -238,14 +232,10 @@ export default function Amigos() {
       })
 
       if (response.ok) {
-        alert('Solicitação aceita!')
         loadDados()
-      } else {
-        alert('Erro ao aceitar solicitação')
       }
     } catch (error) {
       console.error('Erro ao aceitar solicitação:', error)
-      alert('Erro ao aceitar solicitação')
     }
   }
 
@@ -258,14 +248,10 @@ export default function Amigos() {
       })
 
       if (response.ok) {
-        alert('Solicitação rejeitada')
         loadDados()
-      } else {
-        alert('Erro ao rejeitar solicitação')
       }
     } catch (error) {
       console.error('Erro ao rejeitar solicitação:', error)
-      alert('Erro ao rejeitar solicitação')
     }
   }
 
@@ -280,14 +266,10 @@ export default function Amigos() {
       })
 
       if (response.ok) {
-        alert('Amigo removido')
         loadDados()
-      } else {
-        alert('Erro ao remover amigo')
       }
     } catch (error) {
       console.error('Erro ao remover amigo:', error)
-      alert('Erro ao remover amigo')
     }
   }
 
