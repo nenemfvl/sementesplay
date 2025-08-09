@@ -1,4 +1,4 @@
-import { prisma } from '../../../../lib/prisma'
+import { prisma } from '../../../lib/prisma'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 // Função para determinar novo nível baseado na posição
@@ -169,23 +169,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(`✅ Sem mudanças: ${semMudancas.length}`)
     console.log(`📊 Total processado: ${criadoresComPontuacao.length}`)
 
-    // Salvar log das promoções no banco (opcional)
+    // Log das promoções (sem salvar no banco por enquanto)
     if (promocoes.length > 0 || rebaixamentos.length > 0) {
-      try {
-        await prisma.logSistema.create({
-          data: {
-            tipo: 'promocao_automatica',
-            mensagem: `Promoções automáticas executadas: ${promocoes.length} promoções, ${rebaixamentos.length} rebaixamentos`,
-            dados: JSON.stringify({
-              promocoes,
-              rebaixamentos,
-              timestamp: new Date().toISOString()
-            })
-          }
-        })
-      } catch (error) {
-        console.log('⚠️ Não foi possível salvar log no banco (tabela pode não existir)')
-      }
+      console.log('📝 Log das promoções disponível para implementação futura')
     }
 
     res.status(200).json({
