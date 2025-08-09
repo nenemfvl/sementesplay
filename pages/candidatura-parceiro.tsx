@@ -140,15 +140,13 @@ export default function CandidaturaParceiro() {
       })
 
       if (response.ok) {
-        alert('Candidatura enviada com sucesso! Aguarde a análise da nossa equipe.')
         window.location.href = '/parceiros'
       } else {
         const error = await response.json()
-        alert(`Erro: ${error.message}`)
+        console.error('Erro:', error.message)
       }
     } catch (error) {
       console.error('Erro ao enviar candidatura:', error)
-      alert('Erro ao enviar candidatura. Tente novamente.')
     } finally {
       setLoading(false)
     }
