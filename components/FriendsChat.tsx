@@ -96,6 +96,28 @@ export default function FriendsChat() {
     }
   }, [mensagens])
 
+  // Polling para atualizar mensagens automaticamente
+  useEffect(() => {
+    if (!conversaAtiva || !conversaAtiva.id) return
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/chat/conversas/${conversaAtiva.id}/mensagens`)
+        const data = await response.json()
+        if (response.ok) {
+          setMensagens(data.mensagens.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp)
+          })))
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar mensagens:', error)
+      }
+    }, 2000) // Atualiza a cada 2 segundos
+
+    return () => clearInterval(interval)
+  }, [conversaAtiva])
+
   // Ping para marcar usuário como online
   useEffect(() => {
     if (!user) return
@@ -295,14 +317,19 @@ export default function FriendsChat() {
   const enviarMensagem = async () => {
     if (!novaMensagem.trim() || !conversaAtiva || !user) return
 
-    const mensagem: Mensagem = {
-      id: Date.now().toString(),
+    const conteudoMensagem = novaMensagem
+    const mensagemLocal: Mensagem = {
+      id: `temp-${Date.now()}`,
       remetenteId: user.id,
       remetenteNome: user.nome,
-      conteudo: novaMensagem,
+      conteudo: conteudoMensagem,
       timestamp: new Date(),
       lida: false
     }
+
+    // Adiciona mensagem imediatamente ao estado local
+    setMensagens(prev => [...prev, mensagemLocal])
+    setNovaMensagem('')
 
     try {
       const response = await fetch(`/api/chat/conversas/${conversaAtiva.id}/mensagens`, {
@@ -312,16 +339,29 @@ export default function FriendsChat() {
           Authorization: `Bearer ${localStorage.getItem('sementesplay_token')}`
         },
         body: JSON.stringify({
-          conteudo: novaMensagem,
+          conteudo: conteudoMensagem,
           tipo: 'texto'
         })
       })
 
       if (response.ok) {
-        setMensagens(prev => [...prev, mensagem])
-        setNovaMensagem('')
+        const responseData = await response.json()
+        // Substitui a mensagem temporária pela mensagem real do servidor
+        setMensagens(prev => {
+          const semTemporaria = prev.filter(m => m.id !== mensagemLocal.id)
+          return [...semTemporaria, {
+            ...responseData.mensagem,
+            timestamp: new Date(responseData.mensagem.timestamp)
+          }]
+        })
+      } else {
+        // Remove a mensagem se houve erro
+        setMensagens(prev => prev.filter(m => m.id !== mensagemLocal.id))
+        console.error('Erro ao enviar mensagem')
       }
     } catch (error) {
+      // Remove a mensagem se houve erro
+      setMensagens(prev => prev.filter(m => m.id !== mensagemLocal.id))
       console.error('Erro ao enviar mensagem:', error)
     }
   }
