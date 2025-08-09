@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNotificationSound } from './useNotificationSound'
 
 interface NotificacaoGlobal {
@@ -39,7 +39,7 @@ export function useGlobalNotifications(userId: string | null) {
   }
 
   // Carregar notificações
-  const loadNotificacoes = async () => {
+  const loadNotificacoes = useCallback(async () => {
     if (!userId) return
 
     try {
@@ -75,14 +75,14 @@ export function useGlobalNotifications(userId: string | null) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, playSound])
 
   // Inicializar contagem na primeira carga
   useEffect(() => {
     if (userId) {
       loadNotificacoes()
     }
-  }, [userId])
+  }, [userId, loadNotificacoes])
 
   // Polling para detectar novas notificações
   useEffect(() => {
@@ -90,7 +90,7 @@ export function useGlobalNotifications(userId: string | null) {
 
     const interval = setInterval(loadNotificacoes, 5000) // A cada 5 segundos
     return () => clearInterval(interval)
-  }, [userId])
+  }, [userId, loadNotificacoes])
 
   return {
     notificacoes,

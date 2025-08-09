@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useGlobalNotifications } from '../hooks/useGlobalNotifications'
 import { useNotificationSound } from '../hooks/useNotificationSound'
 import { auth } from '../lib/auth'
