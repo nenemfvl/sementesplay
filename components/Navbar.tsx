@@ -12,7 +12,6 @@ import {
 import { auth, User } from '../lib/auth'
 import { useNavigation } from '../hooks/useNavigation'
 import FriendsChat from './FriendsChat'
-import PushNotifications from './PushNotifications'
 
 interface UserWithCriador extends User {
   criador?: {
@@ -123,9 +122,6 @@ export default function Navbar() {
       <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-4 px-6">
         {user ? (
           <>
-            {/* Notificações */}
-            <PushNotifications />
-            
             {/* Menu dropdown do perfil */}
             <div className="relative profile-menu">
               <button

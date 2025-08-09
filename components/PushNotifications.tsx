@@ -19,7 +19,11 @@ interface NotificationSettings {
   updates: boolean
 }
 
-export default function PushNotifications() {
+interface PushNotificationsProps {
+  inline?: boolean // Nova prop para renderização inline
+}
+
+export default function PushNotifications({ inline = false }: PushNotificationsProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [permission, setPermission] = useState<'default' | 'granted' | 'denied'>('default')
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -112,6 +116,90 @@ export default function PushNotifications() {
   const status = getPermissionStatus()
   const StatusIcon = status.icon
 
+  // Se for inline, renderizar o conteúdo diretamente
+  if (inline) {
+    return (
+      <div className="w-full max-w-md">
+        {/* Status das notificações */}
+        <div className="flex items-center justify-between mb-6 p-4 bg-sss-dark rounded-lg">
+          <div className="flex items-center space-x-3">
+            <StatusIcon className={`w-6 h-6 ${status.color}`} />
+            <div>
+              <p className="text-sss-white font-medium">Status das Notificações</p>
+              <p className={`text-sm ${status.color}`}>{status.text}</p>
+            </div>
+          </div>
+          {permission !== 'granted' && (
+            <button
+              onClick={handleRequestPermission}
+              disabled={loading || permission === 'denied'}
+              className="bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Solicitando...' : 'Ativar'}
+            </button>
+          )}
+        </div>
+
+        {/* Configurações apenas se permitido */}
+        {permission === 'granted' && (
+          <>
+            {/* Configurações de tipos de notificação */}
+            <div className="space-y-4 mb-6">
+              <h4 className="text-sss-white font-medium">Tipos de Notificação</h4>
+              {Object.entries(settings).map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between p-3 bg-sss-dark rounded-lg">
+                  <div>
+                    <p className="text-sss-white">
+                      {key === 'donations' && '💰 Doações'}
+                      {key === 'missions' && '🎯 Missões'}
+                      {key === 'ranking' && '🏆 Ranking'}
+                      {key === 'chat' && '💬 Chat'}
+                      {key === 'updates' && '🔄 Atualizações'}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {key === 'donations' && 'Novas doações recebidas'}
+                      {key === 'missions' && 'Missões completadas'}
+                      {key === 'ranking' && 'Mudanças no ranking'}
+                      {key === 'chat' && 'Novas mensagens'}
+                      {key === 'updates' && 'Atualizações do app'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleToggleSetting(key as keyof NotificationSettings)}
+                    className={`w-12 h-6 rounded-full transition-colors ${
+                      value ? 'bg-sss-accent' : 'bg-gray-600'
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 bg-white rounded-full transition-transform ${
+                        value ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Configurações de Som */}
+            <div className="mb-6">
+              <h4 className="text-sss-white font-medium mb-4">Configurações de Som</h4>
+              <NotificationSoundSettings />
+            </div>
+
+            {/* Teste de notificação */}
+            <button
+              onClick={handleTestNotification}
+              className="w-full bg-sss-accent hover:bg-red-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+            >
+              🔔 Enviar Notificação de Teste
+            </button>
+          </>
+        )}
+      </div>
+    )
+  }
+
+  // Renderização original (modal) para uso no Navbar
   return (
     <>
       {/* Botão de notificações */}
