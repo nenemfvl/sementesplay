@@ -223,9 +223,9 @@ export default function Status() {
           <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40">
             <button
               onClick={() => router.push('/candidatura-criador')}
-              className="bg-gradient-to-r from-sss-accent to-red-600 hover:from-red-600 hover:to-sss-accent text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 font-bold text-lg"
+              className="bg-gradient-to-r from-sss-accent to-red-600 hover:from-red-600 hover:to-sss-accent text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105"
             >
-              <span className="text-2xl">⭐</span>
+              <span className="text-xl">⭐</span>
               <span className="hidden sm:inline">Seja Criador</span>
               <span className="sm:hidden">Criador</span>
             </button>
