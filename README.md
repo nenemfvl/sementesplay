@@ -275,3 +275,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 Sistema agora exibe níveis baseados na posição do ranking em tempo real.
 
 **Última alteração**: Implementação de níveis dinâmicos baseados no ranking de criadores.
+
+## 🔧 Correções Recentes
+- ✅ Resolvido problema de bordas pretas em imagens
+- ✅ Otimização de thumbnails do YouTube
+- ✅ Melhorias na responsividade dos componentes
