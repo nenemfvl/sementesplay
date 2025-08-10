@@ -1,6 +1,5 @@
 import { prisma } from '../../../lib/prisma'
 
-
 import { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -14,26 +13,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'ID do criador é obrigatório' })
     }
 
-         // Buscar o criador com dados do usuário
-     const criador = await prisma.criador.findUnique({
-       where: { id },
-       include: {
-         usuario: {
-           include: {
-             missaoUsuarios: {
-               include: {
-                 missao: true
-               }
-             },
-             conquistas: {
-               include: {
-                 conquista: true
-               }
-             }
-           }
-         }
-       }
-     })
+    // Buscar o criador com dados do usuário
+    const criador = await prisma.criador.findUnique({
+      where: { id },
+      include: {
+        usuario: {
+          include: {
+            missaoUsuarios: {
+              include: {
+                missao: true
+              }
+            },
+            conquistas: {
+              include: {
+                conquista: true
+              }
+            }
+          }
+        }
+      }
+    })
 
     if (!criador) {
       return res.status(404).json({ error: 'Criador não encontrado' })
@@ -49,50 +48,139 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sementesRecebidas = doacoes.reduce((sum, doacao) => sum + doacao.quantidade, 0)
     const apoiadoresUnicos = new Set(doacoes.map(d => d.doadorId)).size
 
-         // Calcular pontuação total (mesmo critério da página de status)
-     const missoesConcluidas = criador.usuario.missaoUsuarios.filter(mu => mu.concluida).length
-     const conquistasDesbloqueadas = criador.usuario.conquistas.length
-     const pontosMissoes = missoesConcluidas * 10
-     const pontosConquistas = conquistasDesbloqueadas * 20 // Corrigido para 20 pontos
-     const pontosUsuario = criador.usuario.pontuacao || 0
-     const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario // Incluir sementes recebidas
+    // Calcular pontuação total (EXATAMENTE igual à API de ranking)
+    const missoesConcluidas = criador.usuario.missaoUsuarios.filter(mu => mu.concluida).length
+    const conquistasDesbloqueadas = criador.usuario.conquistas.length
+    const pontosMissoes = missoesConcluidas * 10
+    const pontosConquistas = conquistasDesbloqueadas * 20
+    const pontosUsuario = criador.usuario.pontuacao || 0
 
-         // Buscar posição no ranking
-     const todosCriadores = await prisma.criador.findMany({
-       include: {
-         usuario: {
-           include: {
-             missaoUsuarios: {
-               include: {
-                 missao: true
-               }
-             },
-             conquistas: {
-               include: {
-                 conquista: true
-               }
-             }
-           }
-         }
-       }
-     })
+    // Buscar dados adicionais (mesmo que a API de ranking)
+    const [conteudos, enquetes, recadosPublicos] = await Promise.all([
+      // Total de visualizações dos conteúdos
+      prisma.conteudo.aggregate({
+        where: { criadorId: criador.id },
+        _sum: { visualizacoes: true }
+      }).catch(() => ({ _sum: { visualizacoes: 0 } })),
+      
+      // Quantidade de enquetes criadas
+      prisma.enquete.count({
+        where: { criadorId: criador.usuarioId }
+      }).catch(() => 0),
+      
+      // Quantidade de recados públicos (caixa de perguntas)
+      prisma.recado.count({
+        where: { 
+          destinatarioId: criador.usuarioId,
+          publico: true 
+        }
+      }).catch(() => 0)
+    ])
+    
+    // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
+    const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
+    
+    // Pontos por enquetes (5 pontos por enquete)
+    const pontosEnquetes = enquetes * 5
+    
+    // Pontos por recados públicos (2 pontos por recado público)
+    const pontosRecadosPublicos = recadosPublicos * 2
 
-     // Buscar doações de todos os criadores para calcular pontuação correta
-     const todasDoacoes = await prisma.doacao.findMany({
-       include: { doador: true }
-     })
+    // Pontuação total composta (EXATAMENTE igual à API de ranking)
+    const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
 
-     const criadoresComPontuacao = todosCriadores.map(c => {
-       const doacoesCriador = todasDoacoes.filter(d => d.criadorId === c.id)
-       const sementesRecebidasCriador = doacoesCriador.reduce((sum, doacao) => sum + doacao.quantidade, 0)
-       const missoesConcluidasCriador = c.usuario.missaoUsuarios.filter(mu => mu.concluida).length
-       const conquistasDesbloqueadasCriador = c.usuario.conquistas.length
-       const pontuacaoCriador = sementesRecebidasCriador + (missoesConcluidasCriador * 10) + (conquistasDesbloqueadasCriador * 20) + (c.usuario.pontuacao || 0)
-       return { ...c, pontuacao: pontuacaoCriador }
-     })
+    // Buscar posição no ranking usando EXATAMENTE o mesmo critério da API de ranking
+    const ranking = await prisma.criador.findMany({
+      where: {
+        usuario: {
+          nivel: {
+            in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
+          }
+        }
+      },
+      include: {
+        usuario: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            avatarUrl: true,
+            nivel: true,
+            pontuacao: true,
+            sementes: true
+          }
+        },
+        doacoesRecebidas: {
+          select: {
+            quantidade: true
+          }
+        }
+      }
+    })
 
-    criadoresComPontuacao.sort((a, b) => b.pontuacao - a.pontuacao)
-    const posicao = criadoresComPontuacao.findIndex(c => c.id === id) + 1
+    // Calcular pontuação composta para cada criador (EXATAMENTE igual à API de ranking)
+    const criadoresComPontuacao = await Promise.all(ranking.map(async c => {
+      try {
+        // Pontuação base: sementes recebidas (1 semente = 1 ponto)
+        const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+        
+        // Pontos do campo pontuacao do usuário (se ele também doar)
+        const pontosUsuario = c.usuario.pontuacao || 0
+        
+        // Buscar dados adicionais do criador (mesmo que a API de ranking)
+        const [conteudos, enquetes, recadosPublicos] = await Promise.all([
+          // Total de visualizações dos conteúdos
+          prisma.conteudo.aggregate({
+            where: { criadorId: c.id },
+            _sum: { visualizacoes: true }
+          }).catch(() => ({ _sum: { visualizacoes: 0 } })),
+          
+          // Quantidade de enquetes criadas
+          prisma.enquete.count({
+            where: { criadorId: c.usuarioId }
+          }).catch(() => 0),
+          
+          // Quantidade de recados públicos (caixa de perguntas)
+          prisma.recado.count({
+            where: { 
+              destinatarioId: c.usuarioId,
+              publico: true 
+            }
+          }).catch(() => 0)
+        ])
+        
+        // Calcular pontuação por visualizações (1 visualização = 0.1 ponto)
+        const pontosVisualizacoes = Math.floor((conteudos._sum.visualizacoes || 0) * 0.1)
+        
+        // Pontos por enquetes (5 pontos por enquete)
+        const pontosEnquetes = enquetes * 5
+        
+        // Pontos por recados públicos (2 pontos por recado público)
+        const pontosRecadosPublicos = recadosPublicos * 2
+        
+        // Pontuação total composta (EXATAMENTE igual à página de status)
+        const pontuacaoTotal = sementesRecebidas + pontosUsuario + pontosVisualizacoes + pontosEnquetes + pontosRecadosPublicos
+        
+        return {
+          id: c.id,
+          pontuacaoTotal
+        }
+      } catch (error) {
+        console.error(`Erro ao calcular pontuação do criador ${c.id}:`, error)
+        // Em caso de erro, usar pontuação básica
+        const sementesRecebidas = c.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
+        const pontosUsuario = c.usuario.pontuacao || 0
+        return {
+          id: c.id,
+          pontuacaoTotal: sementesRecebidas + pontosUsuario
+        }
+      }
+    }))
+
+    // Ordenar por pontuação total (maior para menor)
+    criadoresComPontuacao.sort((a, b) => b.pontuacaoTotal - a.pontuacaoTotal)
+
+    const posicao = criadoresComPontuacao.findIndex(item => item.id === criador.id) + 1
 
     // Mapear nível do banco para nome descritivo
     const mapearNivel = (nivel: string) => {
@@ -140,9 +228,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       pontosConquistas,
       pontosUsuario,
       pontuacaoTotal,
-             doacoes: totalDoacoes,
-       missoesCompletadas: missoesConcluidas,
-       conquistasDesbloqueadas: conquistasDesbloqueadas,
+      doacoes: totalDoacoes,
+      missoesCompletadas: missoesConcluidas,
+      conquistasDesbloqueadas: conquistasDesbloqueadas,
       posicao,
       usuarioId: criador.usuarioId,
       redesSociais: criador.redesSociais ? JSON.parse(criador.redesSociais) : {}
