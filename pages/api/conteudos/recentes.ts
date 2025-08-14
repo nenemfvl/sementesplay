@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { limit = 10 } = req.query
 
-    // Buscar MAIS conteúdos para ter uma base maior para ordenação
+    // Buscar TODOS os conteúdos dos criadores para ter a base completa para ordenação
     const conteudos = await prisma.conteudo.findMany({
       where: {
         removido: false
@@ -25,13 +25,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           }
         }
-      },
+      }
       // Remover orderBy por data para permitir ordenação por pontuação
       // orderBy: {
       //   dataPublicacao: 'desc'
       // },
-      // Buscar mais conteúdos para ter uma base melhor para ordenação
-      take: Math.max(parseInt(limit as string) || 10, 20)
+      // Buscar TODOS os conteúdos (sem limite) para ter a base completa
+      // take: Math.max(parseInt(limit as string) || 10, 20)
     })
 
     // Calcular pontuação de popularidade para cada conteúdo
