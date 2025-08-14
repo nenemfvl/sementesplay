@@ -714,6 +714,7 @@ export default function PainelCriador() {
                   <option value="">Selecione o tipo</option>
                   <option value="live">Live</option>
                   <option value="video">Video</option>
+                  <option value="post">Post</option>
                 </select>
               </div>
               
