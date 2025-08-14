@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { limit = 10 } = req.query
 
-    // Buscar conteúdos dos criadores (excluindo os removidos)
+    // Buscar MAIS conteúdos para ter uma base maior para ordenação
     const conteudos = await prisma.conteudo.findMany({
       where: {
         removido: false
@@ -26,13 +26,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       },
-      take: parseInt(limit as string) || 10
+      // Remover orderBy por data para permitir ordenação por pontuação
+      // orderBy: {
+      //   dataPublicacao: 'desc'
+      // },
+      // Buscar mais conteúdos para ter uma base melhor para ordenação
+      take: Math.max(parseInt(limit as string) || 10, 20)
     })
 
     // Calcular pontuação de popularidade para cada conteúdo
     const conteudosComPontuacao = conteudos.map(conteudo => {
       // Sistema de pontuação: visualizações (1 ponto), curtidas (3 pontos), compartilhamentos (5 pontos)
       const pontuacao = conteudo.visualizacoes + (conteudo.curtidas * 3) + (conteudo.compartilhamentos * 5)
+      
+      // Log para debug
+      console.log(`Conteúdo: ${conteudo.titulo} - Views: ${conteudo.visualizacoes}, Likes: ${conteudo.curtidas}, Pontuação: ${pontuacao}`)
       
       return {
         ...conteudo,
@@ -42,6 +50,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Ordenar por pontuação de popularidade (mais popular primeiro)
     conteudosComPontuacao.sort((a, b) => b.pontuacaoPopularidade - a.pontuacaoPopularidade)
+
+    // Log da ordenação para debug
+    console.log('Conteúdos ordenados por pontuação:')
+    conteudosComPontuacao.forEach((c, i) => {
+      console.log(`${i + 1}. ${c.titulo} - Pontuação: ${c.pontuacaoPopularidade}`)
+    })
+
+    // DEPOIS de ordenar por pontuação, limitar ao número solicitado
+    const conteudosLimitados = conteudosComPontuacao.slice(0, parseInt(limit as string) || 10)
 
     // Função para gerar preview baseada no tipo e URL (mesma lógica do painel do criador)
     const gerarPreview = (conteudo: any) => {
@@ -101,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Formatar os conteúdos para o formato de notícias
-    const noticias = conteudosComPontuacao.map((conteudo, index) => ({
+    const noticias = conteudosLimitados.map((conteudo, index) => ({
       id: conteudo.id,
       titulo: conteudo.titulo,
       descricao: conteudo.descricao || `Novo conteúdo de ${conteudo.criador.usuario.nome}`,
