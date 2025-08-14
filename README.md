@@ -280,3 +280,4 @@ Sistema agora exibe níveis baseados na posição do ranking em tempo real.
 - ✅ Resolvido problema de bordas pretas em imagens
 - ✅ Otimização de thumbnails do YouTube
 - ✅ Melhorias na responsividade dos componentes
+- ✅ Volta para commit estável: f295da64
