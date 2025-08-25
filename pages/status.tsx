@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/outline'
-import Navbar from '../components/Navbar'
+
 import Noticias from '../components/Noticias';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useRouter } from 'next/router'
@@ -215,7 +215,7 @@ export default function Status() {
             <span className="text-2xl text-sss-accent">🌱</span>
             <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
           </button>
-          <Navbar />
+  
         </header>
         
                 {/* Botão Fixo "Seja Criador" - Lateral Direita (apenas para usuários que não são criadores) */}
