@@ -10,7 +10,7 @@ import { LoadingProvider } from '../contexts/LoadingContext'
 import GlobalNavigation from '../components/GlobalNavigation'
 import GlobalNotificationSystem from '../components/GlobalNotificationSystem'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
             <Component {...pageProps} />
           </GlobalNotificationSystem>
         </main>
-        <Footer />
+
       </SessionProvider>
     </LoadingProvider>
   )
