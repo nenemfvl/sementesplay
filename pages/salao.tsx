@@ -159,9 +159,7 @@ export default function Salao() {
         <meta name="description" content="Salão da comunidade SementesPLAY - Criadores ao vivo" />
       </Head>
       <div className="min-h-screen bg-sss-dark">
-        <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
-  
-        </header>
+
 
         {/* Header do Salão */}
         <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-b border-sss-light">
