@@ -28,7 +28,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
-import Navbar from '../../components/Navbar'
+
 import DenunciaModal from '../../components/DenunciaModal'
 
 interface CriadorDetalhes {
@@ -454,7 +454,6 @@ export default function CriadorPerfil() {
           <title>Carregando... | SementesPLAY</title>
         </Head>
         <div className="min-h-screen bg-sss-dark">
-          <Navbar />
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sss-accent mx-auto mb-4"></div>
@@ -473,7 +472,6 @@ export default function CriadorPerfil() {
           <title>Criador não encontrado | SementesPLAY</title>
         </Head>
         <div className="min-h-screen bg-sss-dark">
-          <Navbar />
           <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
               <ExclamationTriangleIcon className="w-16 h-16 text-red-500 mx-auto mb-4" />
@@ -499,7 +497,6 @@ export default function CriadorPerfil() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
         
         {/* Header */}
         <div className="bg-sss-medium/50 backdrop-blur-sm border-b border-sss-light">
