@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, PlusIcon, BuildingOfficeIcon, CurrencyDollarIcon, ChartBarIcon, EyeIcon } from '@heroicons/react/24/outline'
-import Navbar from '../components/Navbar'
+
 import ConteudosParceiros from '../components/ConteudosParceiros';
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'
@@ -193,7 +193,7 @@ export default function Parceiros() {
           <title>Parceiros - SementesPLAY</title>
         <meta name="description" content="Descubra nossos parceiros e suas ofertas" />
         </Head>
-          <Navbar />
+  
       <div className="min-h-screen bg-sss-dark">
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Header com estatísticas */}

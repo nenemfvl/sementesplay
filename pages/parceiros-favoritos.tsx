@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
-import Navbar from '../components/Navbar'
+
 
 export default function ParceirosFavoritos() {
   const [parceiros, setParceiros] = useState<any[]>([])
@@ -72,7 +72,7 @@ export default function ParceirosFavoritos() {
               <span className="text-2xl text-sss-accent">🌱</span>
               <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
             </button>
-            <Navbar />
+
           </header>
           <main className="flex-1 flex items-center justify-center">
             <div className="text-gray-400">Carregando parceiros favoritos...</div>
@@ -99,7 +99,7 @@ export default function ParceirosFavoritos() {
             <span className="text-2xl text-sss-accent">🌱</span>
             <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
           </button>
-          <Navbar />
+
         </header>
 
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">

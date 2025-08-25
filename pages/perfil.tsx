@@ -18,7 +18,7 @@ import { auth, User } from '../lib/auth'
 import Image from 'next/image'
 import Cropper from 'react-easy-crop'
 import Modal from 'react-modal'
-import Navbar from '../components/Navbar'
+
 
 export default function Perfil() {
   const [user, setUser] = useState<User | null>(null)
@@ -382,7 +382,7 @@ export default function Perfil() {
 
       <div className="min-h-screen bg-sss-dark">
         {/* Navbar */}
-        <Navbar />
+
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           

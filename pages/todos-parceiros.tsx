@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { PlusIcon, BuildingOfficeIcon, EyeIcon } from '@heroicons/react/24/outline'
-import Navbar from '../components/Navbar'
+
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import { auth } from '../lib/auth'
@@ -174,7 +174,7 @@ export default function TodosParceiros() {
         <title>Todos os Parceiros - SementesPLAY</title>
         <meta name="description" content="Lista completa de todos os parceiros SementesPLAY" />
       </Head>
-      <Navbar />
+      
       <div className="min-h-screen bg-sss-dark">
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Header com estatísticas */}

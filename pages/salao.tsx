@@ -13,7 +13,7 @@ import {
   UsersIcon
 } from '@heroicons/react/24/outline'
 import { auth } from '../lib/auth'
-import Navbar from '../components/Navbar'
+
 
 interface PlataformaLive {
   plataforma: string
@@ -160,7 +160,7 @@ export default function Salao() {
       </Head>
       <div className="min-h-screen bg-sss-dark">
         <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
-          <Navbar />
+  
         </header>
 
         {/* Header do Salão */}

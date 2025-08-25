@@ -8,7 +8,7 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
-import Navbar from '../components/Navbar'
+
 import Image from 'next/image'
 
 
@@ -196,7 +196,7 @@ export default function Doar() {
 
       <div className="min-h-screen bg-sss-dark">
         {/* Navbar */}
-        <Navbar />
+
 
         {/* Notification */}
         {notification && (

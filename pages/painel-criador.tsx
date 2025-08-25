@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import { auth } from '../lib/auth';
-import Navbar from '../components/Navbar';
+
 import { 
   ChartBarIcon, 
   VideoCameraIcon, 
@@ -798,7 +798,7 @@ export default function PainelCriador() {
       )}
 
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
+
         
         {/* Header */}
         <div className="bg-sss-medium/50 backdrop-blur-sm border-b border-sss-light sticky top-0 z-40">

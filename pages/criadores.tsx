@@ -20,7 +20,7 @@ import {
   ArrowDownTrayIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
-import Navbar from '../components/Navbar'
+
 import { PageLoader, CardLoader } from '../components/Loader'
 
 interface RankingItem {
@@ -184,7 +184,7 @@ export default function Criadores() {
         <title>Ranking de Criadores - SementesPLAY</title>
         <meta name="description" content="Veja os melhores criadores" />
       </Head>
-      <Navbar />
+      
       <div className="min-h-screen bg-sss-dark">
         {/* Header REMOVIDO */}
 
