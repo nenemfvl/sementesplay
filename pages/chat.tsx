@@ -315,29 +315,7 @@ export default function Chat() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <Link href="/status" className="inline-flex items-center text-sss-accent hover:text-red-400">
-                  <ArrowLeftIcon className="w-5 h-5 mr-2" />
-                  Voltar ao Dashboard
-                </Link>
-              </div>
-              
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-sss-accent/20 rounded-full flex items-center justify-center">
-                  <span className="text-lg">🌱</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">SementesPLAY</h1>
-                  <p className="text-sm text-gray-300">Chat em Tempo Real</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+
 
         <div className="max-w-6xl mx-auto h-[calc(100vh-80px)] flex">
           {/* Lista de Conversas */}

@@ -68,19 +68,6 @@ export default function CriadoresFavoritos() {
         <title>Criadores Favoritos - SementesPLAY</title>
       </Head>
       <div className="min-h-screen bg-sss-dark flex flex-col">
-        {/* Header */}
-        <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
-          <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-6 focus:outline-none bg-transparent border-none cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            aria-label="Ir para o topo"
-            title="Ir para o topo"
-          >
-            <span className="text-2xl text-sss-accent">🌱</span>
-            <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
-          </button>
-
-        </header>
 
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Título da página */}

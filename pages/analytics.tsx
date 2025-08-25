@@ -114,48 +114,7 @@ export default function Analytics() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Header */}
-        <header className="bg-sss-medium shadow-lg border-b border-sss-light">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <ChartBarIcon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-sss-white">Analytics</h1>
-                  <p className="text-sm text-gray-300">Business Intelligence & Insights</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                {/* Filtro de período */}
-                <div className="flex items-center space-x-2 bg-sss-light rounded-lg p-1">
-                  {TIME_RANGES.map((range) => (
-                    <button
-                      key={range.value}
-                      onClick={() => setTimeRange(range.value)}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        timeRange === range.value
-                          ? 'bg-sss-accent text-white'
-                          : 'text-gray-300 hover:text-white'
-                      }`}
-                    >
-                      {range.label}
-                    </button>
-                  ))}
-                </div>
-                {/* Botão de exportar */}
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="flex items-center space-x-2 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  <DocumentArrowDownIcon className="w-4 h-4" />
-                  <span>Exportar</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Métricas Principais */}

@@ -78,7 +78,6 @@ export default function ParceirosFavoritos() {
       </Head>
       <div className="min-h-screen bg-sss-dark flex flex-col">
 
-
         <main className="flex-1 flex flex-col items-center py-12 px-2 md:px-0">
           {/* Título da página */}
           <section className="w-full max-w-5xl mx-auto mb-8">
