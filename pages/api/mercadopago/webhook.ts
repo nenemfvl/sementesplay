@@ -8,10 +8,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { data } = req.body
+    const { data, id, type, action } = req.body
 
-    if (data && data.id) {
-      console.log('Webhook recebido do MercadoPago:', data.id)
+    // Aceitar tanto o formato antigo (data.id) quanto o novo (id direto)
+    const paymentId = data?.id || id
+
+    if (paymentId) {
+      console.log('Webhook recebido do MercadoPago:', paymentId)
+      console.log('Tipo:', type, 'Ação:', action)
       
       // Configurar access token
       const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
@@ -22,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       
       // Buscar detalhes do pagamento via API direta
-      const response = await fetch(`https://api.mercadopago.com/v1/payments/${data.id}`, {
+      const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
