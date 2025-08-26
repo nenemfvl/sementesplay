@@ -28,6 +28,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa'
 
 import DenunciaModal from '../../components/DenunciaModal'
 
@@ -447,6 +448,43 @@ export default function CriadorPerfil() {
     setShowDenunciaModal(true)
   }
 
+  const getTipoIcon = (tipo: string, url?: string) => {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
+      case 'video':
+      case 'youtube':
+        return <PlayIcon className="w-16 h-16 text-red-400" />;
+      case 'tiktok':
+        return <FaTiktok className="w-16 h-16 text-black" />;
+      case 'instagram':
+        return <FaInstagram className="w-16 h-16 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-16 h-16 text-purple-500" />;
+      case 'imagem':
+      case 'foto':
+        return <PlayIcon className="w-16 h-16 text-green-400" />;
+      case 'link':
+      case 'url':
+        return <PlayIcon className="w-16 h-16 text-blue-400" />;
+      default:
+        return <PlayIcon className="w-16 h-16 text-gray-400" />;
+    }
+  }
+
   if (loading) {
     return (
       <>
@@ -692,8 +730,8 @@ export default function CriadorPerfil() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <PlayIcon className="w-16 h-16 text-gray-500" />
-                      </div>
+                              {getTipoIcon(conteudo.tipo, conteudo.url)}
+                            </div>
                           )}
                           
                           {/* Overlay com tipo */}
