@@ -62,7 +62,8 @@ export default function ConteudosParceiros() {
         src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
         platform: 'YouTube',
         icon: '🎥',
-        color: 'from-red-500 to-red-600'
+        color: 'from-red-500 to-red-600',
+        fallback: true // Sempre usar fallback para YouTube
       };
     }
     
@@ -74,7 +75,7 @@ export default function ConteudosParceiros() {
         platform: 'Twitch Live',
         icon: '📺',
         color: 'from-purple-600 to-pink-600',
-        fallback: true
+        fallback: true // Sempre usar fallback para Twitch
       };
     }
     
@@ -86,7 +87,7 @@ export default function ConteudosParceiros() {
         platform: 'Twitch Video',
         icon: '📺',
         color: 'from-purple-500 to-purple-600',
-        fallback: true
+        fallback: true // Sempre usar fallback para Twitch
       };
     }
     
@@ -223,27 +224,27 @@ export default function ConteudosParceiros() {
     return ordenados;
   };
 
-     // Auto-advance slides
-   useEffect(() => {
-     const conteudosOrdenados = getConteudosOrdenados();
-     if (conteudosOrdenados.length > 0) {
-       const timer = setInterval(() => {
-         setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
-       }, 60000); // Change slide every 60 seconds (1 minute)
+  // Auto-advance slides
+  useEffect(() => {
+    const conteudosOrdenados = getConteudosOrdenados();
+    if (conteudosOrdenados.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
+      }, 60000); // Change slide every 60 seconds (1 minute)
 
-       return () => clearInterval(timer);
-     }
-   }, [conteudos.length]);
+      return () => clearInterval(timer);
+    }
+  }, [conteudos.length]);
 
-   const nextSlide = () => {
-     const conteudosOrdenados = getConteudosOrdenados();
-     setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
-   };
+  const nextSlide = () => {
+    const conteudosOrdenados = getConteudosOrdenados();
+    setCurrentSlide((prev) => (prev + 1) % Math.min(conteudosOrdenados.length, 3));
+  };
 
-   const prevSlide = () => {
-     const conteudosOrdenados = getConteudosOrdenados();
-     setCurrentSlide((prev) => (prev - 1 + Math.min(conteudosOrdenados.length, 3)) % Math.min(conteudosOrdenados.length, 3));
-   };
+  const prevSlide = () => {
+    const conteudosOrdenados = getConteudosOrdenados();
+    setCurrentSlide((prev) => (prev - 1 + Math.min(conteudosOrdenados.length, 3)) % Math.min(conteudosOrdenados.length, 3));
+  };
 
   return (
     <div className="w-full bg-sss-dark rounded-2xl shadow-lg p-8">
@@ -300,92 +301,61 @@ export default function ConteudosParceiros() {
                           }`}
                         >
                           <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
-                             {/* Background Image */}
-                             {thumbnail?.src ? (
-                               <div className="absolute inset-0 overflow-hidden">
-                                 <Image
-                                   src={thumbnail.src}
-                                   alt={conteudo.titulo}
-                                   fill
-                                   className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
-                                   sizes="(max-width: 768px) 100vw, 50vw"
-                                   priority={index === 0}
-                                   quality={85}
-                                   onError={(e) => {
-                                     console.log('❌ Erro ao carregar imagem:', thumbnail.src);
-                                     const target = e.currentTarget as HTMLImageElement;
-                                     target.style.display = 'none';
-                                     const nextSibling = target.nextElementSibling as HTMLElement;
-                                     if (nextSibling) {
-                                       nextSibling.style.display = 'flex';
-                                     }
-                                   }}
-                                 />
-                                 {/* Gradiente sutil sobre a imagem */}
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                                 {/* Fallback para Twitch */}
-                                 {thumbnail.fallback && (
-                                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
-                                     {thumbnail.icon}
-                                   </div>
-                                 )}
-                               </div>
-                             ) : (
-                               /* Thumbnail visual quando não há imagem */
-                               <div className={`absolute inset-0 bg-gradient-to-br ${thumbnail?.color || 'from-purple-600 to-pink-600'} flex items-center justify-center`}>
-                                 <div className="text-center text-white">
-                                   {/* Ícone específico para cada plataforma - mesmo padrão da página de status */}
-                                   {thumbnail?.platform === 'Instagram' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                                     </svg>
-                                   )}
-                                   {thumbnail?.platform === 'TikTok' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M12.75 2v14.25a2.25 2.25 0 1 1-2.25-2.25h.75V12h-.75a4.5 4.5 0 1 0 4.5 4.5V7.5a5.25 5.25 0 0 0 5.25 5.25V9.75A3.75 3.75 0 0 1 16.5 6V2h-3.75z"/>
-                                     </svg>
-                                   )}
-                                   {thumbnail?.platform === 'YouTube' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M23.498 6.186a2.994 2.994 0 0 0-2.112-2.112C19.692 3.5 12 3.5 12 3.5s-7.692 0-9.386.574A2.994 2.994 0 0 0 .502 6.186C0 7.88 0 12 0 12s0 4.12.502 5.814a2.994 2.994 0 0 0 2.112 2.112C4.308 20.5 12 20.5 12 20.5s7.692 0 9.386-.574a2.994 2.994 0 0 0 2.112-2.112C24 16.12 24 12 24 12s0-4.12-.502-5.814zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/>
-                                     </svg>
-                                   )}
-                                   {thumbnail?.platform === 'Twitch Live' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
-                                     </svg>
-                                   )}
-                                   {thumbnail?.platform === 'Twitch Video' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
-                                     </svg>
-                                   )}
-                                   {thumbnail?.platform === 'Link' && (
-                                     <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                                       <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5V21C21 21.55 20.55 22 20 22H4C3.45 22 3 21.55 3 21V5C3 4.45 3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V20H17V6H7Z"/>
-                                     </svg>
-                                   )}
-                                   
-                                   {/* Título da plataforma - mesmo estilo da página de status */}
-                                   <div className="text-lg font-semibold mb-2">
-                                     {thumbnail?.platform === 'Instagram' ? 'Post do Instagram' : 
-                                      thumbnail?.platform === 'TikTok' ? 'Vídeo do TikTok' :
-                                      thumbnail?.platform === 'YouTube' ? 'Vídeo do YouTube' :
-                                      thumbnail?.platform === 'Twitch Live' ? 'Stream ao Vivo' :
-                                      thumbnail?.platform === 'Twitch Video' ? 'Vídeo do Twitch' :
-                                      thumbnail?.platform === 'Link' ? 'Link Externo' :
-                                      'Conteúdo do Parceiro'}
-                                   </div>
-                                   
-                                   {/* Título do conteúdo */}
-                                   <div className="text-xl opacity-90 drop-shadow-md max-w-md px-4">
-                                     {conteudo.titulo}
-                                   </div>
-                                 </div>
-                                 {/* Gradiente sutil sobre o thumbnail visual */}
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                               </div>
-                             )}
+                            {/* Sempre usar fallback visual para evitar problemas com Next.js Image */}
+                            <div className={`absolute inset-0 bg-gradient-to-br ${thumbnail?.color || 'from-purple-600 to-pink-600'} flex items-center justify-center`}>
+                              <div className="text-center text-white">
+                                {/* Ícone específico para cada plataforma - mesmo padrão da página de status */}
+                                {thumbnail?.platform === 'Instagram' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                  </svg>
+                                )}
+                                {thumbnail?.platform === 'TikTok' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12.75 2v14.25a2.25 2.25 0 1 1-2.25-2.25h.75V12h-.75a4.5 4.5 0 1 0 4.5 4.5V7.5a5.25 5.25 0 0 0 5.25 5.25V9.75A3.75 3.75 0 0 1 16.5 6V2h-3.75z"/>
+                                  </svg>
+                                )}
+                                {thumbnail?.platform === 'YouTube' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a2.994 2.994 0 0 0-2.112-2.112C19.692 3.5 12 3.5 12 3.5s-7.692 0-9.386.574A2.994 2.994 0 0 0 .502 6.186C0 7.88 0 12 0 12s0 4.12.502 5.814a2.994 2.994 0 0 0 2.112 2.112C4.308 20.5 12 20.5 12 20.5s7.692 0 9.386-.574a2.994 2.994 0 0 0 2.112-2.112C24 16.12 24 12 24 12s0-4.12-.502-5.814zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/>
+                                  </svg>
+                                )}
+                                {thumbnail?.platform === 'Twitch Live' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+                                  </svg>
+                                )}
+                                {thumbnail?.platform === 'Twitch Video' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+                                  </svg>
+                                )}
+                                {thumbnail?.platform === 'Link' && (
+                                  <svg className="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5V21C21 21.55 20.55 22 20 22H4C3.45 22 3 21.55 3 21V5C3 4.45 3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V20H17V6H7Z"/>
+                                  </svg>
+                                )}
+                                
+                                {/* Título da plataforma - mesmo estilo da página de status */}
+                                <div className="text-lg font-semibold mb-2">
+                                  {thumbnail?.platform === 'Instagram' ? 'Post do Instagram' : 
+                                   thumbnail?.platform === 'TikTok' ? 'Vídeo do TikTok' :
+                                   thumbnail?.platform === 'YouTube' ? 'Vídeo do YouTube' :
+                                   thumbnail?.platform === 'Twitch Live' ? 'Stream ao Vivo' :
+                                   thumbnail?.platform === 'Twitch Video' ? 'Vídeo do Twitch' :
+                                   thumbnail?.platform === 'Link' ? 'Link Externo' :
+                                   'Conteúdo do Parceiro'}
+                                </div>
+                                
+                                {/* Título do conteúdo */}
+                                <div className="text-xl opacity-90 drop-shadow-md max-w-md px-4">
+                                  {conteudo.titulo}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Gradiente sutil sobre o thumbnail visual */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                             
                             {/* Content Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
@@ -436,8 +406,8 @@ export default function ConteudosParceiros() {
             )}
           </div>
           
-                     {/* Navigation Arrows - Abaixo do Banner */}
-           {getConteudosOrdenados().length > 1 && (
+          {/* Navigation Arrows - Abaixo do Banner */}
+          {getConteudosOrdenados().length > 1 && (
             <div className="flex justify-center items-center gap-4 mt-4">
               <button
                 onClick={prevSlide}
@@ -607,19 +577,19 @@ export default function ConteudosParceiros() {
                       </div>
                       
                       <div className="flex-shrink-0">
-                                                 <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
-                           {(conteudo.data || conteudo.dataPublicacao) ? 
-                             (() => {
-                               try {
-                                 const dataValue = conteudo.data || conteudo.dataPublicacao;
-                                 return new Date(dataValue).toLocaleDateString('pt-BR');
-                               } catch (error) {
-                                 return 'Data inválida';
-                               }
-                             })() 
-                             : 'Data não disponível'
-                           }
-                         </span>
+                        <span className="text-xs text-gray-400 bg-sss-dark px-2 py-1 rounded-full border border-gray-600">
+                          {(conteudo.data || conteudo.dataPublicacao) ? 
+                            (() => {
+                              try {
+                                const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                return new Date(dataValue).toLocaleDateString('pt-BR');
+                              } catch (error) {
+                                return 'Data inválida';
+                              }
+                            })() 
+                            : 'Data não disponível'
+                          }
+                        </span>
                       </div>
                     </div>
                   </div>
