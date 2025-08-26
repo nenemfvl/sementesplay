@@ -33,23 +33,43 @@ const nextConfig = {
           },
         ],
       },
-      // Configuração de CSP para resolver aviso de eval()
+      // Configuração de CSP para resolver aviso de eval() e permitir imagens externas
       {
         source: '/(.*)',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data: https://cdnjs.cloudflare.com; connect-src 'self' https:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https: http: blob:; font-src 'self' data: https://cdnjs.cloudflare.com; connect-src 'self' https:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
           },
         ],
       },
     ]
   },
 
-  // Configurações de imagens
+  // Configurações de imagens corrigidas
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'sementesplay.vercel.app', 'sementesplay.com.br', 'img.youtube.com'],
+    domains: [
+      'localhost', 
+      'res.cloudinary.com', 
+      'sementesplay.vercel.app', 
+      'sementesplay.com.br', 
+      'img.youtube.com',
+      'static-cdn.jtvnw.net',
+      'cdn.jtvnw.net',
+      'images.unsplash.com',
+      'via.placeholder.com'
+    ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+        port: '',
+        pathname: '/**',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   // Configurações de compressão
