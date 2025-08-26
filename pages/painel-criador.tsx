@@ -23,7 +23,7 @@ import {
   TrashIcon,
   MapPinIcon
 } from '@heroicons/react/24/outline';
-import { FaInstagram } from 'react-icons/fa';
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa';
 
 type Conteudo = {
   id: string;
@@ -655,6 +655,43 @@ export default function PainelCriador() {
     return null;
   }
 
+  function getTipoIcon(tipo: string, url?: string) {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
+      case 'video':
+      case 'youtube':
+        return <VideoCameraIcon className="w-12 h-12 text-red-400" />;
+      case 'tiktok':
+        return <FaTiktok className="w-12 h-12 text-black" />;
+      case 'instagram':
+        return <FaInstagram className="w-12 h-12 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-12 h-12 text-purple-500" />;
+      case 'imagem':
+      case 'foto':
+        return <VideoCameraIcon className="w-12 h-12 text-green-400" />;
+      case 'link':
+      case 'url':
+        return <LinkIcon className="w-12 h-12 text-blue-400" />;
+      default:
+        return <VideoCameraIcon className="w-12 h-12 text-gray-400" />;
+    }
+  }
+
   // Helper function para calcular largura das barras de progresso
   const getProgressWidthClass = (value: number, max: number) => {
     const percentage = Math.min((value / max) * 100, 100);
@@ -1001,7 +1038,7 @@ export default function PainelCriador() {
                             </div>
                           ) : (
                             <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-gray-400 group-hover:from-gray-500 group-hover:to-gray-600 transition-all">
-                              <VideoCameraIcon className="w-12 h-12" />
+                              {getTipoIcon(c.tipo, (c as any).url)}
                             </div>
                           )}
                           
