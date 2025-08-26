@@ -212,12 +212,15 @@ export default function ConteudosParceiros() {
 
   // Ordenar conteúdos por pontuação (mais populares primeiro)
   const getConteudosOrdenados = () => {
-    return [...conteudos]
+    console.log('📊 getConteudosOrdenados chamado com', conteudos.length, 'conteúdos');
+    const ordenados = [...conteudos]
       .map(conteudo => ({
         ...conteudo,
         pontuacao: calcularPontuacao(conteudo)
       }))
       .sort((a, b) => b.pontuacao - a.pontuacao);
+    console.log('🎯 Conteúdos ordenados:', ordenados.map(c => ({ titulo: c.titulo, pontuacao: c.pontuacao })));
+    return ordenados;
   };
 
      // Auto-advance slides
