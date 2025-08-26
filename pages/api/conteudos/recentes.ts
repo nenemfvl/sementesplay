@@ -77,16 +77,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Para Twitch (videos ou streams)
       if (conteudo.url?.includes('twitch.tv')) {
-        const tw = conteudo.url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
-        if (tw) {
-          if (tw[1]) {
-            // É um vídeo
-            return `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/${tw[2]}/thumb/thumb0-320x180.jpg`;
-          } else {
-            // É um canal/stream - usa thumbnail do canal
-            return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${tw[2]}-320x180.jpg`;
-          }
-        }
+        // Retorna null para usar ícone, já que as thumbnails do Twitch podem expirar
+        return null;
       }
 
       // Para Instagram

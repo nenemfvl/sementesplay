@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DocumentTextIcon, PlayIcon, PhotoIcon, LinkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa';
 
 interface Conteudo {
   id: string;
@@ -63,6 +63,8 @@ export default function Noticias() {
         return <FaTiktok className="w-5 h-5 text-black" />;
       case 'instagram':
         return <FaInstagram className="w-5 h-5 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-5 h-5 text-purple-500" />;
       case 'imagem':
       case 'foto':
         return <PhotoIcon className="w-5 h-5 text-green-400" />;
