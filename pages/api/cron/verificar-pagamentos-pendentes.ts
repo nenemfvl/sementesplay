@@ -80,7 +80,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (payment.status === 'approved') {
           console.log(`✅ Pagamento aprovado: ${repasse.paymentId}`)
 
-          // Atualizar status do repasse
+          // PROCESSAR FLUXO COMPLETO DO REPASSE
+          
+          // 1. Atualizar status do repasse para 'pago'
           await prisma.repasseParceiro.update({
             where: { id: repasse.id },
             data: { 
@@ -89,14 +91,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           })
 
-          // Se houver compra associada, atualizar status
+          // 2. Se houver compra associada, atualizar status
           if (repasse.compra) {
             await prisma.compraParceiro.update({
               where: { id: repasse.compra.id },
               data: { status: 'cashback_liberado' }
             })
 
-            // Creditar sementes para o usuário (50% do repasse)
+            // 3. Creditar sementes para o usuário (50% do repasse)
             const valorRepasse = repasse.valor
             const pctUsuario = valorRepasse * 0.50
 
@@ -108,8 +110,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             console.log(`💰 Sementes creditadas para usuário: ${pctUsuario}`)
           }
 
+          // 4. O REPASSE JÁ APARECE NAS TRANSAÇÕES RECENTES AUTOMATICAMENTE
+          // A API /api/parceiros/transacoes já inclui repasses com status 'pago'
+          // Não precisamos criar tabela adicional - o sistema já está configurado!
+
+          console.log(`📊 Repasse processado e aparecerá automaticamente nas Transações Recentes: ${repasse.id}`)
+
           pagamentosProcessados++
-          console.log(`✅ Repasse processado com sucesso: ${repasse.id}`)
+          console.log(`✅ Repasse processado com sucesso e movido para Transações Recentes: ${repasse.id}`)
         }
 
       } catch (error) {
