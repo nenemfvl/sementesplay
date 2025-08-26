@@ -243,7 +243,7 @@ export default function Noticias() {
                             ) : null}
                             
                                                       {/* Content Overlay */}
-                             <div className="absolute inset-0 bg-black/20 flex items-end justify-center pb-8">
+                             <div className="absolute inset-0 bg-black/20 flex items-end justify-center pb-4">
                               <div className="text-center text-white p-6 max-w-md">
                                 <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
                                 <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
