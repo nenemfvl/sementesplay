@@ -1,5 +1,7 @@
 # 🌱 SementesPLAY
 
+> **Sistema automatizado de pagamentos via CRON** - Deploy automático a cada 5 minutos
+
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
 <!-- Forçar redeploy - $(date) - Atualização automática - Teste PIX - Deploy Vercel -->
