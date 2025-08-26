@@ -66,12 +66,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Pagamento aprovado - processar automaticamente
       console.log(`🎉 Pagamento aprovado: ${payment.id}`)
 
-      // Buscar a compra específica que corresponde a este pagamento
-      const compra = await prisma.compraParceiro.findFirst({
+      // Buscar TODAS as compras pendentes para este usuário
+      const comprasPendentes = await prisma.compraParceiro.findMany({
         where: {
-          status: 'aguardando_repasse',
-          // Aqui podemos adicionar mais critérios se necessário
-          // Por enquanto, vamos processar a mais recente
+          status: 'aguardando_repasse'
         },
         include: {
           parceiro: {
@@ -87,115 +85,108 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      if (compra) {
+      console.log(`📊 Compras pendentes encontradas: ${comprasPendentes.length}`)
+
+      // Processar TODAS as compras pendentes
+      for (const compra of comprasPendentes) {
         console.log(`⚙️ Processando compra: ${compra.id} para paymentId: ${payment.id}`)
 
         // Calcular valor do repasse (10% da compra)
         const valorRepasse = compra.valorCompra * 0.10
         const pctUsuario = valorRepasse * 0.50    // 50% para usuário (em sementes)
-        const pctSistema = valorRepasse * 0.25    // 25% para sistema (em reais)
         const pctFundo = valorRepasse * 0.25      // 25% para fundo (em reais)
 
-        // Transação: processar tudo de uma vez
-        await prisma.$transaction(async (tx) => {
-          // 1. Atualizar status da compra
-          await tx.compraParceiro.update({
-            where: { id: compra.id },
-            data: { status: 'cashback_liberado' }
-          })
-
-          // 2. Criar repasse
-          await tx.repasseParceiro.create({
-            data: {
-              parceiroId: compra.parceiroId,
-              compraId: compra.id,
-              valor: valorRepasse,
-              status: 'pago',
-              dataRepasse: new Date(),
-              paymentId: payment.id.toString()
-            }
-          })
-
-          // 3. Creditar sementes para o usuário
-          await tx.usuario.update({
-            where: { id: compra.usuarioId },
-            data: { sementes: { increment: pctUsuario } }
-          })
-
-          // 4. Criar registro de semente
-          await tx.semente.create({
-            data: {
-              usuarioId: compra.usuarioId,
-              quantidade: pctUsuario,
-              tipo: 'resgatada',
-              descricao: `Cashback compra parceiro ${compra.id} - Webhook MercadoPago`
-            }
-          })
-        })
-
-        // Operações fora da transação
         try {
-          // Atualizar fundo de sementes
-          const fundoSementes = await prisma.fundoSementes.findFirst({
-            where: { distribuido: false }
-          })
-          
-          if (fundoSementes) {
-            await prisma.fundoSementes.update({
-              where: { id: fundoSementes.id },
-              data: { valorTotal: { increment: pctFundo } }
+          // Transação: processar tudo de uma vez
+          await prisma.$transaction(async (tx) => {
+            // 1. Atualizar status da compra
+            await tx.compraParceiro.update({
+              where: { id: compra.id },
+              data: { status: 'cashback_liberado' }
             })
-          } else {
-            // Criar novo fundo se não existir
-            await prisma.fundoSementes.create({
+
+            // 2. Criar repasse
+            await tx.repasseParceiro.create({
               data: {
-                ciclo: 1,
-                valorTotal: pctFundo,
-                dataInicio: new Date(),
-                dataFim: new Date(),
-                distribuido: false
+                parceiroId: compra.parceiroId,
+                compraId: compra.id,
+                valor: valorRepasse,
+                status: 'pago',
+                dataRepasse: new Date(),
+                paymentId: payment.id.toString()
               }
             })
+
+            // 3. Creditar sementes para o usuário
+            await tx.usuario.update({
+              where: { id: compra.usuarioId },
+              data: { sementes: { increment: pctUsuario } }
+            })
+
+            // 4. Criar registro de semente
+            await tx.semente.create({
+              data: {
+                usuarioId: compra.usuarioId,
+                quantidade: pctUsuario,
+                tipo: 'resgatada',
+                descricao: `Cashback compra parceiro ${compra.id} - Webhook MercadoPago`
+              }
+            })
+          })
+
+          // Operações fora da transação
+          try {
+            // Atualizar fundo de sementes
+            const fundoSementes = await prisma.fundoSementes.findFirst({
+              where: { distribuido: false }
+            })
+            
+            if (fundoSementes) {
+              await prisma.fundoSementes.update({
+                where: { id: fundoSementes.id },
+                data: { valorTotal: { increment: pctFundo } }
+              })
+            } else {
+              await prisma.fundoSementes.create({
+                data: {
+                  ciclo: 1,
+                  valorTotal: pctFundo,
+                  dataInicio: new Date(),
+                  dataFim: new Date(),
+                  distribuido: false
+                }
+              })
+            }
+
+            // Criar notificação
+            await prisma.notificacao.create({
+              data: {
+                usuarioId: compra.usuarioId,
+                titulo: 'Cashback Liberado!',
+                mensagem: `Seu cashback de R$ ${valorRepasse.toFixed(2)} foi liberado automaticamente! Você recebeu ${pctUsuario} sementes.`,
+                tipo: 'cashback',
+                lida: false
+              }
+            })
+
+            console.log('🎯 Repasse processado com sucesso via webhook:', compra.id)
+
+          } catch (error) {
+            console.error('⚠️ Erro nas operações secundárias:', error)
           }
 
-          // Criar notificação
-          await prisma.notificacao.create({
-            data: {
-              usuarioId: compra.usuarioId,
-              titulo: 'Cashback Liberado!',
-              mensagem: `Seu cashback de R$ ${valorRepasse.toFixed(2)} foi liberado automaticamente! Você recebeu ${pctUsuario} sementes.`,
-              tipo: 'cashback',
-              lida: false
-            }
-          })
-
-          console.log('🎯 Repasse processado com sucesso via webhook:', compra.id)
-
-          return res.status(200).json({ 
-            success: true, 
-            message: 'Pagamento processado com sucesso',
-            compraId: compra.id,
-            paymentId: String(payment.id)
-          })
-
         } catch (error) {
-          console.error('⚠️ Erro nas operações secundárias:', error)
-          return res.status(200).json({ 
-            success: true, 
-            message: 'Pagamento processado com avisos',
-            compraId: compra.id,
-            paymentId: String(payment.id)
-          })
+          console.error(`❌ Erro ao processar compra ${compra.id}:`, error)
         }
-
-      } else {
-        console.log('ℹ️ Nenhuma compra pendente encontrada para processar')
-        return res.status(200).json({ 
-          success: true, 
-          message: 'Pagamento aprovado - nenhuma compra pendente',
-          paymentId: String(payment.id)
-        })
       }
+
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Pagamentos processados com sucesso',
+        paymentId: String(payment.id),
+        comprasProcessadas: comprasPendentes.length
+      })
+
     } else {
       console.log('ℹ️ Pagamento não aprovado:', payment.status)
       return res.status(200).json({ 
