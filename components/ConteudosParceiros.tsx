@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DocumentTextIcon, PlayIcon, PhotoIcon, LinkIcon } from '@heroicons/react/24/outline';
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -118,12 +119,32 @@ export default function ConteudosParceiros() {
     };
   };
 
-  const getTipoIcon = (tipo: string) => {
-    switch (tipo?.toLowerCase()) {
+  const getTipoIcon = (tipo: string, url?: string) => {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
       case 'video':
       case 'youtube':
-      case 'twitch':
         return <PlayIcon className="w-5 h-5 text-red-400" />;
+      case 'tiktok':
+        return <FaTiktok className="w-5 h-5 text-black" />;
+      case 'instagram':
+        return <FaInstagram className="w-5 h-5 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-5 h-5 text-purple-500" />;
       case 'imagem':
       case 'foto':
         return <PhotoIcon className="w-5 h-5 text-green-400" />;
@@ -135,11 +156,30 @@ export default function ConteudosParceiros() {
     }
   };
 
-  const getTipoLabel = (tipo: string) => {
-    switch (tipo?.toLowerCase()) {
+  const getTipoLabel = (tipo: string, url?: string) => {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
       case 'video':
       case 'youtube':
         return 'Vídeo';
+      case 'tiktok':
+        return 'TikTok';
+      case 'instagram':
+        return 'Instagram';
       case 'twitch':
         return 'Stream';
       case 'imagem':
@@ -422,8 +462,8 @@ export default function ConteudosParceiros() {
                             )}
                           </div>
                         ) : (
-                          <div className={`w-16 h-16 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500/20 to-purple-500/20'} border border-gray-600 rounded-lg flex items-center justify-center group-hover:border-purple-400 transition-colors text-xl`}>
-                            {thumbnail?.icon || '🔗'}
+                          <div className={`w-16 h-16 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500/20 to-purple-500/20'} border border-gray-600 rounded-lg flex items-center justify-center group-hover:border-purple-400 transition-colors`}>
+                            {getTipoIcon(conteudo.tipo, conteudo.url)}
                           </div>
                         )}
                       </div>
@@ -440,7 +480,7 @@ export default function ConteudosParceiros() {
                           </div>
                           <span className="text-gray-400">•</span>
                           <span className="text-xs text-blue-400 font-medium">
-                            {getTipoLabel(conteudo.tipo)}
+                            {getTipoLabel(conteudo.tipo, conteudo.url)}
                           </span>
                           {conteudo.categoria && (
                             <>
