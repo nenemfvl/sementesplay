@@ -22,6 +22,14 @@ O SementesPLAY é um sistema cíclico que conecta:
 - ✅ Doar Sementes para criadores favoritos
 - ✅ Visualizar ranking de criadores
 - ✅ Resgatar dinheiro real com códigos
+- ✅ Pagamentos seguros via PIX
+
+### Sistema de Pagamentos
+
+- ✅ **Mercado Pago integrado** com PIX automático
+- ✅ **Webhooks em tempo real** para processamento
+- ✅ **Sistema de repasses** para parceiros
+- ✅ **Processamento automático** de transações
 
 ### Para Criadores
 
@@ -46,6 +54,7 @@ O SementesPLAY é um sistema cíclico que conecta:
 - **Autenticação**: NextAuth.js
 - **Validação**: Zod
 - **Animações**: Framer Motion
+- **Pagamentos**: Mercado Pago (PIX, Webhooks)
 
 ## 📦 Instalação
 
