@@ -75,7 +75,7 @@ export default function ConteudosParceiros() {
         platform: 'YouTube',
         icon: '🎥',
         color: 'from-red-500 to-red-600',
-        fallback: true // Sempre usar fallback para YouTube
+        fallback: false // Usar thumbnail real do YouTube
       };
     }
     
@@ -310,15 +310,21 @@ export default function ConteudosParceiros() {
                         >
                           <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
                             {/* Mostrar imagem real quando disponível, senão usar fallback visual */}
-                            {thumbnail?.src && thumbnail.platform === 'Custom' ? (
+                            {thumbnail?.src && (thumbnail.platform === 'Custom' || thumbnail.platform === 'YouTube') ? (
                               <div className="absolute inset-0">
-                                <Image
-                                  src={thumbnail.src}
-                                  alt={conteudo.titulo}
-                                  fill
-                                  className="object-cover"
-                                  sizes="(max-width: 768px) 100vw, 50vw"
-                                />
+                                                            <Image
+                              src={thumbnail.src}
+                              alt={conteudo.titulo}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              unoptimized={thumbnail.platform === 'YouTube'}
+                              onError={(e) => {
+                                console.log('Erro ao carregar imagem:', thumbnail.src);
+                                const target = e.currentTarget as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
                                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20"></div>
                               </div>
                             ) : (
