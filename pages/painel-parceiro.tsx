@@ -22,6 +22,7 @@ import {
   Cog6ToothIcon,
   VideoCameraIcon
 } from '@heroicons/react/24/outline';
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa';
 
 
 
@@ -187,6 +188,44 @@ export default function PainelParceiro() {
     
     // Outro
     return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline my-2 block">Abrir link</a>;
+  }
+
+  // Função para obter ícone específico da plataforma
+  function getTipoIcon(tipo: string, url?: string) {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
+      case 'video':
+      case 'youtube':
+        return <VideoCameraIcon className="w-16 h-16 text-red-400" />;
+      case 'tiktok':
+        return <FaTiktok className="w-16 h-16 text-black" />;
+      case 'instagram':
+        return <FaInstagram className="w-16 h-16 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-16 h-16 text-purple-500" />;
+      case 'imagem':
+      case 'foto':
+        return <VideoCameraIcon className="w-16 h-16 text-green-400" />;
+      case 'link':
+      case 'url':
+        return <DocumentTextIcon className="w-16 h-16 text-blue-400" />;
+      default:
+        return <DocumentTextIcon className="w-16 h-16 text-gray-400" />;
+    }
   }
 
   // Função para obter thumbnail das plataformas
@@ -1732,12 +1771,12 @@ export default function PainelParceiro() {
                                 </div>
                               );
                             } else {
-                              // Outras plataformas com gradiente personalizado
+                              // Outras plataformas com ícones específicos
                               return (
                                 <div className={`w-full h-48 bg-gradient-to-br ${thumbnail?.color || 'from-gray-600 to-gray-700'} flex items-center justify-center text-white group-hover:scale-105 transition-all duration-300 relative overflow-hidden`}>
                                   <div className="text-center z-10">
-                                    <div className="text-4xl mb-2">{thumbnail?.icon || '🔗'}</div>
-                                    <div className="text-sm font-medium">{thumbnail?.platform || 'Link'}</div>
+                                    {getTipoIcon(conteudo.tipo, conteudo.url)}
+                                    <div className="text-sm font-medium mt-2">{thumbnail?.platform || 'Link'}</div>
                                   </div>
                                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all duration-300"></div>
                                 </div>
