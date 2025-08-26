@@ -71,7 +71,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (conteudo.tipo === 'video' && conteudo.url) {
         const yt = conteudo.url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
         if (yt) {
-          return `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`;
+          try {
+            return `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`;
+          } catch (error) {
+            // Se falhar, usar placeholder personalizado do YouTube
+            return `https://via.placeholder.com/480x360/FF0000/FFFFFF?text=📺+YouTube+Video+${yt[1]}`;
+          }
         }
       }
 
@@ -79,33 +84,59 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (conteudo.url?.includes('twitch.tv')) {
         const tw = conteudo.url.match(/twitch.tv\/(videos\/)?([\w-]+)/);
         if (tw) {
-          // Para vídeos do Twitch, usa a API de thumbnails
-          if (tw[1]) {
-            // É um vídeo
-            return `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/${tw[2]}/thumb/thumb0-320x180.jpg`;
-          } else {
-            // É um canal/stream - usa thumbnail do canal
-            return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${tw[2]}-320x180.jpg`;
+          try {
+            // Para vídeos do Twitch, usa a API de thumbnails
+            if (tw[1]) {
+              // É um vídeo
+              return `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/${tw[2]}/thumb/thumb0-320x180.jpg`;
+            } else {
+              // É um canal/stream - usa thumbnail do canal
+              return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${tw[2]}-320x180.jpg`;
+            }
+          } catch (error) {
+            // Se falhar, usar placeholder personalizado do Twitch
+            return `https://via.placeholder.com/320x180/9147FF/FFFFFF?text=🎮+Twitch+${tw[1] ? 'Video' : 'Channel'}+${tw[2]}`;
           }
         }
+        // Se não conseguir extrair informações, retorna um placeholder genérico do Twitch
+        return 'https://via.placeholder.com/320x180/9147FF/FFFFFF?text=🎮+Twitch+Content';
       }
 
       // Para Instagram
       if (conteudo.url?.includes('instagram.com')) {
-        // Instagram não permite thumbnails diretas, mas podemos usar um placeholder
-        // ou tentar extrair a imagem se for um post de imagem
-        if (conteudo.tipo === 'imagem') {
-          return conteudo.url;
+        // Tentar extrair o ID do post do Instagram
+        const instaMatch = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/) ||
+                          conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+        
+        if (instaMatch) {
+          const postId = instaMatch[1];
+          if (conteudo.tipo === 'imagem') {
+            // Para imagens, tentar usar a URL direta (pode funcionar em alguns casos)
+            return conteudo.url;
+          } else {
+            // Para vídeos e outros tipos, usar placeholder personalizado do Instagram
+            return `https://via.placeholder.com/400x400/833AB4/FFFFFF?text=📷+Instagram+Post+${postId}`;
+          }
         }
-        // Para vídeos do Instagram, retorna null (usará ícone)
-        return null;
+        // Se não conseguir extrair o ID, retorna um placeholder genérico do Instagram
+        return 'https://via.placeholder.com/400x400/833AB4/FFFFFF?text=📷+Instagram+Content';
       }
 
       // Para TikTok
       if (conteudo.url?.includes('tiktok.com')) {
-        // TikTok também não permite thumbnails diretas
-        // Para vídeos do TikTok, retorna null (usará ícone)
-        return null;
+        // Tentar extrair o ID do vídeo do TikTok (suporta diferentes formatos)
+        const tiktokMatch = conteudo.url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                           conteudo.url.match(/tiktok\.com\/v\/(\d+)/) ||
+                           conteudo.url.match(/vm\.tiktok\.com\/(\w+)/);
+        
+        if (tiktokMatch) {
+          const videoId = tiktokMatch[1];
+          // Criar um placeholder personalizado que simula o estilo visual do TikTok
+          // Usando proporção 9:16 (vertical) que é padrão do TikTok
+          return `https://via.placeholder.com/360x640/000000/FFFFFF?text=🎵+TikTok+Video+${videoId}`;
+        }
+        // Se não conseguir extrair o ID, retorna um placeholder genérico do TikTok
+        return 'https://via.placeholder.com/360x640/000000/FFFFFF?text=🎵+TikTok+Content';
       }
 
       // Para imagens, usa a própria URL
@@ -113,8 +144,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return conteudo.url;
       }
 
-      // Para outros tipos, retorna null (usará ícone)
-      return null;
+      // Para outros tipos, retorna um placeholder genérico baseado no tipo
+      if (conteudo.tipo) {
+        const tipo = conteudo.tipo.toLowerCase();
+        if (tipo.includes('video')) {
+          return 'https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=🎬+Video+Content';
+        } else if (tipo.includes('imagem') || tipo.includes('foto')) {
+          return 'https://via.placeholder.com/400x300/10B981/FFFFFF?text=🖼️+Image+Content';
+        } else if (tipo.includes('link') || tipo.includes('url')) {
+          return 'https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=🔗+Link+Content';
+        } else {
+          return 'https://via.placeholder.com/400x300/6B7280/FFFFFF?text=📄+Content';
+        }
+      }
+      
+      // Fallback final
+      return 'https://via.placeholder.com/400x300/6B7280/FFFFFF?text=📄+Content';
     };
 
     // Formatar os conteúdos para o formato de notícias
