@@ -134,26 +134,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Formatar os conteúdos para o formato de notícias
-    const noticias = conteudosLimitados.map((conteudo, index) => ({
-      id: conteudo.id,
-      titulo: conteudo.titulo,
-      descricao: conteudo.descricao || `Novo conteúdo de ${conteudo.criador.usuario.nome}`,
-      data: conteudo.dataPublicacao?.toLocaleDateString('pt-BR') || new Date().toLocaleDateString('pt-BR'),
-      link: `/criador/${conteudo.criador.id}`,
-      tipo: conteudo.tipo,
-      url: conteudo.url,
-      preview: gerarPreview(conteudo),
-      criador: {
-        nome: conteudo.criador.usuario.nome,
-        avatarUrl: conteudo.criador.usuario.avatarUrl
-      },
-      categoria: conteudo.categoria,
-      // Informações de popularidade
-      visualizacoes: conteudo.visualizacoes,
-      curtidas: conteudo.curtidas,
-      compartilhamentos: conteudo.compartilhamentos,
-      pontuacaoPopularidade: conteudo.pontuacaoPopularidade
-    }))
+    const noticias = conteudosLimitados.map((conteudo, index) => {
+      // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+      let tipoDetectado = conteudo.tipo;
+      
+      if (conteudo.url) {
+        if (conteudo.url.includes('tiktok.com')) {
+          tipoDetectado = 'tiktok';
+        } else if (conteudo.url.includes('instagram.com')) {
+          tipoDetectado = 'instagram';
+        } else if (conteudo.url.includes('youtube.com') || conteudo.url.includes('youtu.be')) {
+          tipoDetectado = 'youtube';
+        } else if (conteudo.url.includes('twitch.tv')) {
+          tipoDetectado = 'twitch';
+        }
+      }
+      
+      return {
+        id: conteudo.id,
+        titulo: conteudo.titulo,
+        descricao: conteudo.descricao || `Novo conteúdo de ${conteudo.criador.usuario.nome}`,
+        data: conteudo.dataPublicacao?.toLocaleDateString('pt-BR') || new Date().toLocaleDateString('pt-BR'),
+        link: `/criador/${conteudo.criador.id}`,
+        tipo: tipoDetectado,
+        url: conteudo.url,
+        preview: gerarPreview(conteudo),
+        criador: {
+          nome: conteudo.criador.usuario.nome,
+          avatarUrl: conteudo.criador.usuario.avatarUrl
+        },
+        categoria: conteudo.categoria,
+        // Informações de popularidade
+        visualizacoes: conteudo.visualizacoes,
+        curtidas: conteudo.curtidas,
+        compartilhamentos: conteudo.compartilhamentos,
+        pontuacaoPopularidade: conteudo.pontuacaoPopularidade
+      };
+    })
 
     return res.status(200).json({
       noticias,
