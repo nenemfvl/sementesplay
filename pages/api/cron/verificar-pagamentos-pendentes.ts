@@ -32,10 +32,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     }
 
-    // Buscar repasses pendentes no banco
+    // Buscar repasses pendentes no banco (mais flexível)
     const repassesPendentes = await prisma.repasseParceiro.findMany({
       where: {
-        status: 'aguardando_pagamento',
+        OR: [
+          { status: 'aguardando_pagamento' },
+          { status: 'pendente' },
+          { status: 'processando' }
+        ],
         paymentId: {
           not: null
         }
