@@ -213,14 +213,12 @@ export default function ConteudosParceiros() {
 
   // Ordenar conteúdos por pontuação (mais populares primeiro)
   const getConteudosOrdenados = () => {
-    console.log('📊 getConteudosOrdenados chamado com', conteudos.length, 'conteúdos');
     const ordenados = [...conteudos]
       .map(conteudo => ({
         ...conteudo,
         pontuacao: calcularPontuacao(conteudo)
       }))
       .sort((a, b) => b.pontuacao - a.pontuacao);
-    console.log('🎯 Conteúdos ordenados:', ordenados.map(c => ({ titulo: c.titulo, pontuacao: c.pontuacao })));
     return ordenados;
   };
 
@@ -273,7 +271,6 @@ export default function ConteudosParceiros() {
                     const conteudosParaSlide = conteudosOrdenados.slice(0, 3);
                     
                     if (conteudosParaSlide.length === 0) {
-                      console.log('⚠️ Nenhum conteúdo para slide, mostrando placeholder');
                       return (
                         <div className="flex items-center justify-center h-full">
                           <div className="text-center text-white">
@@ -290,7 +287,6 @@ export default function ConteudosParceiros() {
                       );
                     }
                     
-                    console.log('🎬 Renderizando', conteudosParaSlide.length, 'slides');
                     return conteudosParaSlide.map((conteudo, index) => {
                       const thumbnail = getThumbnail(conteudo.url);
                       return (
