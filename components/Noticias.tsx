@@ -57,7 +57,6 @@ export default function Noticias() {
     switch (tipo?.toLowerCase()) {
       case 'video':
       case 'youtube':
-      case 'twitch':
         return <PlayIcon className="w-5 h-5 text-red-400" />;
       case 'tiktok':
         return <FaTiktok className="w-5 h-5 text-black" />;
