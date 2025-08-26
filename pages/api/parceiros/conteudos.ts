@@ -81,7 +81,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           dislikes: conteudo.dislikes || 0,
           compartilhamentos: conteudo.compartilhamentos || 0,
           comentarios: conteudo.comentarios ? conteudo.comentarios.length : 0,
-          thumbnail: thumbnail || '/thumbnails/default.jpg',
+          preview: conteudo.preview || null, // Campo para imagem personalizada
+          thumbnail: thumbnail || '/thumbnails/default.jpg', // Mantido para compatibilidade
           cidade: conteudo.cidade || '',
           endereco: conteudo.endereco || '',
           dataEvento: conteudo.dataEvento ? conteudo.dataEvento.toISOString() : null,
