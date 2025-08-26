@@ -263,107 +263,119 @@ export default function ConteudosParceiros() {
                   <div className="text-white">Carregando...</div>
                 </div>
               </div>
-            ) : conteudos.length === 0 ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center text-white">
-                  <div className="text-4xl mb-3">🏢</div>
-                  <div className="text-lg font-bold mb-2">Conteúdos dos Parceiros</div>
-                  <div className="text-sm opacity-80">
-                    Descubra os conteúdos mais populares dos nossos parceiros
-                  </div>
-                  <div className="mt-4 text-xs opacity-60">
-                    Atualizado em tempo real
-                  </div>
-                </div>
-              </div>
             ) : (
               <>
-                                 {/* Slides */}
-                 <div className="relative h-full overflow-hidden">
-                   {getConteudosOrdenados().slice(0, 3).map((conteudo, index) => {
-                    const thumbnail = getThumbnail(conteudo.url);
-                    return (
-                      <div
-                        key={conteudo.id}
-                        className={`absolute inset-0 transition-all duration-500 ease-in-out ${
-                          index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
-                        }`}
-                      >
-                        <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
-                          {/* Background Image */}
-                          {thumbnail?.src && (
-                            <div className="absolute inset-0 overflow-hidden">
-                              <Image
-                                src={thumbnail.src}
-                                alt={conteudo.titulo}
-                                fill
-                                className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                priority={index === 0}
-                                quality={85}
-                                onError={(e) => {
-                                  const target = e.currentTarget as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  const nextSibling = target.nextElementSibling as HTMLElement;
-                                  if (nextSibling) {
-                                    nextSibling.style.display = 'flex';
-                                  }
-                                }}
-                              />
-                              {/* Gradiente sutil sobre a imagem */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                              {/* Fallback para Twitch */}
-                              {thumbnail.fallback && (
-                                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
-                                  {thumbnail.icon}
-                                </div>
-                              )}
+                {/* Slides */}
+                <div className="relative h-full overflow-hidden">
+                  {(() => {
+                    const conteudosOrdenados = getConteudosOrdenados();
+                    const conteudosParaSlide = conteudosOrdenados.slice(0, 3);
+                    
+                    if (conteudosParaSlide.length === 0) {
+                      console.log('⚠️ Nenhum conteúdo para slide, mostrando placeholder');
+                      return (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="text-center text-white">
+                            <div className="text-4xl mb-3">🏢</div>
+                            <div className="text-lg font-bold mb-2">Conteúdos dos Parceiros</div>
+                            <div className="text-sm opacity-80">
+                              Descubra os conteúdos mais populares dos nossos parceiros
                             </div>
-                          )}
-                          
-                          {/* Content Overlay */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center text-white p-6 max-w-md relative z-10">
-                              <div className="text-2xl font-bold mb-3 drop-shadow-lg">{conteudo.titulo}</div>
-                              <div className="text-sm opacity-90 mb-4 drop-shadow-md">{conteudo.parceiro.nome}</div>
-                              <div className="flex items-center justify-center space-x-4 text-xs drop-shadow-md">
-                                <span className="flex items-center space-x-1 bg-black/30 px-2 py-1 rounded-full">
-                                  <span>🏢</span>
-                                  <span>{conteudo.parceiro.nome}</span>
-                                </span>
-                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
-                                <span className="bg-black/30 px-2 py-1 rounded-full">{getTipoLabel(conteudo.tipo)}</span>
-                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
-                                <span className="bg-black/30 px-2 py-1 rounded-full">
-                                  {(conteudo.data || conteudo.dataPublicacao) ? 
-                                    (() => {
-                                      try {
-                                        const dataValue = conteudo.data || conteudo.dataPublicacao;
-                                        return new Date(dataValue).toLocaleDateString('pt-BR');
-                                      } catch (error) {
-                                        return 'Data inválida';
-                                      }
-                                    })() 
-                                    : 'Data não disponível'
-                                  }
-                                </span>
-                                {/* Indicador de popularidade no slider */}
-                                <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
-                                <span className="text-yellow-300 bg-black/30 px-2 py-1 rounded-full">
-                                  🔥 {formatarNumero(conteudo.visualizacoes)} view
-                                </span>
-                              </div>
+                            <div className="mt-4 text-xs opacity-60">
+                              Atualizado em tempo real
                             </div>
-                          </div>
-                          
-                          {/* Clickable Link Overlay */}
-                          <div className="absolute inset-0 z-10 cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
-                            <span className="sr-only">Ver conteúdo: {conteudo.titulo}</span>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    }
+                    
+                    console.log('🎬 Renderizando', conteudosParaSlide.length, 'slides');
+                    return conteudosParaSlide.map((conteudo, index) => {
+                      const thumbnail = getThumbnail(conteudo.url);
+                      return (
+                        <div
+                          key={conteudo.id}
+                          className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+                            index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+                          }`}
+                        >
+                          <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
+                            {/* Background Image */}
+                            {thumbnail?.src && (
+                              <div className="absolute inset-0 overflow-hidden">
+                                <Image
+                                  src={thumbnail.src}
+                                  alt={conteudo.titulo}
+                                  fill
+                                  className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  priority={index === 0}
+                                  quality={85}
+                                  onError={(e) => {
+                                    console.log('❌ Erro ao carregar imagem:', thumbnail.src);
+                                    const target = e.currentTarget as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    const nextSibling = target.nextElementSibling as HTMLElement;
+                                    if (nextSibling) {
+                                      nextSibling.style.display = 'flex';
+                                    }
+                                  }}
+                                />
+                                {/* Gradiente sutil sobre a imagem */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                                {/* Fallback para Twitch */}
+                                {thumbnail.fallback && (
+                                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
+                                    {thumbnail.icon}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Content Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center text-white p-6 max-w-md relative z-10">
+                                <div className="text-2xl font-bold mb-3 drop-shadow-lg">{conteudo.titulo}</div>
+                                <div className="text-sm opacity-90 mb-4 drop-shadow-md">{conteudo.parceiro.nome}</div>
+                                <div className="flex items-center justify-center space-x-4 text-xs drop-shadow-md">
+                                  <span className="flex items-center space-x-1 bg-black/30 px-2 py-1 rounded-full">
+                                    <span>🏢</span>
+                                    <span>{conteudo.parceiro.nome}</span>
+                                  </span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">{getTipoLabel(conteudo.tipo)}</span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">
+                                    {(conteudo.data || conteudo.dataPublicacao) ? 
+                                      (() => {
+                                        try {
+                                          const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                          return new Date(dataValue).toLocaleDateString('pt-BR');
+                                        } catch (error) {
+                                          return 'Data inválida';
+                                        }
+                                      })() 
+                                      : 'Data não disponível'
+                                    }
+                                  </span>
+                                  {/* Indicador de popularidade no slider */}
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
+                                  <span className="text-yellow-300 bg-black/30 px-2 py-1 rounded-full">
+                                    🔥 {formatarNumero(conteudo.visualizacoes)} view
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Clickable Link Overlay */}
+                            <div className="absolute inset-0 z-10 cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
+                              <span className="sr-only">Ver conteúdo: {conteudo.titulo}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </>
             )}
