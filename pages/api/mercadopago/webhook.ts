@@ -66,10 +66,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Pagamento aprovado - processar automaticamente
       console.log(`🎉 Pagamento aprovado: ${payment.id}`)
 
-      // Buscar compras aguardando repasse que podem corresponder a este pagamento
-      const comprasPendentes = await prisma.compraParceiro.findMany({
+      // Buscar a compra específica que corresponde a este pagamento
+      const compra = await prisma.compraParceiro.findFirst({
         where: {
-          status: 'aguardando_repasse'
+          status: 'aguardando_repasse',
+          // Aqui podemos adicionar mais critérios se necessário
+          // Por enquanto, vamos processar a mais recente
         },
         include: {
           parceiro: {
@@ -85,12 +87,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      console.log(`📊 Compras pendentes encontradas: ${comprasPendentes.length}`)
-
-      // Processar a compra mais recente (assumindo que é a que corresponde ao pagamento)
-      if (comprasPendentes.length > 0) {
-        const compra = comprasPendentes[0]
-        console.log(`⚙️ Processando compra: ${compra.id}`)
+      if (compra) {
+        console.log(`⚙️ Processando compra: ${compra.id} para paymentId: ${payment.id}`)
 
         // Calcular valor do repasse (10% da compra)
         const valorRepasse = compra.valorCompra * 0.10
