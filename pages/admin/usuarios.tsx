@@ -5,7 +5,6 @@ import {
   UsersIcon,
   ArrowLeftIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
   TrashIcon,
   EyeIcon,
   ShieldCheckIcon,
@@ -39,7 +38,7 @@ export default function AdminUsuarios() {
   const [filterTipo, setFilterTipo] = useState('todos')
   const [filterNivel, setFilterNivel] = useState('todos')
   const [selectedUser, setSelectedUser] = useState<UsuarioAdmin | null>(null)
-  const [showModal, setShowModal] = useState(false)
+
 
   useEffect(() => {
     const currentUser = auth.getUser()
@@ -180,28 +179,7 @@ export default function AdminUsuarios() {
     }
   }
 
-  const alterarNivel = async (usuarioId: string, novoNivel: string) => {
-    try {
-      const response = await fetch(`/api/admin/usuarios/${usuarioId}/nivel`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nivel: novoNivel })
-      })
 
-      if (response.ok) {
-        alert('Nível alterado com sucesso!')
-        loadUsuarios()
-        setShowModal(false)
-      } else {
-        alert('Erro ao alterar nível')
-      }
-    } catch (error) {
-      console.error('Erro ao alterar nível:', error)
-      alert('Erro ao alterar nível')
-    }
-  }
 
   const usuariosFiltrados = filtrarUsuarios()
 
@@ -425,16 +403,6 @@ export default function AdminUsuarios() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
                               <button
-                                onClick={() => {
-                                  setSelectedUser(usuario)
-                                  setShowModal(true)
-                                }}
-                                className="text-blue-400 hover:text-blue-300"
-                                title="Editar"
-                              >
-                                <PencilIcon className="w-4 h-4" />
-                              </button>
-                              <button
                                 onClick={() => window.open(`/admin/usuarios/${usuario.id}`, '_blank')}
                                 className="text-green-400 hover:text-green-300"
                                 title="Ver detalhes"
@@ -488,56 +456,7 @@ export default function AdminUsuarios() {
           </motion.div>
         </div>
 
-        {/* Modal de Edição */}
-        {showModal && selectedUser && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-sss-medium rounded-lg p-6 w-full max-w-md mx-4"
-            >
-              <h3 className="text-lg font-semibold text-sss-white mb-4">
-                Editar Usuário: {selectedUser.nome}
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="nivel-modal-select" className="block text-sm font-medium text-gray-300 mb-2">
-                    Nível
-                  </label>
-                  <select
-                    id="nivel-modal-select"
-                    defaultValue={selectedUser.nivel}
-                    className="w-full px-4 py-2 bg-sss-dark border border-sss-light rounded-lg text-sss-white focus:outline-none focus:ring-2 focus:ring-sss-accent"
-                    aria-label="Alterar nível do usuário"
-                  >
-                    <option value="comum">Comum</option>
-                    <option value="parceiro">Parceiro</option>
-                    <option value="supremo">Supremo</option>
-                  </select>
-                </div>
 
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={() => {
-                      const select = document.querySelector('select') as HTMLSelectElement
-                      alterarNivel(selectedUser.id, select.value)
-                    }}
-                    className="flex-1 px-4 py-2 bg-sss-accent hover:bg-red-600 text-white rounded-lg transition-colors"
-                  >
-                    Salvar
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
 
         {/* Modal de Banimento */}
         {showBanModal && selectedUser && (
