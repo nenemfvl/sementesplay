@@ -8,10 +8,6 @@
     {
       "path": "/api/ranking/atualizar-niveis-automatico",
       "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/verificar-pagamentos-pendentes",
-      "schedule": "*/5 * * * *"
     }
   ],
   "headers": [
