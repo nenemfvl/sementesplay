@@ -27,6 +27,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
+import { FaInstagram, FaTiktok, FaTwitch } from 'react-icons/fa'
 
 import DenunciaModal from '../../components/DenunciaModal'
 
@@ -380,6 +381,43 @@ export default function ParceiroPerfil() {
     setShowDenunciaModal(true)
   }
 
+  const getTipoIcon = (tipo: string, url?: string) => {
+    // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
+    let tipoDetectado = tipo;
+    
+    if (url) {
+      if (url.includes('tiktok.com')) {
+        tipoDetectado = 'tiktok';
+      } else if (url.includes('instagram.com')) {
+        tipoDetectado = 'instagram';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        tipoDetectado = 'youtube';
+      } else if (url.includes('twitch.tv')) {
+        tipoDetectado = 'twitch';
+      }
+    }
+
+    switch (tipoDetectado?.toLowerCase()) {
+      case 'video':
+      case 'youtube':
+        return <VideoCameraIcon className="w-16 h-16 text-red-400" />;
+      case 'tiktok':
+        return <FaTiktok className="w-16 h-16 text-black" />;
+      case 'instagram':
+        return <FaInstagram className="w-16 h-16 text-pink-500" />;
+      case 'twitch':
+        return <FaTwitch className="w-16 h-16 text-purple-500" />;
+      case 'imagem':
+      case 'foto':
+        return <VideoCameraIcon className="w-16 h-16 text-green-400" />;
+      case 'link':
+      case 'url':
+        return <DocumentTextIcon className="w-16 h-16 text-blue-400" />;
+      default:
+        return <DocumentTextIcon className="w-16 h-16 text-gray-400" />;
+    }
+  }
+
   if (loading) {
     return (
       <>
@@ -588,12 +626,12 @@ export default function ParceiroPerfil() {
                          </div>
                        );
                      } else {
-                       // Outras plataformas com gradiente
+                       // Outras plataformas com ícones específicos
                        return (
-                         <div className={`w-full h-48 bg-gradient-to-br ${thumbnail?.color || 'from-blue-500 to-blue-600'} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+                         <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                            <div className="text-center">
-                             <span className="text-4xl mb-2 block">{thumbnail?.icon || '🔗'}</span>
-                             <p className="text-white font-semibold">{thumbnail?.platform || 'Link'}</p>
+                             {getTipoIcon(conteudo.tipo, conteudo.url)}
+                             <p className="text-white font-semibold mt-2">{thumbnail?.platform || 'Link'}</p>
                            </div>
                          </div>
                        );
