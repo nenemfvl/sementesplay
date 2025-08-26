@@ -27,7 +27,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
-import Navbar from '../../components/Navbar'
+
 import DenunciaModal from '../../components/DenunciaModal'
 
 interface ParceiroDetalhes {
@@ -387,7 +387,7 @@ export default function ParceiroPerfil() {
           <title>Carregando... - SementesPLAY</title>
         </Head>
         <div className="min-h-screen bg-sss-dark flex flex-col">
-          <Navbar />
+          
           <main className="flex-1 flex items-center justify-center">
             <div className="text-gray-400">Carregando perfil do parceiro...</div>
           </main>
@@ -403,7 +403,7 @@ export default function ParceiroPerfil() {
           <title>Parceiro não encontrado - SementesPLAY</title>
         </Head>
         <div className="min-h-screen bg-sss-dark flex flex-col">
-          <Navbar />
+          
           <main className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <div className="text-6xl mb-4">🏢</div>
@@ -428,7 +428,6 @@ export default function ParceiroPerfil() {
         <title>{parceiro.nome} - Parceiro SementesPLAY</title>
       </Head>
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header do Parceiro */}

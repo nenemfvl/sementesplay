@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
-import Navbar from '../../components/Navbar'
+
 import { auth } from '../../lib/auth'
 import { useRouter } from 'next/router'
 import { PageLoader } from '../../components/Loader'
@@ -298,7 +298,7 @@ export default function AdminSuporte() {
         <meta name="description" content="Gerenciamento de suporte" />
       </Head>
 
-      <Navbar />
+      
 
       <div className="min-h-screen bg-sss-dark">
         <div className="container mx-auto px-4 py-8">

@@ -12,7 +12,7 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../../lib/auth'
-import Navbar from '../../components/Navbar'
+
 
 interface PermissaoInconsistente {
   id: string
@@ -164,7 +164,7 @@ export default function GerenciarPermissoes() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        <Navbar />
+
         
         {/* Header */}
         <div className="bg-sss-medium/50 backdrop-blur-sm border-b border-sss-light sticky top-0 z-40">

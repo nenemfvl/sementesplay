@@ -195,7 +195,7 @@ export default function Doar() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Navbar */}
+
 
 
         {/* Notification */}

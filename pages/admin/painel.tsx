@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Notificacoes from '../../components/Notificacoes'
 import { auth } from '../../lib/auth'
-import Navbar from '../../components/Navbar'
+
 
 export default function PainelAdmin() {
   const [dados, setDados] = useState<any>(null)
@@ -132,7 +132,7 @@ export default function PainelAdmin() {
         <Head>
           <title>Painel Admin - SementesPLAY</title>
         </Head>
-        <Navbar />
+
         <div className="min-h-screen bg-sss-dark flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sss-accent mx-auto mb-4"></div>
@@ -150,7 +150,7 @@ export default function PainelAdmin() {
         <meta name="description" content="Painel administrativo do SementesPLAY" />
       </Head>
       
-      <Navbar />
+      
 
       <div className="min-h-screen bg-sss-dark">
         <div className="container mx-auto px-4 py-8">

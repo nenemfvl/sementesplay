@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
-import Navbar from '../../components/Navbar'
+
 
 interface AdminStats {
   totalUsuarios: number
@@ -112,9 +112,7 @@ export default function AdminDashboard() {
       </Head>
 
       <div className="min-h-screen bg-sss-dark">
-        {/* Navbar */}
-        <Navbar />
-
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
