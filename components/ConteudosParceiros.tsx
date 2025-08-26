@@ -300,37 +300,54 @@ export default function ConteudosParceiros() {
                           }`}
                         >
                           <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
-                            {/* Background Image */}
-                            {thumbnail?.src && (
-                              <div className="absolute inset-0 overflow-hidden">
-                                <Image
-                                  src={thumbnail.src}
-                                  alt={conteudo.titulo}
-                                  fill
-                                  className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
-                                  sizes="(max-width: 768px) 100vw, 50vw"
-                                  priority={index === 0}
-                                  quality={85}
-                                  onError={(e) => {
-                                    console.log('❌ Erro ao carregar imagem:', thumbnail.src);
-                                    const target = e.currentTarget as HTMLImageElement;
-                                    target.style.display = 'none';
-                                    const nextSibling = target.nextElementSibling as HTMLElement;
-                                    if (nextSibling) {
-                                      nextSibling.style.display = 'flex';
-                                    }
-                                  }}
-                                />
-                                {/* Gradiente sutil sobre a imagem */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                                {/* Fallback para Twitch */}
-                                {thumbnail.fallback && (
-                                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
-                                    {thumbnail.icon}
-                                  </div>
-                                )}
-                              </div>
-                            )}
+                             {/* Background Image */}
+                             {thumbnail?.src ? (
+                               <div className="absolute inset-0 overflow-hidden">
+                                 <Image
+                                   src={thumbnail.src}
+                                   alt={conteudo.titulo}
+                                   fill
+                                   className="object-cover object-center transform scale-105 transition-transform duration-700 hover:scale-110"
+                                   sizes="(max-width: 768px) 100vw, 50vw"
+                                   priority={index === 0}
+                                   quality={85}
+                                   onError={(e) => {
+                                     console.log('❌ Erro ao carregar imagem:', thumbnail.src);
+                                     const target = e.currentTarget as HTMLImageElement;
+                                     target.style.display = 'none';
+                                     const nextSibling = target.nextElementSibling as HTMLElement;
+                                     if (nextSibling) {
+                                       nextSibling.style.display = 'flex';
+                                     }
+                                   }}
+                                 />
+                                 {/* Gradiente sutil sobre a imagem */}
+                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                                 {/* Fallback para Twitch */}
+                                 {thumbnail.fallback && (
+                                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center text-6xl hidden-fallback">
+                                     {thumbnail.icon}
+                                   </div>
+                                 )}
+                               </div>
+                             ) : (
+                               /* Thumbnail visual quando não há imagem */
+                               <div className={`absolute inset-0 bg-gradient-to-br ${thumbnail?.color || 'from-purple-600 to-pink-600'} flex items-center justify-center`}>
+                                 <div className="text-center text-white">
+                                   <div className="text-8xl mb-4 drop-shadow-lg">
+                                     {thumbnail?.icon || '🏢'}
+                                   </div>
+                                   <div className="text-2xl font-bold mb-2 drop-shadow-lg">
+                                     {thumbnail?.platform || 'Conteúdo'}
+                                   </div>
+                                   <div className="text-lg opacity-80 drop-shadow-md">
+                                     {conteudo.titulo}
+                                   </div>
+                                 </div>
+                                 {/* Gradiente sutil sobre o thumbnail visual */}
+                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                               </div>
+                             )}
                             
                             {/* Content Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
