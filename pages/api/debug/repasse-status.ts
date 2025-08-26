@@ -43,11 +43,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         paymentId: true,
         status: true,
         valor: true,
-        dataCriacao: true,
         dataRepasse: true
       },
       orderBy: {
-        dataCriacao: 'desc'
+        dataRepasse: 'desc'
       }
     })
 
@@ -58,7 +57,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         paymentId: repasse.paymentId,
         status: repasse.status,
         valor: repasse.valor,
-        dataCriacao: repasse.dataCriacao,
         dataRepasse: repasse.dataRepasse,
         parceiroId: repasse.parceiroId,
         compraId: repasse.compraId
