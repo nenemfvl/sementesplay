@@ -124,7 +124,10 @@
     // Atualizar usuário para comum
     await prisma.usuario.update({
       where: { id: criador.usuarioId },
-      data: { nivel: 'comum' }
+      data: { 
+        nivel: 'comum',
+        pontuacao: 0 // Zerar pontuação para não aparecer no ranking
+      }
     })
     console.log(`✅ Usuário atualizado para nível comum`)
     

@@ -139,7 +139,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 17. Atualizar o nível do usuário para "comum"
     await prisma.usuario.update({
       where: { id: criador.usuarioId },
-      data: { nivel: 'comum' }
+      data: { 
+        nivel: 'comum',
+        pontuacao: 0 // Zerar pontuação para não aparecer no ranking
+      }
     })
 
     console.log(`✅ Criador ${criador.usuario.nome} e todos os dados relacionados removidos com sucesso`)

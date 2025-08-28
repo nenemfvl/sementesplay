@@ -113,6 +113,13 @@
     console.log('\n🔐 Removendo permissões de criador...')
     await PermissionsManager.removeCriadorPermissions(candidatura.usuarioId)
     
+    // Zerar pontuação do usuário para não aparecer no ranking
+    await prisma.usuario.update({
+      where: { id: candidatura.usuarioId },
+      data: { pontuacao: 0 }
+    })
+    console.log('   - Pontuação do usuário zerada')
+    
     console.log('✅ Registro de criador removido e permissões atualizadas com sucesso!')
     console.log('\nAgora o usuário não aparecerá mais no ranking de criadores e voltou para nível comum.')
     
