@@ -110,13 +110,24 @@
       })
       console.log(`   - Candidatura removida: ${candidaturaRemovida.count}`)
       
-      // 15. Remover o criador
+      // 15. Remover registros de ranking (ciclo e season)
+      const rankingCicloRemovido = await prisma.rankingCiclo.deleteMany({
+        where: { usuarioId: criador.usuarioId }
+      })
+      console.log(`   - Registros de ranking ciclo removidos: ${rankingCicloRemovido.count}`)
+      
+      const rankingSeasonRemovido = await prisma.rankingSeason.deleteMany({
+        where: { usuarioId: criador.usuarioId }
+      })
+      console.log(`   - Registros de ranking season removidos: ${rankingSeasonRemovido.count}`)
+      
+      // 16. Remover o criador
       await prisma.criador.delete({
         where: { id: criador.id }
       })
       console.log(`   - Criador removido`)
       
-      // 16. Atualizar usuário para comum
+      // 17. Atualizar usuário para comum
       await prisma.usuario.update({
         where: { id: criador.usuarioId },
         data: { nivel: 'comum' }

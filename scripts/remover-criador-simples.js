@@ -6,7 +6,7 @@
 // const CRIADOR_ID = 'COLOQUE_O_ID_AQUI'
 
 // async function removerCriadorSimples() {
-  try {
+//   try {
     console.log('🗑️ Removendo criador por ID...')
     
     // Buscar o criador
@@ -103,6 +103,17 @@
       where: { usuarioId: criador.usuarioId }
     })
     console.log(`✅ Candidatura removida: ${candidaturaRemovida.count}`)
+    
+    // Remover registros de ranking (ciclo e season)
+    const rankingCicloRemovido = await prisma.rankingCiclo.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+    console.log(`✅ Registros de ranking ciclo removidos: ${rankingCicloRemovido.count}`)
+    
+    const rankingSeasonRemovido = await prisma.rankingSeason.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+    console.log(`✅ Registros de ranking season removidos: ${rankingSeasonRemovido.count}`)
     
     // Remover o criador
     await prisma.criador.delete({

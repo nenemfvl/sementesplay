@@ -122,12 +122,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //   where: { remetenteId: criador.usuarioId }
     // })
 
-    // 15. Remover o registro do criador
+    // 15. Remover registros de ranking (ciclo e season)
+    await prisma.rankingCiclo.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    await prisma.rankingSeason.deleteMany({
+      where: { usuarioId: criador.usuarioId }
+    })
+
+    // 16. Remover o registro do criador
     await prisma.criador.delete({
       where: { id: criador.id }
     })
 
-    // 8. Atualizar o nível do usuário para "comum"
+    // 17. Atualizar o nível do usuário para "comum"
     await prisma.usuario.update({
       where: { id: criador.usuarioId },
       data: { nivel: 'comum' }

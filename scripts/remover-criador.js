@@ -93,6 +93,18 @@
     
     // Remover registro de criador
     console.log('\n🗑️  Removendo registro de criador...')
+    
+    // Remover registros de ranking (ciclo e season)
+    const rankingCicloRemovido = await prisma.rankingCiclo.deleteMany({
+      where: { usuarioId: candidatura.usuarioId }
+    })
+    console.log(`   - Registros de ranking ciclo removidos: ${rankingCicloRemovido.count}`)
+    
+    const rankingSeasonRemovido = await prisma.rankingSeason.deleteMany({
+      where: { usuarioId: candidatura.usuarioId }
+    })
+    console.log(`   - Registros de ranking season removidos: ${rankingSeasonRemovido.count}`)
+    
     await prisma.criador.delete({
       where: { id: criador.id }
     })
