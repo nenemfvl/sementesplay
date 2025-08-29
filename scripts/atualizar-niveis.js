@@ -1,9 +1,24 @@
-// COMENTADO: Script de desenvolvimento - desabilitado para otimização
-// const { PrismaClient } = require('@prisma/client')
+// ⚠️ SCRIPT DESABILITADO - SISTEMA DE NÍVEIS AUTOMÁTICOS IMPLEMENTADO VIA API CRON
+// 
+// Este script foi substituído pela API automática:
+// POST /api/cron/promover-niveis-automatico
+// 
+// A API cron executa automaticamente a cada 5 minutos e é a implementação oficial
+// do sistema de níveis automáticos do SementesPLAY.
+//
+// Para executar manualmente, use:
+// curl -X POST "https://sementesplay.vercel.app/api/cron/promover-niveis-automatico?secret=CRON_SECRET"
+//
+// Para mais informações, consulte: CRON_PROMOCOES_README.md
 
-// const prisma = new PrismaClient()
+/*
+// CÓDIGO ORIGINAL COMENTADO - NÃO UTILIZAR
 
-// async function atualizarNiveis() {
+const { PrismaClient } = require('@prisma/client')
+
+const prisma = new PrismaClient()
+
+async function atualizarNiveis() {
   console.log('🔄 Iniciando atualização automática de níveis...')
 
   try {
@@ -19,12 +34,9 @@
       include: {
         usuario: {
           include: {
-            missaoUsuarios: {
-              where: {
-                concluida: true
-              }
-            },
-            conquistas: true
+            conteudos: true,
+            enquetes: true,
+            recados: true
           }
         },
         doacoesRecebidas: true
@@ -38,17 +50,20 @@
       // Pontuação base: sementes recebidas (1 semente = 1 ponto)
       const sementesRecebidas = criador.doacoesRecebidas.reduce((total, doacao) => total + doacao.quantidade, 0)
       
-      // Pontos extras por missões completadas (10 pontos por missão)
-      const pontosMissoes = criador.usuario.missaoUsuarios.length * 10
+      // Pontos por visualizações (conteúdos × 0.1)
+      const pontosVisualizacoes = (criador.usuario.conteudos?.length || 0) * 0.1
       
-      // Pontos extras por conquistas desbloqueadas (20 pontos por conquista)
-      const pontosConquistas = criador.usuario.conquistas.length * 20
+      // Pontos por enquetes (quantidade × 5)
+      const pontosEnquetes = (criador.usuario.enquetes?.length || 0) * 5
+      
+      // Pontos por recados públicos (quantidade × 2)
+      const pontosRecados = (criador.usuario.recados?.length || 0) * 2
       
       // Pontos do campo pontuacao do usuário (se existir)
       const pontosUsuario = criador.usuario.pontuacao || 0
       
       // Pontuação total composta
-      const pontuacaoTotal = sementesRecebidas + pontosMissoes + pontosConquistas + pontosUsuario
+      const pontuacaoTotal = sementesRecebidas + pontosVisualizacoes + pontosEnquetes + pontosRecados + pontosUsuario
 
       return {
         id: criador.usuario.id,
@@ -56,8 +71,9 @@
         nivelAtual: criador.usuario.nivel,
         pontuacaoTotal,
         sementesRecebidas,
-        pontosMissoes,
-        pontosConquistas,
+        pontosVisualizacoes,
+        pontosEnquetes,
+        pontosRecados,
         pontosUsuario
       }
     })
@@ -116,17 +132,18 @@
     console.log(`- Parceiro: ${estatisticas.parceiro}`)
     console.log(`- Criador: ${estatisticas.criador}`)
     console.log(`- Comum: ${estatisticas.comum}`)
+  } catch (error) {
+    console.error('❌ Erro ao atualizar níveis:', error)
+  } finally {
+    await prisma.$disconnect()
+  }
+}
 
-//   } catch (error) {
-//     console.error('❌ Erro ao atualizar níveis:', error)
-//   } finally {
-//     await prisma.$disconnect()
-//   }
-// }
+// Executar se chamado diretamente
+if (require.main === module) {
+  atualizarNiveis()
+}
 
-// // Executar se chamado diretamente
-// if (require.main === module) {
-//   atualizarNiveis()
-// }
+module.exports = { atualizarNiveis }
 
-// module.exports = { atualizarNiveis } 
+*/ 
