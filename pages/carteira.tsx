@@ -770,7 +770,7 @@ export default function Carteira() {
                     required
                   />
                   <p className="text-gray-400 text-sm mt-1">
-                    Valor mínimo: R$ 50,00 | Taxa: 2% | Disponível: {carteira?.sementes || 0} sementes
+                    Valor mínimo: R$ 50,00 | Taxa: 10% | Disponível: {carteira?.sementes || 0} sementes
                   </p>
                 </div>
 
@@ -790,7 +790,7 @@ export default function Carteira() {
                     <br />
                     • Valor mínimo: R$ 50,00
                     <br />
-                    • Taxa de 2% será aplicada
+                    • Taxa de 10% será aplicada
                     <br />
                     • Processamento em até 24 horas
                     <br />

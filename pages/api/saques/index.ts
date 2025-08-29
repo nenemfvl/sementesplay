@@ -68,8 +68,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Sementes insuficientes para o saque' })
       }
 
-      // Calcular taxa (2% do valor)
-      const taxa = valor * 0.02
+      // Calcular taxa (10% do valor)
+      const taxa = valor * 0.10
       const valorLiquido = valor - taxa
 
       // Processar saque em transação
