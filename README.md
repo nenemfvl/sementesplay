@@ -45,7 +45,7 @@ O SementesPLAY é um sistema cíclico que conecta:
 ### Para Criadores
 
 - ✅ Receber doações dos usuários
-- ✅ Sistema de níveis (Comum, Parceiro, Supremo)
+- ✅ Sistema de níveis (Iniciante, Comum, Parceiro, Supremo)
 - ✅ Benefícios baseados no ranking
 - ✅ Estatísticas de engajamento
 - ✅ **Sistema de saques** com taxa de 10% via PIX
@@ -177,9 +177,10 @@ O sistema usa NextAuth.js com:
 
 - **Sementes**: Verde (#22c55e)
 - **Cashback**: Dourado (#eab308)
-- **Supremo**: Roxo (#a855f7)
-- **Parceiro**: Azul (#3b82f6)
-- **Comum**: Cinza (#6b7280)
+- **Criador Supremo**: Roxo (#a855f7)
+- **Criador Parceiro**: Azul (#3b82f6)
+- **Criador Comum**: Verde (#22c55e)
+- **Criador Iniciante**: Cinza (#6b7280)
 
 ### Componentes
 
@@ -199,9 +200,10 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 
 ### Níveis
 
-- **Supremo**: Top 100 criadores
-- **Parceiro**: Top 101-300 criadores
-- **Comum**: Demais criadores
+- **Criador Supremo**: Top 1-50 criadores
+- **Criador Parceiro**: Top 51-100 criadores  
+- **Criador Comum**: Top 101-150 criadores
+- **Criador Iniciante**: Top 151+ criadores
 
 ## 💰 Sistema de Cashback
 
