@@ -281,26 +281,42 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 
 ## 🗺️ Roadmap
 
-### Versão 1.0 (Atual)
+### Versão 1.0 ✅ (Concluída)
 
 - ✅ Sistema básico de autenticação
 - ✅ Dashboard de usuários
 - ✅ Sistema de doações
 - ✅ Ranking de criadores
+- ✅ Sistema de níveis dinâmicos
+- ✅ Painel de parceiros
+- ✅ Sistema de saques para criadores
+- ✅ Integração MercadoPago (PIX)
+- ✅ Webhooks em tempo real
+- ✅ Sistema de notificações
 
-### Versão 1.1 (Próxima)
+### Versão 1.1 🔄 (Em Desenvolvimento)
 
-- 🔄 Painel de parceiros
-- 🔄 Sistema de resgate
-- 🔄 Notificações em tempo real
-- 🔄 Relatórios avançados
+- 🔄 Painel administrativo avançado
+- 🔄 Sistema de logs e auditoria
+- 🔄 Relatórios detalhados de performance
+- 🔄 Otimizações de performance
+- 🔄 Sistema de cache inteligente
 
-### Versão 2.0 (Futuro)
+### Versão 1.2 📋 (Próxima)
 
+- 📋 Sistema de missões para usuários
+- 📋 Conquistas e badges
+- 📋 Gamificação avançada
 - 📋 Integração com APIs FiveM
-- 📋 Sistema de missões
-- 📋 Marketplace de criadores
-- 📋 App mobile
+- 📋 Sistema de eventos sazonais
+
+### Versão 2.0 🚀 (Futuro)
+
+- 🚀 Marketplace de criadores
+- 🚀 App mobile nativo
+- 🚀 Sistema de streaming integrado
+- 🚀 IA para recomendações
+- 🚀 Integração com outras plataformas
 
 ---
 
