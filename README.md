@@ -332,3 +332,5 @@ Sistema agora exibe níveis baseados na posição do ranking em tempo real.
 - ✅ Otimização de thumbnails do YouTube
 - ✅ Melhorias na responsividade dos componentes
 - ✅ Volta para commit estável: f295da64
+- ✅ Sistema de níveis automáticos funcionando perfeitamente
+- ✅ Taxa de saque atualizada para 10%
