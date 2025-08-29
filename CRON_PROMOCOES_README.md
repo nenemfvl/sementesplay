@@ -14,17 +14,13 @@ Sistema automático que promove/rebaixa criadores baseado em sua posição no ra
 
 ### **Critérios de Promoção (Implementados)**
 ```typescript
-// Função implementada em lib/niveis-criadores.ts
-export function determinarNivelPorPosicao(posicao: number): string {
-  if (posicao >= 1 && posicao <= 50) {
-    return 'criador-supremo'
-  } else if (posicao >= 51 && posicao <= 100) {
-    return 'criador-parceiro'
-  } else if (posicao >= 101 && posicao <= 150) {
-    return 'criador-comum'
-  } else {
-    return 'criador-iniciante'
-  }
+// Função implementada em pages/api/cron/promover-niveis-automatico.ts
+function determinarNovoNivel(posicao: number, totalCriadores: number): string {
+  if (totalCriadores === 1) return 'criador-supremo'
+  if (posicao <= 50) return 'criador-supremo' // Top 1-50
+  if (posicao <= 100) return 'criador-parceiro' // Top 51-100
+  if (posicao <= 150) return 'criador-comum' // Top 101-150
+  return 'criador-iniciante' // Top 151+
 }
 ```
 
@@ -33,8 +29,9 @@ export function determinarNivelPorPosicao(posicao: number): string {
 ### **1. Cálculo de Pontuação**
 A pontuação total é calculada somando:
 - **Sementes Recebidas** (doações) × 1.0
-- **Pontos por Missões Completadas** × 10
-- **Pontos por Conquistas** × 20
+- **Pontos por Visualizações** (conteúdos × 0.1)
+- **Pontos por Enquetes** (quantidade × 5)
+- **Pontos por Recados Públicos** (quantidade × 2)
 - **Pontuação do Usuário** (campo existente)
 
 ### **2. Ranking e Promoção**
