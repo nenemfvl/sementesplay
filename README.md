@@ -35,12 +35,20 @@ O SementesPLAY é um sistema cíclico que conecta:
 - ✅ **Sistema de repasses** para parceiros
 - ✅ **Processamento automático** de transações
 
+### Taxas e Saques
+
+- ✅ **Taxa de saque para criadores**: 10% do valor solicitado
+- ✅ **Valor mínimo para saque**: R$ 50,00
+- ✅ **Processamento**: Até 24 horas após aprovação
+- ✅ **Forma de pagamento**: PIX automático
+
 ### Para Criadores
 
 - ✅ Receber doações dos usuários
 - ✅ Sistema de níveis (Comum, Parceiro, Supremo)
 - ✅ Benefícios baseados no ranking
 - ✅ Estatísticas de engajamento
+- ✅ **Sistema de saques** com taxa de 10% via PIX
 
 ### Para Parceiros (Donos de Cidades)
 
