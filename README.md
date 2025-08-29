@@ -25,7 +25,6 @@ O SementesPLAY é um sistema cíclico que conecta:
 - ✅ Receber 10% de cashback em compras FiveM
 - ✅ Doar Sementes para criadores favoritos
 - ✅ Visualizar ranking de criadores
-- ✅ Resgatar dinheiro real com códigos
 - ✅ Pagamentos seguros via PIX
 
 ### Sistema de Pagamentos
@@ -213,14 +212,15 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 1. Usuário envia comprovante da compra
 1. Parceiro efetua repasse de 10% do valor
 1. Usuário recebe 10% em Sementes
-1. Usuário pode doar ou resgatar
+1. Usuário pode doar para criadores
 
-### Resgate
+### Resgate (Apenas Criadores)
 
 - Comprovante de compra obrigatório
 - Validação manual pelo parceiro
 - Processamento em 24h após repasse
 - Taxa de 10% para manutenção
+- **Exclusivo para criadores de conteúdo**
 
 ## 🔄 Ciclos e Temporadas
 
