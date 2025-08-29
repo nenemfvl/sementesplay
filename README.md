@@ -231,17 +231,28 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 
 ## 🚀 Deploy
 
-### Vercel (Recomendado)
+### Vercel (Atual)
 
-1. Conecte seu repositório ao Vercel
-1. Configure as variáveis de ambiente
-1. Deploy automático
+- ✅ **Deploy automático** a cada 5 minutos via CRON
+- ✅ **Integração contínua** com GitHub
+- ✅ **Cache otimizado** para performance
+- ✅ **Variáveis de ambiente** configuradas
 
-### Outras Plataformas
+### Configuração
 
-- Netlify
-- Railway
-- Heroku
+1. **Conecte o repositório** ao Vercel
+2. **Configure as variáveis de ambiente**:
+   - `DATABASE_URL`
+   - `NEXTAUTH_SECRET`
+   - `MERCADOPAGO_ACCESS_TOKEN`
+   - `RESEND_API_KEY`
+3. **Deploy automático** ativado
+
+### Status Atual
+
+- **Domínio**: [sementesplay.vercel.app](https://sementesplay.vercel.app)
+- **Status**: ✅ Funcionando perfeitamente
+- **Cache**: ✅ Resolvido e otimizado
 
 ## 📈 Monitoramento
 
