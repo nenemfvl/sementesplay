@@ -16,7 +16,7 @@ O SementesPLAY é um sistema cíclico que conecta:
 
 - **Jogadores**: Recebem 10% de cashback em compras FiveM
 - **Criadores de Conteúdo**: Recebem doações dos jogadores
-- **Parceiros**: Donos de cidades FiveM que geram códigos de cashback
+- **Parceiros**: Donos de cidades FiveM que efetuam repasses de cashback
 
 ## ✨ Funcionalidades
 
@@ -53,8 +53,8 @@ O SementesPLAY é um sistema cíclico que conecta:
 ### Para Parceiros (Donos de Cidades)
 
 - ✅ Painel exclusivo de administração
-- ✅ Gerar códigos de cashback
-- ✅ Relatórios de vendas e comissões
+- ✅ Efetuar repasses de cashback (10% da compra)
+- ✅ Relatórios de vendas e repasses
 - ✅ Dashboard de performance
 
 ## 🛠️ Tecnologias
@@ -159,7 +159,7 @@ npm run db:studio    # Abre Prisma Studio
 - **sementes**: Histórico de transações de Sementes
 - **doacoes**: Registro de doações entre usuários
 - **transacoes**: Histórico de transações financeiras
-- **codigos_cashback**: Códigos gerados pelos parceiros
+- **codigos_cashback**: Códigos de compra dos usuários
 - **notificacoes**: Sistema de notificações
 
 ## 🔐 Autenticação
@@ -210,15 +210,16 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 ### Fluxo
 
 1. Usuário compra em cidade FiveM parceira
-1. Parceiro gera código único
+1. Usuário envia comprovante da compra
+1. Parceiro efetua repasse de 10% do valor
 1. Usuário recebe 10% em Sementes
 1. Usuário pode doar ou resgatar
 
 ### Resgate
 
-- Código único por transação
-- Validação automática
-- Processamento em 24h
+- Comprovante de compra obrigatório
+- Validação manual pelo parceiro
+- Processamento em 24h após repasse
 - Taxa de 10% para manutenção
 
 ## 🔄 Ciclos e Temporadas
