@@ -194,7 +194,7 @@ O sistema usa NextAuth.js com:
 ### Cálculo de Pontuação
 
 ```text
-Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favoritos × 5)
+Pontuação = Sementes Recebidas + Pontos do Usuário + (Visualizações × 0.1) + (Enquetes × 5) + (Recados Públicos × 2)
 ```
 
 ### Níveis
@@ -203,6 +203,13 @@ Pontuação = (Doações Recebidas × 0.1) + (Apoiadores Únicos × 10) + (Favor
 - **Criador Parceiro**: Top 51-100 criadores  
 - **Criador Comum**: Top 101-150 criadores
 - **Criador Iniciante**: Top 151+ criadores
+
+### Filtro de Conteúdo
+
+- ✅ **Criadores só aparecem no ranking se tiverem pelo menos 1 conteúdo postado**
+- ✅ **Sistema mais justo e relevante** após resets de ciclo
+- ✅ **Incentiva produção de conteúdo ativa**
+- ✅ **Ranking dinâmico** que se constrói organicamente
 
 ## 💰 Sistema de Cashback
 
