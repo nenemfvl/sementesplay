@@ -41,13 +41,16 @@ export async function atualizarNiveisCriadores(): Promise<{
   try {
     console.log('🔄 Iniciando atualização automática de níveis de criadores...')
 
-    // Buscar todos os criadores
+    // Buscar todos os criadores que tenham pelo menos 1 conteúdo postado
     const criadores = await prisma.criador.findMany({
       where: {
         usuario: {
           nivel: {
             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
+        },
+        conteudos: {
+          some: {} // Garante que o criador tenha pelo menos 1 conteúdo
         }
       },
       include: {
@@ -152,13 +155,16 @@ export async function atualizarNivelCriador(criadorId: string): Promise<boolean>
       return false
     }
 
-    // Buscar todos os criadores para calcular a posição
+    // Buscar todos os criadores para calcular a posição (apenas os que têm conteúdo)
     const todosCriadores = await prisma.criador.findMany({
       where: {
         usuario: {
           nivel: {
             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
+        },
+        conteudos: {
+          some: {} // Garante que o criador tenha pelo menos 1 conteúdo
         }
       },
       include: {

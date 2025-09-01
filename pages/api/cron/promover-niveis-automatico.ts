@@ -22,13 +22,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('🕐 CRON JOB: INICIANDO PROMOÇÃO AUTOMÁTICA DE NÍVEIS...')
     console.log(`📅 Data/Hora: ${new Date().toISOString()}`)
 
-    // Buscar todos os criadores com seus dados
+    // Buscar todos os criadores com seus dados (apenas os que têm conteúdo)
     const criadores = await prisma.criador.findMany({
       where: {
         usuario: {
           nivel: {
             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
+        },
+        conteudos: {
+          some: {} // Garante que o criador tenha pelo menos 1 conteúdo
         }
       },
       include: {

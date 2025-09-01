@@ -7,13 +7,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Buscar apenas criadores com níveis específicos (excluindo admin nível 5)
+    // Buscar apenas criadores com níveis específicos (excluindo admin nível 5) e que tenham pelo menos 1 conteúdo postado
     const criadores = await prisma.criador.findMany({
       where: {
         usuario: {
           nivel: {
             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
+        },
+        conteudos: {
+          some: {} // Garante que o criador tenha pelo menos 1 conteúdo
         }
       },
       include: {
