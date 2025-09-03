@@ -75,14 +75,6 @@ async function forcarResetCiclo() {
       console.log('   🔄 Zerando histórico de sementes...')
       await prisma.semente.deleteMany()
       
-      // ZERAR SEMENTES DOS USUÁRIOS (novo)
-      console.log('   🔄 Zerando sementes dos usuários...')
-      await prisma.usuario.updateMany({
-        data: {
-          sementes: 0
-        }
-      })
-      
       // Limpar conteúdos para dar oportunidade igual a todos
       await prisma.conteudo.deleteMany()
       await prisma.conteudoParceiro.deleteMany()

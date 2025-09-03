@@ -100,13 +100,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // NOVO: Zerar histórico de sementes
         await prisma.semente.deleteMany()
         
-        // NOVO: Zerar sementes dos usuários
-        await prisma.usuario.updateMany({
-          data: {
-            sementes: 0
-          }
-        })
-        
         // Limpar conteúdos para dar oportunidade igual a todos
         await prisma.conteudo.deleteMany()
         await prisma.conteudoParceiro.deleteMany()
@@ -149,13 +142,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         // NOVO: Zerar histórico de sementes
         await prisma.semente.deleteMany()
-        
-        // NOVO: Zerar sementes dos usuários
-        await prisma.usuario.updateMany({
-          data: {
-            sementes: 0
-          }
-        })
         
         // Limpar conteúdos para dar oportunidade igual a todos
         await prisma.conteudo.deleteMany()
