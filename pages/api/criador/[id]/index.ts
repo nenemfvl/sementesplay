@@ -168,6 +168,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           nivel: {
             in: ['criador-supremo', 'criador-parceiro', 'criador-comum', 'criador-iniciante']
           }
+        },
+        conteudos: {
+          some: {} // Garante que o criador tenha pelo menos 1 conteúdo
         }
       },
       include: {
