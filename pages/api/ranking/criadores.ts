@@ -8,6 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Buscar apenas criadores com níveis específicos (excluindo admin nível 5) e que tenham pelo menos 1 conteúdo postado
+    // NOVO: Também verificar se receberam pelo menos 1 doação
     const criadores = await prisma.criador.findMany({
       where: {
         usuario: {
@@ -17,6 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         conteudos: {
           some: {} // Garante que o criador tenha pelo menos 1 conteúdo
+        },
+        doacoesRecebidas: {
+          some: {} // NOVO: Garante que o criador tenha recebido pelo menos 1 doação
         }
       },
       include: {

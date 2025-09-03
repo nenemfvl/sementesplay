@@ -171,12 +171,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     } else if (categoria === 'social') {
       // Ranking por atividade social (amizades, mensagens, etc.)
-      const usuariosAtivos = await prisma.usuario.findMany({
+      // NOVO: Só incluir usuários que fizeram pelo menos 1 doação
+      const usuariosComDoacoes = await prisma.usuario.findMany({
+        where: {
+          doacoesFeitas: {
+            some: {} // Pelo menos 1 doação
+          }
+        },
         orderBy: { pontuacao: 'desc' },
         take: 20
       })
 
-      const rankingSocial = usuariosAtivos.map((usuario, index) => ({
+      const rankingSocial = usuariosComDoacoes.map((usuario, index) => ({
         id: usuario.id,
         nome: usuario.nome,
         avatar: '👥',

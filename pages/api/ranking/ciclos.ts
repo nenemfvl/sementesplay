@@ -57,72 +57,112 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     }
     
-         // Se precisar resetar, fazer o reset
-     if (precisaResetarCiclo || precisaResetarSeason) {
-       if (precisaResetarSeason) {
-         // Reset da season - resetar rankings, níveis de criadores e conteúdos
-         await prisma.configuracaoCiclos.update({
-           where: { id: configCiclos.id },
-           data: {
-             dataInicioCiclo: agora,
-             dataInicioSeason: agora,
-             numeroSeason: configCiclos.numeroSeason + 1,
-             numeroCiclo: 1
-           }
-         })
-         
-         // Resetar rankings
-         await prisma.rankingCiclo.deleteMany()
-         await prisma.rankingSeason.deleteMany()
-         
-         // Resetar APENAS níveis de criadores para 'criador-iniciante'
-         await prisma.usuario.updateMany({
-           where: {
-             nivel: {
-               in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
-             }
-           },
-           data: {
-             nivel: 'criador-iniciante'
-           }
-         })
-         
-         // Limpar conteúdos para dar oportunidade igual a todos
-         await prisma.conteudo.deleteMany()
-         await prisma.conteudoParceiro.deleteMany()
-         
-         configCiclos = await prisma.configuracaoCiclos.findFirst()
-       } else if (precisaResetarCiclo) {
-         // Reset apenas do ciclo - resetar ranking, níveis de criadores e conteúdos
-         await prisma.configuracaoCiclos.update({
-           where: { id: configCiclos.id },
-           data: {
-             dataInicioCiclo: agora,
-             numeroCiclo: configCiclos.numeroCiclo + 1
-           }
-         })
-         
-         // Resetar ranking do ciclo
-         await prisma.rankingCiclo.deleteMany()
-         
-         // Resetar APENAS níveis de criadores para 'criador-iniciante'
-         await prisma.usuario.updateMany({
-           where: {
-             nivel: {
-               in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
-             }
-           },
-           data: {
-             nivel: 'criador-iniciante'
-           }
-         })
-         
-         // Limpar conteúdos para dar oportunidade igual a todos
-         await prisma.conteudo.deleteMany()
-         await prisma.conteudoParceiro.deleteMany()
-         
-         configCiclos = await prisma.configuracaoCiclos.findFirst()
-       }
+    // Se precisar resetar, fazer o reset
+    if (precisaResetarCiclo || precisaResetarSeason) {
+      if (precisaResetarSeason) {
+        // Reset da season - resetar rankings, níveis de criadores e conteúdos
+        await prisma.configuracaoCiclos.update({
+          where: { id: configCiclos.id },
+          data: {
+            dataInicioCiclo: agora,
+            dataInicioSeason: agora,
+            numeroSeason: configCiclos.numeroSeason + 1,
+            numeroCiclo: 1
+          }
+        })
+        
+        // Resetar rankings
+        await prisma.rankingCiclo.deleteMany()
+        await prisma.rankingSeason.deleteMany()
+        
+        // Resetar APENAS níveis de criadores para 'criador-iniciante'
+        await prisma.usuario.updateMany({
+          where: {
+            nivel: {
+              in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
+            }
+          },
+          data: {
+            nivel: 'criador-iniciante'
+          }
+        })
+        
+        // NOVO: Zerar pontuações de todos os usuários
+        await prisma.usuario.updateMany({
+          data: {
+            pontuacao: 0
+          }
+        })
+        
+        // NOVO: Zerar doações recebidas
+        await prisma.doacao.deleteMany()
+        
+        // NOVO: Zerar histórico de sementes
+        await prisma.semente.deleteMany()
+        
+        // NOVO: Zerar sementes dos usuários
+        await prisma.usuario.updateMany({
+          data: {
+            sementes: 0
+          }
+        })
+        
+        // Limpar conteúdos para dar oportunidade igual a todos
+        await prisma.conteudo.deleteMany()
+        await prisma.conteudoParceiro.deleteMany()
+        
+        configCiclos = await prisma.configuracaoCiclos.findFirst()
+      } else if (precisaResetarCiclo) {
+        // Reset apenas do ciclo - resetar ranking, níveis de criadores e conteúdos
+        await prisma.configuracaoCiclos.update({
+          where: { id: configCiclos.id },
+          data: {
+            dataInicioCiclo: agora,
+            numeroCiclo: configCiclos.numeroCiclo + 1
+          }
+        })
+        
+        // Resetar ranking do ciclo
+        await prisma.rankingCiclo.deleteMany()
+        
+        // Resetar APENAS níveis de criadores para 'criador-iniciante'
+        await prisma.usuario.updateMany({
+          where: {
+            nivel: {
+              in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
+            }
+          },
+          data: {
+            nivel: 'criador-iniciante'
+          }
+        })
+        
+        // NOVO: Zerar pontuações de todos os usuários
+        await prisma.usuario.updateMany({
+          data: {
+            pontuacao: 0
+          }
+        })
+        
+        // NOVO: Zerar doações recebidas
+        await prisma.doacao.deleteMany()
+        
+        // NOVO: Zerar histórico de sementes
+        await prisma.semente.deleteMany()
+        
+        // NOVO: Zerar sementes dos usuários
+        await prisma.usuario.updateMany({
+          data: {
+            sementes: 0
+          }
+        })
+        
+        // Limpar conteúdos para dar oportunidade igual a todos
+        await prisma.conteudo.deleteMany()
+        await prisma.conteudoParceiro.deleteMany()
+        
+        configCiclos = await prisma.configuracaoCiclos.findFirst()
+      }
       
       // Recalcular após reset
       const novaDataFimCiclo = new Date(configCiclos!.dataInicioCiclo)
