@@ -77,13 +77,10 @@ export default function Doar() {
 
   const loadCreators = async () => {
     try {
-      console.log('Carregando criadores...')
       const response = await fetch('/api/criadores')
       const data = await response.json()
-      console.log('Resposta da API criadores:', data)
       if (response.ok) {
         setCreators(data.criadores || [])
-        console.log('Criadores carregados:', data.criadores?.length || 0)
       } else {
         console.error('Erro na resposta da API:', data)
       }
@@ -98,12 +95,8 @@ export default function Doar() {
 
   // Filtrar criadores baseado na pesquisa e excluir o próprio usuário se for criador
   const filteredCreators = creators.filter(creator => {
-    console.log('Filtrando criador:', creator.nome, 'ID:', creator.id)
-    console.log('Usuário atual:', user?.nome, 'Criador ID:', user?.criador?.id)
-    
     // Excluir o próprio usuário se ele for um criador
     if (user?.criador && user.criador.id === creator.id) {
-      console.log('Excluindo criador próprio:', creator.nome)
       return false
     }
     
@@ -111,7 +104,6 @@ export default function Doar() {
     const matchesSearch = creator.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
            creator.nivel.toLowerCase().includes(searchTerm.toLowerCase())
     
-    console.log('Criador', creator.nome, 'passa no filtro:', matchesSearch)
     return matchesSearch
   })
 
