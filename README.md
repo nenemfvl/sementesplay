@@ -231,10 +231,27 @@ Pontuação = Sementes Recebidas + Pontos do Usuário + (Visualizações × 0.1)
 
 ## 🔄 Ciclos e Temporadas
 
-- **Duração**: 30 dias por ciclo
-- **Reset**: Pontuações zeram a cada ciclo
-- **Níveis**: Mantidos durante todo o ciclo
+- **Duração**: 15 dias por ciclo
+- **Reset Completo**: Pontuações, sementes e doações zeram a cada ciclo
+- **Níveis**: Resetados para "criador-iniciante" a cada ciclo
+- **Rankings**: Só aparecem quem participa ativamente (faz doações)
+- **Igualdade**: Sistema justo para novos usuários
 - **Recompensas**: Distribuídas no final do ciclo
+
+## ⚖️ Sistema Justo para Novos Usuários
+
+### 🎯 Igualdade de Oportunidades
+- ✅ **Todos começam do zero** a cada ciclo de 15 dias
+- ✅ **Pontuações zeradas** para todos os usuários
+- ✅ **Sementes zeradas** para todos os usuários
+- ✅ **Doações deletadas** para ranking limpo
+- ✅ **Rankings filtrados** por participação ativa
+
+### 🔄 Benefícios do Sistema Cíclico
+- 🎯 **Novos usuários** não ficam em desvantagem
+- 🏆 **Competição justa** baseada em atividade atual
+- 📊 **Rankings relevantes** mostram apenas participantes reais
+- ⚖️ **Igualdade garantida** a cada reset de ciclo
 
 ## 🚀 Deploy
 
