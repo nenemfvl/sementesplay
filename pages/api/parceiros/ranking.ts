@@ -59,13 +59,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return {
           ...parceiro,
           totalVendasCalculado: totalVendasReal,
-          codigosGeradosCalculado: totalSolicitacoes
+          codigosGeradosCalculado: totalSolicitacoes,
+          repassesRealizados: repassesRealizados.length // Adicionar contagem de repasses
         }
       })
     )
 
-    // Formatar dados dos parceiros
-    const parceirosFormatados = parceirosComDados.map((parceiro, index) => ({
+    // NOVO: Filtrar apenas parceiros que fizeram pelo menos 1 repasse
+    const parceirosComRepasses = parceirosComDados.filter(parceiro => parceiro.repassesRealizados > 0)
+
+    // Formatar dados dos parceiros (apenas os que fizeram repasses)
+    const parceirosFormatados = parceirosComRepasses.map((parceiro, index) => ({
       id: parceiro.id,
       nome: parceiro.usuario.nome,
       email: parceiro.usuario.email,

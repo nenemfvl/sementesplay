@@ -207,8 +207,10 @@ Pontuação = Sementes Recebidas + Pontos do Usuário + (Visualizações × 0.1)
 ### Filtro de Conteúdo
 
 - ✅ **Criadores só aparecem no ranking se tiverem pelo menos 1 conteúdo postado**
+- ✅ **Parceiros só aparecem no ranking se fizeram pelo menos 1 repasse**
 - ✅ **Sistema mais justo e relevante** após resets de ciclo
 - ✅ **Incentiva produção de conteúdo ativa**
+- ✅ **Incentiva parceiros a serem ativos**
 - ✅ **Ranking dinâmico** que se constrói organicamente
 
 ## 💰 Sistema de Cashback
