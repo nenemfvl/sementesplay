@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { auth } from '../lib/auth';
+import { toast } from '../lib/toast';
 
 import { 
   BuildingOfficeIcon,
@@ -499,7 +500,7 @@ export default function PainelParceiro() {
   async function handleAddConteudo(e: React.FormEvent) {
     e.preventDefault();
     if (!formConteudo.titulo || !formConteudo.tipo || !formConteudo.categoria || !formConteudo.url || !formConteudo.cidade) {
-      alert('Preencha todos os campos obrigatórios');
+      toast.error('Preencha todos os campos obrigatórios');
       return;
     }
 
@@ -525,13 +526,13 @@ export default function PainelParceiro() {
           cidade: ''
         });
         setShowModalConteudo(false);
-        alert('Conteúdo criado com sucesso!');
+        toast.success('Conteúdo criado com sucesso!');
       } else {
         const error = await response.json();
-        alert(error.error || 'Erro ao criar conteúdo');
+        toast.error(error.error || 'Erro ao criar conteúdo');
       }
     } catch (error) {
-      alert('Erro ao criar conteúdo');
+      toast.error('Erro ao criar conteúdo');
     } finally {
       setSavingConteudo(false);
     }
@@ -565,13 +566,13 @@ export default function PainelParceiro() {
         });
         setEditandoConteudo(null);
         setShowModalConteudo(false);
-        alert('Conteúdo atualizado com sucesso!');
+        toast.success('Conteúdo atualizado com sucesso!');
       } else {
         const error = await response.json();
-        alert(error.error || 'Erro ao atualizar conteúdo');
+        toast.error(error.error || 'Erro ao atualizar conteúdo');
       }
     } catch (error) {
-      alert('Erro ao atualizar conteúdo');
+      toast.error('Erro ao atualizar conteúdo');
     } finally {
       setSavingConteudo(false);
     }
@@ -587,12 +588,12 @@ export default function PainelParceiro() {
 
       if (response.ok) {
         setConteudos(prev => prev.filter(c => c.id !== id));
-        alert('Conteúdo removido com sucesso!');
+        toast.success('Conteúdo removido com sucesso!');
       } else {
-        alert('Erro ao remover conteúdo');
+        toast.error('Erro ao remover conteúdo');
       }
     } catch (error) {
-      alert('Erro ao remover conteúdo');
+      toast.error('Erro ao remover conteúdo');
     }
   }
 
@@ -825,7 +826,7 @@ export default function PainelParceiro() {
       if (response.ok) {
         const result = await response.json();
         console.log('Redes sociais salvas:', result);
-        alert('Redes sociais salvas com sucesso!');
+        toast.success('Redes sociais salvas com sucesso!');
         setShowModalRedesSociais(false);
         // Atualizar dados do parceiro
         if (result.parceiro) {
@@ -834,11 +835,11 @@ export default function PainelParceiro() {
       } else {
         const error = await response.json();
         console.error('Erro ao salvar redes sociais:', error);
-        alert(`Erro ao salvar redes sociais: ${error.error}`);
+        toast.error(`Erro ao salvar redes sociais: ${error.error}`);
       }
     } catch (error) {
       console.error('Erro ao salvar redes sociais:', error);
-      alert('Erro ao salvar redes sociais');
+      toast.error('Erro ao salvar redes sociais');
     } finally {
       setSavingRedesSociais(false);
     }
