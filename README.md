@@ -361,3 +361,5 @@ Sistema agora exibe níveis baseados na posição do ranking em tempo real.
 - ✅ Volta para commit estável: f295da64
 - ✅ Sistema de níveis automáticos funcionando perfeitamente
 - ✅ Taxa de saque atualizada para 10%
+- ✅ Reset para commit: 0469058814acddec2dca4eeac5a0cda284cf1b72
+- ✅ Sistema estável e funcionando perfeitamente
