@@ -251,22 +251,17 @@ export default function CriadorPerfil() {
   }
 
   const getInstagramInfo = (url: string) => {
-    console.log('DEBUG getInstagramInfo chamada com URL:', url);
     // Tenta extrair o ID do post do Instagram
     const insta = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
     if (insta) {
       const postId = insta[1];
-      const thumbnailUrl = `https://www.instagram.com/p/${postId}/media/?size=l`;
-      console.log('DEBUG Instagram detectado! Post ID:', postId);
-      console.log('DEBUG Thumbnail URL gerada:', thumbnailUrl);
       return {
-        thumbnail: thumbnailUrl,
+        thumbnail: `https://www.instagram.com/p/${postId}/media/?size=l`,
         fallbackThumbnail: `https://www.instagram.com/p/${postId}/embed/`,
         link: url,
         postId: postId
       };
     }
-    console.log('DEBUG Instagram NÃO detectado para URL:', url);
     return null;
   }
 
@@ -758,14 +753,13 @@ export default function CriadorPerfil() {
                             const insta = getInstagramInfo(conteudo.url || '');
                             if (insta) {
                               return (
-                                <img 
-                                  src={insta.thumbnail} 
-                                  alt={conteudo.titulo}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                                  onError={(e) => {
-                                    e.currentTarget.src = '/thumbnails/default.jpg'
-                                  }}
-                                />
+                                <div className="w-full h-full bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 flex items-center justify-center text-white group-hover:from-pink-600 group-hover:to-purple-700 transition-all">
+                                  <div className="text-center">
+                                    <FaInstagram className="text-4xl mb-2 mx-auto" />
+                                    <div className="text-xs font-medium">Instagram</div>
+                                    <div className="text-xs opacity-75">{conteudo.tipo}</div>
+                                  </div>
+                                </div>
                               );
                             }
                             
