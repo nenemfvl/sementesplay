@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
 
       // Função para gerar preview baseada no tipo e URL (mesma lógica da API de recentes)
-      const gerarPreview = (conteudo: any) => {
+      const gerarPreview = async (conteudo: any) => {
         // Se já tem preview, usa ela
         if (conteudo.preview) {
           return conteudo.preview;
@@ -79,7 +79,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           if (instaMatch) {
             const postId = instaMatch[1];
-            // Tentar diferentes URLs para obter a imagem do Instagram
+            // Usar noembed para obter thumbnail do Instagram
+            try {
+              const response = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(conteudo.url)}`);
+              const data = await response.json();
+              if (data.thumbnail_url) {
+                return data.thumbnail_url;
+              }
+            } catch (error) {
+              console.log('Erro ao buscar thumbnail do Instagram via noembed:', error);
+            }
+            // Fallback: tentar URL direta do Instagram
             return `https://www.instagram.com/p/${postId}/media/?size=l`;
           }
           // Se não conseguir extrair o ID, retorna null
@@ -111,8 +121,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return null;
       };
 
-      const conteudosFormatados = conteudos.map(conteudo => {
-        const thumbnail = gerarPreview(conteudo)
+      const conteudosFormatados = await Promise.all(conteudos.map(async conteudo => {
+        const thumbnail = await gerarPreview(conteudo)
         return {
           id: conteudo.id,
           titulo: conteudo.titulo || '',
@@ -127,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           comentarios: conteudo.comentarios ? conteudo.comentarios.length : 0,
           thumbnail: thumbnail || '/thumbnails/default.jpg'
         }
-      })
+      }))
 
       return res.status(200).json({ conteudos: conteudosFormatados })
     } catch (error) {
