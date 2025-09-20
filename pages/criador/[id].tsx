@@ -250,6 +250,21 @@ export default function CriadorPerfil() {
     })
   }
 
+  const getInstagramInfo = (url: string) => {
+    // Tenta extrair o ID do post do Instagram
+    const insta = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
+    if (insta) {
+      const postId = insta[1];
+      return {
+        thumbnail: `https://www.instagram.com/p/${postId}/media/?size=l`,
+        fallbackThumbnail: `https://www.instagram.com/p/${postId}/embed/`,
+        link: url,
+        postId: postId
+      };
+    }
+    return null;
+  }
+
   const handleVisualizar = async (conteudoId: string) => {
     if (!user) return
 
@@ -719,20 +734,43 @@ export default function CriadorPerfil() {
                       >
                         {/* Thumbnail */}
                         <div className="relative h-48 bg-sss-medium">
-                          {conteudo.thumbnail && conteudo.thumbnail !== '/thumbnails/default.jpg' ? (
-                            <img 
-                              src={conteudo.thumbnail} 
-                              alt={conteudo.titulo}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                              onError={(e) => {
-                                e.currentTarget.src = '/thumbnails/default.jpg'
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              {getTipoIcon(conteudo.tipo, conteudo.url)}
-                            </div>
-                          )}
+                          {(() => {
+                            // Primeiro, verificar se há thumbnail da API
+                            if (conteudo.thumbnail && conteudo.thumbnail !== '/thumbnails/default.jpg') {
+                              return (
+                                <img 
+                                  src={conteudo.thumbnail} 
+                                  alt={conteudo.titulo}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                  onError={(e) => {
+                                    e.currentTarget.src = '/thumbnails/default.jpg'
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            // Se não há thumbnail, verificar se é Instagram
+                            const insta = getInstagramInfo(conteudo.url || '');
+                            if (insta) {
+                              return (
+                                <img 
+                                  src={insta.thumbnail} 
+                                  alt={conteudo.titulo}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                  onError={(e) => {
+                                    e.currentTarget.src = '/thumbnails/default.jpg'
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            // Se não é Instagram ou não tem thumbnail, mostrar ícone
+                            return (
+                              <div className="w-full h-full flex items-center justify-center">
+                                {getTipoIcon(conteudo.tipo, conteudo.url)}
+                              </div>
+                            );
+                          })()}
                           
                           {/* Overlay com tipo */}
                           <div className="absolute top-2 left-2">
