@@ -251,17 +251,22 @@ export default function CriadorPerfil() {
   }
 
   const getInstagramInfo = (url: string) => {
+    console.log('DEBUG getInstagramInfo chamada com URL:', url);
     // Tenta extrair o ID do post do Instagram
     const insta = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
     if (insta) {
       const postId = insta[1];
+      const thumbnailUrl = `https://www.instagram.com/p/${postId}/media/?size=l`;
+      console.log('DEBUG Instagram detectado! Post ID:', postId);
+      console.log('DEBUG Thumbnail URL gerada:', thumbnailUrl);
       return {
-        thumbnail: `https://www.instagram.com/p/${postId}/media/?size=l`,
+        thumbnail: thumbnailUrl,
         fallbackThumbnail: `https://www.instagram.com/p/${postId}/embed/`,
         link: url,
         postId: postId
       };
     }
+    console.log('DEBUG Instagram NÃO detectado para URL:', url);
     return null;
   }
 
