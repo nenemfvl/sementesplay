@@ -79,8 +79,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           if (instaMatch) {
             const postId = instaMatch[1];
-            // Para todos os tipos de Instagram (post, video, live), usar URL direta
-            return conteudo.url;
+            // Usar a mesma URL que funciona no componente Noticias
+            return `https://www.instagram.com/p/${postId}/media/?size=l`;
           }
           // Se não conseguir extrair o ID, retorna null
           return null;
