@@ -284,6 +284,34 @@ export default function CriadorPerfil() {
     return null;
   }
 
+  const getTwitchInfo = (url: string) => {
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
+    if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}.jpg`,
+        link: url,
+        channelName: channelName,
+        type: 'live'
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      const videoId = twVideo[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/videos_capture/${videoId}.jpg`,
+        link: url,
+        videoId: videoId,
+        type: 'video'
+      };
+    }
+    
+    return null;
+  }
+
   const handleVisualizar = async (conteudoId: string) => {
     if (!user) return
 
@@ -834,7 +862,39 @@ export default function CriadorPerfil() {
                               );
                             }
                             
-                            // Se não é Instagram, TikTok ou não tem thumbnail, mostrar ícone
+                            // Se não há thumbnail, verificar se é Twitch
+                            const twitch = getTwitchInfo(conteudo.url || '');
+                            if (twitch) {
+                              return (
+                                <Image
+                                  src={twitch.thumbnail}
+                                  alt={conteudo.titulo}
+                                  width={400}
+                                  height={200}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                  onError={(e) => {
+                                    // Se a imagem falhar, mostra o placeholder do Twitch
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    const parent = target.parentElement;
+                                    if (parent) {
+                                      const placeholder = document.createElement('div');
+                                      placeholder.className = 'w-full h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white transition-all';
+                                      placeholder.innerHTML = `
+                                        <div class="text-center">
+                                          <div class="text-6xl mb-3">📺</div>
+                                          <div class="text-sm font-bold">Twitch</div>
+                                          <div class="text-xs opacity-80">${twitch.type === 'live' ? 'LIVE' : conteudo.tipo}</div>
+                                        </div>
+                                      `;
+                                      parent.appendChild(placeholder);
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            // Se não é Instagram, TikTok, Twitch ou não tem thumbnail, mostrar ícone
                             return (
                               <div className="w-full h-full flex items-center justify-center">
                                 {getTipoIcon(conteudo.tipo, conteudo.url)}
