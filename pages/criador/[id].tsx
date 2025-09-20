@@ -274,9 +274,9 @@ export default function CriadorPerfil() {
     if (tiktokMatch) {
       const videoId = tiktokMatch[1];
       
-      // Usar nossa API para buscar thumbnail real
+      // Usar nossa API que redireciona para a imagem real
       return {
-        thumbnail: `/api/tiktok-thumbnail?url=${encodeURIComponent(url)}`,
+        thumbnail: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
         link: url,
         videoId: videoId
       };
