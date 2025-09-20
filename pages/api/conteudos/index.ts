@@ -79,12 +79,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           if (instaMatch) {
             const postId = instaMatch[1];
-            if (conteudo.tipo === 'imagem') {
-              // Para imagens, tentar usar a URL direta
-              return conteudo.url;
-            }
-            // Para vídeos e outros tipos, retorna null para usar ícone
-            return null;
+            // Tentar gerar thumbnail usando a API do Instagram
+            return `https://www.instagram.com/p/${postId}/media/?size=l`;
           }
           // Se não conseguir extrair o ID, retorna null
           return null;
