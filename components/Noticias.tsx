@@ -75,7 +75,24 @@ export default function Noticias() {
     }
   };
 
-  const getTipoLabel = (tipo: string) => {
+  const getTipoLabel = (tipo: string, url?: string) => {
+    // Detectar automaticamente pela URL se possível
+    if (url) {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        return url.includes('/shorts/') ? 'YouTube Shorts' : 'YouTube';
+      }
+      if (url.includes('instagram.com')) {
+        return 'Instagram';
+      }
+      if (url.includes('tiktok.com')) {
+        return 'TikTok';
+      }
+      if (url.includes('twitch.tv')) {
+        return url.includes('/videos/') ? 'Twitch Video' : 'Twitch Live';
+      }
+    }
+
+    // Fallback para o tipo original
     switch (tipo?.toLowerCase()) {
       case 'video':
       case 'youtube':
@@ -100,7 +117,7 @@ export default function Noticias() {
   };
 
   const getYoutubeInfo = (url: string) => {
-    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
     if (yt) {
       const id = yt[1];
       return {
@@ -544,7 +561,7 @@ export default function Noticias() {
                         </div>
                         <span className="text-gray-500">•</span>
                         <span className="text-sm text-blue-400 font-medium">
-                          {getTipoLabel(conteudo.tipo)}
+                          {getTipoLabel(conteudo.tipo, conteudo.url)}
                         </span>
                                                  {conteudo.categoria && (
                            <>
