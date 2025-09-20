@@ -73,15 +73,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Para Instagram
         if (conteudo.url?.includes('instagram.com')) {
+          console.log('Instagram detectado:', conteudo.url);
           // Tentar extrair o ID do post do Instagram
           const instaMatch = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/) ||
                             conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
           
           if (instaMatch) {
             const postId = instaMatch[1];
+            const thumbnailUrl = `https://www.instagram.com/p/${postId}/media/?size=l`;
+            console.log('Instagram thumbnail gerada:', thumbnailUrl);
             // Usar a mesma URL que funciona no componente Noticias
-            return `https://www.instagram.com/p/${postId}/media/?size=l`;
+            return thumbnailUrl;
           }
+          console.log('Instagram ID não encontrado');
           // Se não conseguir extrair o ID, retorna null
           return null;
         }
