@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           if (instaMatch) {
             const postId = instaMatch[1];
-            // Para todos os tipos de Instagram, tentar usar a URL direta
+            // Para todos os tipos de Instagram (post, video, live), usar URL direta
             return conteudo.url;
           }
           // Se não conseguir extrair o ID, retorna null
