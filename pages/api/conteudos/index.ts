@@ -73,16 +73,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Para Instagram
         if (conteudo.url?.includes('instagram.com')) {
-          // Tentar extrair o ID do post do Instagram
-          const instaMatch = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/) ||
-                            conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
-          
-          if (instaMatch) {
-            const postId = instaMatch[1];
-            // Tentar diferentes URLs para obter a imagem do Instagram
-            return `https://www.instagram.com/p/${postId}/media/?size=l`;
-          }
-          // Se não conseguir extrair o ID, retorna null
+          // Para Instagram, retornar null para usar ícone padrão
+          // A API do Instagram bloqueia requisições diretas
           return null;
         }
 
