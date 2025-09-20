@@ -655,6 +655,52 @@ export default function PainelCriador() {
     return null;
   }
 
+  function getTikTokInfo(url: string) {
+    // Tenta extrair o ID do vídeo do TikTok
+    const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                       url.match(/tiktok\.com\/v\/(\d+)/) ||
+                       url.match(/vm\.tiktok\.com\/(\w+)/);
+    if (tiktokMatch) {
+      const videoId = tiktokMatch[1];
+      
+      // Usar nossa API que redireciona para a imagem real
+      return {
+        thumbnail: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
+        link: url,
+        videoId: videoId
+      };
+    }
+    return null;
+  }
+
+  function getTwitchInfo(url: string) {
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
+    if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}.jpg`,
+        link: url,
+        channelName: channelName,
+        type: 'live'
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      const videoId = twVideo[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/videos_capture/${videoId}.jpg`,
+        link: url,
+        videoId: videoId,
+        type: 'video'
+      };
+    }
+    
+    return null;
+  }
+
   function getTipoIcon(tipo: string, url?: string) {
     // Detectar automaticamente o tipo baseado na URL para melhorar a experiência
     let tipoDetectado = tipo;
@@ -993,6 +1039,8 @@ export default function PainelCriador() {
                 {conteudosFiltrados.map((c) => {
                   const yt = getYoutubeInfo((c as any).url);
                   const insta = getInstagramInfo((c as any).url);
+                  const tiktok = getTikTokInfo((c as any).url);
+                  const twitch = getTwitchInfo((c as any).url);
                   return (
                         <div key={c.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
                       {yt ? (
@@ -1033,6 +1081,66 @@ export default function PainelCriador() {
                               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                 <a href={insta.link} target="_blank" rel="noopener" className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
                                   Ver no Instagram
+                                </a>
+                              </div>
+                            </div>
+                          ) : tiktok ? (
+                            <div className="relative">
+                              <img 
+                                src={tiktok.thumbnail} 
+                                alt={c.titulo} 
+                                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  // Se a imagem falhar, mostra o placeholder do TikTok
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    const placeholder = document.createElement('div');
+                                    placeholder.className = 'w-full h-48 bg-gradient-to-br from-black via-gray-900 to-gray-800 flex items-center justify-center text-white';
+                                    placeholder.innerHTML = `
+                                      <div class="text-center">
+                                        <div class="text-6xl mb-2">🎵</div>
+                                        <div class="text-lg font-semibold">TikTok</div>
+                                      </div>
+                                    `;
+                                    parent.appendChild(placeholder);
+                                  }
+                                }}
+                              />
+                              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <a href={tiktok.link} target="_blank" rel="noopener" className="bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                  Ver no TikTok
+                                </a>
+                              </div>
+                            </div>
+                          ) : twitch ? (
+                            <div className="relative">
+                              <img 
+                                src={twitch.thumbnail} 
+                                alt={c.titulo} 
+                                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  // Se a imagem falhar, mostra o placeholder do Twitch
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    const placeholder = document.createElement('div');
+                                    placeholder.className = 'w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white';
+                                    placeholder.innerHTML = `
+                                      <div class="text-center">
+                                        <div class="text-6xl mb-2">📺</div>
+                                        <div class="text-lg font-semibold">Twitch ${twitch.type === 'live' ? 'Live' : 'Video'}</div>
+                                      </div>
+                                    `;
+                                    parent.appendChild(placeholder);
+                                  }
+                                }}
+                              />
+                              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <a href={twitch.link} target="_blank" rel="noopener" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                  Ver na Twitch
                                 </a>
                               </div>
                             </div>
