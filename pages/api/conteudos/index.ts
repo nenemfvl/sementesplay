@@ -50,19 +50,73 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
-      const getYoutubeId = (url: string) => {
-        const match = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/)
-        return match ? match[1] : null
-      }
+      // Função para gerar preview baseada no tipo e URL (mesma lógica da API de recentes)
+      const gerarPreview = (conteudo: any) => {
+        // Se já tem preview, usa ela
+        if (conteudo.preview) {
+          return conteudo.preview;
+        }
 
-      const conteudosFormatados = conteudos.map(conteudo => {
-        let thumbnail = conteudo.preview || null
-        if (!thumbnail && conteudo.url && conteudo.tipo === 'video' && conteudo.url.includes('youtube')) {
-          const ytId = getYoutubeId(conteudo.url)
-          if (ytId) {
-            thumbnail = `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
+        // Para vídeos do YouTube, usa a mesma lógica do painel do criador
+        if (conteudo.tipo === 'video' && conteudo.url) {
+          const yt = conteudo.url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
+          if (yt) {
+            return `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg`;
           }
         }
+
+        // Para Twitch (videos ou streams)
+        if (conteudo.url?.includes('twitch.tv')) {
+          // Retorna null para usar ícone, já que as thumbnails do Twitch podem expirar
+          return null;
+        }
+
+        // Para Instagram
+        if (conteudo.url?.includes('instagram.com')) {
+          // Tentar extrair o ID do post do Instagram
+          const instaMatch = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/) ||
+                            conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+          
+          if (instaMatch) {
+            const postId = instaMatch[1];
+            if (conteudo.tipo === 'imagem') {
+              // Para imagens, tentar usar a URL direta
+              return conteudo.url;
+            }
+            // Para vídeos e outros tipos, retorna null para usar ícone
+            return null;
+          }
+          // Se não conseguir extrair o ID, retorna null
+          return null;
+        }
+
+        // Para TikTok
+        if (conteudo.url?.includes('tiktok.com')) {
+          // Tentar extrair o ID do vídeo do TikTok (suporta diferentes formatos)
+          const tiktokMatch = conteudo.url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                             conteudo.url.match(/tiktok\.com\/v\/(\d+)/) ||
+                             conteudo.url.match(/vm\.tiktok\.com\/(\w+)/);
+          
+          if (tiktokMatch) {
+            const videoId = tiktokMatch[1];
+            // Retorna null para usar ícone, já que não conseguimos thumbnail direta
+            return null;
+          }
+          // Se não conseguir extrair o ID, retorna null
+          return null;
+        }
+
+        // Para imagens, usa a própria URL
+        if (conteudo.tipo === 'imagem' && conteudo.url) {
+          return conteudo.url;
+        }
+
+        // Para outros tipos, retorna null para usar ícone
+        return null;
+      };
+
+      const conteudosFormatados = conteudos.map(conteudo => {
+        const thumbnail = gerarPreview(conteudo)
         return {
           id: conteudo.id,
           titulo: conteudo.titulo || '',
