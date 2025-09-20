@@ -127,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           comentarios: conteudo.comentarios ? conteudo.comentarios.length : 0,
           thumbnail: thumbnail || '/thumbnails/default.jpg'
         }
-      }))
+      })
 
       return res.status(200).json({ conteudos: conteudosFormatados })
     } catch (error) {
