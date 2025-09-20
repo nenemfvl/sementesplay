@@ -266,6 +266,24 @@ export default function CriadorPerfil() {
     return null;
   }
 
+  const getTikTokInfo = (url: string) => {
+    // Tenta extrair o ID do vídeo do TikTok
+    const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                       url.match(/tiktok\.com\/v\/(\d+)/) ||
+                       url.match(/vm\.tiktok\.com\/(\w+)/);
+    if (tiktokMatch) {
+      const videoId = tiktokMatch[1];
+      
+      // Usar nossa API para buscar thumbnail real
+      return {
+        thumbnail: `/api/tiktok-thumbnail?url=${encodeURIComponent(url)}`,
+        link: url,
+        videoId: videoId
+      };
+    }
+    return null;
+  }
+
   const handleVisualizar = async (conteudoId: string) => {
     if (!user) return
 
@@ -784,7 +802,39 @@ export default function CriadorPerfil() {
                               );
                             }
                             
-                            // Se não é Instagram ou não tem thumbnail, mostrar ícone
+                            // Se não há thumbnail, verificar se é TikTok
+                            const tiktok = getTikTokInfo(conteudo.url || '');
+                            if (tiktok) {
+                              return (
+                                <Image
+                                  src={tiktok.thumbnail}
+                                  alt={conteudo.titulo}
+                                  width={400}
+                                  height={200}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                  onError={(e) => {
+                                    // Se a imagem falhar, mostra o placeholder do TikTok
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    const parent = target.parentElement;
+                                    if (parent) {
+                                      const placeholder = document.createElement('div');
+                                      placeholder.className = 'w-full h-full bg-gradient-to-br from-black via-gray-900 to-gray-800 flex items-center justify-center text-white transition-all';
+                                      placeholder.innerHTML = `
+                                        <div class="text-center">
+                                          <div class="text-6xl mb-3">🎵</div>
+                                          <div class="text-sm font-bold">TikTok</div>
+                                          <div class="text-xs opacity-80">${conteudo.tipo}</div>
+                                        </div>
+                                      `;
+                                      parent.appendChild(placeholder);
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            // Se não é Instagram, TikTok ou não tem thumbnail, mostrar ícone
                             return (
                               <div className="w-full h-full flex items-center justify-center">
                                 {getTipoIcon(conteudo.tipo, conteudo.url)}
