@@ -128,6 +128,52 @@ export default function Noticias() {
     return null;
   };
 
+  const getTikTokInfo = (url: string) => {
+    // Tenta extrair o ID do vídeo do TikTok
+    const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                       url.match(/tiktok\.com\/v\/(\d+)/) ||
+                       url.match(/vm\.tiktok\.com\/(\w+)/);
+    if (tiktokMatch) {
+      const videoId = tiktokMatch[1];
+      
+      // Usar nossa API que redireciona para a imagem real
+      return {
+        thumbnail: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
+        link: url,
+        videoId: videoId
+      };
+    }
+    return null;
+  };
+
+  const getTwitchInfo = (url: string) => {
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
+    if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}.jpg`,
+        link: url,
+        channelName: channelName,
+        type: 'live'
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      const videoId = twVideo[1];
+      return {
+        thumbnail: `https://static-cdn.jtvnw.net/videos_capture/${videoId}.jpg`,
+        link: url,
+        videoId: videoId,
+        type: 'video'
+      };
+    }
+    
+    return null;
+  };
+
   // Auto-advance slides
   useEffect(() => {
     if (conteudos.length > 0) {
@@ -354,6 +400,8 @@ export default function Noticias() {
               {conteudos.map((conteudo) => {
                 const yt = getYoutubeInfo(conteudo.url || '');
                 const insta = getInstagramInfo(conteudo.url || '');
+                const tiktok = getTikTokInfo(conteudo.url || '');
+                const twitch = getTwitchInfo(conteudo.url || '');
                 
                 return (
                 <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
@@ -401,6 +449,60 @@ export default function Noticias() {
                                       <svg class="w-6 h-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                       </svg>
+                                    </div>
+                                  `;
+                                  parent.appendChild(placeholder);
+                                }
+                              }}
+                            />
+                          </div>
+                        ) : tiktok ? (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-sss-light/30 bg-sss-dark/30">
+                            <Image
+                              src={tiktok.thumbnail}
+                              alt={conteudo.titulo}
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                // Se a imagem falhar, mostra o placeholder do TikTok
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent) {
+                                  const placeholder = document.createElement('div');
+                                  placeholder.className = 'w-16 h-16 bg-gradient-to-br from-black via-gray-900 to-gray-800 flex items-center justify-center text-white transition-all rounded-lg';
+                                  placeholder.innerHTML = `
+                                    <div class="text-center">
+                                      <div class="text-2xl mb-1">🎵</div>
+                                      <div class="text-xs font-bold">TikTok</div>
+                                    </div>
+                                  `;
+                                  parent.appendChild(placeholder);
+                                }
+                              }}
+                            />
+                          </div>
+                        ) : twitch ? (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-sss-light/30 bg-sss-dark/30">
+                            <Image
+                              src={twitch.thumbnail}
+                              alt={conteudo.titulo}
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                // Se a imagem falhar, mostra o placeholder do Twitch
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent) {
+                                  const placeholder = document.createElement('div');
+                                  placeholder.className = 'w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white transition-all rounded-lg';
+                                  placeholder.innerHTML = `
+                                    <div class="text-center">
+                                      <div class="text-2xl mb-1">📺</div>
+                                      <div class="text-xs font-bold">Twitch</div>
                                     </div>
                                   `;
                                   parent.appendChild(placeholder);
