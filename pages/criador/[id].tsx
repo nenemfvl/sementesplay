@@ -612,11 +612,30 @@ export default function CriadorPerfil() {
                   <ArrowLeftIcon className="w-6 h-6" />
                 </button>
                 <div className="flex items-center space-x-3">
-                  {criador.avatar && criador.avatar.startsWith('http') ? (
-                    <img src={criador.avatar} alt={criador.nome} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <span className="text-2xl">{criador.avatar}</span>
-                  )}
+                  <div className="w-10 h-10 rounded-full relative overflow-hidden">
+                    {criador.avatar && criador.avatar.startsWith('http') ? (
+                      <Image
+                        src={criador.avatar}
+                        alt={`Avatar de ${criador.nome}`}
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.className = "w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center";
+                            parent.innerHTML = '<span class="text-xl">👨‍🎨</span>';
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-xl">{criador.avatar || '👨‍🎨'}</span>
+                      </div>
+                    )}
+                  </div>
                   <div>
                     <h1 className="text-xl font-bold text-sss-white">{criador.nome}</h1>
                     <p className="text-sm text-gray-400">Posição #{criador.posicao} no ranking</p>
@@ -641,11 +660,28 @@ export default function CriadorPerfil() {
             <div className="lg:col-span-1">
               <div className="bg-sss-medium rounded-lg p-6 border border-sss-light">
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center w-20 h-20 rounded-full bg-sss-dark mx-auto mb-4">
+                  <div className="w-20 h-20 rounded-full mx-auto mb-4 relative overflow-hidden">
                     {criador.avatar && criador.avatar.startsWith('http') ? (
-                      <img src={criador.avatar} alt={criador.nome} className="w-20 h-20 rounded-full object-cover" />
+                      <Image
+                        src={criador.avatar}
+                        alt={`Avatar de ${criador.nome}`}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.className = "w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center mx-auto mb-4";
+                            parent.innerHTML = '<span class="text-4xl">👨‍🎨</span>';
+                          }
+                        }}
+                      />
                     ) : (
-                      <span className="text-4xl">{criador.avatar}</span>
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-4xl">{criador.avatar || '👨‍🎨'}</span>
+                      </div>
                     )}
                   </div>
                   <h2 className="text-2xl font-bold text-sss-white mb-2">{criador.nome}</h2>
