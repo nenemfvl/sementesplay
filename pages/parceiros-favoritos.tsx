@@ -107,15 +107,19 @@ export default function ParceirosFavoritos() {
                 {/* Grid de parceiros favoritos */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {parceirosFavoritos.map((parceiro) => (
-                    <div key={parceiro.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
+                    <div 
+                      key={parceiro.id} 
+                      className="bg-sss-medium rounded-xl p-4 shadow-md cursor-pointer hover:bg-sss-light transition-colors group"
+                      onClick={() => router.push(`/parceiro/${parceiro.id}`)}
+                    >
                       <div className="flex">
                         {/* Conteúdo Principal */}
                         <div className="flex items-center flex-1">
-                          <div className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3 bg-sss-dark flex items-center justify-center text-xl">
+                          <div className="w-12 h-12 rounded-full border-2 border-blue-400 mr-3 bg-sss-dark flex items-center justify-center text-xl group-hover:border-sss-accent transition-colors">
                             🏢
                           </div>
                           <div className="flex-1">
-                            <div className="font-bold text-sss-white">{parceiro.nome}</div>
+                            <div className="font-bold text-sss-white group-hover:text-sss-accent transition-colors">{parceiro.nome}</div>
                             <div className="text-sm text-gray-400">{parceiro.nomeCidade}</div>
                             <div className="text-xs text-gray-500">Vendas: {formatarNumero(parceiro.totalVendas)}</div>
                           </div>
@@ -124,8 +128,11 @@ export default function ParceirosFavoritos() {
                         {/* Botão Favoritar - Borda Direita */}
                         <div className="flex flex-col items-end gap-2">
                           <button
-                            onClick={() => toggleFavorito(parceiro.id)}
-                            className="text-lg hover:scale-110 transition-transform"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Impede que o clique no coração acione o clique do card
+                              toggleFavorito(parceiro.id);
+                            }}
+                            className="text-lg hover:scale-110 transition-transform z-10"
                             aria-label="Remover dos favoritos"
                             title="Remover dos favoritos"
                           >
