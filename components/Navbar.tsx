@@ -152,6 +152,26 @@ export default function Navbar() {
                   ) : null}
                   <UserIcon className={`w-5 h-5 text-white ${user.avatarUrl ? 'hidden' : ''}`} />
                 </div>
+                
+                {/* Botão de notificações próximo ao avatar */}
+                <div className="relative">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Impede que abra o menu de perfil
+                      handleMenuItemClick('/notificacoes');
+                    }}
+                    className="p-1 text-gray-300 hover:text-sss-accent focus:outline-none relative"
+                    title="Notificações"
+                  >
+                    <BellIcon className="w-5 h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center animate-pulse text-[10px]">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </div>
+                
                 <span className="text-sss-accent font-bold">{user.nome}</span>
                 <ChevronDownIcon className={`w-4 h-4 text-gray-300 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
               </button>
@@ -217,22 +237,6 @@ export default function Navbar() {
                   </div>
                 </div>
               )}
-            </div>
-            
-            {/* Botão de notificações */}
-            <div className="relative">
-              <button
-                onClick={() => handleMenuItemClick('/notificacoes')}
-                className="p-2 text-gray-300 hover:text-sss-accent focus:outline-none relative"
-                title="Notificações"
-              >
-                <BellIcon className="w-6 h-6" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
             </div>
             
             {/* Dropdown de redes sociais */}
