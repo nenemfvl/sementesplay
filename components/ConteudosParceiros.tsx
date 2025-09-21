@@ -82,24 +82,26 @@ export default function ConteudosParceiros() {
     // Twitch - Stream ao vivo
     const twLive = url.match(/twitch\.tv\/([^/?]+)/);
     if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
       return {
-        src: null, // Usar só fallback visual para Twitch Live
+        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}-1920x1080.jpg`,
         platform: 'Twitch Live',
         icon: '📺',
         color: 'from-purple-600 to-pink-600',
-        fallback: true
+        fallback: true // Usar fallback se a imagem falhar
       };
     }
     
     // Twitch - Vídeo
     const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
     if (twVideo) {
+      const videoId = twVideo[1];
       return {
-        src: null, // Usar só fallback visual para Twitch Video
+        src: `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/twitchvod/${videoId}//thumb/thumb0-1920x1080.jpg`,
         platform: 'Twitch Video',
         icon: '📺',
         color: 'from-purple-500 to-purple-600',
-        fallback: true
+        fallback: true // Usar fallback se a imagem falhar
       };
     }
     
@@ -333,7 +335,7 @@ export default function ConteudosParceiros() {
                         >
                           <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
                             {/* Mostrar imagem real quando disponível, senão usar fallback visual */}
-                            {thumbnail?.src && (thumbnail.platform === 'Custom' || thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok') ? (
+                            {thumbnail?.src && (thumbnail.platform === 'Custom' || thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok' || thumbnail.platform === 'Twitch Live' || thumbnail.platform === 'Twitch Video') ? (
                               <div className="absolute inset-0">
                                                             <Image
                               src={thumbnail.src}
@@ -341,7 +343,7 @@ export default function ConteudosParceiros() {
                               fill
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 50vw"
-                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok'}
+                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok' || thumbnail.platform === 'Twitch Live' || thumbnail.platform === 'Twitch Video'}
                               onError={(e) => {
                                 console.log('Erro ao carregar imagem:', thumbnail.src);
                                 const target = e.currentTarget as HTMLImageElement;
