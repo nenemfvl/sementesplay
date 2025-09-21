@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { auth } from '../lib/auth';
 
 import { 
@@ -627,7 +628,7 @@ export default function PainelCriador() {
 
 
   function getYoutubeInfo(url: string) {
-    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
     if (yt) {
       const id = yt[1];
       return {
@@ -1045,7 +1046,7 @@ export default function PainelCriador() {
                         <div key={c.id} className="bg-sss-light/50 rounded-xl overflow-hidden hover:bg-sss-light/70 transition-all duration-300 group border border-sss-light hover:border-gray-500">
                       {yt ? (
                             <div className="relative">
-                              <img src={yt.thumbnail} alt={c.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                              <Image src={yt.thumbnail} alt={c.titulo} width={400} height={200} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
                               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                 <a href={yt.link} target="_blank" rel="noopener" className="bg-red-600 hover:bg-red-700 text-sss-white px-4 py-2 rounded-lg font-semibold transition-colors">
                                   Assistir no YouTube
@@ -1054,9 +1055,11 @@ export default function PainelCriador() {
                             </div>
                           ) : insta ? (
                             <div className="relative">
-                              <img 
+                              <Image 
                                 src={insta.thumbnail} 
                                 alt={c.titulo} 
+                                width={400}
+                                height={200}
                                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                                 onError={(e) => {
                                   // Se a imagem falhar, mostra o placeholder do Instagram
@@ -1086,9 +1089,11 @@ export default function PainelCriador() {
                             </div>
                           ) : tiktok ? (
                             <div className="relative">
-                              <img 
+                              <Image 
                                 src={tiktok.thumbnail} 
                                 alt={c.titulo} 
+                                width={400}
+                                height={200}
                                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                                 onError={(e) => {
                                   // Se a imagem falhar, mostra o placeholder do TikTok
@@ -1116,9 +1121,11 @@ export default function PainelCriador() {
                             </div>
                           ) : twitch ? (
                             <div className="relative">
-                              <img 
+                              <Image 
                                 src={twitch.thumbnail} 
                                 alt={c.titulo} 
+                                width={400}
+                                height={200}
                                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                                 onError={(e) => {
                                   // Se a imagem falhar, mostra o placeholder do Twitch
