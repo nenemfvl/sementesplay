@@ -39,21 +39,41 @@ export function useNotifications() {
   }
 
   const markAsRead = async (notificationId: string) => {
+    // Optimistic update - atualizar UI imediatamente
+    setNotifications(prev => 
+      prev.map(n => 
+        n.id === notificationId ? { ...n, lida: true } : n
+      )
+    )
+    setUnreadCount(prev => Math.max(0, prev - 1))
+
     try {
       const response = await fetch(`/api/notificacoes/${notificationId}/ler`, {
         method: 'PUT'
       })
       
-      if (response.ok) {
-        // Atualizar estado local
+      if (!response.ok) {
+        // Reverter mudanças se API falhar
         setNotifications(prev => 
           prev.map(n => 
-            n.id === notificationId ? { ...n, lida: true } : n
+            n.id === notificationId ? { ...n, lida: false } : n
           )
         )
-        setUnreadCount(prev => Math.max(0, prev - 1))
+        setUnreadCount(prev => prev + 1)
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erro ao marcar notificação como lida:', response.statusText)
+        }
       }
     } catch (error) {
+      // Reverter mudanças se houver erro de rede
+      setNotifications(prev => 
+        prev.map(n => 
+          n.id === notificationId ? { ...n, lida: false } : n
+        )
+      )
+      setUnreadCount(prev => prev + 1)
+      
       if (process.env.NODE_ENV === 'development') {
         console.error('Erro ao marcar notificação como lida:', error)
       }
@@ -61,10 +81,20 @@ export function useNotifications() {
   }
 
   const markAllAsRead = async () => {
-    try {
-      const user = auth.getUser()
-      if (!user) return
+    const user = auth.getUser()
+    if (!user) return
 
+    // Salvar estado anterior para possível rollback
+    const previousNotifications = notifications
+    const previousUnreadCount = unreadCount
+
+    // Optimistic update - atualizar UI imediatamente
+    setNotifications(prev => 
+      prev.map(n => ({ ...n, lida: true }))
+    )
+    setUnreadCount(0)
+
+    try {
       const response = await fetch(`/api/notificacoes/ler-todas`, {
         method: 'PUT',
         headers: {
@@ -73,14 +103,20 @@ export function useNotifications() {
         body: JSON.stringify({ usuarioId: user.id })
       })
       
-      if (response.ok) {
-        // Atualizar estado local
-        setNotifications(prev => 
-          prev.map(n => ({ ...n, lida: true }))
-        )
-        setUnreadCount(0)
+      if (!response.ok) {
+        // Reverter mudanças se API falhar
+        setNotifications(previousNotifications)
+        setUnreadCount(previousUnreadCount)
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erro ao marcar todas as notificações como lidas:', response.statusText)
+        }
       }
     } catch (error) {
+      // Reverter mudanças se houver erro de rede
+      setNotifications(previousNotifications)
+      setUnreadCount(previousUnreadCount)
+      
       if (process.env.NODE_ENV === 'development') {
         console.error('Erro ao marcar todas as notificações como lidas:', error)
       }
