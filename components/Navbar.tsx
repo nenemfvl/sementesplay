@@ -7,10 +7,12 @@ import {
   UserGroupIcon, 
   ChevronDownIcon, 
   ArrowLeftOnRectangleIcon,
-  UserIcon
+  UserIcon,
+  BellIcon
 } from '@heroicons/react/24/outline'
 import { auth, User } from '../lib/auth'
 import { useNavigation } from '../hooks/useNavigation'
+import { useNotifications } from '../hooks/useNotifications'
 import FriendsChat from './FriendsChat'
 
 interface UserWithCriador extends User {
@@ -32,6 +34,7 @@ interface UserWithCriador extends User {
 export default function Navbar() {
   const router = useRouter();
   const { navigateTo } = useNavigation();
+  const { unreadCount } = useNotifications();
   const [user, setUser] = React.useState<UserWithCriador | null>(null);
   const [showSocials, setShowSocials] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
@@ -214,6 +217,22 @@ export default function Navbar() {
                   </div>
                 </div>
               )}
+            </div>
+            
+            {/* Botão de notificações */}
+            <div className="relative">
+              <button
+                onClick={() => handleMenuItemClick('/notificacoes')}
+                className="p-2 text-gray-300 hover:text-sss-accent focus:outline-none relative"
+                title="Notificações"
+              >
+                <BellIcon className="w-6 h-6" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
             </div>
             
             {/* Dropdown de redes sociais */}
