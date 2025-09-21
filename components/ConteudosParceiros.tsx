@@ -473,8 +473,8 @@ export default function ConteudosParceiros() {
                             </div>
                             
                             {/* Clickable Link Overlay */}
-                            <div className="absolute inset-0 z-10 cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
-                              <span className="sr-only">Ver conteúdo: {conteudo.titulo}</span>
+                            <div className="absolute inset-0 z-10 cursor-pointer" onClick={() => window.location.href = `/parceiro/${conteudo.parceiro.id}`}>
+                              <span className="sr-only">Ver perfil do parceiro: {conteudo.parceiro.nome}</span>
                             </div>
                           </div>
                         </div>
@@ -552,7 +552,7 @@ export default function ConteudosParceiros() {
               {getConteudosOrdenados().map((conteudo) => {
                 const thumbnail = getThumbnail(conteudo.url, conteudo.preview);
                 return (
-                  <div key={conteudo.id} className="bg-sss-medium border border-gray-600 rounded-lg p-4 hover:border-purple-400 hover:bg-sss-dark transition-all duration-300 group cursor-pointer" onClick={() => window.open(conteudo.url, '_blank')}>
+                  <div key={conteudo.id} className="bg-sss-medium border border-gray-600 rounded-lg p-4 hover:border-purple-400 hover:bg-sss-dark transition-all duration-300 group cursor-pointer" onClick={() => window.location.href = `/parceiro/${conteudo.parceiro.id}`}>
                     <div className="flex items-start space-x-3">
                       {/* Preview do conteúdo */}
                       <div className="flex-shrink-0">
