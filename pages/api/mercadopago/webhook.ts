@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
+import { adicionarAoFundoAtivoTx } from '../../../lib/fundo-utils'
 import { enviarNotificacao } from '../../../lib/notificacao'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -217,30 +218,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             })
 
-            // 6. Atualizar fundo de distribuição ativo
+            // 6. Atualizar fundo de distribuição ativo usando função utilitária
             try {
-              const fundo = await tx.fundoSementes.findFirst({
-                where: { distribuido: false },
-                orderBy: { dataInicio: 'desc' }
-              })
-              if (fundo) {
-                await tx.fundoSementes.update({
-                  where: { id: fundo.id },
-                  data: { valorTotal: { increment: pctFundo } }
-                })
-                console.log(`💰 Fundo ${fundo.id} atualizado: +R$ ${pctFundo} (Total: R$ ${fundo.valorTotal + pctFundo})`)
-              } else {
-                const novoFundo = await tx.fundoSementes.create({
-                  data: {
-                    ciclo: 1,
-                    valorTotal: pctFundo,
-                    dataInicio: new Date(),
-                    dataFim: new Date(),
-                    distribuido: false
-                  }
-                })
-                console.log(`💰 Novo fundo criado: ${novoFundo.id} com R$ ${pctFundo}`)
-              }
+              const fundoAtualizado = await adicionarAoFundoAtivoTx(tx, pctFundo, 1)
+              console.log(`💰 Fundo ${fundoAtualizado.id} atualizado: +R$ ${pctFundo} (Total: R$ ${fundoAtualizado.valorTotal})`)
             } catch (fundoError) {
               console.log(`⚠️ Erro ao atualizar fundo: ${fundoError instanceof Error ? fundoError.message : 'Erro desconhecido'}`)
             }

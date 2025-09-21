@@ -8,6 +8,10 @@
     {
       "path": "/api/ranking/atualizar-niveis-automatico",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/verificar-integridade-fundo",
+      "schedule": "0 6 * * *"
     }
   ],
   "headers": [
