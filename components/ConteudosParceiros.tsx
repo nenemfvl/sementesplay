@@ -109,13 +109,12 @@ export default function ConteudosParceiros() {
     if (url.includes('instagram.com')) {
       const insta = url.match(/instagram\.com\/(?:p|reel)\/([a-zA-Z0-9_-]+)/);
       if (insta) {
-        const postId = insta[1];
         return {
-          src: `https://www.instagram.com/p/${postId}/media/?size=l`,
+          src: `/api/instagram-image?url=${encodeURIComponent(url)}`,
           platform: 'Instagram',
           icon: '📷',
           color: 'from-pink-500 via-purple-500 to-orange-500',
-          fallback: false // Usar thumbnail real do Instagram
+          fallback: false // Usar thumbnail real do Instagram via proxy
         };
       }
       return {
