@@ -1766,7 +1766,7 @@ export default function PainelParceiro() {
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                                     sizes="(max-width: 768px) 100vw, 50vw"
-                                    unoptimized={thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok'}
+                                    unoptimized={thumbnail.platform === 'TikTok'}
                                     onError={(e) => {
                                       // Fallback para gradiente se a imagem falhar
                                       const target = e.currentTarget as HTMLImageElement;
