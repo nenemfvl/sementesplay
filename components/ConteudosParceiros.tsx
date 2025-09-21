@@ -79,28 +79,17 @@ export default function ConteudosParceiros() {
       };
     }
     
-    // Twitch - Stream ao vivo
+    // Twitch - Stream ao vivo e Vídeos
     const twLive = url.match(/twitch\.tv\/([^/?]+)/);
-    if (twLive && !url.includes('/videos/')) {
-      const channelName = twLive[1];
-      return {
-        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}-1920x1080.jpg`,
-        platform: 'Twitch Live',
-        icon: '📺',
-        color: 'from-purple-600 to-pink-600',
-        fallback: true // Usar fallback se a imagem falhar
-      };
-    }
-    
-    // Twitch - Vídeo
     const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
-    if (twVideo) {
-      const videoId = twVideo[1];
+    
+    if (twLive || twVideo) {
+      const platform = twVideo ? 'Twitch Video' : 'Twitch Live';
       return {
-        src: `https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/twitchvod/${videoId}//thumb/thumb0-1920x1080.jpg`,
-        platform: 'Twitch Video',
+        src: `/api/twitch-image?url=${encodeURIComponent(url)}`,
+        platform: platform,
         icon: '📺',
-        color: 'from-purple-500 to-purple-600',
+        color: twVideo ? 'from-purple-500 to-purple-600' : 'from-purple-600 to-pink-600',
         fallback: true // Usar fallback se a imagem falhar
       };
     }
