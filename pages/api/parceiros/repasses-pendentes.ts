@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...solicitacoesPendentes.map(solicitacao => ({
         id: solicitacao.id,
         valorCompra: solicitacao.valorCompra,
-        valorRepasse: solicitacao.valorCompra * 0.10, // 10% da compra
+        valorRepasse: Math.round(solicitacao.valorCompra * 0.10 * 100) / 100, // 10% da compra arredondado
         status: 'solicitacao_pendente',
         dataCompra: solicitacao.dataCompra,
         dataRepasse: null,
@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...comprasAguardandoRepasse.map(compra => ({
         id: compra.id,
         valorCompra: compra.valorCompra,
-        valorRepasse: compra.valorCompra * 0.10, // 10% da compra
+        valorRepasse: Math.round(compra.valorCompra * 0.10 * 100) / 100, // 10% da compra arredondado
         status: 'aguardando_repasse',
         dataCompra: compra.dataCompra,
         dataRepasse: null,
