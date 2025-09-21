@@ -211,8 +211,9 @@ export default function ConteudosParceiros() {
     }
 
     switch (tipoDetectado?.toLowerCase()) {
-      case 'video':
       case 'youtube':
+        return 'YouTube';
+      case 'video':
         return 'Vídeo';
       case 'tiktok':
         return 'TikTok';

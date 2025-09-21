@@ -116,12 +116,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
 
+      // Detectar tipo automaticamente pela URL se não fornecido
+      let tipoDetectado = tipo || 'conteudo'; // Padrão genérico
+      
+      if (!tipo && url) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+          tipoDetectado = 'youtube';
+        } else if (url.includes('tiktok.com')) {
+          tipoDetectado = 'tiktok';
+        } else if (url.includes('instagram.com')) {
+          tipoDetectado = 'instagram';
+        } else if (url.includes('twitch.tv')) {
+          tipoDetectado = 'twitch';
+        }
+      }
+
       const novo = await prisma.conteudoParceiro.create({
         data: {
           parceiroId,
           titulo: titulo || 'Conteúdo do Parceiro', // Usar título fornecido ou padrão
           url,
-          tipo: tipo || 'evento', // Usar tipo fornecido ou padrão
+          tipo: tipoDetectado,
           categoria,
           descricao: descricao || '',
           plataforma: plataforma || '',
