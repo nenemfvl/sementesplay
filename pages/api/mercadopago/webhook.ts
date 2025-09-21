@@ -217,16 +217,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             })
 
-            // 6. Atualizar fundo de distribuição (se existir)
+            // 6. Atualizar fundo de distribuição ativo
             try {
-              const fundo = await tx.fundoSementes.findFirst()
+              const fundo = await tx.fundoSementes.findFirst({
+                where: { distribuido: false },
+                orderBy: { dataInicio: 'desc' }
+              })
               if (fundo) {
                 await tx.fundoSementes.update({
                   where: { id: fundo.id },
                   data: { valorTotal: { increment: pctFundo } }
                 })
+                console.log(`💰 Fundo ${fundo.id} atualizado: +R$ ${pctFundo} (Total: R$ ${fundo.valorTotal + pctFundo})`)
               } else {
-                await tx.fundoSementes.create({
+                const novoFundo = await tx.fundoSementes.create({
                   data: {
                     ciclo: 1,
                     valorTotal: pctFundo,
@@ -235,9 +239,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     distribuido: false
                   }
                 })
+                console.log(`💰 Novo fundo criado: ${novoFundo.id} com R$ ${pctFundo}`)
               }
             } catch (fundoError) {
-              console.log(`⚠️ Fundo de distribuição não disponível: ${fundoError instanceof Error ? fundoError.message : 'Erro desconhecido'}`)
+              console.log(`⚠️ Erro ao atualizar fundo: ${fundoError instanceof Error ? fundoError.message : 'Erro desconhecido'}`)
             }
           })
 
