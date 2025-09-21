@@ -659,7 +659,7 @@ export default function PainelParceiro() {
   async function handleFazerPagamentoPIX(repasse: Repasse) {
     // Verificar se o repasse já foi pago
     if (repasse.status === 'pago' || repasse.status === 'confirmado') {
-      mostrarToast('Este repasse já foi pago!', 'warning');
+      mostrarToast('Este repasse já foi pago!', 'info');
       return;
     }
 
