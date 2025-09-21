@@ -28,6 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Valor inválido' })
     }
 
+    // Arredondar para 2 casas decimais para evitar problemas de precisão
+    const valorRepasseArredondado = Math.round(valorRepasse * 100) / 100
+    console.log('💰 Valor original:', valorRepasse)
+    console.log('💰 Valor arredondado:', valorRepasseArredondado)
+
     // Configurar access token do Mercado Pago
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
     
@@ -44,8 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Criar pagamento PIX no Mercado Pago
     const payment_data = {
-      transaction_amount: valorRepasse,
-      description: `Repasse Parceiro - R$ ${valorRepasse.toFixed(2)}`,
+      transaction_amount: valorRepasseArredondado,
+      description: `Repasse Parceiro - R$ ${valorRepasseArredondado.toFixed(2)}`,
       payment_method_id: 'pix',
       payer: {
         email: 'parceiro@sementesplay.com.br',
