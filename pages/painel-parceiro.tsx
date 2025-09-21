@@ -695,6 +695,10 @@ export default function PainelParceiro() {
       valor: repasse.valorRepasse
     };
     
+    console.log('🔍 VERIFICAÇÃO DE IDs:');
+    console.log('   user.id:', user.id);
+    console.log('   parceiro.usuarioId:', parceiro.usuarioId);
+    console.log('   usuarioId usado:', dadosPix.usuarioId);
     console.log('📤 Dados que serão enviados para PIX:', dadosPix);
 
     setRepasseSelecionado(repasse);
