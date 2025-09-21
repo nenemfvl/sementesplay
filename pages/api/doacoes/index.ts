@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Criador não encontrado' })
       }
 
-      // Transação mínima - apenas operações essenciais
+      // Transação completa - incluindo XP e histórico para garantir consistência
       const resultado = await prisma.$transaction(async (tx) => {
         // 1. Criar doação
         const doacao = await tx.doacao.create({
@@ -110,67 +110,102 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
 
-        // 2. Atualizar sementes apenas (operação crítica)
+        // 2. Buscar dados atuais dos usuários para XP
+        const [doadorAtual, criadorUsuarioAtual] = await Promise.all([
+          tx.usuario.findUnique({ where: { id: String(doadorId) } }),
+          tx.usuario.findUnique({ where: { id: criador.usuarioId } })
+        ])
+
+        if (!doadorAtual || !criadorUsuarioAtual) {
+          throw new Error('Usuários não encontrados')
+        }
+
+        // 3. Calcular novos níveis
+        const doadorNovoXP = doadorAtual.xp + 10
+        const criadorNovoXP = criadorUsuarioAtual.xp + 5
+        const doadorNovoNivel = Math.floor(1 + Math.sqrt(doadorNovoXP / 100))
+        const criadorNovoNivel = Math.floor(1 + Math.sqrt(criadorNovoXP / 100))
+
+        // 4. Atualizar sementes, XP e estatísticas
         await Promise.all([
+          // Atualizar doador
           tx.usuario.update({
             where: { id: String(doadorId) },
-            data: { sementes: { decrement: quantidade } }
+            data: { 
+              sementes: { decrement: quantidade },
+              xp: doadorNovoXP,
+              nivelUsuario: doadorNovoNivel,
+              pontuacao: { increment: quantidade }
+            }
           }),
+          // Atualizar criador (usuário)
           tx.usuario.update({
             where: { id: criador.usuarioId },
-            data: { sementes: { increment: quantidade } }
+            data: { 
+              sementes: { increment: quantidade },
+              xp: criadorNovoXP,
+              nivelUsuario: criadorNovoNivel,
+              pontuacao: { increment: quantidade }
+            }
+          }),
+          // Atualizar contador de doações do criador
+          tx.criador.update({
+            where: { id: String(criadorId) },
+            data: { doacoes: { increment: 1 } }
+          })
+        ])
+
+        // 5. Registrar histórico de XP
+        await Promise.all([
+          tx.historicoXP.create({
+            data: {
+              usuarioId: String(doadorId),
+              xpGanho: 10,
+              xpAnterior: doadorAtual.xp,
+              xpPosterior: doadorNovoXP,
+              nivelAnterior: doadorAtual.nivelUsuario,
+              nivelPosterior: doadorNovoNivel,
+              fonte: 'doacao',
+              descricao: `Doação de ${quantidade} sementes para criador`
+            }
+          }),
+          tx.historicoXP.create({
+            data: {
+              usuarioId: criador.usuarioId,
+              xpGanho: 5,
+              xpAnterior: criadorUsuarioAtual.xp,
+              xpPosterior: criadorNovoXP,
+              nivelAnterior: criadorUsuarioAtual.nivelUsuario,
+              nivelPosterior: criadorNovoNivel,
+              fonte: 'doacao_recebida',
+              descricao: `Recebimento de doação de ${quantidade} sementes`
+            }
+          })
+        ])
+
+        // 6. Histórico de sementes
+        await Promise.all([
+          tx.semente.create({
+            data: {
+              usuarioId: String(doadorId),
+              quantidade: -quantidade,
+              tipo: 'doacao',
+              descricao: `Doação para criador ${criadorId}`
+            }
+          }),
+          tx.semente.create({
+            data: {
+              usuarioId: criador.usuarioId,
+              quantidade: quantidade,
+              tipo: 'recebida',
+              descricao: `Doação recebida de usuário ${doadorId}`
+            }
           })
         ])
 
         return doacao
       }, {
-        timeout: 5000 // Timeout reduzido para 5 segundos
-      })
-
-      // Operações em background (não bloqueantes) - apenas essenciais
-      setImmediate(() => {
-        Promise.all([
-          // Atualizar contadores e XP em background
-          prisma.criador.update({
-            where: { id: String(criadorId) },
-            data: { doacoes: { increment: 1 } }
-          }).catch(console.error),
-          
-          prisma.usuario.update({
-            where: { id: String(doadorId) },
-            data: { 
-              xp: { increment: 10 },
-              pontuacao: { increment: quantidade }
-            }
-          }).catch(console.error),
-          
-          prisma.usuario.update({
-            where: { id: criador.usuarioId },
-            data: { 
-              xp: { increment: 5 },
-              pontuacao: { increment: quantidade }
-            }
-          }).catch(console.error),
-
-          // Histórico simplificado
-          prisma.semente.create({
-            data: {
-              usuarioId: String(doadorId),
-              quantidade: -quantidade,
-              tipo: 'doacao',
-              descricao: `Doação para ${criadorId}`
-            }
-          }).catch(console.error),
-          
-          prisma.semente.create({
-            data: {
-              usuarioId: criador.usuarioId,
-              quantidade: quantidade,
-              tipo: 'recebida',
-              descricao: `Doação de ${doadorId}`
-            }
-          }).catch(console.error)
-        ]).catch(console.error)
+        timeout: 10000 // Timeout aumentado para 10 segundos
       })
 
       return res.status(201).json(resultado)
