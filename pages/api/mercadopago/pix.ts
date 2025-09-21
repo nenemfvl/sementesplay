@@ -10,7 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { repasseId, parceiroId, usuarioId, valor } = req.body
 
-    console.log('Dados recebidos:', { repasseId, parceiroId, usuarioId, valor })
+    console.log('🔍 DADOS RECEBIDOS NA API PIX:')
+    console.log('   repasseId:', repasseId)
+    console.log('   parceiroId:', parceiroId)
+    console.log('   usuarioId:', usuarioId)
+    console.log('   valor:', valor)
 
     if (!repasseId || !parceiroId || !usuarioId || !valor) {
       console.log('Dados obrigatórios não fornecidos')
@@ -70,7 +74,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!response.ok) {
       const errorData = await response.json()
-      console.error('Erro na API do Mercado Pago:', JSON.stringify(errorData, null, 2))
+      console.error('❌ ERRO NA API DO MERCADO PAGO:')
+      console.error('   Status:', response.status)
+      console.error('   Erro:', JSON.stringify(errorData, null, 2))
+      console.error('   Payment data enviado:', JSON.stringify(payment_data, null, 2))
+      
       return res.status(400).json({ 
         error: 'Erro ao gerar PIX',
         details: errorData.message || 'Erro na integração com Mercado Pago',
