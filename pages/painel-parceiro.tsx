@@ -500,9 +500,14 @@ export default function PainelParceiro() {
       fetchEstatisticas();
       fetchNotificacoes();
       fetchRepasses();
+    }
+  }, [authorized, user, fetchParceiro, fetchTransacoes, fetchEstatisticas, fetchNotificacoes, fetchRepasses]);
+
+  useEffect(() => {
+    if (parceiro?.id) {
       fetchConteudos();
     }
-  }, [authorized, user, parceiro?.id, fetchParceiro, fetchTransacoes, fetchEstatisticas, fetchNotificacoes, fetchRepasses, fetchConteudos]);
+  }, [parceiro?.id, fetchConteudos]);
 
   const getProgressWidthClass = (value: number, max: number) => {
     const percentage = (value / max) * 100;
@@ -663,6 +668,12 @@ export default function PainelParceiro() {
       return;
     }
 
+    // Verificar se os dados necessários estão disponíveis
+    if (!parceiro?.id || !user?.id) {
+      mostrarToast('Dados do parceiro não carregados. Tente novamente.', 'error');
+      return;
+    }
+
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
     
@@ -672,8 +683,8 @@ export default function PainelParceiro() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           repasseId: repasse.id,
-          parceiroId: parceiro?.id,
-          usuarioId: user?.id,
+          parceiroId: parceiro.id,
+          usuarioId: user.id,
           valor: repasse.valorRepasse
         })
       });
