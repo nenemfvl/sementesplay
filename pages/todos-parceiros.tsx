@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { PlusIcon, BuildingOfficeIcon, EyeIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
 
 import { FaTwitch, FaYoutube, FaTiktok, FaInstagram, FaHeart, FaRegHeart, FaBuilding } from 'react-icons/fa'
 import { useRouter } from 'next/router'

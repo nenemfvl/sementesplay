@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { motion } from 'framer-motion'
+// Removido import motion não utilizado
 import Image from 'next/image'
 import { 
   UserGroupIcon, 

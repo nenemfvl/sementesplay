@@ -269,7 +269,7 @@ export default function ConteudosParceiros() {
 
       return () => clearInterval(timer);
     }
-  }, [conteudos.length]);
+  }, [conteudos]);
 
   const nextSlide = () => {
     const conteudosOrdenados = getConteudosOrdenados();
