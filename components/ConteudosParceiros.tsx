@@ -345,7 +345,8 @@ export default function ConteudosParceiros() {
                               sizes="(max-width: 768px) 100vw, 50vw"
                               unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'TikTok'}
                               onError={(e) => {
-                                console.log('Erro ao carregar imagem:', thumbnail.src);
+                                console.log('🔍 Erro ao carregar imagem:', thumbnail.src, 'Platform:', thumbnail.platform);
+                                console.log('🔍 Thumbnail object:', thumbnail);
                                 const target = e.currentTarget as HTMLImageElement;
                                 target.style.display = 'none';
                                 const parent = target.parentElement;
