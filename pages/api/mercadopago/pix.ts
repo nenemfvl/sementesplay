@@ -132,7 +132,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             id: repasseId,
             parceiroId: parceiroId,
             compraId: compra.id,
-            valor: valorRepasse,
+            valor: valorRepasseArredondado, // Usar valor arredondado
             status: 'aguardando_pagamento',
             paymentId: String(payment.id),
             dataRepasse: new Date()
