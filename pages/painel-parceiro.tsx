@@ -343,16 +343,22 @@ export default function PainelParceiro() {
       try {
         const currentUser = auth.getUser();
         if (!currentUser) {
-          console.log('Usuário não encontrado no localStorage');
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Usuário não encontrado no localStorage');
+          }
           window.location.href = '/login';
           return;
         }
         
-        console.log('Usuário encontrado:', currentUser.nome, 'Nível:', currentUser.nivel);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Usuário encontrado:', currentUser.nome, 'Nível:', currentUser.nivel);
+        }
         
         // Verificar se o usuário tem nível parceiro
         if (currentUser.nivel !== 'parceiro') {
-          console.log('Usuário não é parceiro, nível:', currentUser.nivel);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Usuário não é parceiro, nível:', currentUser.nivel);
+          }
           alert('Acesso negado. Apenas parceiros podem acessar esta área.');
           window.location.href = '/perfil';
           return;
@@ -411,13 +417,19 @@ export default function PainelParceiro() {
 
   const fetchParceiro = useCallback(async () => {
     try {
-      console.log('🔍 Buscando dados do parceiro para usuário:', user?.id);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Buscando dados do parceiro para usuário:', user?.id);
+      }
       const response = await fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`);
-      console.log('📊 Status da resposta:', response.status);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📊 Status da resposta:', response.status);
+      }
       
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ Dados do parceiro recebidos:', data);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Dados do parceiro recebidos:', data);
+        }
         setParceiro(data);
       } else {
         console.error('❌ Erro na resposta:', response.status);
@@ -677,10 +689,12 @@ export default function PainelParceiro() {
     }
 
     // Verificar se os dados necessários estão disponíveis
-    console.log('🔍 Dados antes de gerar PIX:');
-    console.log('   Parceiro:', parceiro);
-    console.log('   User:', user);
-    console.log('   Repasse:', repasse);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Dados antes de gerar PIX:');
+      console.log('   Parceiro:', parceiro);
+      console.log('   User:', user);
+      console.log('   Repasse:', repasse);
+    }
     
     if (!parceiro?.id || !user?.id) {
       console.error('❌ Dados não disponíveis:', { parceiroId: parceiro?.id, userId: user?.id });
@@ -695,11 +709,13 @@ export default function PainelParceiro() {
       valor: repasse.valorRepasse
     };
     
-    console.log('🔍 VERIFICAÇÃO DE IDs:');
-    console.log('   user.id:', user.id);
-    console.log('   parceiro.usuarioId:', parceiro.usuarioId);
-    console.log('   usuarioId usado:', dadosPix.usuarioId);
-    console.log('📤 Dados que serão enviados para PIX:', dadosPix);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 VERIFICAÇÃO DE IDs:');
+      console.log('   user.id:', user.id);
+      console.log('   parceiro.usuarioId:', parceiro.usuarioId);
+      console.log('   usuarioId usado:', dadosPix.usuarioId);
+      console.log('📤 Dados que serão enviados para PIX:', dadosPix);
+    }
 
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
@@ -730,13 +746,19 @@ export default function PainelParceiro() {
     
     const interval = setInterval(async () => {
       try {
-        console.log('Verificando pagamento:', paymentId);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Verificando pagamento:', paymentId);
+        }
         const response = await fetch(`/api/mercadopago/verificar-pagamento?paymentId=${paymentId}`);
-        console.log('Resposta da API:', response.status);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Resposta da API:', response.status);
+        }
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Dados da resposta:', data);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Dados da resposta:', data);
+          }
           
           if (data.status === 'approved') {
             clearInterval(interval);
@@ -793,7 +815,9 @@ export default function PainelParceiro() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Repasse processado automaticamente:', result);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Repasse processado automaticamente:', result);
+        }
       } else {
         const error = await response.json();
         console.error('Erro ao processar repasse automaticamente:', error);
@@ -820,7 +844,9 @@ export default function PainelParceiro() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Solicitação aprovada:', result);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Solicitação aprovada:', result);
+        }
         mostrarToast('Solicitação aprovada com sucesso!', 'success');
         fetchRepasses(); // Recarregar repasses
       } else {
@@ -857,7 +883,9 @@ export default function PainelParceiro() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Solicitação rejeitada:', result);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Solicitação rejeitada:', result);
+        }
         mostrarToast('Solicitação rejeitada com sucesso!', 'success');
         fetchRepasses(); // Recarregar repasses
       } else {
@@ -892,7 +920,9 @@ export default function PainelParceiro() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Redes sociais salvas:', result);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Redes sociais salvas:', result);
+        }
         toast.success('Redes sociais salvas com sucesso!');
         setShowModalRedesSociais(false);
         // Atualizar dados do parceiro
