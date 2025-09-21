@@ -495,6 +495,100 @@ export default function PainelParceiro() {
     return numero.toString()
   };
 
+  // Função para obter thumbnail do conteúdo
+  const getThumbnail = (url: string) => {
+    if (!url) return null;
+    
+    // YouTube (incluindo Shorts)
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
+    if (yt) {
+      return {
+        src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
+        platform: 'YouTube',
+        icon: '🎥',
+        color: 'from-red-500 to-red-600',
+        fallback: false
+      };
+    }
+    
+    // Twitch - Stream ao vivo
+    const twLive = url.match(/twitch\.tv\/([^/?]+)/);
+    if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
+      return {
+        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}.jpg`,
+        platform: 'Twitch Live',
+        icon: '📺',
+        color: 'from-purple-600 to-pink-600',
+        fallback: false
+      };
+    }
+    
+    // Twitch - Vídeo
+    const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
+    if (twVideo) {
+      const videoId = twVideo[1];
+      return {
+        src: `https://static-cdn.jtvnw.net/videos_capture/${videoId}.jpg`,
+        platform: 'Twitch Video',
+        icon: '📺',
+        color: 'from-purple-500 to-purple-600',
+        fallback: false
+      };
+    }
+    
+    // Instagram
+    if (url.includes('instagram.com')) {
+      const insta = url.match(/instagram\.com\/(?:p|reel)\/([a-zA-Z0-9_-]+)/);
+      if (insta) {
+        const postId = insta[1];
+        return {
+          src: `https://www.instagram.com/p/${postId}/media/?size=l`,
+          platform: 'Instagram',
+          icon: '📷',
+          color: 'from-pink-500 via-purple-500 to-orange-500',
+          fallback: false
+        };
+      }
+      return {
+        src: null,
+        platform: 'Instagram',
+        icon: '📷',
+        color: 'from-pink-500 via-purple-500 to-orange-500'
+      };
+    }
+    
+    // TikTok
+    if (url.includes('tiktok.com')) {
+      const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                         url.match(/tiktok\.com\/v\/(\d+)/) ||
+                         url.match(/vm\.tiktok\.com\/(\w+)/);
+      if (tiktokMatch) {
+        return {
+          src: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
+          platform: 'TikTok',
+          icon: '🎵',
+          color: 'from-black via-gray-800 to-gray-600',
+          fallback: false
+        };
+      }
+      return {
+        src: null,
+        platform: 'TikTok',
+        icon: '🎵',
+        color: 'from-black via-gray-800 to-gray-600'
+      };
+    }
+    
+    // Links gerais
+    return {
+      src: null,
+      platform: 'Link',
+      icon: '🔗',
+      color: 'from-blue-500 to-blue-600'
+    };
+  };
+
 
 
   async function handleAddConteudo(e: React.FormEvent) {
