@@ -411,13 +411,21 @@ export default function PainelParceiro() {
 
   const fetchParceiro = useCallback(async () => {
     try {
+      console.log('🔍 Buscando dados do parceiro para usuário:', user?.id);
       const response = await fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`);
+      console.log('📊 Status da resposta:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Dados do parceiro recebidos:', data);
         setParceiro(data);
+      } else {
+        console.error('❌ Erro na resposta:', response.status);
+        const errorData = await response.json();
+        console.error('❌ Dados do erro:', errorData);
       }
     } catch (error) {
-      console.error('Erro ao carregar dados do parceiro:', error);
+      console.error('❌ Erro ao carregar dados do parceiro:', error);
     }
   }, [user?.id]);
 
@@ -669,10 +677,25 @@ export default function PainelParceiro() {
     }
 
     // Verificar se os dados necessários estão disponíveis
+    console.log('🔍 Dados antes de gerar PIX:');
+    console.log('   Parceiro:', parceiro);
+    console.log('   User:', user);
+    console.log('   Repasse:', repasse);
+    
     if (!parceiro?.id || !user?.id) {
+      console.error('❌ Dados não disponíveis:', { parceiroId: parceiro?.id, userId: user?.id });
       mostrarToast('Dados do parceiro não carregados. Tente novamente.', 'error');
       return;
     }
+
+    const dadosPix = {
+      repasseId: repasse.id,
+      parceiroId: parceiro.id,
+      usuarioId: user.id,
+      valor: repasse.valorRepasse
+    };
+    
+    console.log('📤 Dados que serão enviados para PIX:', dadosPix);
 
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
@@ -681,12 +704,7 @@ export default function PainelParceiro() {
       const response = await fetch('/api/mercadopago/pix', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          repasseId: repasse.id,
-          parceiroId: parceiro.id,
-          usuarioId: user.id,
-          valor: repasse.valorRepasse
-        })
+        body: JSON.stringify(dadosPix)
       });
 
       if (response.ok) {
