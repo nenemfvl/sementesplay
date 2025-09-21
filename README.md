@@ -363,3 +363,6 @@ Sistema agora exibe níveis baseados na posição do ranking em tempo real.
 - ✅ Taxa de saque atualizada para 10%
 - ✅ Reset para commit: 0469058814acddec2dca4eeac5a0cda284cf1b72
 - ✅ Sistema estável e funcionando perfeitamente
+- ✅ Reset para commit: 008400f93757c3e003c326a05b97b9a6f377304e
+- ✅ Retorno ao estado anterior conforme solicitado
+- ✅ Sistema restaurado com sucesso - $(date)
