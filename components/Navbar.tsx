@@ -131,6 +131,25 @@ export default function Navbar() {
                 onClick={handleProfileClick}
                 className="flex items-center gap-2 hover:bg-gray-800 rounded-lg px-2 py-1 transition-colors"
               >
+                {/* Botão de notificações à esquerda do avatar */}
+                <div className="relative">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Impede que abra o menu de perfil
+                      handleMenuItemClick('/notificacoes');
+                    }}
+                    className="p-1 text-gray-300 hover:text-sss-accent focus:outline-none relative"
+                    title="Notificações"
+                  >
+                    <BellIcon className="w-5 h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center animate-pulse text-[10px]">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </div>
+                
                 {/* Avatar do usuário */}
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-sss-accent flex items-center justify-center">
                   {user.avatarUrl ? (
@@ -151,25 +170,6 @@ export default function Navbar() {
                     />
                   ) : null}
                   <UserIcon className={`w-5 h-5 text-white ${user.avatarUrl ? 'hidden' : ''}`} />
-                </div>
-                
-                {/* Botão de notificações próximo ao avatar */}
-                <div className="relative">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Impede que abra o menu de perfil
-                      handleMenuItemClick('/notificacoes');
-                    }}
-                    className="p-1 text-gray-300 hover:text-sss-accent focus:outline-none relative"
-                    title="Notificações"
-                  >
-                    <BellIcon className="w-5 h-5" />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center animate-pulse text-[10px]">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </span>
-                    )}
-                  </button>
                 </div>
                 
                 <span className="text-sss-accent font-bold">{user.nome}</span>
