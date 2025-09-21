@@ -83,11 +83,11 @@ export default function ConteudosParceiros() {
     const twLive = url.match(/twitch\.tv\/([^/?]+)/);
     if (twLive && !url.includes('/videos/')) {
       return {
-        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${twLive[1]}.jpg`,
+        src: null, // Usar só fallback visual para Twitch Live
         platform: 'Twitch Live',
         icon: '📺',
         color: 'from-purple-600 to-pink-600',
-        fallback: true // Sempre usar fallback para Twitch
+        fallback: true
       };
     }
     
@@ -95,11 +95,11 @@ export default function ConteudosParceiros() {
     const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
     if (twVideo) {
       return {
-        src: `https://static-cdn.jtvnw.net/videos_capture/${twVideo[1]}.jpg`,
+        src: null, // Usar só fallback visual para Twitch Video
         platform: 'Twitch Video',
         icon: '📺',
         color: 'from-purple-500 to-purple-600',
-        fallback: true // Sempre usar fallback para Twitch
+        fallback: true
       };
     }
     
