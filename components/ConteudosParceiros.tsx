@@ -343,11 +343,23 @@ export default function ConteudosParceiros() {
                               fill
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 50vw"
-                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok' || thumbnail.platform === 'Twitch Live' || thumbnail.platform === 'Twitch Video'}
+                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok'}
                               onError={(e) => {
                                 console.log('Erro ao carregar imagem:', thumbnail.src);
                                 const target = e.currentTarget as HTMLImageElement;
                                 target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent && (thumbnail.platform === 'Twitch Live' || thumbnail.platform === 'Twitch Video')) {
+                                  const placeholder = document.createElement('div');
+                                  placeholder.className = 'absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white';
+                                  placeholder.innerHTML = `
+                                    <div class="text-center">
+                                      <div class="text-8xl mb-4">📺</div>
+                                      <div class="text-2xl font-bold">Twitch ${thumbnail.platform === 'Twitch Live' ? 'Live' : 'Video'}</div>
+                                    </div>
+                                  `;
+                                  parent.appendChild(placeholder);
+                                }
                               }}
                             />
                                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20"></div>
