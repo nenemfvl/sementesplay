@@ -240,7 +240,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
               }
             } catch (fundoError) {
-              console.log(`⚠️ Fundo de distribuição não disponível: ${fundoError.message}`)
+              console.log(`⚠️ Fundo de distribuição não disponível: ${fundoError instanceof Error ? fundoError.message : 'Erro desconhecido'}`)
             }
           })
 
