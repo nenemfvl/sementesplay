@@ -151,8 +151,121 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (payment.status === 'approved') {
       console.log(`🎉 Pagamento aprovado: ${payment.id}`)
 
-      // Buscar compra específica relacionada a este pagamento
-      // Como não temos paymentId na CompraParceiro, vamos buscar pela external_reference ou buscar uma compra pendente
+      // Primeiro, buscar repasse existente com este paymentId
+      let repasse = await prisma.repasseParceiro.findFirst({
+        where: {
+          paymentId: String(payment.id),
+          status: 'aguardando_pagamento'
+        },
+        include: {
+          compra: {
+            include: {
+              parceiro: {
+                include: {
+                  usuario: true
+                }
+              },
+              usuario: true
+            }
+          }
+        }
+      })
+
+      if (repasse) {
+        console.log(`⚙️ Processando repasse existente: ${repasse.id}`)
+        
+        try {
+          // Calcular distribuição (5% para usuário, 2.5% sistema, 2.5% fundo)
+          const valor = repasse.valor
+          const pctUsuario = valor * 0.05 // 5% para jogador
+          const pctSistema = valor * 0.025 // 2,5% para sistema
+          const pctFundo = valor * 0.025 // 2,5% para fundo
+
+          // Transação: processar tudo de uma vez
+          await prisma.$transaction(async (tx) => {
+            // 1. Atualizar status do repasse para pago
+            await tx.repasseParceiro.update({
+              where: { id: repasse.id },
+              data: { 
+                status: 'pago',
+                dataRepasse: new Date()
+              }
+            })
+
+            // 2. Atualizar status da compra para cashback_liberado
+            await tx.compraParceiro.update({
+              where: { id: repasse.compra.id },
+              data: { status: 'cashback_liberado' }
+            })
+
+            // 3. Atualizar saldo devedor do parceiro
+            await tx.parceiro.update({
+              where: { id: repasse.compra.parceiroId },
+              data: { saldoDevedor: { decrement: valor } }
+            })
+
+            // 4. Creditar sementes para o usuário
+            await tx.usuario.update({
+              where: { id: repasse.compra.usuarioId },
+              data: { sementes: { increment: pctUsuario } }
+            })
+
+            // 5. Criar registro de semente
+            await tx.semente.create({
+              data: {
+                usuarioId: repasse.compra.usuarioId,
+                quantidade: pctUsuario,
+                tipo: 'resgatada',
+                descricao: `Cashback compra parceiro ${repasse.compra.id} - Webhook MercadoPago`
+              }
+            })
+
+            // 6. Atualizar fundo de distribuição (se existir)
+            try {
+              const fundo = await tx.fundoSementes.findFirst()
+              if (fundo) {
+                await tx.fundoSementes.update({
+                  where: { id: fundo.id },
+                  data: { valorTotal: { increment: pctFundo } }
+                })
+              } else {
+                await tx.fundoSementes.create({
+                  data: {
+                    ciclo: 1,
+                    valorTotal: pctFundo,
+                    dataInicio: new Date(),
+                    dataFim: new Date(),
+                    distribuido: false
+                  }
+                })
+              }
+            } catch (fundoError) {
+              console.log(`⚠️ Fundo de distribuição não disponível: ${fundoError.message}`)
+            }
+          })
+
+          console.log(`✅ Repasse ${repasse.id} processado com sucesso via webhook!`)
+          console.log(`💰 Usuário ${repasse.compra.usuario.nome} recebeu ${pctUsuario} sementes`)
+
+          return res.status(200).json({ 
+            success: true, 
+            message: 'Repasse processado com sucesso',
+            paymentId: String(payment.id),
+            repasseProcessado: repasse.id,
+            valorRepasse: valor,
+            sementesCreditadas: pctUsuario
+          })
+
+        } catch (error) {
+          console.error(`❌ Erro ao processar repasse ${repasse.id}:`, error)
+          return res.status(500).json({ 
+            error: 'Erro ao processar repasse',
+            details: error instanceof Error ? error.message : 'Erro desconhecido'
+          })
+        }
+      }
+
+      // Se não encontrou repasse, buscar compra (fluxo antigo)
       let compra = null
       
       // Primeiro, tentar buscar pela external_reference se existir
