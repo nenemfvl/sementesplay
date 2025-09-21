@@ -45,6 +45,7 @@ interface ParceiroDetalhes {
     email: string
     tipo: string
     nivel: string
+    avatarUrl?: string
   }
 }
 
@@ -503,8 +504,30 @@ export default function ParceiroPerfil() {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-6">
-                  <BuildingOfficeIcon className="w-10 h-10 text-white" />
+                <div className="w-20 h-20 rounded-full mr-6 relative overflow-hidden">
+                  {parceiro.usuario.avatarUrl ? (
+                    <Image
+                      src={parceiro.usuario.avatarUrl}
+                      alt={`Avatar de ${parceiro.nome}`}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                      onError={(e) => {
+                        // Se a imagem falhar, mostrar o ícone padrão
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.className = "w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-6";
+                          parent.innerHTML = '<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>';
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <BuildingOfficeIcon className="w-10 h-10 text-white" />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-sss-white mb-2">{parceiro.nome}</h1>

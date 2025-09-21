@@ -29,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               nome: true,
               email: true,
               tipo: true,
-              nivel: true
+              nivel: true,
+              avatarUrl: true
             }
           }
         }
@@ -47,7 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               nome: true,
               email: true,
               tipo: true,
-              nivel: true
+              nivel: true,
+              avatarUrl: true
             }
           }
         }
