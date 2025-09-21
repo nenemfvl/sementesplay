@@ -67,8 +67,8 @@ export default function ConteudosParceiros() {
     
     if (!url) return null;
     
-    // YouTube
-    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    // YouTube (incluindo Shorts)
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
     if (yt) {
       return {
         src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
@@ -105,6 +105,17 @@ export default function ConteudosParceiros() {
     
     // Instagram
     if (url.includes('instagram.com')) {
+      const insta = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
+      if (insta) {
+        const postId = insta[1];
+        return {
+          src: `https://www.instagram.com/p/${postId}/media/?size=l`,
+          platform: 'Instagram',
+          icon: '📷',
+          color: 'from-pink-500 via-purple-500 to-orange-500',
+          fallback: false // Usar thumbnail real do Instagram
+        };
+      }
       return {
         src: null,
         platform: 'Instagram',
@@ -115,6 +126,18 @@ export default function ConteudosParceiros() {
     
     // TikTok
     if (url.includes('tiktok.com')) {
+      const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                         url.match(/tiktok\.com\/v\/(\d+)/) ||
+                         url.match(/vm\.tiktok\.com\/(\w+)/);
+      if (tiktokMatch) {
+        return {
+          src: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
+          platform: 'TikTok',
+          icon: '🎵',
+          color: 'from-black via-gray-800 to-gray-600',
+          fallback: false // Usar thumbnail real do TikTok
+        };
+      }
       return {
         src: null,
         platform: 'TikTok',
@@ -310,7 +333,7 @@ export default function ConteudosParceiros() {
                         >
                           <div className="relative h-full bg-gradient-to-br from-purple-600/30 to-pink-600/30">
                             {/* Mostrar imagem real quando disponível, senão usar fallback visual */}
-                            {thumbnail?.src && (thumbnail.platform === 'Custom' || thumbnail.platform === 'YouTube') ? (
+                            {thumbnail?.src && (thumbnail.platform === 'Custom' || thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok') ? (
                               <div className="absolute inset-0">
                                                             <Image
                               src={thumbnail.src}
@@ -318,7 +341,7 @@ export default function ConteudosParceiros() {
                               fill
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 50vw"
-                              unoptimized={thumbnail.platform === 'YouTube'}
+                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok'}
                               onError={(e) => {
                                 console.log('Erro ao carregar imagem:', thumbnail.src);
                                 const target = e.currentTarget as HTMLImageElement;
