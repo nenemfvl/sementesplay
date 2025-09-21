@@ -92,23 +92,13 @@ export default function Perfil() {
           return
         }
         
-        const token = localStorage.getItem('sementesplay_token');
-        fetch('/api/perfil', {
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data && data.id) {
-              setUser(data)
-              auth.setUser(data, token || undefined)
-            }
-          })
-          .catch(err => {
-            // COMENTADO: Log de debug - não afeta funcionalidade
-            // console.error('Erro ao atualizar perfil:', err)
-          })
+        // Atualizar stats e XP para manter dados sempre atualizados
+        await Promise.all([
+          loadStats(),
+          loadXPData()
+        ])
       }
-    }, 30000) // Atualizar a cada 30 segundos
+    }, 15000) // Atualizar a cada 15 segundos para capturar mudanças de XP
 
     return () => clearInterval(interval)
   }, [user])
@@ -190,18 +180,16 @@ export default function Perfil() {
     try {
       const currentUser = auth.getUser();
       if (!currentUser) {
-        // COMENTADO: Log de debug - não afeta funcionalidade
-        // console.error('Usuário não encontrado');
         return;
       }
       
-      // COMENTADO: Log de debug - não afeta funcionalidade
-      // console.log('Carregando XP para usuário:', currentUser.id);
+      // Carregar dados diretamente da API de stats para garantir dados atualizados
+      const response = await fetch(`/api/perfil/stats?usuarioId=${currentUser.id}`)
+      const statsData = await response.json()
       
-      // Usar os dados da API de estatísticas que já inclui XP
-      if (stats) {
+      if (statsData && statsData.xp !== undefined) {
         // Recalcular nível baseado no XP atual (mesma fórmula da API)
-        const xpAtual = stats.xp || 0;
+        const xpAtual = statsData.xp || 0;
         const nivelCalculado = Math.floor(1 + Math.sqrt(xpAtual / 100));
         const xpProximoNivel = Math.pow(nivelCalculado, 2) * 100; // XP necessário para próximo nível
         const xpNivelAtual = Math.pow(nivelCalculado - 1, 2) * 100; // XP mínimo do nível atual
@@ -215,13 +203,19 @@ export default function Perfil() {
           xpProximoNivel: xpProximoNivel,
           progressoNivel: Math.min(Math.max(progressoCalculado, 0), 100)
         };
-        // COMENTADO: Log de debug - não afeta funcionalidade
-        // console.log('Dados de XP calculados:', xpData);
+        
+        console.log('XP Data atualizado:', {
+          xpAtual,
+          nivelCalculado,
+          xpProximoNivel,
+          xpNivelAtual,
+          progressoCalculado: progressoCalculado.toFixed(2) + '%'
+        });
+        
         setXpData(xpData);
       }
     } catch (error) {
-      // COMENTADO: Log de debug - não afeta funcionalidade
-      // console.error('Erro ao carregar dados de XP:', error);
+      console.error('Erro ao carregar dados de XP:', error);
     }
   }
 
