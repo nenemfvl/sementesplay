@@ -204,13 +204,16 @@ export default function Perfil() {
           progressoNivel: Math.min(Math.max(progressoCalculado, 0), 100)
         };
         
-        console.log('XP Data atualizado:', {
-          xpAtual,
-          nivelCalculado,
-          xpProximoNivel,
-          xpNivelAtual,
-          progressoCalculado: progressoCalculado.toFixed(2) + '%'
-        });
+        // Log apenas em desenvolvimento
+        if (process.env.NODE_ENV === 'development') {
+          console.log('XP Data atualizado:', {
+            xpAtual,
+            nivelCalculado,
+            xpProximoNivel,
+            xpNivelAtual,
+            progressoCalculado: progressoCalculado.toFixed(2) + '%'
+          });
+        }
         
         setXpData(xpData);
       }
