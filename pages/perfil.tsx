@@ -203,8 +203,8 @@ export default function Perfil() {
         // Recalcular nível baseado no XP atual (mesma fórmula da API)
         const xpAtual = stats.xp || 0;
         const nivelCalculado = Math.floor(1 + Math.sqrt(xpAtual / 100));
-        const xpProximoNivel = Math.pow(nivelCalculado + 1, 2) * 100;
-        const xpNivelAtual = Math.pow(nivelCalculado, 2) * 100;
+        const xpProximoNivel = Math.pow(nivelCalculado, 2) * 100; // XP necessário para próximo nível
+        const xpNivelAtual = Math.pow(nivelCalculado - 1, 2) * 100; // XP mínimo do nível atual
         const progressoCalculado = ((xpAtual - xpNivelAtual) / (xpProximoNivel - xpNivelAtual)) * 100;
         
         const xpData = {

@@ -11,9 +11,7 @@ function calcularNivel(xp: number): number {
 }
 
 // Função para calcular XP necessário para o próximo nível
-function xpParaProximoNivel(nivelAtual: number): number {
-  return Math.pow(nivelAtual, 2) * 100
-}
+// Removida - lógica incorporada diretamente no código
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -68,7 +66,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Verificar se subiu de nível
       const subiuNivel = nivelPosterior > nivelAnterior
-      const xpProximoNivel = xpParaProximoNivel(nivelPosterior + 1)
+      const xpProximoNivel = Math.pow(nivelPosterior, 2) * 100  // XP necessário para próximo nível
+      const xpNivelAtual = Math.pow(nivelPosterior - 1, 2) * 100  // XP mínimo do nível atual
 
       return res.status(200).json({
         success: true,
@@ -84,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         nivelAnterior,
         nivelPosterior,
         xpProximoNivel,
-        progressoNivel: ((xpPosterior - Math.pow(nivelPosterior, 2) * 100) / (xpProximoNivel - Math.pow(nivelPosterior, 2) * 100)) * 100
+        progressoNivel: ((xpPosterior - xpNivelAtual) / (xpProximoNivel - xpNivelAtual)) * 100
       })
 
     } catch (error) {
@@ -121,8 +120,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: 'Usuário não encontrado' })
       }
 
-      const xpProximoNivel = xpParaProximoNivel(usuario.nivelUsuario + 1)
-      const xpNivelAtual = Math.pow(usuario.nivelUsuario, 2) * 100
+      const xpProximoNivel = Math.pow(usuario.nivelUsuario, 2) * 100  // XP necessário para próximo nível
+      const xpNivelAtual = Math.pow(usuario.nivelUsuario - 1, 2) * 100  // XP mínimo do nível atual
       const progressoNivel = ((usuario.xp - xpNivelAtual) / (xpProximoNivel - xpNivelAtual)) * 100
 
       return res.status(200).json({
