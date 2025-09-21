@@ -175,11 +175,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log(`⚙️ Processando repasse existente: ${repasse.id}`)
         
         try {
-          // Calcular distribuição (5% para usuário, 2.5% sistema, 2.5% fundo)
+          // Calcular distribuição (50% para usuário, 25% sistema, 25% fundo)
           const valor = repasse.valor
-          const pctUsuario = valor * 0.05 // 5% para jogador
-          const pctSistema = valor * 0.025 // 2,5% para sistema
-          const pctFundo = valor * 0.025 // 2,5% para fundo
+          const pctUsuario = valor * 0.5 // 50% para jogador
+          const pctSistema = valor * 0.25 // 25% para sistema
+          const pctFundo = valor * 0.25 // 25% para fundo
 
           // Transação: processar tudo de uma vez
           await prisma.$transaction(async (tx) => {
@@ -198,11 +198,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               data: { status: 'cashback_liberado' }
             })
 
-            // 3. Atualizar saldo devedor do parceiro
-            await tx.parceiro.update({
-              where: { id: repasse.compra.parceiroId },
-              data: { saldoDevedor: { decrement: valor } }
-            })
+            // 3. Parceiro não recebe nada (já pagou o repasse)
+            // Não precisa atualizar saldo devedor pois o repasse foi pago integralmente
 
             // 4. Creditar sementes para o usuário
             await tx.usuario.update({

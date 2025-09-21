@@ -77,9 +77,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                                                            // Calcula as porcentagens
             const valor = repasse.valor
-            const pctUsuario = valor * 0.05    // 5% para jogador (em sementes) - corrigido de 50% para 5%
-            const pctSistema = valor * 0.025               // 2,5% para sistema SementesPLAY
-            const pctFundo = valor * 0.025                 // 2,5% para fundo de distribuição
+            const pctUsuario = valor * 0.5     // 50% para jogador (em sementes)
+            const pctSistema = valor * 0.25    // 25% para sistema SementesPLAY
+            const pctFundo = valor * 0.25      // 25% para fundo de distribuição
 
     // Transação: atualiza tudo de uma vez
     await prisma.$transaction(async (tx) => {
@@ -98,11 +98,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: { status: 'cashback_liberado' }
       })
 
-      // Atualiza saldo devedor do parceiro
-      await tx.parceiro.update({
-        where: { id: parceiro.id },
-        data: { saldoDevedor: { decrement: valor } }
-      })
+      // Parceiro não recebe nada (já pagou o repasse)
+      // Não precisa atualizar saldo devedor pois o repasse foi pago integralmente
 
       // Credita sementes para usuário
       await tx.usuario.update({
