@@ -38,8 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         _sum: { quantidade: true }
       }),
       
-      // Total de favoritos (simulado - você pode implementar uma tabela de favoritos)
-      Promise.resolve(0) // Por enquanto retorna 0, pode ser implementado depois
+      // Total de favoritos (contando registros na tabela sementes)
+      prisma.semente.count({
+        where: {
+          tipo: 'favorito_criador',
+          descricao: `Favoritou criador ${criador.id}`
+        }
+      })
     ])
 
     const estatisticas = {
