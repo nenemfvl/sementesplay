@@ -200,13 +200,20 @@ export default function Perfil() {
       
       // Usar os dados da API de estatísticas que já inclui XP
       if (stats) {
+        // Recalcular nível baseado no XP atual (mesma fórmula da API)
+        const xpAtual = stats.xp || 0;
+        const nivelCalculado = Math.floor(1 + Math.sqrt(xpAtual / 100));
+        const xpProximoNivel = Math.pow(nivelCalculado + 1, 2) * 100;
+        const xpNivelAtual = Math.pow(nivelCalculado, 2) * 100;
+        const progressoCalculado = ((xpAtual - xpNivelAtual) / (xpProximoNivel - xpNivelAtual)) * 100;
+        
         const xpData = {
           usuario: {
-            xp: stats.xp || 0,
-            nivelUsuario: stats.nivelUsuario || 1
+            xp: xpAtual,
+            nivelUsuario: nivelCalculado
           },
-          xpProximoNivel: Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100,
-          progressoNivel: ((stats.xp || 0) - Math.pow(stats.nivelUsuario || 1, 2) * 100) / (Math.pow((stats.nivelUsuario || 1) + 1, 2) * 100 - Math.pow(stats.nivelUsuario || 1, 2) * 100) * 100
+          xpProximoNivel: xpProximoNivel,
+          progressoNivel: Math.min(Math.max(progressoCalculado, 0), 100)
         };
         // COMENTADO: Log de debug - não afeta funcionalidade
         // console.log('Dados de XP calculados:', xpData);
