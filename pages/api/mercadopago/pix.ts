@@ -87,20 +87,69 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const payment = await response.json()
     console.log('Pagamento criado no Mercado Pago:', payment.id)
 
-    // Salvar o paymentId no repasse (apenas se existir)
+    // Verificar se o repasse existe, se não, criar
     try {
-      await prisma.repasseParceiro.update({
-        where: { id: repasseId },
-        data: { 
-          paymentId: String(payment.id),
-          status: 'aguardando_pagamento'
-        }
+      let repasseExistente = await prisma.repasseParceiro.findUnique({
+        where: { id: repasseId }
       })
-      console.log('PaymentId salvo no repasse:', payment.id)
+
+      if (!repasseExistente) {
+        console.log('Repasse não encontrado, criando novo repasse...')
+        
+        // Buscar compra relacionada
+        const compra = await prisma.compraParceiro.findFirst({
+          where: {
+            parceiroId: parceiroId,
+            status: 'aguardando_repasse'
+          },
+          orderBy: { dataCompra: 'desc' }
+        })
+
+        if (!compra) {
+          console.log('Nenhuma compra aguardando repasse encontrada')
+          return res.status(400).json({ 
+            error: 'Nenhuma compra aguardando repasse',
+            message: 'Não há compras pendentes para criar repasse'
+          })
+        }
+
+        // Criar novo repasse
+        repasseExistente = await prisma.repasseParceiro.create({
+          data: {
+            id: repasseId,
+            parceiroId: parceiroId,
+            compraId: compra.id,
+            valor: valorRepasse,
+            status: 'aguardando_pagamento',
+            paymentId: String(payment.id),
+            dataRepasse: new Date()
+          }
+        })
+        console.log('Novo repasse criado:', repasseExistente.id)
+      } else {
+        if (repasseExistente.status === 'pago' || repasseExistente.status === 'confirmado') {
+          console.log('Repasse já foi pago, não atualizando')
+          return res.status(400).json({ 
+            error: 'Repasse já foi pago',
+            message: 'Este repasse já foi processado e não pode ser pago novamente'
+          })
+        }
+
+        await prisma.repasseParceiro.update({
+          where: { id: repasseId },
+          data: { 
+            paymentId: String(payment.id),
+            status: 'aguardando_pagamento'
+          }
+        })
+        console.log('PaymentId salvo no repasse:', payment.id)
+      }
     } catch (dbError) {
-      console.log('Repasse não encontrado - isso é normal para pagamentos diretos')
-      // Não falhar se não conseguir salvar, apenas logar o erro
-      // O repasse será criado quando houver uma compra real
+      console.log('Erro ao criar/atualizar repasse:', dbError)
+      return res.status(500).json({ 
+        error: 'Erro ao processar repasse',
+        message: 'Não foi possível criar ou atualizar o repasse'
+      })
     }
 
     if (payment.status === 'pending' && payment.payment_method_id === 'pix') {
