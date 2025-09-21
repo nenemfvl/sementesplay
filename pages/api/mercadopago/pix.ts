@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         last_name: 'SementesPLAY'
       },
       external_reference: repasseId,
-      notification_url: 'https://sementesplay.vercel.app/api/mercadopago/webhook'
+      notification_url: 'https://sementesplay.com.br/api/mercadopago/webhook'
     }
 
     console.log('Criando pagamento no Mercado Pago:', JSON.stringify(payment_data, null, 2))

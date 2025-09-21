@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           last_name: user.nome?.split(' ').slice(1).join(' ') || 'SementesPLAY'
         },
         external_reference: pagamento.id,
-        notification_url: 'https://sementesplay.vercel.app/api/mercadopago/webhook'
+        notification_url: 'https://sementesplay.com.br/api/mercadopago/webhook'
       }
 
       // Fazer requisição para a API do Mercado Pago

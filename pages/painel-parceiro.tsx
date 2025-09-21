@@ -691,7 +691,7 @@ export default function PainelParceiro() {
     const dadosPix = {
       repasseId: repasse.id,
       parceiroId: parceiro.id,
-      usuarioId: user.id,
+      usuarioId: parceiro.usuarioId, // Usar o usuarioId do parceiro em vez do user.id
       valor: repasse.valorRepasse
     };
     
