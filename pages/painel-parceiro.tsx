@@ -454,7 +454,7 @@ export default function PainelParceiro() {
       const response = await fetch(`/api/notificacoes?usuarioId=${user?.id}`);
       if (response.ok) {
         const data = await response.json();
-        setNotificacoes(data.slice(0, 5)); // Apenas as 5 mais recentes
+        setNotificacoes(data.notificacoes?.slice(0, 5) || []); // Apenas as 5 mais recentes
       }
     } catch (error) {
       console.error('Erro ao carregar notificações:', error);
