@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { 
@@ -311,22 +312,24 @@ export default function ParceiroPerfil() {
   function getThumbnail(url: string) {
     if (!url) return null;
     
-    // YouTube
-    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    // YouTube (incluindo Shorts)
+    const yt = url.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|embed\/|v\/|shorts\/)?)([\w-]{11})/);
     if (yt) {
       return {
         src: `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`,
         platform: 'YouTube',
         icon: '🎥',
-        color: 'from-red-500 to-red-600'
+        color: 'from-red-500 to-red-600',
+        fallback: false
       };
     }
     
     // Twitch - Stream ao vivo
     const twLive = url.match(/twitch\.tv\/([^/?]+)/);
     if (twLive && !url.includes('/videos/')) {
+      const channelName = twLive[1];
       return {
-        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${twLive[1]}.jpg`,
+        src: `https://static-cdn.jtvnw.net/previews-ttv/live_user_${channelName}.jpg`,
         platform: 'Twitch Live',
         icon: '📺',
         color: 'from-purple-600 to-pink-600',
@@ -337,8 +340,9 @@ export default function ParceiroPerfil() {
     // Twitch - Vídeo
     const twVideo = url.match(/twitch\.tv\/videos\/(\d+)/);
     if (twVideo) {
+      const videoId = twVideo[1];
       return {
-        src: `https://static-cdn.jtvnw.net/videos_capture/${twVideo[1]}.jpg`,
+        src: `https://static-cdn.jtvnw.net/videos_capture/${videoId}.jpg`,
         platform: 'Twitch Video',
         icon: '📺',
         color: 'from-purple-500 to-purple-600',
@@ -348,6 +352,17 @@ export default function ParceiroPerfil() {
     
     // Instagram
     if (url.includes('instagram.com')) {
+      const insta = url.match(/instagram\.com\/(?:p|reel)\/([a-zA-Z0-9_-]+)/);
+      if (insta) {
+        const postId = insta[1];
+        return {
+          src: `https://www.instagram.com/p/${postId}/media/?size=l`,
+          platform: 'Instagram',
+          icon: '📷',
+          color: 'from-pink-500 via-purple-500 to-orange-500',
+          fallback: false
+        };
+      }
       return {
         src: null,
         platform: 'Instagram',
@@ -358,6 +373,18 @@ export default function ParceiroPerfil() {
     
     // TikTok
     if (url.includes('tiktok.com')) {
+      const tiktokMatch = url.match(/tiktok\.com\/@[\w.-]+\/video\/(\d+)/) || 
+                         url.match(/tiktok\.com\/v\/(\d+)/) ||
+                         url.match(/vm\.tiktok\.com\/(\w+)/);
+      if (tiktokMatch) {
+        return {
+          src: `/api/tiktok-image?url=${encodeURIComponent(url)}`,
+          platform: 'TikTok',
+          icon: '🎵',
+          color: 'from-black via-gray-800 to-gray-600',
+          fallback: false
+        };
+      }
       return {
         src: null,
         platform: 'TikTok',
@@ -589,38 +616,59 @@ export default function ParceiroPerfil() {
                    {(() => {
                      const thumbnail = getThumbnail(conteudo.url);
                      if (thumbnail && thumbnail.src) {
-                       // YouTube com thumbnail real
+                       // YouTube, Instagram, TikTok, Twitch com thumbnail real
                        return (
-                         <div className="relative">
-                           <img src={thumbnail.src} alt={conteudo.titulo} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
-                           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                             <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                               Assistir no YouTube
-                             </div>
-                           </div>
-                         </div>
-                       );
-                     } else if (thumbnail && thumbnail.fallback) {
-                       // Twitch com fallback
-                       return (
-                         <div className="relative">
-                           <img 
+                         <div className="relative h-48">
+                           <Image 
                              src={thumbnail.src} 
                              alt={conteudo.titulo} 
-                             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                             fill
+                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                             sizes="(max-width: 768px) 100vw, 33vw"
+                             unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'TikTok'}
                              onError={(e) => {
+                               console.log('🔍 Erro ao carregar thumbnail:', thumbnail.src, 'Platform:', thumbnail.platform);
                                const target = e.currentTarget as HTMLImageElement;
-                               target.classList.add('hidden');
-                               const nextSibling = target.nextElementSibling as HTMLElement;
-                               if (nextSibling) {
-                                 nextSibling.classList.remove('hidden');
+                               target.style.display = 'none';
+                               const parent = target.parentElement;
+                               if (parent) {
+                                 const placeholder = document.createElement('div');
+                                 placeholder.className = `w-full h-48 bg-gradient-to-br ${thumbnail.color} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`;
+                                 
+                                 if (thumbnail.platform === 'Instagram') {
+                                   placeholder.innerHTML = `
+                                     <div class="text-center text-white">
+                                       <svg class="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                       </svg>
+                                       <p class="font-semibold">Instagram</p>
+                                     </div>
+                                   `;
+                                 } else {
+                                   placeholder.innerHTML = `
+                                     <div class="text-center text-white">
+                                       <span class="text-4xl mb-2 block">${thumbnail.icon}</span>
+                                       <p class="font-semibold">${thumbnail.platform}</p>
+                                     </div>
+                                   `;
+                                 }
+                                 
+                                 parent.appendChild(placeholder);
                                }
                              }}
                            />
-                           <div className="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 hidden">
-                             <div className="text-center">
-                               <span className="text-4xl mb-2 block">{thumbnail.icon}</span>
-                               <p className="text-white font-semibold">{thumbnail.platform}</p>
+                           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                             <div className={`${thumbnail.platform === 'YouTube' ? 'bg-red-600 hover:bg-red-700' : 
+                                              thumbnail.platform === 'Instagram' ? 'bg-pink-600 hover:bg-pink-700' :
+                                              thumbnail.platform === 'TikTok' ? 'bg-black hover:bg-gray-800' :
+                                              thumbnail.platform === 'Twitch Live' || thumbnail.platform === 'Twitch Video' ? 'bg-purple-600 hover:bg-purple-700' :
+                                              'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2 rounded-lg font-semibold transition-colors`}>
+                               {thumbnail.platform === 'YouTube' ? 'Assistir no YouTube' :
+                                thumbnail.platform === 'Instagram' ? 'Ver no Instagram' :
+                                thumbnail.platform === 'TikTok' ? 'Ver no TikTok' :
+                                thumbnail.platform === 'Twitch Live' ? 'Assistir na Twitch' :
+                                thumbnail.platform === 'Twitch Video' ? 'Ver Vídeo na Twitch' :
+                                'Abrir Link'}
                              </div>
                            </div>
                          </div>
@@ -628,10 +676,19 @@ export default function ParceiroPerfil() {
                      } else {
                        // Outras plataformas com ícones específicos
                        return (
-                         <div className="w-full h-48 bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                           <div className="text-center">
-                             {getTipoIcon(conteudo.tipo, conteudo.url)}
-                             <p className="text-white font-semibold mt-2">{thumbnail?.platform || 'Link'}</p>
+                         <div className={`w-full h-48 bg-gradient-to-br ${thumbnail?.color || 'from-gray-600 to-gray-700'} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+                           <div className="text-center text-white">
+                             {thumbnail?.platform ? (
+                               <>
+                                 <span className="text-4xl mb-2 block">{thumbnail.icon}</span>
+                                 <p className="font-semibold">{thumbnail.platform}</p>
+                               </>
+                             ) : (
+                               <>
+                                 {getTipoIcon(conteudo.tipo, conteudo.url)}
+                                 <p className="font-semibold mt-2">Link</p>
+                               </>
+                             )}
                            </div>
                          </div>
                        );
