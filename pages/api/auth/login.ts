@@ -42,9 +42,78 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Email ou senha inválidos' })
     }
 
-    console.log('Senha válida, gerando resposta...')
+    console.log('Senha válida, atualizando streak de login...')
+    
+    // Calcular streak de login
+    const agora = new Date()
+    const ontem = new Date(agora)
+    ontem.setDate(ontem.getDate() - 1)
+    
+    let novoStreak = 1 // Pelo menos 1 dia pelo login atual
+    
+    if (usuario.ultimoLogin) {
+      const ultimoLogin = new Date(usuario.ultimoLogin)
+      const diffTempo = agora.getTime() - ultimoLogin.getTime()
+      const diffDias = Math.floor(diffTempo / (1000 * 60 * 60 * 24))
+      
+      if (diffDias === 0) {
+        // Mesmo dia - manter streak atual
+        novoStreak = usuario.streakLogin || 1
+      } else if (diffDias === 1) {
+        // Dia consecutivo - incrementar streak
+        novoStreak = (usuario.streakLogin || 0) + 1
+      } else {
+        // Quebrou a sequência - resetar para 1
+        novoStreak = 1
+      }
+    }
+    
+    // Atualizar último login e streak
+    const usuarioAtualizado = await prisma.usuario.update({
+      where: { id: usuario.id },
+      data: {
+        ultimoLogin: agora,
+        streakLogin: novoStreak
+      },
+      include: {
+        criador: true,
+        parceiro: true
+      }
+    })
+    
+    console.log(`Streak atualizado para ${novoStreak} dias`)
+    
+    // Dar XP por login diário (apenas se for um novo dia)
+    if (!usuario.ultimoLogin || Math.floor((agora.getTime() - new Date(usuario.ultimoLogin).getTime()) / (1000 * 60 * 60 * 24)) >= 1) {
+      try {
+        // Dar 10 XP por login diário
+        await prisma.historicoXP.create({
+          data: {
+            usuarioId: usuario.id,
+            xpGanho: 10,
+            xpAnterior: usuario.xp,
+            xpPosterior: usuario.xp + 10,
+            nivelAnterior: usuario.nivelUsuario,
+            nivelPosterior: usuario.nivelUsuario, // Será recalculado se necessário
+            fonte: 'login_diario',
+            descricao: `Login diário - Streak de ${novoStreak} dias`
+          }
+        })
+        
+        // Atualizar XP do usuário
+        await prisma.usuario.update({
+          where: { id: usuario.id },
+          data: { xp: { increment: 10 } }
+        })
+        
+        console.log('XP de login diário concedido: +10 XP')
+      } catch (xpError) {
+        console.error('Erro ao conceder XP de login:', xpError)
+      }
+    }
+    
     // Retornar usuário sem senha
-    const { senha: _, ...usuarioSemSenha } = usuario
+    const { senha: _, ...usuarioSemSenha } = usuarioAtualizado
 
     // Gerar JWT
     const token = jwt.sign(
