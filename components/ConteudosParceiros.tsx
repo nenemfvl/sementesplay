@@ -269,7 +269,7 @@ export default function ConteudosParceiros() {
 
       return () => clearInterval(timer);
     }
-  }, [conteudos]);
+  }, [conteudos.length]);
 
   const nextSlide = () => {
     const conteudosOrdenados = getConteudosOrdenados();
@@ -343,7 +343,7 @@ export default function ConteudosParceiros() {
                               fill
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 50vw"
-                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'Instagram' || thumbnail.platform === 'TikTok'}
+                              unoptimized={thumbnail.platform === 'YouTube' || thumbnail.platform === 'TikTok'}
                               onError={(e) => {
                                 console.log('Erro ao carregar imagem:', thumbnail.src);
                                 const target = e.currentTarget as HTMLImageElement;
