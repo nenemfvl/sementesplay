@@ -1,15 +1,12 @@
 # 🌱 SementesPLAY
 
-> **Sistema automatizado de pagamentos via CRON** - Deploy automático a cada 5 minutos
-> **Cache resolvido** - Site atualizado e funcionando perfeitamente
+> **Sistema de repasses automáticos** - Processamento imediato via webhook
+> **Deploy estável** - Sistema funcionando perfeitamente
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
-<!-- Forçar redeploy - $(date) - Atualização automática - Teste PIX - Deploy Vercel -->
-<!-- Última atualização: $(date) - Reset para commit 88f99048 -->
-<!-- Reset para commit 98c7ed30 - Sistema restaurado - $(date) -->
-<!-- Reset realizado com sucesso - Volta ao estado anterior -->
-<!-- Reset para commit c39c9682 - Sistema estável - $(date) -->
+<!-- Sistema estável - Reset para commit c0b8565e - $(date) -->
+<!-- Deploy funcionando - Processamento automático ativo -->
 
 ## 🚀 Como Funciona
 
