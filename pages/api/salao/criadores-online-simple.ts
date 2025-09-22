@@ -236,13 +236,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Verificar Twitch (real)
         if (redesSociais.twitch) {
-          const twitchStatus = await verificarTwitchLiveSimples(redesSociais.twitch)
+          // Extrair username da URL do Twitch
+          let twitchUsername = redesSociais.twitch
+          if (twitchUsername.includes('twitch.tv/')) {
+            twitchUsername = twitchUsername.split('twitch.tv/')[1].split('/')[0].split('?')[0]
+          }
+          
+          const twitchStatus = await verificarTwitchLiveSimples(twitchUsername)
           if (twitchStatus.isLive) {
             plataformasLive.push({
               plataforma: 'Twitch',
               titulo: twitchStatus.title || 'Twitch Stream',
               espectadores: twitchStatus.viewers || 0,
-              url: `https://twitch.tv/${redesSociais.twitch}`
+              url: `https://twitch.tv/${twitchUsername}`
             })
           }
         }
