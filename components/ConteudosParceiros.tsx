@@ -442,37 +442,31 @@ export default function ConteudosParceiros() {
                               <div className="text-center text-white p-6 max-w-md relative z-10">
                                 <div className="text-2xl font-bold mb-3 drop-shadow-lg">{conteudo.titulo}</div>
                                 <div className="text-sm opacity-90 mb-4 drop-shadow-md">{conteudo.parceiro.nome}</div>
-                                <div className="space-y-2 text-xs drop-shadow-md">
-                                  {/* Primeira linha: Parceiro e Tipo */}
-                                  <div className="flex items-center justify-center space-x-2">
-                                    <span className="flex items-center space-x-1 bg-black/30 px-2 py-1 rounded-full">
-                                      <span>🏢</span>
-                                      <span>{conteudo.parceiro.nome}</span>
-                                    </span>
-                                    <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
-                                    <span className="bg-black/30 px-2 py-1 rounded-full">{getTipoLabel(conteudo.tipo)}</span>
-                                  </div>
-                                  
-                                  {/* Segunda linha: Data e Views */}
-                                  <div className="flex items-center justify-center space-x-2">
-                                    <span className="bg-black/30 px-2 py-1 rounded-full">
-                                      {(conteudo.data || conteudo.dataPublicacao) ? 
-                                        (() => {
-                                          try {
-                                            const dataValue = conteudo.data || conteudo.dataPublicacao;
-                                            return new Date(dataValue).toLocaleDateString('pt-BR');
-                                          } catch (error) {
-                                            return 'Data inválida';
-                                          }
-                                        })() 
-                                        : 'Data não disponível'
-                                      }
-                                    </span>
-                                    <span className="bg-black/30 px-2 py-1 rounded-full">•</span>
-                                    <span className="text-yellow-300 bg-black/30 px-2 py-1 rounded-full">
-                                      🔥 {formatarNumero(conteudo.visualizacoes)} view
-                                    </span>
-                                  </div>
+                                <div className="flex items-center justify-center space-x-1 text-xs drop-shadow-md flex-wrap">
+                                  <span className="flex items-center space-x-1 bg-black/30 px-2 py-1 rounded-full">
+                                    <span>🏢</span>
+                                    <span>{conteudo.parceiro.nome}</span>
+                                  </span>
+                                  <span className="bg-black/30 px-1 py-1 rounded-full">•</span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">{getTipoLabel(conteudo.tipo)}</span>
+                                  <span className="bg-black/30 px-1 py-1 rounded-full">•</span>
+                                  <span className="bg-black/30 px-2 py-1 rounded-full">
+                                    {(conteudo.data || conteudo.dataPublicacao) ? 
+                                      (() => {
+                                        try {
+                                          const dataValue = conteudo.data || conteudo.dataPublicacao;
+                                          return new Date(dataValue).toLocaleDateString('pt-BR');
+                                        } catch (error) {
+                                          return 'Data inválida';
+                                        }
+                                      })() 
+                                      : 'Data não disponível'
+                                    }
+                                  </span>
+                                  <span className="bg-black/30 px-1 py-1 rounded-full">•</span>
+                                  <span className="text-yellow-300 bg-black/30 px-2 py-1 rounded-full">
+                                    🔥 {formatarNumero(conteudo.visualizacoes)} view
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -635,31 +629,26 @@ export default function ConteudosParceiros() {
                         <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 transition-colors">
                           {conteudo.titulo}
                         </div>
-                        <div className="mt-1 space-y-1">
-                          {/* Primeira linha: Parceiro e Tipo */}
-                          <div className="flex items-center space-x-2">
-                            <span className="text-xs text-gray-300 font-medium">
-                              {conteudo.parceiro.nome}
-                            </span>
-                            <span className="text-gray-400">•</span>
-                            <span className="text-xs text-blue-400 font-medium">
-                              {getTipoLabel(conteudo.tipo, conteudo.url)}
-                            </span>
-                            {conteudo.categoria && (
-                              <>
-                                <span className="text-gray-400">•</span>
-                                <span className="text-xs text-purple-400 font-medium">
-                                  {conteudo.categoria}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                          {/* Segunda linha: Views */}
-                          <div className="flex items-center space-x-2">
-                            <span className="text-xs text-yellow-400 font-medium">
-                              🔥 {formatarNumero(conteudo.visualizacoes)} view
-                            </span>
-                          </div>
+                        <div className="flex items-center space-x-1 mt-1 text-xs">
+                          <span className="text-gray-300 font-medium truncate">
+                            {conteudo.parceiro.nome}
+                          </span>
+                          <span className="text-gray-400">•</span>
+                          <span className="text-blue-400 font-medium">
+                            {getTipoLabel(conteudo.tipo, conteudo.url)}
+                          </span>
+                          {conteudo.categoria && (
+                            <>
+                              <span className="text-gray-400">•</span>
+                              <span className="text-purple-400 font-medium">
+                                {conteudo.categoria}
+                              </span>
+                            </>
+                          )}
+                          <span className="text-gray-400">•</span>
+                          <span className="text-yellow-400 font-medium whitespace-nowrap">
+                            🔥 {formatarNumero(conteudo.visualizacoes)} view
+                          </span>
                         </div>
                       </div>
                       
