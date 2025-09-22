@@ -635,29 +635,31 @@ export default function ConteudosParceiros() {
                         <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 transition-colors">
                           {conteudo.titulo}
                         </div>
-                        <div className="flex items-center space-x-2 mt-1 flex-wrap">
-                          <div className="flex items-center space-x-1">
+                        <div className="mt-1 space-y-1">
+                          {/* Primeira linha: Parceiro e Tipo */}
+                          <div className="flex items-center space-x-2">
                             <span className="text-xs text-gray-300 font-medium">
                               {conteudo.parceiro.nome}
                             </span>
+                            <span className="text-gray-400">•</span>
+                            <span className="text-xs text-blue-400 font-medium">
+                              {getTipoLabel(conteudo.tipo, conteudo.url)}
+                            </span>
+                            {conteudo.categoria && (
+                              <>
+                                <span className="text-gray-400">•</span>
+                                <span className="text-xs text-purple-400 font-medium">
+                                  {conteudo.categoria}
+                                </span>
+                              </>
+                            )}
                           </div>
-                          <span className="text-gray-400">•</span>
-                          <span className="text-xs text-blue-400 font-medium">
-                            {getTipoLabel(conteudo.tipo, conteudo.url)}
-                          </span>
-                          {conteudo.categoria && (
-                            <>
-                              <span className="text-gray-400">•</span>
-                              <span className="text-xs text-purple-400 font-medium">
-                                {conteudo.categoria}
-                              </span>
-                            </>
-                          )}
-                          {/* Indicador de popularidade */}
-                          <span className="text-gray-400">•</span>
-                          <span className="text-xs text-yellow-400 font-medium">
-                            🔥 {formatarNumero(conteudo.visualizacoes)} view
-                          </span>
+                          {/* Segunda linha: Views */}
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xs text-yellow-400 font-medium">
+                              🔥 {formatarNumero(conteudo.visualizacoes)} view
+                            </span>
+                          </div>
                         </div>
                       </div>
                       
