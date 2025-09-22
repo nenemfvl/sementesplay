@@ -64,7 +64,7 @@ async function verificarTwitchLiveSimples(username: string) {
               stream {
                 id
                 title
-                viewerCount
+                type
                 game {
                   name
                 }
@@ -86,7 +86,7 @@ async function verificarTwitchLiveSimples(username: string) {
       return {
         isLive: true,
         title: stream.title || 'Twitch Stream',
-        viewers: stream.viewerCount || 0
+        viewers: 0 // Twitch não expõe viewerCount na API pública
       }
     }
     
