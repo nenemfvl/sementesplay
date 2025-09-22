@@ -134,8 +134,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
 
-      // Limitar título a 36 caracteres
-      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+      // Limitar título a 36 caracteres com ellipsis
+      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 33) + '...' : titulo;
       
       // Buscar informações do criador para o log
       const criador = await prisma.criador.findUnique({
@@ -179,8 +179,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { id, criadorId, titulo, url, tipo, categoria, descricao, plataforma } = req.body;
       if (!id) return res.status(400).json({ error: 'ID obrigatório' });
 
-      // Limitar título a 36 caracteres
-      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+      // Limitar título a 36 caracteres com ellipsis
+      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 33) + '...' : titulo;
       
       // Buscar conteúdo atual para comparar
       const conteudoAtual = await prisma.conteudo.findUnique({

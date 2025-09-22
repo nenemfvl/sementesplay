@@ -802,9 +802,14 @@ export default function PainelCriador() {
                   required 
                   maxLength={36}
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Título do conteúdo (máx. 36 caracteres)" 
+                  placeholder="Título do conteúdo (máx. 33 caracteres + ...)" 
                   value={form.titulo} 
-                  onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} 
+                  onChange={e => {
+                    const value = e.target.value;
+                    // Se passar de 33 caracteres, adicionar ... automaticamente
+                    const tituloTruncado = value.length > 33 ? value.substring(0, 33) + '...' : value;
+                    setForm(f => ({ ...f, titulo: tituloTruncado }));
+                  }} 
                 />
               </div>
               

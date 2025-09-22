@@ -116,8 +116,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
 
-      // Limitar título a 36 caracteres
-      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+      // Limitar título a 36 caracteres com ellipsis
+      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 33) + '...' : titulo;
 
       // Detectar tipo automaticamente pela URL se não fornecido
       let tipoDetectado = tipo || 'conteudo'; // Padrão genérico
@@ -167,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       
       if (parceiroId !== undefined) updateData.parceiroId = parceiroId;
       if (titulo !== undefined) {
-        const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+        const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 33) + '...' : titulo;
         updateData.titulo = tituloLimitado || 'Conteúdo do Parceiro';
       }
       if (url !== undefined) updateData.url = url;
