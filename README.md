@@ -5,7 +5,7 @@
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
-<!-- Sistema estável - Reset para commit c0b8565e - $(date) -->
+<!-- Sistema estável - Reset para commit 8a94a683 - 2025-01-21 -->
 <!-- Deploy funcionando - Processamento automático ativo -->
 
 ## 🚀 Como Funciona
