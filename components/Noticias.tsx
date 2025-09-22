@@ -388,7 +388,7 @@ export default function Noticias() {
                                     <>
                                       <span>•</span>
                                       <span className="text-yellow-400">
-                                        🔥 {conteudo.visualizacoes || 0} view
+                                        🔥 {conteudo.visualizacoes || 0}
                                       </span>
                                     </>
                                   )}
@@ -630,7 +630,7 @@ export default function Noticias() {
                              <>
                                <span className="text-gray-500">•</span>
                                <span className="text-xs text-yellow-400 font-medium">
-                                 🔥 {conteudo.visualizacoes || 0} view
+                                 🔥 {conteudo.visualizacoes || 0}
                                </span>
                              </>
                            )}
