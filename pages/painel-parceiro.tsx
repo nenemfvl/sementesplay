@@ -1019,8 +1019,9 @@ export default function PainelParceiro() {
                 <input 
                   required 
                   type="text"
+                  maxLength={36}
                   className="w-full bg-sss-light border border-sss-light rounded-lg px-4 py-3 text-sss-white placeholder-gray-400 focus:ring-2 focus:ring-sss-accent focus:border-transparent transition-all" 
-                  placeholder="Título do conteúdo" 
+                  placeholder="Título do conteúdo (máx. 36 caracteres)" 
                   value={formConteudo.titulo} 
                   onChange={e => setFormConteudo(f => ({ ...f, titulo: e.target.value }))} 
                 />

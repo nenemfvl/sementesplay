@@ -116,6 +116,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Campos obrigatórios ausentes' });
       }
 
+      // Limitar título a 36 caracteres
+      const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+
       // Detectar tipo automaticamente pela URL se não fornecido
       let tipoDetectado = tipo || 'conteudo'; // Padrão genérico
       
@@ -134,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const novo = await prisma.conteudoParceiro.create({
         data: {
           parceiroId,
-          titulo: titulo || 'Conteúdo do Parceiro', // Usar título fornecido ou padrão
+          titulo: tituloLimitado || 'Conteúdo do Parceiro', // Usar título limitado ou padrão
           url,
           tipo: tipoDetectado,
           categoria,
@@ -163,7 +166,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const updateData: any = {};
       
       if (parceiroId !== undefined) updateData.parceiroId = parceiroId;
-      if (titulo !== undefined) updateData.titulo = titulo || 'Conteúdo do Parceiro';
+      if (titulo !== undefined) {
+        const tituloLimitado = titulo && titulo.length > 36 ? titulo.substring(0, 36) : titulo;
+        updateData.titulo = tituloLimitado || 'Conteúdo do Parceiro';
+      }
       if (url !== undefined) updateData.url = url;
       if (tipo !== undefined) updateData.tipo = tipo || 'evento';
       if (categoria !== undefined) updateData.categoria = categoria;
