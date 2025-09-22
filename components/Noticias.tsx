@@ -362,7 +362,9 @@ export default function Noticias() {
                                                       {/* Content Overlay */}
                              <div className="absolute inset-0 bg-black/20 flex items-end justify-center pb-1">
                               <div className="text-center text-white p-6 max-w-md">
-                                <div className="text-2xl font-bold mb-3">{conteudo.titulo}</div>
+                                <div className="text-2xl font-bold mb-3">
+                                  {conteudo.titulo.length > 33 ? conteudo.titulo.substring(0, 33) + '...' : conteudo.titulo}
+                                </div>
                                 <div className="text-sm text-gray-200 mb-4">{conteudo.descricao}</div>
                                 <div className="flex items-center justify-center space-x-4 text-xs">
                                   <span className="flex items-center space-x-1">
@@ -594,7 +596,7 @@ export default function Noticias() {
                         className="block text-lg text-sss-white font-semibold hover:text-sss-accent truncate transition-colors"
                         title={conteudo.titulo}
                       >
-                        {conteudo.titulo}
+                        {conteudo.titulo.length > 33 ? conteudo.titulo.substring(0, 33) + '...' : conteudo.titulo}
                       </Link>
                                              <div className="flex items-center space-x-2 mt-1 flex-wrap">
                         <div className="flex items-center space-x-2">

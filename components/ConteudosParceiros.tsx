@@ -428,7 +428,7 @@ export default function ConteudosParceiros() {
                                   
                                   {/* Título do conteúdo */}
                                   <div className="text-xl opacity-90 drop-shadow-md max-w-md px-4">
-                                    {conteudo.titulo}
+                                    {conteudo.titulo.length > 33 ? conteudo.titulo.substring(0, 33) + '...' : conteudo.titulo}
                                   </div>
                                 </div>
                               </div>
@@ -440,7 +440,9 @@ export default function ConteudosParceiros() {
                             {/* Content Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="text-center text-white p-6 max-w-md relative z-10">
-                                <div className="text-2xl font-bold mb-3 drop-shadow-lg">{conteudo.titulo}</div>
+                                <div className="text-2xl font-bold mb-3 drop-shadow-lg">
+                                  {conteudo.titulo.length > 33 ? conteudo.titulo.substring(0, 33) + '...' : conteudo.titulo}
+                                </div>
                                 <div className="text-sm opacity-90 mb-4 drop-shadow-md">{conteudo.parceiro.nome}</div>
                                 <div className="flex items-center justify-center gap-1 text-xs drop-shadow-md">
                                   <span className="flex items-center gap-1 bg-black/30 px-1.5 py-0.5 rounded-full">
@@ -630,7 +632,7 @@ export default function ConteudosParceiros() {
                       
                       <div className="flex-1 min-w-0">
                         <div className="block text-sm font-semibold text-sss-white hover:text-purple-400 transition-colors">
-                          {conteudo.titulo}
+                          {conteudo.titulo.length > 33 ? conteudo.titulo.substring(0, 33) + '...' : conteudo.titulo}
                         </div>
                         <div className="flex items-center space-x-1 mt-1 text-xs">
                           <span className="text-gray-300 font-medium truncate">
