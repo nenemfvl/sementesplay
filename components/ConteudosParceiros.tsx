@@ -468,7 +468,7 @@ export default function ConteudosParceiros() {
                                   </span>
                                   <span className="bg-black/30 px-1 py-0.5 rounded-full">•</span>
                                   <span className="text-yellow-300 bg-black/30 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                                    🔥 {formatarNumero(conteudo.visualizacoes)} view
+                                    🔥 {formatarNumero(conteudo.visualizacoes)}
                                   </span>
                                 </div>
                               </div>
@@ -650,7 +650,7 @@ export default function ConteudosParceiros() {
                           )}
                           <span className="text-gray-400">•</span>
                           <span className="text-yellow-400 font-medium whitespace-nowrap">
-                            🔥 {formatarNumero(conteudo.visualizacoes)} view
+                            🔥 {formatarNumero(conteudo.visualizacoes)}
                           </span>
                         </div>
                       </div>
