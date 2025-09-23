@@ -59,14 +59,14 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <meta name="twitter:url" content="https://sementesplay.com.br" />
           <meta name="twitter:title" content="SementesPLAY" />
           <meta name="twitter:description" content="Plataforma completa para apoiar criadores de conteúdo" />
-          <meta name="twitter:image" content="/logo-192x192.svg" />
+          <meta name="twitter:image" content="/logo.png" />
           <meta name="twitter:creator" content="@sementesplay" />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="SementesPLAY" />
           <meta property="og:description" content="Plataforma completa para apoiar criadores de conteúdo" />
           <meta property="og:site_name" content="SementesPLAY" />
           <meta property="og:url" content="https://sementesplay.com.br" />
-          <meta property="og:image" content="/logo-192x192.svg" />
+          <meta property="og:image" content="/logo.png" />
         </Head>
         
         {/* <PWABanner /> */}
