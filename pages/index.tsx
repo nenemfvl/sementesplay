@@ -74,7 +74,7 @@ export default function Home() {
       cor: 'green',
       requisitos: 'Top 151+ do ranking',
       beneficios: ['Todos os demais criadores', 'Visibilidade básica'],
-      icone: '/logo.png'
+      icone: '🌱'
     }
   ]
 
