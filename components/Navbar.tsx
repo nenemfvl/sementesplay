@@ -91,7 +91,7 @@ export default function Navbar() {
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Ir para o topo"
       >
-        <span className="text-2xl text-sss-accent">🌱</span>
+        <img src="/logo.svg" alt="SementesPLAY Logo" className="w-8 h-8" />
         <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
       </button>
       {/* Remover o bloco de debug visual do asPath */}

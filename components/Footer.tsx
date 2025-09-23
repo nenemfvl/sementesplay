@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Logo e descrição */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🌱</span>
+              <img src="/logo.svg" alt="SementesPLAY Logo" className="w-8 h-8" />
               <span className="text-xl font-bold text-sss-accent">SementesPLAY</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">

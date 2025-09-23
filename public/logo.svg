@@ -1,0 +1,24 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="64" height="64" fill="#000000"/>
+  
+  <!-- Hands -->
+  <g fill="#808080">
+    <!-- Left hand -->
+    <path d="M18 45 C18 40, 20 38, 24 38 C26 38, 28 39, 28 42 C28 44, 26 46, 24 46 C22 46, 20 45, 18 45 Z"/>
+    <!-- Right hand -->
+    <path d="M46 45 C46 40, 44 38, 40 38 C38 38, 36 39, 36 42 C36 44, 38 46, 40 46 C42 46, 44 45, 46 45 Z"/>
+  </g>
+  
+  <!-- Sprout -->
+  <g fill="#32CD32">
+    <!-- Base/root ball -->
+    <circle cx="32" cy="42" r="3"/>
+    <!-- Stem -->
+    <path d="M32 39 Q32 35, 32 30" stroke="#32CD32" stroke-width="2" fill="none"/>
+    <!-- Left leaf -->
+    <ellipse cx="28" cy="28" rx="3" ry="6" transform="rotate(-20 28 28)"/>
+    <!-- Right leaf -->
+    <ellipse cx="36" cy="28" rx="3" ry="6" transform="rotate(20 36 28)"/>
+  </g>
+</svg>

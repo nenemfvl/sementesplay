@@ -74,7 +74,7 @@ export default function Home() {
       cor: 'green',
       requisitos: 'Top 151+ do ranking',
       beneficios: ['Todos os demais criadores', 'Visibilidade básica'],
-      icone: '🌱'
+      icone: '/logo.svg'
     }
   ]
 
@@ -293,7 +293,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col items-center">
             {/* Logo e nome */}
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🌱</span>
+              <img src="/logo.svg" alt="SementesPLAY Logo" className="w-8 h-8" />
               <span className="text-xl font-bold text-sss-white">SementesPLAY</span>
             </div>
             {/* Redes sociais */}

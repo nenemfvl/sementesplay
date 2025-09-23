@@ -55,7 +55,7 @@ export default function MobileSplash({ children }: MobileSplashProps) {
                 className="mb-8"
               >
                 <div className="w-24 h-24 bg-gradient-to-br from-sss-accent to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-4xl">🌱</span>
+                  <img src="/logo.svg" alt="SementesPLAY Logo" className="w-12 h-12" />
                 </div>
                 <h1 className="text-2xl font-bold text-sss-white">SementesPLAY</h1>
                 <p className="text-gray-400 text-sm">Streamer Supporting System</p>

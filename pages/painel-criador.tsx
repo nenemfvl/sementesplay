@@ -1269,7 +1269,7 @@ export default function PainelCriador() {
                             <p className="text-sm text-gray-400">Sementes Recebidas</p>
                             <p className="text-2xl font-bold text-sss-white">{estatisticas.totalSementes}</p>
                           </div>
-                          <span className="text-2xl">🌱</span>
+                          <img src="/logo.svg" alt="SementesPLAY Logo" className="w-8 h-8" />
                         </div>
                       </div>
                       <div className="bg-sss-light/50 rounded-xl p-4 border border-sss-light">
