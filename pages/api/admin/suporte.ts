@@ -4,9 +4,16 @@ import { auth } from '../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const user = auth.getUserFromCookies(req.headers.cookie || '')
-  if (!user || Number(user.nivel) < 5) {
-    return res.status(401).json({ error: 'Acesso negado' })
+  
+  // Verificar se é admin - APENAS nível '5'
+  const isAdmin = user && user.nivel === '5'
+  
+  if (!user || !isAdmin) {
+    console.log('❌ Acesso negado - Apenas administradores nível 5 podem acessar. Usuário:', user?.nome, 'Nível:', user?.nivel)
+    return res.status(401).json({ error: 'Acesso negado. Apenas administradores nível 5 podem acessar o suporte.' })
   }
+  
+  console.log('✅ Admin nível 5 autenticado:', user.nome, 'Nível:', user.nivel)
 
   if (req.method === 'GET') {
     try {

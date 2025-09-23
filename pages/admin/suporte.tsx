@@ -59,10 +59,18 @@ export default function AdminSuporte() {
 
   useEffect(() => {
     const currentUser = auth.getUser()
-    if (!currentUser || Number(currentUser.nivel) < 5) {
+    
+    // Verificar se é admin - APENAS nível '5'
+    const isAdmin = currentUser && currentUser.nivel === '5'
+    
+    if (!currentUser || !isAdmin) {
+      console.log('❌ Acesso negado - Apenas administradores nível 5 podem acessar. Usuário:', currentUser?.nome, 'Nível:', currentUser?.nivel)
+      alert('Acesso negado. Apenas administradores nível 5 podem acessar o suporte.')
       router.push('/login')
       return
     }
+    
+    console.log('✅ Admin nível 5 autenticado:', currentUser.nome, 'Nível:', currentUser.nivel)
     setUser(currentUser)
     carregarConversas()
   }, [router])
