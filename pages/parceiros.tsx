@@ -317,7 +317,7 @@ export default function Parceiros() {
                     }`}>
                         <div className="flex items-center justify-between mb-4">
                         {/* Foto do perfil do parceiro */}
-                        {parceiro.avatar ? (
+                        {parceiro.avatar && parceiro.avatar !== '🏢' && (parceiro.avatar.startsWith('http') || parceiro.avatar.startsWith('/')) ? (
                           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/20">
                             <img 
                               src={parceiro.avatar} 
@@ -335,7 +335,9 @@ export default function Parceiros() {
                             </div>
                           </div>
                         ) : (
-                          <span className="text-2xl">🏢</span>
+                          <div className="w-12 h-12 rounded-full bg-sss-accent/20 flex items-center justify-center text-2xl border-2 border-white/20">
+                            🏢
+                          </div>
                         )}
                         <span className="text-sm bg-sss-accent text-white px-3 py-1 rounded-full font-bold">
                           {index + 1}º Lugar
@@ -472,7 +474,7 @@ export default function Parceiros() {
                     <div key={parceiro.id} className="bg-sss-medium rounded-xl p-4 shadow-md">
                       <div className="flex items-center gap-3 mb-3">
                         {/* Foto do perfil do parceiro */}
-                        {parceiro.avatar ? (
+                        {parceiro.avatar && parceiro.avatar !== '🏢' && (parceiro.avatar.startsWith('http') || parceiro.avatar.startsWith('/')) ? (
                           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 flex-shrink-0">
                             <img 
                               src={parceiro.avatar} 
@@ -490,7 +492,9 @@ export default function Parceiros() {
                             </div>
                           </div>
                         ) : (
-                          <span className="text-xl">🏢</span>
+                          <div className="w-10 h-10 rounded-full bg-sss-accent/20 flex items-center justify-center text-xl border-2 border-white/20 flex-shrink-0">
+                            🏢
+                          </div>
                         )}
                         <div className="flex-1">
                           <h4 className="font-bold text-sss-white">{parceiro.posicao}º {parceiro.nome}</h4>
