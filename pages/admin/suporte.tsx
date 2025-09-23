@@ -81,10 +81,14 @@ export default function AdminSuporte() {
       if (filtroStatus !== 'todos') params.append('status', filtroStatus)
       if (filtroCategoria !== 'todos') params.append('categoria', filtroCategoria)
 
-      const response = await fetch(`/api/admin/suporte?${params}`)
+      const response = await fetch(`/api/admin/suporte?${params}`, {
+        credentials: 'include'
+      })
       if (response.ok) {
         const data = await response.json()
         setConversas(data.conversas)
+      } else {
+        console.error('Erro ao carregar conversas:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Erro ao carregar conversas:', error)
@@ -104,7 +108,9 @@ export default function AdminSuporte() {
     const interval = setInterval(async () => {
       try {
         // Buscar conversa atualizada com mensagens
-        const response = await fetch(`/api/admin/suporte?status=${filtroStatus}&categoria=${filtroCategoria}`)
+        const response = await fetch(`/api/admin/suporte?status=${filtroStatus}&categoria=${filtroCategoria}`, {
+          credentials: 'include'
+        })
         if (response.ok) {
           const data = await response.json()
           const conversaAtualizada = data.conversas.find((c: Conversa) => c.id === conversaAtual.id)
@@ -151,6 +157,7 @@ export default function AdminSuporte() {
       const response = await fetch('/api/admin/suporte', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           conversaId: conversaAtual.id,
           mensagem: conteudoMensagem,
@@ -214,6 +221,7 @@ export default function AdminSuporte() {
       const response = await fetch('/api/admin/suporte', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           conversaId: conversaAtual.id,
           status,

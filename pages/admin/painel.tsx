@@ -37,7 +37,7 @@ export default function PainelAdmin() {
 
   const carregarDados = async () => {
     setLoading(true)
-    const res = await fetch('/api/admin/painel')
+    const res = await fetch('/api/admin/painel', { credentials: 'include' })
     const data = await res.json()
     setDados(data)
     setLoading(false)
@@ -48,6 +48,7 @@ export default function PainelAdmin() {
     await fetch('/api/admin/aprovar-repasse', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ repasseId })
     })
     carregarDados()

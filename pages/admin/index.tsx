@@ -66,8 +66,8 @@ export default function AdminDashboard() {
   const loadAdminData = async () => {
     try {
       const [statsResponse, activityResponse] = await Promise.all([
-        fetch('/api/admin/stats'),
-        fetch('/api/admin/atividade-recente')
+        fetch('/api/admin/stats', { credentials: 'include' }),
+        fetch('/api/admin/atividade-recente', { credentials: 'include' })
       ])
 
       if (statsResponse.ok) {
