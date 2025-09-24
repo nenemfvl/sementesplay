@@ -122,10 +122,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { expiresIn: '7d' }
     )
 
-    // Definir cookie com o token
-    res.setHeader('Set-Cookie', `token=${token}; Path=/; SameSite=Strict; Max-Age=604800`)
+    // Definir cookies com o token e usuário
+    const userCookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(usuarioSemSenha))}; Path=/; SameSite=Strict; Max-Age=604800`
+    const tokenCookie = `token=${token}; Path=/; SameSite=Strict; Max-Age=604800`
+    
+    res.setHeader('Set-Cookie', [userCookie, tokenCookie])
 
     console.log('Login realizado com sucesso para:', email)
+    console.log('🍪 Cookie de usuário definido:', userCookie.substring(0, 100) + '...')
+    
     res.status(200).json({
       message: 'Login realizado com sucesso',
       usuario: usuarioSemSenha,

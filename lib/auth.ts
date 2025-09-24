@@ -62,13 +62,21 @@ export const auth = {
   // Obter usuário dos cookies (servidor)
   getUserFromCookies: (cookies: string): User | null => {
     try {
+      console.log('🔍 [AUTH] Tentando extrair usuário dos cookies:', cookies)
       const userCookie = getCookie('sementesplay_user', cookies)
+      console.log('🍪 [AUTH] Cookie extraído:', userCookie ? 'encontrado' : 'não encontrado')
+      
       if (userCookie) {
-        return JSON.parse(decodeURIComponent(userCookie))
+        const decoded = decodeURIComponent(userCookie)
+        console.log('📝 [AUTH] Cookie decodificado:', decoded.substring(0, 100) + '...')
+        const user = JSON.parse(decoded)
+        console.log('👤 [AUTH] Usuário parseado:', { id: user.id, nome: user.nome, nivel: user.nivel })
+        return user
       }
+      console.log('❌ [AUTH] Nenhum cookie de usuário encontrado')
       return null
     } catch (error) {
-      console.error('Erro ao ler usuário dos cookies:', error)
+      console.error('❌ [AUTH] Erro ao ler usuário dos cookies:', error)
       return null
     }
   },

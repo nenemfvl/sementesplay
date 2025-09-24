@@ -3,10 +3,16 @@ import { prisma } from '../../../lib/prisma'
 import { auth } from '../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('🔍 [SUPORTE API] Iniciando requisição...')
+  console.log('🍪 Cookies recebidos:', req.headers.cookie)
+  console.log('📋 Headers:', req.headers)
+  
   const user = auth.getUserFromCookies(req.headers.cookie || '')
+  console.log('👤 Usuário extraído dos cookies:', user)
   
   // Verificar se é admin - APENAS nível '5'
   const isAdmin = user && user.nivel === '5'
+  console.log('🔐 Verificação de admin:', { user: !!user, nivel: user?.nivel, isAdmin })
   
   if (!user || !isAdmin) {
     console.log('❌ Acesso negado - Apenas administradores nível 5 podem acessar. Usuário:', user?.nome, 'Nível:', user?.nivel)
