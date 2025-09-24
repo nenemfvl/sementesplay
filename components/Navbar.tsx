@@ -83,7 +83,6 @@ export default function Navbar() {
   };
 
   return (
-    <>
     <header className="bg-black shadow-lg border-b border-sss-light sticky top-0 z-50 relative">
       {/* Logo e nome colados à esquerda como botão para o topo */}
       <button
@@ -273,6 +272,5 @@ export default function Navbar() {
     
     {/* Chat flutuante de amigos */}
     {showFriendsChat && <FriendsChat />}
-  </>
   )
 } 
