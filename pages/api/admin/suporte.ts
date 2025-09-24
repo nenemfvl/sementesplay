@@ -7,8 +7,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('🍪 Cookies recebidos:', req.headers.cookie)
   console.log('📋 Headers:', req.headers)
   
-  const user = auth.getUserFromCookies(req.headers.cookie || '')
+  let user = auth.getUserFromCookies(req.headers.cookie || '')
   console.log('👤 Usuário extraído dos cookies:', user)
+  
+  // Fallback: tentar extrair usuário do header Authorization se não encontrou nos cookies
+  if (!user && req.headers.authorization) {
+    try {
+      const authHeader = req.headers.authorization.replace('Bearer ', '')
+      user = JSON.parse(decodeURIComponent(authHeader))
+      console.log('👤 Usuário extraído do header Authorization:', user)
+    } catch (error) {
+      console.log('❌ Erro ao extrair usuário do header:', error)
+    }
+  }
   
   // Verificar se é admin - APENAS nível '5'
   const isAdmin = user && user.nivel === '5'

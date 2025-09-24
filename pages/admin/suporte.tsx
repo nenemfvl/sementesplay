@@ -81,8 +81,19 @@ export default function AdminSuporte() {
       if (filtroStatus !== 'todos') params.append('status', filtroStatus)
       if (filtroCategoria !== 'todos') params.append('categoria', filtroCategoria)
 
+      // Preparar headers com fallback de autenticação
+      const headers: any = {
+        'Content-Type': 'application/json'
+      }
+      
+      // Adicionar usuário no header Authorization como fallback
+      if (user) {
+        headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
+      }
+
       const response = await fetch(`/api/admin/suporte?${params}`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers
       })
       if (response.ok) {
         const data = await response.json()
@@ -108,8 +119,17 @@ export default function AdminSuporte() {
     const interval = setInterval(async () => {
       try {
         // Buscar conversa atualizada com mensagens
+        const headers: any = {
+          'Content-Type': 'application/json'
+        }
+        
+        if (user) {
+          headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
+        }
+        
         const response = await fetch(`/api/admin/suporte?status=${filtroStatus}&categoria=${filtroCategoria}`, {
-          credentials: 'include'
+          credentials: 'include',
+          headers
         })
         if (response.ok) {
           const data = await response.json()
@@ -154,9 +174,17 @@ export default function AdminSuporte() {
 
     setEnviando(true)
     try {
+      const headers: any = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (user) {
+        headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
+      }
+      
       const response = await fetch('/api/admin/suporte', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'include',
         body: JSON.stringify({
           conversaId: conversaAtual.id,
@@ -218,9 +246,17 @@ export default function AdminSuporte() {
     if (!conversaAtual) return
 
     try {
+      const headers: any = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (user) {
+        headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
+      }
+      
       const response = await fetch('/api/admin/suporte', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'include',
         body: JSON.stringify({
           conversaId: conversaAtual.id,
