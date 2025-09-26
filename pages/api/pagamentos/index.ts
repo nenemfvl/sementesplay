@@ -6,19 +6,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       // Verificar autenticação via cookie
+      console.log('🍪 [AUTH] Verificando autenticação...')
+      console.log('🍪 [AUTH] Cookies recebidos:', Object.keys(req.cookies))
+      console.log('🍪 [AUTH] Cookie sementesplay_user existe:', !!req.cookies['sementesplay_user'])
+      
       let user = null
       const userCookie = req.cookies['sementesplay_user']
       
       if (userCookie) {
         try {
+          console.log('🍪 [AUTH] Cookie bruto (primeiros 100 chars):', userCookie.substring(0, 100))
           user = JSON.parse(decodeURIComponent(userCookie))
+          console.log('✅ [AUTH] Usuário decodificado:', { id: user.id, nome: user.nome, email: user.email })
         } catch (error) {
-          console.error('Erro ao decodificar cookie do usuário:', error)
+          console.error('❌ [AUTH] Erro ao decodificar cookie do usuário:', error)
+          console.error('❌ [AUTH] Cookie problemático:', userCookie)
         }
+      } else {
+        console.log('❌ [AUTH] Nenhum cookie sementesplay_user encontrado')
+        console.log('🔍 [AUTH] Todos os cookies:', req.cookies)
       }
 
       if (!user) {
-        return res.status(401).json({ error: 'Usuário não autenticado' })
+        console.log('❌ [AUTH] Usuário não autenticado - retornando 401')
+        return res.status(401).json({ 
+          error: 'Usuário não autenticado',
+          debug: {
+            cookiesReceived: Object.keys(req.cookies),
+            hasSementsplayUser: !!req.cookies['sementesplay_user'],
+            userAgent: req.headers['user-agent'],
+            origin: req.headers['origin']
+          }
+        })
       }
 
       const { usuarioId, tipo, valor } = req.body

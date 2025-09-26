@@ -64,7 +64,9 @@ export default function Carteira() {
   const loadCarteira = async () => {
     try {
       // Buscar dados do usuário atual
-      const userResponse = await fetch('/api/usuario/atual')
+      const userResponse = await fetch('/api/usuario/atual', {
+        credentials: 'include' // Incluir cookies na requisição
+      })
       
       if (userResponse.ok) {
         const userData = await userResponse.json()
@@ -96,6 +98,7 @@ export default function Carteira() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Incluir cookies na requisição
         body: JSON.stringify({
           usuarioId: user?.id,
           tipo: tipoPagamento,
@@ -134,6 +137,7 @@ export default function Carteira() {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // Incluir cookies na requisição
           body: JSON.stringify({
             paymentId,
             pagamentoId
@@ -207,7 +211,9 @@ export default function Carteira() {
 
     // Verificar se tem dados PIX cadastrados
     try {
-      const dadosPixResponse = await fetch(`/api/dados-pix?usuarioId=${user?.id}`)
+      const dadosPixResponse = await fetch(`/api/dados-pix?usuarioId=${user?.id}`, {
+        credentials: 'include' // Incluir cookies na requisição
+      })
       if (!dadosPixResponse.ok) {
         alert('Você precisa cadastrar seus dados PIX antes de solicitar um saque. Redirecionando...')
         window.location.href = '/dados-bancarios'
@@ -227,6 +233,7 @@ export default function Carteira() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Incluir cookies na requisição
         body: JSON.stringify({
           valor: parseFloat(valorSaque),
           usuarioId: user?.id
