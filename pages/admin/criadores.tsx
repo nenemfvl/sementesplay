@@ -64,15 +64,14 @@ export default function AdminCriadores() {
     try {
       setLoading(true)
       
-      // Obter token do localStorage como fallback
-      const token = localStorage.getItem('sementesplay_token')
+      // Preparar headers com fallback de autenticação
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       }
       
-      // Adicionar token no header se disponível
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+      // Adicionar usuário no header Authorization como fallback
+      if (user) {
+        headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
       }
       
       const response = await fetch('/api/admin/criadores', {
@@ -177,13 +176,13 @@ export default function AdminCriadores() {
 
     if (confirm(`Tem certeza que deseja remover o criador "${nomeCriador}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas\n• Candidatura de criador\n\n💬 As mensagens de chat privado serão mantidas\n\nO usuário voltará ao nível comum.`)) {
       try {
-        const token = localStorage.getItem('sementesplay_token')
         const headers: Record<string, string> = {
           'Content-Type': 'application/json'
         }
         
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`
+        // Adicionar usuário no header Authorization como fallback
+        if (user) {
+          headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
         }
 
         const response = await fetch(`/api/admin/criadores/${idToRemove}/suspender`, {
