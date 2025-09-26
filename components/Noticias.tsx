@@ -35,7 +35,7 @@ export default function Noticias() {
     const fetchConteudos = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/conteudos/recentes?limit=5');
+        const response = await fetch('/api/conteudos/recentes?limit=10');
         if (response.ok) {
           const data = await response.json();
           setConteudos(data.noticias || []);
