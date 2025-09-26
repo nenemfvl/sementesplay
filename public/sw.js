@@ -183,7 +183,6 @@ self.addEventListener('sync', (event) => {
 
 // Notificações push
 self.addEventListener('push', (event) => {
-  console.log('Notificação push recebida')
   
   let data = {}
   try {
@@ -228,7 +227,7 @@ self.addEventListener('push', (event) => {
 
 // Clique em notificação
 self.addEventListener('notificationclick', (event) => {
-  console.log('Notificação clicada:', event.action)
+  // Notificação clicada - processar ação
   
   event.notification.close()
   

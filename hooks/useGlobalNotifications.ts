@@ -29,16 +29,9 @@ export function useGlobalNotifications(userId: string | null) {
         const notificacaoNaoLidas = novasNotificacoes.filter(n => !n.lida)
         const currentCount = notificacaoNaoLidas.length
         
-        // Se há mais notificações não lidas que antes, registrar no console
+        // Detectar novas notificações sem logs por segurança
         if (lastNotificationCountRef.current > 0 && currentCount > lastNotificationCountRef.current) {
-          // Encontrar a notificação mais recente
-          const maisRecente = novasNotificacoes
-            .filter(n => !n.lida)
-            .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())[0]
-          
-          if (maisRecente) {
-            console.log(`📱 Nova notificação: ${maisRecente.titulo}`)
-          }
+          // Apenas atualizar o estado, sem logs por segurança
         }
         
         lastNotificationCountRef.current = currentCount
