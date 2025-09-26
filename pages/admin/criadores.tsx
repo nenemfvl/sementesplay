@@ -5,8 +5,6 @@ import {
   TrophyIcon,
   UsersIcon,
   EyeIcon,
-  PencilIcon,
-  TrashIcon,
   PlusIcon,
   ArrowLeftIcon,
   MagnifyingGlassIcon
@@ -144,39 +142,9 @@ export default function AdminCriadores() {
     }
   }
 
-  // Funções para as ações
+  // Função para visualizar criador
   const visualizarCriador = (criador: Criador) => {
     window.open(`/criador/${criador.id}`, '_blank')
-  }
-
-  const editarCriador = (criador: Criador) => {
-    // Implementar modal de edição ou redirecionar para página de edição
-    alert(`Editar criador: ${criador.nome}`)
-  }
-
-  const removerCriador = async (criador: Criador) => {
-    if (confirm(`Tem certeza que deseja remover o criador "${criador.nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá remover:\n• Todos os conteúdos criados\n• Todas as enquetes\n• Todos os recados enviados/recebidos\n• Todas as interações\n• Todas as doações recebidas\n• Todas as notificações\n• Todas as conquistas e emblemas\n• Todas as missões\n• Todos os comentários\n• Todas as conversas\n• Candidatura de criador\n\n💬 As mensagens de chat privado serão mantidas\n\nO usuário voltará ao nível comum.`)) {
-      try {
-        const response = await fetch(`/api/admin/criadores/${criador.id}/suspender`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-
-        if (response.ok) {
-          alert('Criador removido com sucesso!')
-          loadCriadores() // Recarregar lista
-        } else {
-          const error = await response.text()
-          alert(`Erro ao remover criador: ${error}`)
-        }
-      } catch (error) {
-        console.error('Erro ao remover criador:', error)
-        alert('Erro ao remover criador')
-      }
-    }
   }
 
   const removerCriadorPorId = async (criadorId?: string) => {
@@ -337,7 +305,7 @@ export default function AdminCriadores() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                    <TrashIcon className="w-6 h-6 text-red-500" />
+                    <UsersIcon className="w-6 h-6 text-red-500" />
                   </div>
                 </div>
               </motion.div>
@@ -495,22 +463,6 @@ export default function AdminCriadores() {
                                 title="Visualizar perfil"
                               >
                                 <EyeIcon className="w-4 h-4" />
-                              </button>
-                              <button 
-                                onClick={() => editarCriador(criador)}
-                                className="text-yellow-500 hover:text-yellow-400 transition-colors" 
-                                aria-label="Editar criador"
-                                title="Editar criador"
-                              >
-                                <PencilIcon className="w-4 h-4" />
-                              </button>
-                              <button 
-                                onClick={() => removerCriador(criador)}
-                                className="text-red-500 hover:text-red-400 transition-colors" 
-                                aria-label="Remover criador"
-                                title="Remover criador"
-                              >
-                                <TrashIcon className="w-4 h-4" />
                               </button>
                             </div>
                           </td>
