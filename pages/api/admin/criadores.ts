@@ -54,13 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Buscar criadores (apenas usuários com nível de criador)
     const criadores = await prisma.criador.findMany({
-      where: {
-        usuario: {
-          nivel: {
-            in: ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo']
-          }
-        }
-      },
       include: {
         usuario: {
           select: {
@@ -77,7 +70,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    console.log(`📊 Encontrados ${criadores.length} criadores`)
+    console.log(`📊 Encontrados ${criadores.length} criadores na tabela criadores`)
+    
+    // Filtrar apenas criadores com níveis válidos
+    const criadoresFiltrados = criadores.filter(criador => 
+      ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo'].includes(criador.usuario.nivel)
+    )
+
+    console.log(`📊 Após filtro: ${criadoresFiltrados.length} criadores válidos`)
+    
+    // Debug: mostrar detalhes dos criadores encontrados
+    if (criadoresFiltrados.length > 0) {
+      console.log('🔍 Detalhes dos criadores encontrados:')
+      criadoresFiltrados.forEach((criador, index) => {
+        console.log(`${index + 1}. ${criador.usuario.nome} (${criador.usuario.email}) - Nível: ${criador.usuario.nivel}`)
+      })
+    } else {
+      console.log('⚠️ Nenhum criador encontrado com níveis válidos')
+      console.log('🔍 Todos os criadores na tabela:')
+      criadores.forEach((criador, index) => {
+        console.log(`${index + 1}. ${criador.usuario.nome} (${criador.usuario.email}) - Nível: ${criador.usuario.nivel}`)
+      })
+    }
 
     // Função para mapear nível do usuário para nível de criador
     const mapearNivelCriador = (nivelUsuario: string) => {
@@ -91,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Formatar dados
-    const criadoresFormatados = criadores.map(criador => ({
+    const criadoresFormatados = criadoresFiltrados.map(criador => ({
       id: criador.id,
       nome: criador.usuario.nome,
       email: criador.usuario.email,
@@ -104,9 +118,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }))
 
     // Calcular estatísticas baseadas no nível do usuário
-    const totalCriadores = criadores.length
-    const ativos = criadores.length // Todos os criadores na lista são ativos
-    const supremos = criadores.filter(c => c.usuario.nivel === 'criador-supremo').length
+    const totalCriadores = criadoresFiltrados.length
+    const ativos = criadoresFiltrados.length // Todos os criadores na lista são ativos
+    const supremos = criadoresFiltrados.filter(c => c.usuario.nivel === 'criador-supremo').length
     const suspensos = 0 // Não há criadores suspensos na lista
 
     const estatisticas = {

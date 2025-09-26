@@ -82,6 +82,7 @@ export default function AdminCriadores() {
       
       if (response.ok) {
         const data = await response.json()
+        console.log('📊 Dados recebidos da API:', data)
         setCriadores(data.criadores || [])
         setEstatisticas(data.estatisticas || {
           total: 0,
@@ -89,9 +90,10 @@ export default function AdminCriadores() {
           supremos: 0,
           suspensos: 0
         })
+        console.log('✅ Criadores carregados:', data.criadores?.length || 0)
       } else {
         const errorText = await response.text()
-        console.error('Erro na resposta:', response.status, errorText)
+        console.error('❌ Erro na resposta:', response.status, errorText)
       }
     } catch (error) {
       console.error('Erro ao carregar criadores:', error)
@@ -443,60 +445,86 @@ export default function AdminCriadores() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sss-light">
-                    {filteredCriadores.map((criador) => (
-                      <tr key={criador.id} className="hover:bg-sss-dark transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-sss-white">{criador.nome}</div>
-                            <div className="text-sm text-gray-400">{criador.email}</div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getNivelColor(criador.nivel)}`}>
-                            {criador.nivel}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(criador.status)}`}>
-                            {criador.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-sss-white">
-                          {criador.doacoesRecebidas.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-sss-white">
-                          {criador.apoiadores}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button 
-                              onClick={() => visualizarCriador(criador)}
-                              className="text-blue-500 hover:text-blue-400 transition-colors" 
-                              aria-label="Visualizar criador"
-                              title="Visualizar perfil"
-                            >
-                              <EyeIcon className="w-4 h-4" />
-                            </button>
-                            <button 
-                              onClick={() => editarCriador(criador)}
-                              className="text-yellow-500 hover:text-yellow-400 transition-colors" 
-                              aria-label="Editar criador"
-                              title="Editar criador"
-                            >
-                              <PencilIcon className="w-4 h-4" />
-                            </button>
-                            <button 
-                              onClick={() => removerCriador(criador)}
-                              className="text-red-500 hover:text-red-400 transition-colors" 
-                              aria-label="Remover criador"
-                              title="Remover criador"
-                            >
-                              <TrashIcon className="w-4 h-4" />
-                            </button>
+                    {filteredCriadores.length > 0 ? (
+                      filteredCriadores.map((criador) => (
+                        <tr key={criador.id} className="hover:bg-sss-dark transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-sss-white">{criador.nome}</div>
+                              <div className="text-sm text-gray-400">{criador.email}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getNivelColor(criador.nivel)}`}>
+                              {criador.nivel}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(criador.status)}`}>
+                              {criador.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-sss-white">
+                            {criador.doacoesRecebidas.toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-sss-white">
+                            {criador.apoiadores}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-2">
+                              <button 
+                                onClick={() => visualizarCriador(criador)}
+                                className="text-blue-500 hover:text-blue-400 transition-colors" 
+                                aria-label="Visualizar criador"
+                                title="Visualizar perfil"
+                              >
+                                <EyeIcon className="w-4 h-4" />
+                              </button>
+                              <button 
+                                onClick={() => editarCriador(criador)}
+                                className="text-yellow-500 hover:text-yellow-400 transition-colors" 
+                                aria-label="Editar criador"
+                                title="Editar criador"
+                              >
+                                <PencilIcon className="w-4 h-4" />
+                              </button>
+                              <button 
+                                onClick={() => removerCriador(criador)}
+                                className="text-red-500 hover:text-red-400 transition-colors" 
+                                aria-label="Remover criador"
+                                title="Remover criador"
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-12 text-center">
+                          <div className="text-gray-400">
+                            <UsersIcon className="w-12 h-12 mx-auto mb-4 text-gray-500" />
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">
+                              {criadores.length === 0 ? 'Nenhum criador encontrado' : 'Nenhum criador corresponde aos filtros'}
+                            </h3>
+                            <p className="text-sm">
+                              {criadores.length === 0 
+                                ? 'Não há criadores cadastrados no sistema ainda.' 
+                                : 'Tente ajustar os filtros de busca ou status.'}
+                            </p>
+                            {criadores.length === 0 && (
+                              <Link 
+                                href="/admin/candidaturas" 
+                                className="inline-block mt-4 bg-sss-accent hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                              >
+                                Ver Candidaturas
+                              </Link>
+                            )}
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
