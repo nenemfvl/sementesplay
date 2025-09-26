@@ -34,27 +34,8 @@ export default function Parceiros() {
     if (currentUser) {
       setUser(currentUser)
       verificarCandidatura(currentUser.id)
-    } else {
-      // Tentar buscar da API como fallback
-      fetch('/api/usuario/atual', {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.usuario) {
-            setUser(data.usuario)
-            verificarCandidatura(data.usuario.id)
-            // Salvar no sistema de autenticação
-            auth.setUser(data.usuario)
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao buscar usuário da API:', error)
-        })
     }
+    // Remover chamada da API como fallback para evitar erro 401
 
     loadParceiros()
   }, [])
