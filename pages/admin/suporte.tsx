@@ -72,7 +72,7 @@ export default function AdminSuporte() {
     
     console.log('✅ Admin nível 5 autenticado:', currentUser.nome, 'Nível:', currentUser.nivel)
     setUser(currentUser)
-    carregarConversas()
+    // carregarConversas será chamado pelo useEffect que depende do user
   }, [router])
 
   const carregarConversas = async () => {
@@ -109,12 +109,14 @@ export default function AdminSuporte() {
   }
 
   useEffect(() => {
-    carregarConversas()
-  }, [filtroStatus, filtroCategoria])
+    if (user) {
+      carregarConversas()
+    }
+  }, [filtroStatus, filtroCategoria, user])
 
   // Polling para atualizar mensagens automaticamente
   useEffect(() => {
-    if (!conversaAtual || !conversaAtual.id) return
+    if (!conversaAtual || !conversaAtual.id || !user) return
 
     const interval = setInterval(async () => {
       try {
@@ -147,7 +149,7 @@ export default function AdminSuporte() {
     }, 2000) // Atualiza a cada 2 segundos
 
     return () => clearInterval(interval)
-  }, [conversaAtual, filtroStatus, filtroCategoria])
+  }, [conversaAtual, filtroStatus, filtroCategoria, user])
 
   const enviarResposta = async () => {
     if (!conversaAtual || !novaMensagem.trim()) return
