@@ -641,9 +641,10 @@ export default function FriendsChat() {
                               </div>
                               <button
                                 onClick={() => enviarSolicitacao(usuario.id)}
-                                className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"
+                                className="p-2 bg-sss-accent hover:bg-red-600 text-white rounded transition-colors"
+                                title="Adicionar amigo"
                               >
-                                Adicionar
+                                <UserPlusIcon className="w-4 h-4" />
                               </button>
                             </div>
                           </motion.div>
@@ -702,9 +703,10 @@ export default function FriendsChat() {
                               {!amigos.some(a => a.id === usuario.id) ? (
                                 <button
                                   onClick={() => enviarSolicitacao(usuario.id)}
-                                  className="px-3 py-1 bg-sss-accent hover:bg-red-600 text-white text-xs rounded transition-colors"
+                                  className="p-2 bg-sss-accent hover:bg-red-600 text-white rounded transition-colors"
+                                  title="Adicionar amigo"
                                 >
-                                  Adicionar
+                                  <UserPlusIcon className="w-4 h-4" />
                                 </button>
                               ) : (
                                 <span className="text-xs text-green-400">Já é amigo</span>
