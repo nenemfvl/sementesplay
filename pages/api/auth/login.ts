@@ -126,14 +126,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userCookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(usuarioSemSenha))}; Path=/; SameSite=Lax; Max-Age=604800; HttpOnly=false`
     const tokenCookie = `token=${token}; Path=/; SameSite=Lax; Max-Age=604800; HttpOnly=true`
     
-    console.log('🍪 [LOGIN] Definindo cookies:')
-    console.log('   - User cookie:', userCookie.substring(0, 100) + '...')
-    console.log('   - Token cookie:', tokenCookie.substring(0, 50) + '...')
     
     res.setHeader('Set-Cookie', [userCookie, tokenCookie])
 
     console.log('Login realizado com sucesso para:', email)
-    console.log('🍪 Cookie de usuário definido:', userCookie.substring(0, 100) + '...')
     
     res.status(200).json({
       message: 'Login realizado com sucesso',

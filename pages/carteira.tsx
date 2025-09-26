@@ -52,24 +52,17 @@ export default function Carteira() {
 
   useEffect(() => {
     const currentUser = auth.getUser()
-    console.log('🔍 [CARTEIRA] Usuário do localStorage:', currentUser)
-    
     if (!currentUser) {
-      console.log('❌ [CARTEIRA] Usuário não encontrado no localStorage, redirecionando para login')
-      alert('Você precisa fazer login para acessar a carteira')
       window.location.href = '/login'
       return
     }
     
-    console.log('✅ [CARTEIRA] Usuário logado:', { id: currentUser.id, nome: currentUser.nome })
     setUser(currentUser)
     loadCarteira()
   }, [])
 
   const loadCarteira = async () => {
     try {
-      console.log('🔄 [CARTEIRA] Carregando dados da carteira...')
-      
       // Buscar dados do usuário atual
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
@@ -79,7 +72,6 @@ export default function Carteira() {
       const currentUser = auth.getUser()
       if (currentUser) {
         headers['Authorization'] = `User ${currentUser.id}`
-        console.log('🔑 [CARTEIRA] Enviando userId no header:', currentUser.id)
       }
       
       const userResponse = await fetch('/api/usuario/atual', {

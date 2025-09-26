@@ -38,7 +38,6 @@ export const auth = {
   // Salvar usuário na sessão
   setUser: (user: User, token?: string) => {
     if (typeof window !== 'undefined') {
-      console.log('🍪 [AUTH] Salvando usuário:', { id: user.id, nome: user.nome })
       localStorage.setItem('sementesplay_user', JSON.stringify(user))
       // Salvar também em cookie para APIs com SameSite=Lax
       document.cookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=604800; SameSite=Lax`
@@ -46,7 +45,6 @@ export const auth = {
         localStorage.setItem('sementesplay_token', token)
         document.cookie = `token=${token}; path=/; max-age=604800; SameSite=Lax; HttpOnly=false`
       }
-      console.log('✅ [AUTH] Usuário salvo no localStorage e cookies')
     }
   },
 
