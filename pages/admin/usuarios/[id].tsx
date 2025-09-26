@@ -42,9 +42,12 @@ interface UsuarioDetalhes {
 interface Estatisticas {
   totalDoacoesFeitas: number
   totalDoacoesRecebidas: number
+  valorTotalDoacoesFeitas: number
+  valorTotalDoacoesRecebidas: number
   totalConteudos: number
   totalComentarios: number
   totalMissoesConcluidas: number
+  eCriador: boolean
 }
 
 export default function DetalhesUsuario() {
@@ -318,29 +321,49 @@ export default function DetalhesUsuario() {
                       
                       <div className="flex items-center space-x-2">
                         <UserIcon className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-400">Nível de Usuário:</span>
-                        <span className="text-sss-white">{usuario.nivelUsuario}</span>
+                        <span className="text-gray-400">Nível Numérico:</span>
+                        <span className="text-sss-white">Nível {usuario.nivelUsuario}</span>
                       </div>
                     </div>
 
                     {estatisticas && (
                       <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
-                          <CurrencyDollarIcon className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400">Doações Feitas:</span>
-                          <span className="text-sss-white">{estatisticas.totalDoacoesFeitas}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <CurrencyDollarIcon className="w-4 h-4 text-green-400" />
+                            <span className="text-gray-400">Doações Feitas:</span>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sss-white">{estatisticas.totalDoacoesFeitas} doações</div>
+                            <div className="text-sm text-green-400">{estatisticas.valorTotalDoacoesFeitas.toLocaleString()} sementes</div>
+                          </div>
                         </div>
                         
-                        <div className="flex items-center space-x-2">
-                          <CurrencyDollarIcon className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400">Doações Recebidas:</span>
-                          <span className="text-sss-white">{estatisticas.totalDoacoesRecebidas}</span>
-                        </div>
+                        {estatisticas.eCriador && (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <CurrencyDollarIcon className="w-4 h-4 text-blue-400" />
+                              <span className="text-gray-400">Doações Recebidas:</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sss-white">{estatisticas.totalDoacoesRecebidas} doações</div>
+                              <div className="text-sm text-blue-400">{estatisticas.valorTotalDoacoesRecebidas.toLocaleString()} sementes</div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {estatisticas.eCriador && (
+                          <div className="flex items-center space-x-2">
+                            <EyeIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-400">Conteúdos Criados:</span>
+                            <span className="text-sss-white">{estatisticas.totalConteudos}</span>
+                          </div>
+                        )}
                         
                         <div className="flex items-center space-x-2">
-                          <EyeIcon className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400">Conteúdos:</span>
-                          <span className="text-sss-white">{estatisticas.totalConteudos}</span>
+                          <TrophyIcon className="w-4 h-4 text-gray-400" />
+                          <span className="text-gray-400">Missões Concluídas:</span>
+                          <span className="text-sss-white">{estatisticas.totalMissoesConcluidas}</span>
                         </div>
                       </div>
                     )}

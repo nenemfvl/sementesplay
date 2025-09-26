@@ -73,36 +73,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Usuário não encontrado' })
     }
 
+    // Verificar se o usuário é criador
+    const criador = await prisma.criador.findUnique({
+      where: { usuarioId: usuarioId }
+    })
+
     // Calcular estatísticas do usuário
     const [
       totalDoacoesFeitas,
       totalDoacoesRecebidas,
+      valorTotalDoacoesFeitas,
+      valorTotalDoacoesRecebidas,
       totalConteudos,
       totalComentarios,
       totalMissoesConcluidas
     ] = await Promise.all([
-      // Doações feitas pelo usuário
+      // Doações feitas pelo usuário (quantidade)
       prisma.doacao.count({
         where: { doadorId: usuarioId }
       }),
       
-      // Doações recebidas (se for criador)
-      prisma.doacao.count({
-        where: {
-          criador: {
-            usuarioId: usuarioId
-          }
-        }
-      }),
+      // Doações recebidas (se for criador) - quantidade
+      criador ? prisma.doacao.count({
+        where: { criadorId: criador.id }
+      }) : 0,
+      
+      // Valor total das doações feitas
+      prisma.doacao.aggregate({
+        where: { doadorId: usuarioId },
+        _sum: { quantidade: true }
+      }).then(result => result._sum.quantidade || 0),
+      
+      // Valor total das doações recebidas (se for criador)
+      criador ? prisma.doacao.aggregate({
+        where: { criadorId: criador.id },
+        _sum: { quantidade: true }
+      }).then(result => result._sum.quantidade || 0) : 0,
       
       // Conteúdos criados (se for criador)
-      prisma.conteudo.count({
-        where: {
-          criador: {
-            usuarioId: usuarioId
-          }
-        }
-      }),
+      criador ? prisma.conteudo.count({
+        where: { criadorId: criador.id }
+      }) : 0,
       
       // Comentários feitos
       prisma.comentario.count({
@@ -137,9 +148,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const estatisticas = {
       totalDoacoesFeitas,
       totalDoacoesRecebidas,
+      valorTotalDoacoesFeitas,
+      valorTotalDoacoesRecebidas,
       totalConteudos,
       totalComentarios,
-      totalMissoesConcluidas
+      totalMissoesConcluidas,
+      eCriador: !!criador
     }
 
     return res.status(200).json({
