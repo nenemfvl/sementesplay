@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const isValidOrigin = !origin || allowedOrigins.some(allowed => 
-    origin.startsWith(allowed)
+    allowed && origin.startsWith(allowed)
   )
 
   if (!isValidOrigin) {
