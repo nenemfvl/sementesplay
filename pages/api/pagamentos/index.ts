@@ -38,11 +38,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Configurar access token do Mercado Pago
       const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN
       
+      console.log('🔍 Verificando configuração do MercadoPago:')
+      console.log('   - Access Token configurado:', !!accessToken)
+      console.log('   - Access Token length:', accessToken ? accessToken.length : 0)
+      console.log('   - Access Token prefix:', accessToken ? accessToken.substring(0, 10) + '...' : 'NÃO CONFIGURADO')
+      
       if (!accessToken) {
-        console.error('MERCADOPAGO_ACCESS_TOKEN não configurado')
+        console.error('❌ MERCADOPAGO_ACCESS_TOKEN não configurado')
         return res.status(500).json({ 
           error: 'Configuração de pagamento não disponível',
-          message: 'Configure a variável MERCADOPAGO_ACCESS_TOKEN no Vercel'
+          message: 'Configure a variável MERCADOPAGO_ACCESS_TOKEN no Vercel',
+          debug: {
+            env_vars: Object.keys(process.env).filter(key => key.includes('MERCADO')),
+            vercel_url: process.env.VERCEL_URL
+          }
         })
       }
 
@@ -71,8 +80,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           last_name: user.nome?.split(' ').slice(1).join(' ') || 'SementesPLAY'
         },
         external_reference: pagamento.id,
-        notification_url: 'https://sementesplay.com.br/api/mercadopago/webhook'
+        notification_url: `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://sementesplay.com.br'}/api/mercadopago/webhook`
       }
+
+      console.log('📦 Dados do pagamento para MercadoPago:')
+      console.log('   - Valor:', payment_data.transaction_amount)
+      console.log('   - Descrição:', payment_data.description)
+      console.log('   - Email do pagador:', payment_data.payer.email)
+      console.log('   - Referência externa:', payment_data.external_reference)
+      console.log('   - URL do webhook:', payment_data.notification_url)
 
       // Fazer requisição para a API do Mercado Pago
       const response = await fetch('https://api.mercadopago.com/v1/payments', {
@@ -85,9 +101,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         body: JSON.stringify(payment_data)
       })
 
+      console.log('📡 Resposta do MercadoPago:')
+      console.log('   - Status:', response.status)
+      console.log('   - Status Text:', response.statusText)
+
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('Erro na API do Mercado Pago:', errorData)
+        console.error('❌ Erro na API do Mercado Pago:')
+        console.error('   - Status:', response.status)
+        console.error('   - Erro completo:', JSON.stringify(errorData, null, 2))
         
         // Atualizar status do pagamento para erro
         await prisma.pagamento.update({
@@ -97,11 +119,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         return res.status(400).json({ 
           error: 'Erro ao gerar PIX',
-          details: errorData.message || 'Erro na integração com Mercado Pago'
+          details: errorData.message || 'Erro na integração com Mercado Pago',
+          mercadopago_error: errorData,
+          debug_info: {
+            status_code: response.status,
+            payment_data: payment_data,
+            access_token_configured: !!accessToken,
+            access_token_length: accessToken?.length
+          }
         })
       }
 
       const payment = await response.json()
+      
+      console.log('✅ Pagamento criado no MercadoPago:')
+      console.log('   - ID do pagamento:', payment.id)
+      console.log('   - Status:', payment.status)
+      console.log('   - Método de pagamento:', payment.payment_method_id)
 
       // Atualizar pagamento com o ID do Mercado Pago
       await prisma.pagamento.update({
