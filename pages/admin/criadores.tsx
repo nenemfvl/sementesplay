@@ -57,12 +57,20 @@ export default function AdminCriadores() {
     }
     
     setUser(currentUser)
-    loadCriadores()
   }, [])
+
+  // Novo useEffect para carregar criadores quando user for definido
+  useEffect(() => {
+    if (user) {
+      loadCriadores()
+    }
+  }, [user])
 
   const loadCriadores = async () => {
     try {
       setLoading(true)
+      
+      console.log('🔍 Carregando criadores - Usuário atual:', user)
       
       // Preparar headers com fallback de autenticação
       const headers: Record<string, string> = {
@@ -71,13 +79,22 @@ export default function AdminCriadores() {
       
       // Adicionar usuário no header Authorization como fallback
       if (user) {
-        headers['Authorization'] = `Bearer ${encodeURIComponent(JSON.stringify(user))}`
+        const authToken = encodeURIComponent(JSON.stringify(user))
+        headers['Authorization'] = `Bearer ${authToken}`
+        console.log('🔑 Token enviado:', authToken)
+      } else {
+        console.log('❌ Nenhum usuário encontrado para autenticação')
       }
+      
+      console.log('📤 Fazendo requisição para /api/admin/criadores com headers:', headers)
       
       const response = await fetch('/api/admin/criadores', {
         credentials: 'include',
         headers
       })
+      
+      console.log('📡 Status da resposta:', response.status)
+      console.log('📋 Headers da resposta:', Object.fromEntries(response.headers))
       
       if (response.ok) {
         const data = await response.json()
