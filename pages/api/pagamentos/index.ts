@@ -5,19 +5,24 @@ import { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      // Verificar autenticação via cookie
+      // Verificar autenticação via cookie ou header
       console.log('🍪 [AUTH] Verificando autenticação...')
       console.log('🍪 [AUTH] Cookies recebidos:', Object.keys(req.cookies))
       console.log('🍪 [AUTH] Cookie sementesplay_user existe:', !!req.cookies['sementesplay_user'])
+      console.log('📡 [AUTH] Header Authorization:', req.headers.authorization ? 'EXISTS' : 'NOT EXISTS')
       
       let user = null
+      let userId = null
+      
+      // Primeiro, tentar obter do cookie
       const userCookie = req.cookies['sementesplay_user']
       
       if (userCookie) {
         try {
           console.log('🍪 [AUTH] Cookie bruto (primeiros 100 chars):', userCookie.substring(0, 100))
           user = JSON.parse(decodeURIComponent(userCookie))
-          console.log('✅ [AUTH] Usuário decodificado:', { id: user.id, nome: user.nome, email: user.email })
+          userId = user.id
+          console.log('✅ [AUTH] Usuário decodificado do cookie:', { id: user.id, nome: user.nome, email: user.email })
         } catch (error) {
           console.error('❌ [AUTH] Erro ao decodificar cookie do usuário:', error)
           console.error('❌ [AUTH] Cookie problemático:', userCookie)
@@ -25,6 +30,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } else {
         console.log('❌ [AUTH] Nenhum cookie sementesplay_user encontrado')
         console.log('🔍 [AUTH] Todos os cookies:', req.cookies)
+      }
+      
+      // Se não conseguiu do cookie, tentar do header Authorization
+      if (!user && req.headers.authorization) {
+        try {
+          const authHeader = req.headers.authorization
+          console.log('🔑 [AUTH] Tentando autenticação via header...')
+          
+          if (authHeader.startsWith('User ')) {
+            userId = authHeader.substring(5)
+            console.log('🔑 [AUTH] UserId do header:', userId)
+            
+            // Buscar dados completos do usuário no banco
+            const usuarioCompleto = await prisma.usuario.findUnique({
+              where: { id: userId },
+              include: { criador: true, parceiro: true }
+            })
+            
+            if (usuarioCompleto) {
+              const { senha: _, ...usuarioSemSenha } = usuarioCompleto
+              user = usuarioSemSenha
+              console.log('✅ [AUTH] Usuário carregado do banco:', { id: user.id, nome: user.nome })
+            }
+          }
+        } catch (error) {
+          console.error('❌ [AUTH] Erro ao processar header Authorization:', error)
+        }
       }
 
       if (!user) {
@@ -34,6 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           debug: {
             cookiesReceived: Object.keys(req.cookies),
             hasSementsplayUser: !!req.cookies['sementesplay_user'],
+            hasAuthHeader: !!req.headers.authorization,
             userAgent: req.headers['user-agent'],
             origin: req.headers['origin']
           }

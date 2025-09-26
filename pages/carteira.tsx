@@ -71,8 +71,20 @@ export default function Carteira() {
       console.log('🔄 [CARTEIRA] Carregando dados da carteira...')
       
       // Buscar dados do usuário atual
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json'
+      }
+      
+      // Se temos o usuário no localStorage, enviar o ID no header como fallback
+      const currentUser = auth.getUser()
+      if (currentUser) {
+        headers['Authorization'] = `User ${currentUser.id}`
+        console.log('🔑 [CARTEIRA] Enviando userId no header:', currentUser.id)
+      }
+      
       const userResponse = await fetch('/api/usuario/atual', {
-        credentials: 'include' // Incluir cookies na requisição
+        credentials: 'include', // Incluir cookies na requisição
+        headers: headers
       })
       
       console.log('📡 [CARTEIRA] Resposta /api/usuario/atual:', userResponse.status, userResponse.statusText)
@@ -109,11 +121,19 @@ export default function Carteira() {
     setLoadingPagamento(true)
 
     try {
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      }
+      
+      // Enviar userId no header como fallback
+      if (user?.id) {
+        headers['Authorization'] = `User ${user.id}`
+        console.log('🔑 [PAGAMENTO] Enviando userId no header:', user.id)
+      }
+      
       const response = await fetch('/api/pagamentos', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
         credentials: 'include', // Incluir cookies na requisição
         body: JSON.stringify({
           usuarioId: user?.id,
