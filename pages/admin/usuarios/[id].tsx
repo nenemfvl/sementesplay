@@ -15,6 +15,7 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import Image from 'next/image'
 import { auth, User } from '../../../lib/auth'
 
 interface UsuarioDetalhes {
@@ -90,7 +91,7 @@ export default function DetalhesUsuario() {
         headers['Authorization'] = `Bearer ${authToken}`
       }
 
-      const response = await fetch(`/api/admin/usuarios/${id}`, {
+      const response = await fetch(`/api/admin/usuarios/${id}/detalhes`, {
         credentials: 'include',
         headers
       })
@@ -202,12 +203,14 @@ export default function DetalhesUsuario() {
                 className="lg:col-span-1 bg-sss-medium rounded-lg p-6 border border-sss-light"
               >
                 <div className="text-center">
-                  <div className="w-24 h-24 bg-sss-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-24 h-24 bg-sss-accent rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
                     {usuario.avatarUrl ? (
-                      <img 
+                      <Image 
                         src={usuario.avatarUrl} 
                         alt={usuario.nome}
-                        className="w-24 h-24 rounded-full object-cover"
+                        width={96}
+                        height={96}
+                        className="rounded-full object-cover"
                       />
                     ) : (
                       <UserIcon className="w-12 h-12 text-white" />

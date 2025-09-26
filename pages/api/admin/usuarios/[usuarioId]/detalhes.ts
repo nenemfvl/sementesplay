@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../../../lib/prisma'
+import { prisma } from '../../../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
-  const { id } = req.query
+  const { usuarioId } = req.query
 
-  if (!id || typeof id !== 'string') {
+  if (!usuarioId || typeof usuarioId !== 'string') {
     return res.status(400).json({ error: 'ID do usuário é obrigatório' })
   }
 
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Buscar detalhes do usuário
     const usuario = await prisma.usuario.findUnique({
-      where: { id },
+      where: { id: usuarioId },
       select: {
         id: true,
         nome: true,
@@ -83,14 +83,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ] = await Promise.all([
       // Doações feitas pelo usuário
       prisma.doacao.count({
-        where: { doadorId: id }
+        where: { doadorId: usuarioId }
       }),
       
       // Doações recebidas (se for criador)
       prisma.doacao.count({
         where: {
           criador: {
-            usuarioId: id
+            usuarioId: usuarioId
           }
         }
       }),
@@ -99,20 +99,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       prisma.conteudo.count({
         where: {
           criador: {
-            usuarioId: id
+            usuarioId: usuarioId
           }
         }
       }),
       
       // Comentários feitos
       prisma.comentario.count({
-        where: { usuarioId: id }
+        where: { usuarioId: usuarioId }
       }),
       
       // Missões concluídas
       prisma.missaoUsuario.count({
         where: {
-          usuarioId: id,
+          usuarioId: usuarioId,
           concluida: true
         }
       })
