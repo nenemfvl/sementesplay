@@ -107,7 +107,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (instaStory) {
           const username = instaStory[1];
           const storyId = instaStory[2];
-          // Para stories, usar nossa API customizada que pode buscar a imagem
+          
+          // Se o conteúdo tem um preview personalizado, usar ele primeiro
+          if (conteudo.preview) {
+            return conteudo.preview;
+          }
+          
+          // Tentar usar a URL original se for uma imagem direta
+          if (conteudo.tipo === 'imagem' && conteudo.url && !conteudo.url.includes('/stories/')) {
+            return conteudo.url;
+          }
+          
+          // Para stories, usar nossa API customizada como fallback
           return `/api/instagram-story-image?username=${username}&storyId=${storyId}`;
         }
         

@@ -159,7 +159,7 @@ export default function Noticias() {
     if (instaStory) {
       const username = instaStory[1];
       const storyId = instaStory[2];
-      // Para stories, usar nossa API customizada que pode buscar a imagem
+      // Para stories, primeiro tentar usar a imagem real se fornecida via preview
       return {
         thumbnail: `/api/instagram-story-image?username=${username}&storyId=${storyId}`,
         fallbackThumbnail: `https://www.instagram.com/stories/${username}/`,
@@ -277,6 +277,11 @@ export default function Noticias() {
                     const insta = getInstagramInfo(conteudo.url || '');
                     const tiktok = getTikTokInfo(conteudo.url || '');
                     const twitch = getTwitchInfo(conteudo.url || '');
+                    
+                    // Se for um story do Instagram e tiver preview, incluir na URL da API
+                    if (insta?.type === 'story' && conteudo.preview) {
+                      insta.thumbnail = `/api/instagram-story-image?username=${insta.username}&storyId=${insta.postId}&preview=${encodeURIComponent(conteudo.preview)}`;
+                    }
                     
                     return (
                       <div
@@ -505,6 +510,11 @@ export default function Noticias() {
                 const insta = getInstagramInfo(conteudo.url || '');
                 const tiktok = getTikTokInfo(conteudo.url || '');
                 const twitch = getTwitchInfo(conteudo.url || '');
+                
+                // Se for um story do Instagram e tiver preview, incluir na URL da API
+                if (insta?.type === 'story' && conteudo.preview) {
+                  insta.thumbnail = `/api/instagram-story-image?username=${insta.username}&storyId=${insta.postId}&preview=${encodeURIComponent(conteudo.preview)}`;
+                }
                 
                 return (
                 <div key={conteudo.id} className="bg-sss-dark/50 backdrop-blur-sm border border-sss-light/30 rounded-xl p-4 hover:border-sss-accent/50 hover:bg-sss-dark/70 transition-all duration-300 group">
