@@ -33,7 +33,7 @@ export default function Parceiros() {
     
     if (currentUser) {
       setUser(currentUser)
-      verificarCandidatura(currentUser.id)
+      verificarCandidatura(currentUser)
     }
     // Remover chamada da API como fallback para evitar erro 401
 
@@ -44,23 +44,24 @@ export default function Parceiros() {
     loadRankingParceiros()
   }, [categoriaRanking])
 
-  const verificarCandidatura = async (usuarioId: string) => {
+  const verificarCandidatura = async (usuario: any) => {
     try {
-      // Primeiro buscar o usuário para obter o email
-      const userResponse = await fetch(`/api/usuario/atual?id=${usuarioId}`)
-      if (userResponse.ok) {
-        const userData = await userResponse.json()
-        const email = userData.email
+      // Usar o email do usuário já carregado
+      const email = usuario.email
+      
+      if (!email) {
+        setCandidaturaStatus('nenhuma')
+        return
+      }
         
-        // Agora verificar a candidatura usando o email
-        const response = await fetch(`/api/parceiros/candidaturas?email=${email}`)
-        if (response.ok) {
-          const data = await response.json()
-          if (data.candidatura) {
-            setCandidaturaStatus(data.candidatura.status)
-          } else {
-            setCandidaturaStatus('nenhuma')
-          }
+      // Verificar a candidatura usando o email
+      const response = await fetch(`/api/parceiros/candidaturas?email=${email}`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.candidatura) {
+          setCandidaturaStatus(data.candidatura.status)
+        } else {
+          setCandidaturaStatus('nenhuma')
         }
       }
     } catch (error) {
