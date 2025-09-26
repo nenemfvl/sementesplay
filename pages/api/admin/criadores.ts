@@ -7,23 +7,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    console.log('🔍 Buscando criadores...')
-    console.log('🍪 Cookies:', req.cookies)
-    console.log('📋 Headers:', req.headers)
-
     // Verificar autenticação - tentar cookie primeiro, depois header
     let user = null
-    let authMethod = ''
 
     // Método 1: Cookie
     const userCookie = req.cookies.sementesplay_user
     if (userCookie) {
       try {
         user = JSON.parse(decodeURIComponent(userCookie))
-        authMethod = 'cookie'
-        console.log('✅ Usuário autenticado via cookie:', { id: user.id, nome: user.nome, nivel: user.nivel })
       } catch (error) {
-        console.log('❌ Erro ao decodificar cookie:', error)
+        // Erro silencioso
       }
     }
 
@@ -32,25 +25,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const token = req.headers.authorization.replace('Bearer ', '')
         user = JSON.parse(decodeURIComponent(token))
-        authMethod = 'header'
-        console.log('✅ Usuário autenticado via header:', { id: user.id, nome: user.nome, nivel: user.nivel })
       } catch (error) {
-        console.log('❌ Erro ao decodificar header:', error)
+        // Erro silencioso
       }
     }
 
     if (!user) {
-      console.log('❌ Nenhum método de autenticação válido encontrado')
       return res.status(401).json({ error: 'Usuário não autenticado' })
     }
 
     // Verificar se é admin
     if (Number(user.nivel) < 5) {
-      console.log('❌ Usuário não é admin. Nível:', user.nivel)
       return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem acessar esta área.' })
     }
-
-    console.log(`✅ Usuário autenticado e autorizado via ${authMethod}`)
 
     // Buscar criadores (apenas usuários com nível de criador)
     const criadores = await prisma.criador.findMany({
@@ -70,28 +57,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    console.log(`📊 Encontrados ${criadores.length} criadores na tabela criadores`)
-    
     // Filtrar apenas criadores com níveis válidos
     const criadoresFiltrados = criadores.filter(criador => 
       ['criador-iniciante', 'criador-comum', 'criador-parceiro', 'criador-supremo'].includes(criador.usuario.nivel)
     )
-
-    console.log(`📊 Após filtro: ${criadoresFiltrados.length} criadores válidos`)
-    
-    // Debug: mostrar detalhes dos criadores encontrados
-    if (criadoresFiltrados.length > 0) {
-      console.log('🔍 Detalhes dos criadores encontrados:')
-      criadoresFiltrados.forEach((criador, index) => {
-        console.log(`${index + 1}. ${criador.usuario.nome} (${criador.usuario.email}) - Nível: ${criador.usuario.nivel}`)
-      })
-    } else {
-      console.log('⚠️ Nenhum criador encontrado com níveis válidos')
-      console.log('🔍 Todos os criadores na tabela:')
-      criadores.forEach((criador, index) => {
-        console.log(`${index + 1}. ${criador.usuario.nome} (${criador.usuario.email}) - Nível: ${criador.usuario.nivel}`)
-      })
-    }
 
     // Função para mapear nível do usuário para nível de criador
     const mapearNivelCriador = (nivelUsuario: string) => {
@@ -130,7 +99,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       suspensos
     }
 
-    console.log('📈 Estatísticas calculadas:', estatisticas)
 
     return res.status(200).json({ 
       criadores: criadoresFormatados,

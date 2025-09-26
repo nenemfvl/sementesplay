@@ -68,8 +68,6 @@ export default function AdminCriadores() {
     try {
       setLoading(true)
       
-      console.log('🔍 Carregando criadores - Usuário atual:', user)
-      
       // Preparar headers com fallback de autenticação
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
@@ -79,24 +77,15 @@ export default function AdminCriadores() {
       if (user) {
         const authToken = encodeURIComponent(JSON.stringify(user))
         headers['Authorization'] = `Bearer ${authToken}`
-        console.log('🔑 Token enviado:', authToken)
-      } else {
-        console.log('❌ Nenhum usuário encontrado para autenticação')
       }
-      
-      console.log('📤 Fazendo requisição para /api/admin/criadores com headers:', headers)
       
       const response = await fetch('/api/admin/criadores', {
         credentials: 'include',
         headers
       })
       
-      console.log('📡 Status da resposta:', response.status)
-      console.log('📋 Headers da resposta:', Object.fromEntries(response.headers))
-      
       if (response.ok) {
         const data = await response.json()
-        console.log('📊 Dados recebidos da API:', data)
         setCriadores(data.criadores || [])
         setEstatisticas(data.estatisticas || {
           total: 0,
@@ -104,10 +93,6 @@ export default function AdminCriadores() {
           supremos: 0,
           suspensos: 0
         })
-        console.log('✅ Criadores carregados:', data.criadores?.length || 0)
-      } else {
-        const errorText = await response.text()
-        console.error('❌ Erro na resposta:', response.status, errorText)
       }
     } catch (error) {
       console.error('Erro ao carregar criadores:', error)
