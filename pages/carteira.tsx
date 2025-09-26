@@ -71,7 +71,7 @@ export default function Carteira() {
       console.log('🔄 [CARTEIRA] Carregando dados da carteira...')
       
       // Buscar dados do usuário atual
-      const headers: HeadersInit = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       }
       
@@ -121,7 +121,7 @@ export default function Carteira() {
     setLoadingPagamento(true)
 
     try {
-      const headers: HeadersInit = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       }
       
