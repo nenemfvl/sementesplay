@@ -129,19 +129,47 @@ export default function Noticias() {
   };
 
   const getInstagramInfo = (url: string) => {
-    // Tenta extrair o ID do post do Instagram
-    const insta = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
-    if (insta) {
-      const postId = insta[1];
-      // Tenta diferentes URLs para obter a imagem
-      // Nota: O Instagram pode bloquear requisições diretas, então usamos fallbacks
+    // Tenta extrair o ID do post, reel ou story do Instagram
+    const instaPost = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
+    const instaReel = url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+    const instaStory = url.match(/instagram\.com\/stories\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_-]+)/);
+    
+    if (instaPost) {
+      const postId = instaPost[1];
       return {
         thumbnail: `https://www.instagram.com/p/${postId}/media/?size=l`,
         fallbackThumbnail: `https://www.instagram.com/p/${postId}/embed/`,
         link: url,
-        postId: postId
+        postId: postId,
+        type: 'post'
       };
     }
+    
+    if (instaReel) {
+      const reelId = instaReel[1];
+      return {
+        thumbnail: `https://www.instagram.com/reel/${reelId}/media/?size=l`,
+        fallbackThumbnail: `https://www.instagram.com/reel/${reelId}/embed/`,
+        link: url,
+        postId: reelId,
+        type: 'reel'
+      };
+    }
+    
+    if (instaStory) {
+      const username = instaStory[1];
+      const storyId = instaStory[2];
+      // Para stories, usar nossa API customizada que pode buscar a imagem
+      return {
+        thumbnail: `/api/instagram-story-image?username=${username}&storyId=${storyId}`,
+        fallbackThumbnail: `https://www.instagram.com/stories/${username}/`,
+        link: url,
+        postId: storyId,
+        username: username,
+        type: 'story'
+      };
+    }
+    
     return null;
   };
 
@@ -292,12 +320,14 @@ export default function Noticias() {
                                     if (parent) {
                                       const placeholder = document.createElement('div');
                                       placeholder.className = 'absolute inset-0 bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white';
+                                      const contentType = insta.type === 'story' ? 'Story' : insta.type === 'reel' ? 'Reel' : 'Post';
                                       placeholder.innerHTML = `
                                         <div class="text-center">
                                           <svg class="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                           </svg>
-                                          <div class="text-lg font-semibold">Post do Instagram</div>
+                                          <div class="text-lg font-semibold">${contentType} do Instagram</div>
+                                          ${insta.username ? `<div class="text-sm mt-2">@${insta.username}</div>` : ''}
                                         </div>
                                       `;
                                       parent.appendChild(placeholder);
@@ -517,11 +547,13 @@ export default function Noticias() {
                                 if (parent) {
                                   const placeholder = document.createElement('div');
                                   placeholder.className = 'w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white group-hover:from-pink-600 group-hover:to-purple-700 transition-all rounded-lg';
+                                  const contentType = insta.type === 'story' ? 'Story' : insta.type === 'reel' ? 'Reel' : 'Post';
                                   placeholder.innerHTML = `
                                     <div class="text-center">
                                       <svg class="w-6 h-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                       </svg>
+                                      <div class="text-xs font-bold mt-1">${contentType}</div>
                                     </div>
                                   `;
                                   parent.appendChild(placeholder);

@@ -83,19 +83,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Para Instagram
       if (conteudo.url?.includes('instagram.com')) {
-        // Tentar extrair o ID do post do Instagram
-        const instaMatch = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/) ||
-                          conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+        // Tentar extrair o ID do post, reel ou story do Instagram
+        const instaPost = conteudo.url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
+        const instaReel = conteudo.url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+        const instaStory = conteudo.url.match(/instagram\.com\/stories\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_-]+)/);
         
-        if (instaMatch) {
-          const postId = instaMatch[1];
+        if (instaPost) {
+          const postId = instaPost[1];
           if (conteudo.tipo === 'imagem') {
-            // Para imagens, tentar usar a URL direta
+            // Para imagens de posts, tentar usar a URL direta
             return conteudo.url;
           }
-          // Para vídeos e outros tipos, retorna null para usar ícone
+          // Para vídeos e outros tipos de posts, retorna null para usar ícone
           return null;
         }
+        
+        if (instaReel) {
+          const reelId = instaReel[1];
+          // Para reels, geralmente são vídeos, então retorna null para usar ícone
+          return null;
+        }
+        
+        if (instaStory) {
+          const username = instaStory[1];
+          const storyId = instaStory[2];
+          // Para stories, usar nossa API customizada que pode buscar a imagem
+          return `/api/instagram-story-image?username=${username}&storyId=${storyId}`;
+        }
+        
         // Se não conseguir extrair o ID, retorna null
         return null;
       }
