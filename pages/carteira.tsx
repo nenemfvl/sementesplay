@@ -79,11 +79,8 @@ export default function Carteira() {
         headers: headers
       })
       
-      console.log('📡 [CARTEIRA] Resposta /api/usuario/atual:', userResponse.status, userResponse.statusText)
-      
       if (userResponse.ok) {
         const userData = await userResponse.json()
-        console.log('✅ [CARTEIRA] Dados do usuário carregados:', userData.usuario.nome)
         setCarteira({
           sementes: userData.usuario.sementes,
           totalRecebido: 0, // Será calculado se necessário
@@ -120,7 +117,6 @@ export default function Carteira() {
       // Enviar userId no header como fallback
       if (user?.id) {
         headers['Authorization'] = `User ${user.id}`
-        console.log('🔑 [PAGAMENTO] Enviando userId no header:', user.id)
       }
       
       const response = await fetch('/api/pagamentos', {

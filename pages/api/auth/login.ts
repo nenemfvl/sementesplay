@@ -129,8 +129,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     res.setHeader('Set-Cookie', [userCookie, tokenCookie])
 
-    console.log('Login realizado com sucesso para:', email)
-    
     res.status(200).json({
       message: 'Login realizado com sucesso',
       usuario: usuarioSemSenha,

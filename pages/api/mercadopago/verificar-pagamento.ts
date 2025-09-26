@@ -7,6 +7,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Método não permitido' })
   }
 
+  // SEGURANÇA: Verificar origem da requisição
+  const origin = req.headers.origin || req.headers.referer
+  const allowedOrigins = [
+    'https://sementesplay.com.br',
+    'https://www.sementesplay.com.br',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+  ].filter(Boolean)
+
+  // Em desenvolvimento, permitir localhost
+  if (process.env.NODE_ENV === 'development') {
+    allowedOrigins.push('http://localhost:3000', 'http://127.0.0.1:3000')
+  }
+
+  const isValidOrigin = !origin || allowedOrigins.some(allowed => 
+    origin.startsWith(allowed)
+  )
+
+  if (!isValidOrigin) {
+    console.error('Tentativa de acesso não autorizado:', { origin, allowedOrigins })
+    return res.status(403).json({ error: 'Acesso negado' })
+  }
+
   try {
     let paymentId, pagamentoId
     
