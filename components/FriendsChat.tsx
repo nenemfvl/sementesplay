@@ -498,7 +498,7 @@ export default function FriendsChat() {
                   </div>
 
                   {/* Lista */}
-                  <div className="flex-1 overflow-y-auto">
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {loading ? (
                       <div className="p-4 text-center text-gray-400">Carregando...</div>
                     ) : amigosFiltrados.length === 0 ? (
@@ -557,7 +557,7 @@ export default function FriendsChat() {
               {activeTab === 'solicitacoes' && (
                 /* Solicitações de Amizade */
                 <div className="h-full flex flex-col">
-                  <div className="flex-1 overflow-y-auto">
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {loading ? (
                       <div className="p-4 text-center text-gray-400">Carregando...</div>
                     ) : solicitacoes.length === 0 ? (
@@ -612,7 +612,7 @@ export default function FriendsChat() {
               {activeTab === 'sugeridos' && (
                 /* Usuários Sugeridos */
                 <div className="h-full flex flex-col">
-                  <div className="flex-1 overflow-y-auto">
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {loading ? (
                       <div className="p-4 text-center text-gray-400">Carregando...</div>
                     ) : usuariosSugeridos.length === 0 ? (
@@ -674,7 +674,7 @@ export default function FriendsChat() {
                     </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto">
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {searching ? (
                       <div className="p-4 text-center text-gray-400">Buscando...</div>
                     ) : searchResults.length === 0 ? (
@@ -753,7 +753,7 @@ export default function FriendsChat() {
                       {/* Mensagens */}
                       <div 
                         ref={mensagensRef}
-                        className="flex-1 overflow-y-auto p-3 space-y-2"
+                        className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2"
                       >
                         {mensagens.map((mensagem) => (
                           <motion.div
