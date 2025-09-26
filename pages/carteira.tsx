@@ -52,32 +52,48 @@ export default function Carteira() {
 
   useEffect(() => {
     const currentUser = auth.getUser()
+    console.log('🔍 [CARTEIRA] Usuário do localStorage:', currentUser)
+    
     if (!currentUser) {
+      console.log('❌ [CARTEIRA] Usuário não encontrado no localStorage, redirecionando para login')
+      alert('Você precisa fazer login para acessar a carteira')
       window.location.href = '/login'
       return
     }
     
+    console.log('✅ [CARTEIRA] Usuário logado:', { id: currentUser.id, nome: currentUser.nome })
     setUser(currentUser)
     loadCarteira()
   }, [])
 
   const loadCarteira = async () => {
     try {
+      console.log('🔄 [CARTEIRA] Carregando dados da carteira...')
+      
       // Buscar dados do usuário atual
       const userResponse = await fetch('/api/usuario/atual', {
         credentials: 'include' // Incluir cookies na requisição
       })
       
+      console.log('📡 [CARTEIRA] Resposta /api/usuario/atual:', userResponse.status, userResponse.statusText)
+      
       if (userResponse.ok) {
         const userData = await userResponse.json()
+        console.log('✅ [CARTEIRA] Dados do usuário carregados:', userData.usuario.nome)
         setCarteira({
           sementes: userData.usuario.sementes,
           totalRecebido: 0, // Será calculado se necessário
           totalSacado: 0    // Será calculado se necessário
         })
+      } else {
+        const errorData = await userResponse.json()
+        console.error('❌ [CARTEIRA] Erro ao carregar usuário:', errorData)
+        alert('Erro ao carregar dados do usuário. Faça login novamente.')
+        window.location.href = '/login'
       }
     } catch (error) {
-      console.error('Erro ao carregar carteira:', error)
+      console.error('❌ [CARTEIRA] Erro ao carregar carteira:', error)
+      alert('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }

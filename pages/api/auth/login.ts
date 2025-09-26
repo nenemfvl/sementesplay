@@ -123,8 +123,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     )
 
     // Definir cookies com o token e usuário
-    const userCookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(usuarioSemSenha))}; Path=/; SameSite=Strict; Max-Age=604800`
-    const tokenCookie = `token=${token}; Path=/; SameSite=Strict; Max-Age=604800`
+    const userCookie = `sementesplay_user=${encodeURIComponent(JSON.stringify(usuarioSemSenha))}; Path=/; SameSite=Lax; Max-Age=604800; HttpOnly=false`
+    const tokenCookie = `token=${token}; Path=/; SameSite=Lax; Max-Age=604800; HttpOnly=true`
+    
+    console.log('🍪 [LOGIN] Definindo cookies:')
+    console.log('   - User cookie:', userCookie.substring(0, 100) + '...')
+    console.log('   - Token cookie:', tokenCookie.substring(0, 50) + '...')
     
     res.setHeader('Set-Cookie', [userCookie, tokenCookie])
 
