@@ -13,7 +13,12 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   FunnelIcon,
-  ClockIcon
+  ClockIcon,
+  XMarkIcon,
+  TrophyIcon,
+  CurrencyDollarIcon,
+  CalendarIcon,
+  EnvelopeIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { auth, User } from '../../lib/auth'
@@ -28,6 +33,28 @@ interface UsuarioAdmin {
   pontuacao: number
   dataCriacao: Date
   status: 'ativo' | 'banido' | 'pendente' | 'suspenso'
+  ultimoLogin?: Date | null
+  xp?: number
+  nivelUsuario?: number
+  streakLogin?: number
+  titulo?: string | null
+  avatarUrl?: string | null
+  suspenso?: boolean
+  dataSuspensao?: Date | null
+  motivoSuspensao?: string | null
+}
+
+interface UsuarioDetalhes extends UsuarioAdmin {
+  estatisticas: {
+    totalDoacoesFeitas: number
+    totalDoacoesRecebidas: number
+    valorTotalDoacoesFeitas: number
+    valorTotalDoacoesRecebidas: number
+    totalConteudos: number
+    totalComentarios: number
+    totalMissoesConcluidas: number
+    eCriador: boolean
+  }
 }
 
 export default function AdminUsuarios() {
@@ -87,6 +114,46 @@ export default function AdminUsuarios() {
   const [showReactivateModal, setShowReactivateModal] = useState(false)
   const [motivo, setMotivo] = useState('')
   const [duracaoSuspensao, setDuracaoSuspensao] = useState(7)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [usuarioDetalhes, setUsuarioDetalhes] = useState<UsuarioDetalhes | null>(null)
+  const [loadingDetails, setLoadingDetails] = useState(false)
+
+  const carregarDetalhesUsuario = async (usuarioId: string) => {
+    try {
+      setLoadingDetails(true)
+      
+      // Preparar headers com autenticação
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (user) {
+        const authToken = encodeURIComponent(JSON.stringify(user))
+        headers['Authorization'] = `Bearer ${authToken}`
+      }
+
+      const response = await fetch(`/api/admin/usuarios/${usuarioId}/detalhes`, {
+        credentials: 'include',
+        headers
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setUsuarioDetalhes({
+          ...data.usuario,
+          estatisticas: data.estatisticas
+        })
+        setShowDetailsModal(true)
+      } else {
+        alert('Erro ao carregar detalhes do usuário')
+      }
+    } catch (error) {
+      console.error('Erro ao carregar detalhes:', error)
+      alert('Erro ao carregar detalhes do usuário')
+    } finally {
+      setLoadingDetails(false)
+    }
+  }
 
   const banirUsuario = async (usuarioId: string) => {
     if (!motivo.trim()) {
@@ -403,8 +470,9 @@ export default function AdminUsuarios() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
                               <button
-                                onClick={() => window.open(`/admin/usuarios/${usuario.id}`, '_blank')}
-                                className="text-green-400 hover:text-green-300"
+                                onClick={() => carregarDetalhesUsuario(usuario.id)}
+                                disabled={loadingDetails}
+                                className="text-green-400 hover:text-green-300 disabled:opacity-50"
                                 title="Ver detalhes"
                               >
                                 <EyeIcon className="w-4 h-4" />
@@ -616,6 +684,206 @@ export default function AdminUsuarios() {
                   >
                     Reativar Usuário
                   </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Modal de Detalhes do Usuário */}
+        {showDetailsModal && usuarioDetalhes && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-sss-medium rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            >
+              {/* Header do Modal */}
+              <div className="flex items-center justify-between p-6 border-b border-sss-light">
+                <h3 className="text-xl font-bold text-sss-white">
+                  Detalhes do Usuário
+                </h3>
+                <button
+                  onClick={() => setShowDetailsModal(false)}
+                  className="p-2 hover:bg-sss-dark rounded-lg transition-colors"
+                >
+                  <XMarkIcon className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+
+              {/* Conteúdo do Modal */}
+              <div className="p-6 space-y-6">
+                {/* Informações Principais */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Perfil do Usuário */}
+                  <div className="lg:col-span-1 bg-sss-dark rounded-lg p-6">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-sss-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <UserIcon className="w-10 h-10 text-white" />
+                      </div>
+                      <h2 className="text-lg font-bold text-sss-white">{usuarioDetalhes.nome}</h2>
+                      <p className="text-gray-400 mb-4 text-sm">{usuarioDetalhes.email}</p>
+                      
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Status:</span>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            usuarioDetalhes.status === 'ativo' ? 'bg-green-500/10 text-green-500' :
+                            usuarioDetalhes.status === 'suspenso' ? 'bg-yellow-500/10 text-yellow-500' :
+                            usuarioDetalhes.status === 'banido' ? 'bg-red-500/10 text-red-500' :
+                            'bg-gray-500/10 text-gray-500'
+                          }`}>
+                            {usuarioDetalhes.status}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Nível:</span>
+                          <span className="text-sss-white">{usuarioDetalhes.nivel}</span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Tipo:</span>
+                          <span className="text-sss-white">{usuarioDetalhes.tipo}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Estatísticas */}
+                  <div className="lg:col-span-2 space-y-4">
+                    {/* Cards de Estatísticas */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="bg-sss-dark rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-gray-400 text-xs">Sementes</p>
+                            <p className="text-lg font-bold text-yellow-500">{usuarioDetalhes.sementes?.toLocaleString()}</p>
+                          </div>
+                          <CurrencyDollarIcon className="w-6 h-6 text-yellow-500" />
+                        </div>
+                      </div>
+
+                      <div className="bg-sss-dark rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-gray-400 text-xs">XP</p>
+                            <p className="text-lg font-bold text-blue-500">{usuarioDetalhes.xp?.toLocaleString()}</p>
+                          </div>
+                          <TrophyIcon className="w-6 h-6 text-blue-500" />
+                        </div>
+                      </div>
+
+                      <div className="bg-sss-dark rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-gray-400 text-xs">Pontuação</p>
+                            <p className="text-lg font-bold text-green-500">{usuarioDetalhes.pontuacao?.toLocaleString()}</p>
+                          </div>
+                          <ShieldCheckIcon className="w-6 h-6 text-green-500" />
+                        </div>
+                      </div>
+
+                      <div className="bg-sss-dark rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-gray-400 text-xs">Streak</p>
+                            <p className="text-lg font-bold text-orange-500">{usuarioDetalhes.streakLogin}</p>
+                          </div>
+                          <ClockIcon className="w-6 h-6 text-orange-500" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Informações Detalhadas */}
+                    <div className="bg-sss-dark rounded-lg p-4">
+                      <h3 className="text-lg font-medium text-sss-white mb-4">Informações Detalhadas</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <CalendarIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-400">Data de Cadastro:</span>
+                            <span className="text-sss-white">{new Date(usuarioDetalhes.dataCriacao).toLocaleDateString('pt-BR')}</span>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <ClockIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-400">Último Login:</span>
+                            <span className="text-sss-white">
+                              {usuarioDetalhes.ultimoLogin ? new Date(usuarioDetalhes.ultimoLogin).toLocaleDateString('pt-BR') : 'Nunca'}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <EnvelopeIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-400">Comentários:</span>
+                            <span className="text-sss-white">{usuarioDetalhes.estatisticas?.totalComentarios || 0}</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <CurrencyDollarIcon className="w-4 h-4 text-green-400" />
+                              <span className="text-gray-400">Doações Feitas:</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sss-white">{usuarioDetalhes.estatisticas?.totalDoacoesFeitas} doações</div>
+                              <div className="text-xs text-green-400">{usuarioDetalhes.estatisticas?.valorTotalDoacoesFeitas?.toLocaleString()} sementes</div>
+                            </div>
+                          </div>
+                          
+                          {usuarioDetalhes.estatisticas?.eCriador && (
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <CurrencyDollarIcon className="w-4 h-4 text-blue-400" />
+                                <span className="text-gray-400">Doações Recebidas:</span>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-sss-white">{usuarioDetalhes.estatisticas?.totalDoacoesRecebidas} doações</div>
+                                <div className="text-xs text-blue-400">{usuarioDetalhes.estatisticas?.valorTotalDoacoesRecebidas?.toLocaleString()} sementes</div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {usuarioDetalhes.estatisticas?.eCriador && (
+                            <div className="flex items-center space-x-2">
+                              <EyeIcon className="w-4 h-4 text-gray-400" />
+                              <span className="text-gray-400">Conteúdos Criados:</span>
+                              <span className="text-sss-white">{usuarioDetalhes.estatisticas?.totalConteudos}</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center space-x-2">
+                            <TrophyIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-400">Missões Concluídas:</span>
+                            <span className="text-sss-white">{usuarioDetalhes.estatisticas?.totalMissoesConcluidas}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Suspensão (se aplicável) */}
+                    {usuarioDetalhes.suspenso && (
+                      <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                        <h3 className="text-lg font-medium text-red-400 mb-2">Informações de Suspensão</h3>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-red-300">Data da Suspensão:</span>
+                            <span className="text-red-100">
+                              {usuarioDetalhes.dataSuspensao ? new Date(usuarioDetalhes.dataSuspensao).toLocaleDateString('pt-BR') : 'N/A'}
+                            </span>
+                          </div>
+                          {usuarioDetalhes.motivoSuspensao && (
+                            <div className="flex items-start space-x-2">
+                              <span className="text-red-300">Motivo:</span>
+                              <span className="text-red-100">{usuarioDetalhes.motivoSuspensao}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
