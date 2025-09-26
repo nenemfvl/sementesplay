@@ -320,9 +320,9 @@ export default function DetalhesUsuario() {
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <UserIcon className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-400">Nível Numérico:</span>
-                        <span className="text-sss-white">Nível {usuario.nivelUsuario}</span>
+                        <EnvelopeIcon className="w-4 h-4 text-gray-400" />
+                        <span className="text-gray-400">Comentários:</span>
+                        <span className="text-sss-white">{estatisticas?.totalComentarios || 0}</span>
                       </div>
                     </div>
 
