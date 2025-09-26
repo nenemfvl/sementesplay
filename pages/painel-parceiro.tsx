@@ -343,22 +343,13 @@ export default function PainelParceiro() {
       try {
         const currentUser = auth.getUser();
         if (!currentUser) {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('Usuário não encontrado no localStorage');
-          }
           window.location.href = '/login';
           return;
         }
         
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Usuário encontrado:', currentUser.nome, 'Nível:', currentUser.nivel);
-        }
         
         // Verificar se o usuário tem nível parceiro
         if (currentUser.nivel !== 'parceiro') {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('Usuário não é parceiro, nível:', currentUser.nivel);
-          }
           alert('Acesso negado. Apenas parceiros podem acessar esta área.');
           window.location.href = '/perfil';
           return;
@@ -367,18 +358,15 @@ export default function PainelParceiro() {
         // Verificar se o usuário é parceiro no banco de dados
         try {
           const response = await fetch(`/api/parceiros/perfil?usuarioId=${currentUser.id}`);
-          console.log('Response status:', response.status);
           
           if (!response.ok) {
             if (response.status === 404) {
               // Parceiro não encontrado - redirecionar para perfil
-              console.log('Parceiro não encontrado no banco');
               alert('Acesso negado. Apenas parceiros podem acessar esta área.');
               window.location.href = '/perfil';
               return;
             } else {
               // Outro erro - tentar usar dados do localStorage
-              console.log('Erro na API, usando dados do localStorage');
               setUser(currentUser);
               setAuthorized(true);
               return;
@@ -388,19 +376,16 @@ export default function PainelParceiro() {
           const parceiroData = await response.json();
           if (!parceiroData || !parceiroData.id) {
             // Se não retornou dados de parceiro, tentar usar dados do localStorage
-            console.log('Dados de parceiro inválidos, usando localStorage');
             setUser(currentUser);
             setAuthorized(true);
             return;
           }
           
-          console.log('Parceiro encontrado:', parceiroData.nome);
           setUser(currentUser);
           setAuthorized(true);
         } catch (apiError) {
           console.error('Erro na API de parceiro:', apiError);
           // Em caso de erro na API, usar dados do localStorage
-          console.log('Usando dados do localStorage devido a erro na API');
           setUser(currentUser);
           setAuthorized(true);
         }
@@ -417,19 +402,10 @@ export default function PainelParceiro() {
 
   const fetchParceiro = useCallback(async () => {
     try {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🔍 Buscando dados do parceiro para usuário:', user?.id);
-      }
       const response = await fetch(`/api/parceiros/perfil?usuarioId=${user?.id}`);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('📊 Status da resposta:', response.status);
-      }
       
       if (response.ok) {
         const data = await response.json();
-        if (process.env.NODE_ENV === 'development') {
-          console.log('✅ Dados do parceiro recebidos:', data);
-        }
         setParceiro(data);
       } else {
         console.error('❌ Erro na resposta:', response.status);
@@ -689,12 +665,6 @@ export default function PainelParceiro() {
     }
 
     // Verificar se os dados necessários estão disponíveis
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 Dados antes de gerar PIX:');
-      console.log('   Parceiro:', parceiro);
-      console.log('   User:', user);
-      console.log('   Repasse:', repasse);
-    }
     
     if (!parceiro?.id || !user?.id) {
       console.error('❌ Dados não disponíveis:', { parceiroId: parceiro?.id, userId: user?.id });
@@ -709,13 +679,6 @@ export default function PainelParceiro() {
       valor: repasse.valorRepasse
     };
     
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 VERIFICAÇÃO DE IDs:');
-      console.log('   user.id:', user.id);
-      console.log('   parceiro.usuarioId:', parceiro.usuarioId);
-      console.log('   usuarioId usado:', dadosPix.usuarioId);
-      console.log('📤 Dados que serão enviados para PIX:', dadosPix);
-    }
 
     setRepasseSelecionado(repasse);
     setShowModalPIX(true);
