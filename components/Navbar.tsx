@@ -258,7 +258,7 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-              <button onClick={async () => { await auth.logout(); window.location.reload(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
+              <button onClick={async () => { await auth.logout(); }} title="Sair" className="p-2 text-gray-300 hover:text-red-400">
                 <ArrowLeftOnRectangleIcon className="w-6 h-6" />
               </button>
             </>
