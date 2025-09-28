@@ -2,17 +2,66 @@ import { prisma } from '../../../lib/prisma'
 
 
 import { NextApiRequest, NextApiResponse } from 'next'
+// Função para extrair o ID do canal do YouTube de uma URL
+function extrairChannelId(url: string): string | null {
+  // Se já é um ID de canal (começa com UC)
+  if (url.startsWith('UC') && url.length === 24) {
+    return url
+  }
+  
+  // Se é uma URL completa
+  if (url.includes('youtube.com')) {
+    // Tentar extrair de diferentes formatos
+    const patterns = [
+      /youtube\.com\/channel\/([a-zA-Z0-9_-]+)/,
+      /youtube\.com\/@([a-zA-Z0-9_-]+)/,
+      /youtube\.com\/c\/([a-zA-Z0-9_-]+)/,
+      /youtube\.com\/user\/([a-zA-Z0-9_-]+)/
+    ]
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match) {
+        return match[1]
+      }
+    }
+  }
+  
+  return null
+}
+
 // Verificar YouTube usando API pública real
-async function verificarYouTubeLiveSimples(channelId: string) {
+async function verificarYouTubeLiveSimples(youtubeUrl: string) {
   try {
+    // Extrair o ID ou username do canal
+    const channelId = extrairChannelId(youtubeUrl)
+    
+    if (!channelId) {
+      console.error('Não foi possível extrair ID do canal:', youtubeUrl)
+      return { isLive: false }
+    }
+    
+    let url: string
+    
+    // Se é um @username, usar a URL do canal diretamente
+    if (youtubeUrl.includes('/@')) {
+      url = `https://www.youtube.com/@${channelId}/live`
+    } else {
+      // Se é um channel ID, usar a URL do canal
+      url = `https://www.youtube.com/channel/${channelId}/live`
+    }
+    
+    console.log(`Verificando YouTube: ${url}`)
+    
     // Usar API pública do YouTube (sem chave)
-    const response = await fetch(`https://www.youtube.com/channel/${channelId}/live`, {
+    const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       }
     })
     
     if (!response.ok) {
+      console.log(`YouTube response not ok: ${response.status}`)
       return { isLive: false }
     }
     
@@ -22,7 +71,9 @@ async function verificarYouTubeLiveSimples(channelId: string) {
     const isLive = html.includes('"isLive":true') || 
                    html.includes('"liveStreamingDetails"') ||
                    html.includes('"liveBroadcastDetails"') ||
-                   html.includes('"liveContent"')
+                   html.includes('"liveContent"') ||
+                   html.includes('"liveBroadcastDetails"') ||
+                   html.includes('"isLiveContent"')
     
     if (isLive) {
       // Extrair título real se possível
@@ -33,6 +84,8 @@ async function verificarYouTubeLiveSimples(channelId: string) {
       const viewerMatch = html.match(/"viewCount":"(\d+)"/)
       const viewers = viewerMatch ? parseInt(viewerMatch[1]) : 0
       
+      console.log(`Live detectada: ${title} (${viewers} viewers)`)
+      
       return {
         isLive: true,
         title: title,
@@ -40,6 +93,7 @@ async function verificarYouTubeLiveSimples(channelId: string) {
       }
     }
     
+    console.log('Nenhuma live detectada')
     return { isLive: false }
   } catch (error) {
     console.error('Erro YouTube:', error)
