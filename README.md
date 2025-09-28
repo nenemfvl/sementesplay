@@ -3,6 +3,7 @@
 > **Sistema de repasses automáticos** - Processamento imediato via webhook
 > **Deploy estável** - Sistema funcionando perfeitamente
 > **Proteção de rotas** - Autenticação robusta implementada
+> **Reset para commit bab85225** - Sistema restaurado para estado estável
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
