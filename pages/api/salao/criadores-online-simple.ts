@@ -279,11 +279,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (redesSociais.youtube) {
           const youtubeStatus = await verificarYouTubeLiveSimples(redesSociais.youtube)
           if (youtubeStatus.isLive) {
+            // Usar a URL original do YouTube para o link
             plataformasLive.push({
               plataforma: 'YouTube',
               titulo: youtubeStatus.title || 'YouTube Live',
               espectadores: youtubeStatus.viewers || 0,
-              url: `https://youtube.com/channel/${redesSociais.youtube}`
+              url: redesSociais.youtube
             })
           }
         }
