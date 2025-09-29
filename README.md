@@ -4,6 +4,7 @@
 > **Deploy estável** - Sistema funcionando perfeitamente
 > **Proteção de rotas** - Autenticação robusta implementada
 > **Reset para commit bab85225** - Sistema restaurado para estado estável
+> **Volta para commit 5304efcc** - Estado atual do projeto
 
 Sistema de cashback e doações baseado no SSS da Wemade para o ecossistema FiveM.
 
