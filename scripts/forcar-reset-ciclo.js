@@ -79,6 +79,22 @@ async function forcarResetCiclo() {
       await prisma.conteudo.deleteMany()
       await prisma.conteudoParceiro.deleteMany()
       
+      // NOVO: Resetar vendas dos parceiros
+      console.log('   🔄 Zerando vendas dos parceiros...')
+      await prisma.compraParceiro.deleteMany()
+      await prisma.repasseParceiro.deleteMany()
+      await prisma.solicitacaoCompra.deleteMany()
+      await prisma.codigoCashback.deleteMany()
+      
+      // Resetar campos de vendas na tabela Parceiro
+      await prisma.parceiro.updateMany({
+        data: {
+          totalVendas: 0,
+          codigosGerados: 0,
+          saldoDevedor: 0
+        }
+      })
+      
       console.log('   ✅ Reset do ciclo concluído!')
       console.log(`   🔄 Novo ciclo: #${config.numeroCiclo + 1}`)
       console.log(`   📅 Início: ${agora.toLocaleString('pt-BR')}`)
