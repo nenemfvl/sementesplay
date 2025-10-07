@@ -12,10 +12,6 @@
     {
       "path": "/api/cron/verificar-integridade-fundo",
       "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/verificar-distribuicao-fundo",
-      "schedule": "0 2 * * *"
     }
   ],
   "headers": [
