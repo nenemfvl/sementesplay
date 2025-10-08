@@ -31,26 +31,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
     
-    // Busca usuários que fizeram compras no ciclo
-    const compras = await prisma.compraParceiro.findMany({
+    // Busca usuários que fizeram doações no período do fundo
+    const doacoes = await prisma.doacao.findMany({
       where: {
-        dataCompra: {
+        data: {
           gte: fundo.dataInicio,
           lte: fundo.dataFim
-        },
-        status: 'cashback_liberado'
+        }
       },
-      select: { usuarioId: true, valorCompra: true }
+      select: { doadorId: true, valor: true }
     })
     
-    // Soma total gasto por usuário
+    // Soma total doado por usuário
     const gastoPorUsuario: Record<string, number> = {}
     let totalGasto = 0
-    for (const compra of compras) {
-      gastoPorUsuario[compra.usuarioId] = (gastoPorUsuario[compra.usuarioId] || 0) + compra.valorCompra
-      totalGasto += compra.valorCompra
+    for (const doacao of doacoes) {
+      gastoPorUsuario[doacao.doadorId] = (gastoPorUsuario[doacao.doadorId] || 0) + doacao.valor
+      totalGasto += doacao.valor
     }
-    const usuariosUnicos = Array.from(new Set(compras.map(c => c.usuarioId)))
+    const usuariosUnicos = Array.from(new Set(doacoes.map(d => d.doadorId)))
 
     // Calcula distribuição proporcional para criadores baseada na quantidade de conteúdo
     const totalConteudos = criadores.reduce((sum, criador) => sum + criador._count.conteudos, 0)

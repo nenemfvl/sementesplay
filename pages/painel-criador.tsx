@@ -583,6 +583,36 @@ export default function PainelCriador() {
     }
   }
 
+  async function handleExcluirEnquete(id: string) {
+    if (!window.confirm('Tem certeza que deseja excluir esta enquete? Esta ação não pode ser desfeita.')) return;
+    
+    try {
+      const user = auth.getUser();
+      if (!user) return;
+
+      const res = await fetch('/api/enquetes', {
+        method: 'DELETE',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.id}`
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        // Atualizar lista removendo a enquete excluída
+        setEnquetes(prev => prev.filter(e => e.id !== id));
+        alert('Enquete excluída com sucesso!');
+      } else {
+        const error = await res.json();
+        alert(`Erro ao excluir enquete: ${error.error || 'Erro desconhecido'}`);
+      }
+    } catch (error) {
+      console.error('Erro ao excluir enquete:', error);
+      alert('Erro ao excluir enquete. Tente novamente.');
+    }
+  }
+
 
 
   function getPreview(url: string) {
@@ -1498,7 +1528,16 @@ export default function PainelCriador() {
               <ul className="space-y-2">
                 {enquetes.map(e => (
                   <li key={e.id} className="border rounded p-2">
-                        <div className="font-semibold text-sss-white mb-1">{e.pergunta}</div>
+                    <div className="flex justify-between items-start mb-1">
+                      <div className="font-semibold text-sss-white">{e.pergunta}</div>
+                      <button
+                        onClick={() => handleExcluirEnquete(e.id)}
+                        className="text-red-400 hover:text-red-300 transition-colors p-1"
+                        title="Excluir enquete"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    </div>
                     <ul className="ml-4">
                       {e.opcoes.map((o, index) => (
                         <li key={index} className="flex justify-between items-center">

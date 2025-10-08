@@ -121,5 +121,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  if (req.method === 'DELETE') {
+    try {
+      // Verificar se é criador para excluir enquetes
+      if (!user || (user.nivel !== 'criador-supremo' && user.nivel !== 'criador-parceiro' && user.nivel !== 'criador-comum' && user.nivel !== 'criador-iniciante')) {
+        return res.status(403).json({ error: 'Acesso negado. Apenas criadores podem excluir enquetes.' });
+      }
+
+      const { id } = req.body
+
+      if (!id) {
+        return res.status(400).json({ error: 'ID da enquete é obrigatório' })
+      }
+
+      // Verificar se a enquete pertence ao criador
+      const enquete = await prisma.enquete.findUnique({
+        where: { id: String(id) }
+      })
+
+      if (!enquete) {
+        return res.status(404).json({ error: 'Enquete não encontrada' })
+      }
+
+      if (enquete.criadorId !== user.id) {
+        return res.status(403).json({ error: 'Você só pode excluir suas próprias enquetes' })
+      }
+
+      // Excluir a enquete e todos os votos relacionados
+      await prisma.$transaction(async (tx) => {
+        // Excluir votos primeiro (devido à foreign key)
+        await tx.votoEnquete.deleteMany({
+          where: { enqueteId: String(id) }
+        })
+        
+        // Excluir a enquete
+        await tx.enquete.delete({
+          where: { id: String(id) }
+        })
+      })
+
+      return res.status(200).json({ message: 'Enquete excluída com sucesso' })
+    } catch (error) {
+      console.error('Erro ao excluir enquete:', error)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
+    }
+  }
+
   return res.status(405).json({ error: 'Método não permitido' })
 } 
