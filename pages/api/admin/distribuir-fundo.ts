@@ -39,15 +39,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           lte: fundo.dataFim
         }
       },
-      select: { doadorId: true, valor: true }
+      select: { doadorId: true, quantidade: true }
     })
     
     // Soma total doado por usuário
     const gastoPorUsuario: Record<string, number> = {}
     let totalGasto = 0
     for (const doacao of doacoes) {
-      gastoPorUsuario[doacao.doadorId] = (gastoPorUsuario[doacao.doadorId] || 0) + doacao.valor
-      totalGasto += doacao.valor
+      gastoPorUsuario[doacao.doadorId] = (gastoPorUsuario[doacao.doadorId] || 0) + doacao.quantidade
+      totalGasto += doacao.quantidade
     }
     const usuariosUnicos = Array.from(new Set(doacoes.map(d => d.doadorId)))
 
